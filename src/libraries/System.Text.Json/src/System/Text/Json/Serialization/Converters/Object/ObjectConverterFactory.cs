@@ -22,9 +22,6 @@ namespace System.Text.Json.Serialization.Converters
             return true;
         }
 
-        [DynamicDependency("#ctor", typeof(ObjectDefaultConverter<>))]
-        [DynamicDependency("#ctor", typeof(LargeObjectWithParameterizedConstructorConverter<>))]
-        [DynamicDependency("#ctor", typeof(SmallObjectWithParameterizedConstructorConverter<,,,,>))]
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
             JsonConverter converter;

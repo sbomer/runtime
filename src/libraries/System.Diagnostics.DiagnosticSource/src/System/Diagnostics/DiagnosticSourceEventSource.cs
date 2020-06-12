@@ -892,9 +892,6 @@ namespace System.Diagnostics
                     /// <summary>
                     /// Create a property fetcher for a propertyName
                     /// </summary>
-                    [DynamicDependency("#ctor(System.Type)", typeof(EnumeratePropertyFetch<>))]
-                    [DynamicDependency("#ctor(System.Type,System.Reflection.PropertyInfo)", typeof(RefTypedFetchProperty<,>))]
-                    [DynamicDependency("#ctor(System.Type,System.Reflection.PropertyInfo)", typeof(ValueTypedFetchProperty<,>))]
                     public static PropertyFetch FetcherForProperty(Type? type, string propertyName)
                     {
                         if (propertyName == null)

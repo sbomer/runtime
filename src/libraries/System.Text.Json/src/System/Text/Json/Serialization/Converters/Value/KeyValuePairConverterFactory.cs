@@ -20,7 +20,6 @@ namespace System.Text.Json.Serialization.Converters
             return (generic == typeof(KeyValuePair<,>));
         }
 
-        [DynamicDependency("#ctor()", typeof(KeyValuePairConverter<,>))]
         public override JsonConverter CreateConverter(Type type, JsonSerializerOptions options)
         {
             Debug.Assert(CanConvert(type));

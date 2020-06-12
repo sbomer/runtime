@@ -18,9 +18,6 @@ namespace System.Text.Json.Serialization.Converters
             return type.IsEnum;
         }
 
-        [DynamicDependency(
-            "#ctor(System.Text.Json.Serialization.Converters.EnumConverterOptions,System.Text.Json.JsonSerializerOptions)",
-            typeof(EnumConverter<>))]
         public override JsonConverter CreateConverter(Type type, JsonSerializerOptions options)
         {
             JsonConverter converter = (JsonConverter)Activator.CreateInstance(

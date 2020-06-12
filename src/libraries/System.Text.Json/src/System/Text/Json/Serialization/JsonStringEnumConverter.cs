@@ -54,9 +54,6 @@ namespace System.Text.Json.Serialization
         }
 
         /// <inheritdoc />
-        [DynamicDependency(
-            "#ctor(System.Text.Json.Serialization.Converters.EnumConverterOptions,System.Text.Json.JsonNamingPolicy,System.Text.Json.JsonSerializerOptions)",
-            typeof(EnumConverter<>))]
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
             JsonConverter converter = (JsonConverter)Activator.CreateInstance(
