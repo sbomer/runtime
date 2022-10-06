@@ -26,6 +26,9 @@ namespace Internal.TypeSystem
         private Dictionary<FieldDesc, EntityHandle> _fieldRefs = new Dictionary<FieldDesc, EntityHandle>();
         private Blob _mvidFixup;
         private BlobHandle _noArgsVoidReturnStaticMethodSigHandle;
+        private BlobHandle _byteArrayFieldSigHandle;
+        private BlobBuilder _rvaFieldData;
+        private Dictionary<string, FieldDefinitionHandle> _rvaFieldHandles;
         protected TypeSystemContext _typeSystemContext;
 
         public TypeSystemMetadataEmitter(AssemblyName assemblyName, TypeSystemContext context, AssemblyFlags flags = default(AssemblyFlags), byte[] publicKeyArray = null, AssemblyHashAlgorithm hashAlgorithm = AssemblyHashAlgorithm.None)
@@ -74,6 +77,22 @@ namespace Internal.TypeSystem
             _noArgsVoidReturnStaticMethodSigHandle = _metadataBuilder.GetOrAddBlob(noArgsNoReturnStaticMethodSig);
         }
 
+        public void AllowUseOfAddStringAsRvaField()
+        {
+            BlobBuilder byteArrayFieldSig = new BlobBuilder();
+            BlobEncoder signatureEncoder = new BlobEncoder(byteArrayFieldSig);
+
+            signatureEncoder.FieldSignature()
+                .Array(out SignatureTypeEncoder elementType, out ArrayShapeEncoder arrayShape);
+            elementType.Byte();
+            arrayShape.Shape(1, ImmutableArray<int>.Empty, ImmutableArray<int>.Empty);
+
+            _byteArrayFieldSigHandle = _metadataBuilder.GetOrAddBlob(byteArrayFieldSig);
+
+            _rvaFieldData = new BlobBuilder();
+            _rvaFieldHandles = new Dictionary<string, FieldDefinitionHandle>();
+        }
+
         public MethodDefinitionHandle AddGlobalMethod(string name, InstructionEncoder il, int maxStack)
         {
             int methodILOffset = _methodBodyStream.AddMethodBody(il, maxStack);
@@ -82,6 +101,24 @@ namespace Internal.TypeSystem
                 _noArgsVoidReturnStaticMethodSigHandle,
                 methodILOffset,
                 default(ParameterHandle));
+        }
+
+        public FieldDefinitionHandle AddStringAsRvaField(string name)
+        {
+            if (!_rvaFieldHandles.TryGetValue(name, out var handle))
+            {
+                var offset = _rvaFieldData.Count;
+                _rvaFieldData.WriteUTF8(name);
+                handle = _metadataBuilder.AddFieldDefinition(
+                    FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.HasFieldRVA
+                    // PrivateScope is equivalent to IsCompilerControlled, which prevents duplicate field checking.
+                    // This allows all Rva fields to have the same name.
+                    | FieldAttributes.PrivateScope,
+                    _metadataBuilder.GetOrAddString("StringAsRvaField"),
+                     _byteArrayFieldSigHandle);
+                _metadataBuilder.AddFieldRelativeVirtualAddress(handle, offset);
+            }
+            return handle;
         }
 
         private static readonly Guid s_guid = new Guid("97F4DBD4-F6D1-4FAD-91B3-1001F92068E5");
@@ -93,7 +130,8 @@ namespace Internal.TypeSystem
         {
             var peHeaderBuilder = new PEHeaderBuilder();
             var peBuilder = new ManagedPEBuilder(peHeaderBuilder, new MetadataRootBuilder(_metadataBuilder), _ilBuilder,
-                deterministicIdProvider: content => s_contentId);
+                deterministicIdProvider: content => s_contentId,
+                mappedFieldData: _rvaFieldData);
 
             var peBlob = new BlobBuilder();
             var contentId = peBuilder.Serialize(peBlob);
@@ -104,6 +142,9 @@ namespace Internal.TypeSystem
         // Generate only the metadata blob as a byte[]
         public byte[] EmitToMetadataBlob()
         {
+            if (_rvaFieldData != null)
+                throw new InvalidOperationException("Cannot emit metadata blob when RVA field data is present");
+
             MetadataRootBuilder metadataRootBuilder = new MetadataRootBuilder(_metadataBuilder);
             BlobBuilder metadataBlobBuilder = new BlobBuilder();
             metadataRootBuilder.Serialize(metadataBlobBuilder, methodBodyStreamRva: 0, mappedFieldDataStreamRva: 0);

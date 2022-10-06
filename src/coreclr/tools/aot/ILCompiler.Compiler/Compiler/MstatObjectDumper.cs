@@ -97,7 +97,10 @@ namespace ILCompiler
             encoder.Token(_emitter.EmitMetadataHandleForTypeSystemEntity(entity));
             // Would like to do this but mangled names are very long and go over the 16 MB string limit quickly.
             // encoder.LoadString(_emitter.GetUserStringHandle(mangledName));
-            EncodeMangledName(encoder, mangledName);
+            // EncodeMangledName(encoder, mangledName);
+            var fieldRvaDefHandle = _emitter.AddStringAsRvaField(mangledName);
+            encoder.OpCode(ILOpCode.Ldsfld);
+            encoder.Token(fieldRvaDefHandle);
             encoder.LoadConstantI4(blob.Data.Length);
         }
 
@@ -108,9 +111,15 @@ namespace ILCompiler
             {
                 methods.OpCode(ILOpCode.Ldtoken);
                 methods.Token(_emitter.EmitMetadataHandleForTypeSystemEntity(m.Key));
-                // Would like to do this but mangled names are very long and go over the 16 MB string limit quickly.
+                // Would like to do this but mangled names are very lonhg and go over the 16 MB string limit quickly.
                 // methods.LoadString(_emitter.GetUserStringHandle(m.Value.MangledName));
-                EncodeMangledName(methods, m.Value.MangledName);
+
+                // EncodeMangledName(methods, m.Value.MangledName);
+
+                var fieldRvaDefHandle = _emitter.AddStringAsRvaField(m.Value.MangledName);
+                methods.OpCode(ILOpCode.Ldsfld);
+                methods.Token(fieldRvaDefHandle);
+
                 methods.LoadConstantI4(m.Value.Size);
                 methods.LoadConstantI4(m.Value.GcInfoSize);
                 methods.LoadConstantI4(_methodEhInfo.GetValueOrDefault(m.Key));
