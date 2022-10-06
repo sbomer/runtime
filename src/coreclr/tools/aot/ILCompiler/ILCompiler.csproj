@@ -17,6 +17,10 @@
     <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- <ProjectReference Include="..\..\..\..\libraries\System.Reflection.Metadata\src\System.Reflection.Metadata.csproj" /> -->
+  </ItemGroup>
+
   <Target Name="PublishCompiler"
           Condition="'$(BuildingInsideVisualStudio)' != 'true'"
           AfterTargets="Build"

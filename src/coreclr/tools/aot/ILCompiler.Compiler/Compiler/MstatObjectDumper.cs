@@ -20,9 +20,10 @@ namespace ILCompiler
     public class MstatObjectDumper : ObjectDumper
     {
         private const int VersionMajor = 1;
-        private const int VersionMinor = 1;
+        private const int VersionMinor = 2;
 
         private readonly string _fileName;
+        private readonly string _mangledNameFileName;
         private readonly TypeSystemMetadataEmitter _emitter;
 
         private readonly InstructionEncoder _types = new InstructionEncoder(new BlobBuilder());
@@ -31,11 +32,15 @@ namespace ILCompiler
         private Dictionary<MethodDesc, int> _methodEhInfo = new();
         private Dictionary<string, int> _blobs = new();
 
+        private Dictionary<string, int> _mangledNames = new();
+        private int _mangledNameIndex;
+
         private Utf8StringBuilder _utf8StringBuilder = new Utf8StringBuilder();
 
         public MstatObjectDumper(string fileName, TypeSystemContext context)
         {
             _fileName = fileName;
+            _mangledNameFileName = Path.ChangeExtension(fileName, ".manglednames");
             var asmName = new AssemblyName(Path.GetFileName(fileName));
             asmName.Version = new Version(VersionMajor, VersionMinor);
             _emitter = new TypeSystemMetadataEmitter(asmName, context);
@@ -77,12 +82,22 @@ namespace ILCompiler
             }
         }
 
+        private void EncodeMangledName(InstructionEncoder encoder, string mangledName)
+        {
+            if (!_mangledNames.TryGetValue(mangledName, out int index))
+            {
+                index = _mangledNameIndex++;
+                _mangledNames.Add(mangledName, index);
+            }
+            encoder.LoadConstantI4(index);
+        }
         private void SerializeSimpleEntry(InstructionEncoder encoder, TypeSystemEntity entity, string mangledName, ObjectData blob)
         {
             encoder.OpCode(ILOpCode.Ldtoken);
             encoder.Token(_emitter.EmitMetadataHandleForTypeSystemEntity(entity));
             // Would like to do this but mangled names are very long and go over the 16 MB string limit quickly.
             // encoder.LoadString(_emitter.GetUserStringHandle(mangledName));
+            EncodeMangledName(encoder, mangledName);
             encoder.LoadConstantI4(blob.Data.Length);
         }
 
@@ -95,6 +110,7 @@ namespace ILCompiler
                 methods.Token(_emitter.EmitMetadataHandleForTypeSystemEntity(m.Key));
                 // Would like to do this but mangled names are very long and go over the 16 MB string limit quickly.
                 // methods.LoadString(_emitter.GetUserStringHandle(m.Value.MangledName));
+                EncodeMangledName(methods, m.Value.MangledName);
                 methods.LoadConstantI4(m.Value.Size);
                 methods.LoadConstantI4(m.Value.GcInfoSize);
                 methods.LoadConstantI4(_methodEhInfo.GetValueOrDefault(m.Key));
@@ -113,6 +129,10 @@ namespace ILCompiler
 
             using (var fs = File.OpenWrite(_fileName))
                 _emitter.SerializeToStream(fs);
+            using (var mangledNameWriter = new StreamWriter(_mangledNameFileName)) {
+                foreach (var (name, index) in _mangledNames)
+                    mangledNameWriter.WriteLine($"{index} {name}");
+            }
         }
     }
 }

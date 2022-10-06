@@ -294,9 +294,9 @@ namespace System.Reflection
 
         [DoesNotReturn]
         [MethodImpl(MethodImplOptions.NoInlining)]
-        internal static void HeapSizeLimitExceeded(HeapIndex heap)
+        internal static void HeapSizeLimitExceeded(HeapIndex heap, int size)
         {
-            throw new ImageFormatLimitationException(SR.Format(SR.HeapSizeLimitExceeded, heap));
+            throw new ImageFormatLimitationException(SR.Format(SR.HeapSizeLimitExceeded, heap, size));
         }
 
         [DoesNotReturn]
