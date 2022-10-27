@@ -45,6 +45,7 @@ namespace ILCompiler
             asmName.Version = new Version(VersionMajor, VersionMinor);
             _emitter = new TypeSystemMetadataEmitter(asmName, context);
             _emitter.AllowUseOfAddGlobalMethod();
+            _emitter.AllowUseOfAddStringAsRvaField();
         }
 
         internal override void Begin()
