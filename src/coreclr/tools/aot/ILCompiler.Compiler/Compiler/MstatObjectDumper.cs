@@ -20,7 +20,7 @@ namespace ILCompiler
     public class MstatObjectDumper : ObjectDumper
     {
         private const int VersionMajor = 1;
-        private const int VersionMinor = 2;
+        private const int VersionMinor = 3;
 
         private readonly string _fileName;
         private readonly string _mangledNameFileName;

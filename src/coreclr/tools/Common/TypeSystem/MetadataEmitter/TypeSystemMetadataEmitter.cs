@@ -26,7 +26,7 @@ namespace Internal.TypeSystem
         private Dictionary<FieldDesc, EntityHandle> _fieldRefs = new Dictionary<FieldDesc, EntityHandle>();
         private Blob _mvidFixup;
         private BlobHandle _noArgsVoidReturnStaticMethodSigHandle;
-        private BlobHandle _byteArrayFieldSigHandle;
+        // private BlobHandle _byteArrayFieldSigHandle;
         private BlobBuilder _rvaFieldData;
         private Dictionary<string, FieldDefinitionHandle> _rvaFieldHandles;
         protected TypeSystemContext _typeSystemContext;
@@ -79,15 +79,15 @@ namespace Internal.TypeSystem
 
         public void AllowUseOfAddStringAsRvaField()
         {
-            BlobBuilder byteArrayFieldSig = new BlobBuilder();
-            BlobEncoder signatureEncoder = new BlobEncoder(byteArrayFieldSig);
+            // BlobBuilder byteArrayFieldSig = new BlobBuilder();
+            // BlobEncoder signatureEncoder = new BlobEncoder(byteArrayFieldSig);
 
-            signatureEncoder.FieldSignature()
-                .Array(out SignatureTypeEncoder elementType, out ArrayShapeEncoder arrayShape);
-            elementType.Byte();
-            arrayShape.Shape(1, ImmutableArray<int>.Empty, ImmutableArray<int>.Empty);
+            // signatureEncoder.FieldSignature()
+            //     .Array(out SignatureTypeEncoder elementType, out ArrayShapeEncoder arrayShape);
+            // elementType.Byte();
+            // arrayShape.Shape(1, ImmutableArray<int>.Empty, ImmutableArray<int>.Empty);
 
-            _byteArrayFieldSigHandle = _metadataBuilder.GetOrAddBlob(byteArrayFieldSig);
+            // _byteArrayFieldSigHandle = _metadataBuilder.GetOrAddBlob(byteArrayFieldSig);
 
             _rvaFieldData = new BlobBuilder();
             _rvaFieldHandles = new Dictionary<string, FieldDefinitionHandle>();
@@ -107,7 +107,21 @@ namespace Internal.TypeSystem
         {
             if (!_rvaFieldHandles.TryGetValue(name, out var handle))
             {
+                // Construct field signature
+                BlobBuilder byteArrayFieldSig = new BlobBuilder();
+                BlobEncoder signatureEncoder = new BlobEncoder(byteArrayFieldSig);
+                signatureEncoder.FieldSignature()
+                    .Array(out SignatureTypeEncoder elementType, out ArrayShapeEncoder arrayShape);
+                elementType.Byte();
+                var utf8 = System.Text.Encoding.UTF8.GetBytes(name);
+                var length = utf8.Length;
+
+                arrayShape.Shape(1, ImmutableArray.Create(length), ImmutableArray<int>.Empty);
+                var byteArrayFieldSigHandle = _metadataBuilder.GetOrAddBlob(byteArrayFieldSig);
+                Console.WriteLine(name);
                 var offset = _rvaFieldData.Count;
+                Console.WriteLine("\tlength: " + length);
+                Console.WriteLine("\toffset: " + offset);
                 _rvaFieldData.WriteUTF8(name);
                 handle = _metadataBuilder.AddFieldDefinition(
                     FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.HasFieldRVA
@@ -115,7 +129,7 @@ namespace Internal.TypeSystem
                     // This allows all Rva fields to have the same name.
                     | FieldAttributes.PrivateScope,
                     _metadataBuilder.GetOrAddString("StringAsRvaField"),
-                     _byteArrayFieldSigHandle);
+                     byteArrayFieldSigHandle);
                 _metadataBuilder.AddFieldRelativeVirtualAddress(handle, offset);
             }
             return handle;
