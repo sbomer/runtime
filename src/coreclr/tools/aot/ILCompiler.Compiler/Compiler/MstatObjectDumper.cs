@@ -92,6 +92,7 @@ namespace ILCompiler
             }
             encoder.LoadConstantI4(index);
         }
+
         private void SerializeSimpleEntry(InstructionEncoder encoder, TypeSystemEntity entity, string mangledName, ObjectData blob)
         {
             encoder.OpCode(ILOpCode.Ldtoken);
