@@ -33,7 +33,7 @@ namespace System.Reflection.Metadata.Ecma335
         }
 
         // #US heap
-        private const int UserStringHeapSizeLimit = 0x10000000;
+        private const int UserStringHeapSizeLimit = 0x01000000;
         private readonly Dictionary<string, UserStringHandle> _userStrings = new Dictionary<string, UserStringHandle>(256);
         private readonly HeapBlobBuilder _userStringBuilder = new HeapBlobBuilder(4 * 1024);
         private readonly int _userStringHeapStartOffset;
@@ -83,7 +83,7 @@ namespace System.Reflection.Metadata.Ecma335
             // -1 for the 0 we always write at the beginning of the heap:
             if (userStringHeapStartOffset >= UserStringHeapSizeLimit - 1)
             {
-                Throw.HeapSizeLimitExceeded(HeapIndex.UserString, UserStringHeapSizeLimit);
+                Throw.HeapSizeLimitExceeded(HeapIndex.UserString);
             }
 
             if (userStringHeapStartOffset < 0)
@@ -507,7 +507,7 @@ namespace System.Reflection.Metadata.Ecma335
             // as the index is within the limits (see https://github.com/dotnet/roslyn/issues/9852)
             if (offset >= UserStringHeapSizeLimit)
             {
-                Throw.HeapSizeLimitExceeded(HeapIndex.UserString, UserStringHeapSizeLimit);
+                Throw.HeapSizeLimitExceeded(HeapIndex.UserString);
             }
 
             return UserStringHandle.FromOffset(offset);

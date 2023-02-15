@@ -113,10 +113,6 @@ namespace ILCompiler
             {
                 methods.OpCode(ILOpCode.Ldtoken);
                 methods.Token(_emitter.EmitMetadataHandleForTypeSystemEntity(m.Key));
-                // Would like to do this but mangled names are very lonhg and go over the 16 MB string limit quickly.
-                // methods.LoadString(_emitter.GetUserStringHandle(m.Value.MangledName));
-
-                // EncodeMangledName(methods, m.Value.MangledName);
 
                 var fieldRvaDefHandle = _emitter.AddStringAsRvaField(m.Value.MangledName);
                 methods.OpCode(ILOpCode.Ldsfld);

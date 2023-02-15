@@ -1183,7 +1183,7 @@ namespace ILCompiler.DependencyAnalysis
             graph.AddRoot(EagerCctorTable, "EagerCctorTable is always generated");
             graph.AddRoot(TypeManagerIndirection, "TypeManagerIndirection is always generated");
             graph.AddRoot(DispatchMapTable, "DispatchMapTable is always generated");
-            graph.AddRoot(FrozenSegmentRegion, "FrozenSegmentRegion is always generated"); //
+            graph.AddRoot(FrozenSegmentRegion, "FrozenSegmentRegion is always generated");
             graph.AddRoot(InterfaceDispatchCellSection, "Interface dispatch cell section is always generated");
             graph.AddRoot(ModuleInitializerList, "Module initializer list is always generated");
 

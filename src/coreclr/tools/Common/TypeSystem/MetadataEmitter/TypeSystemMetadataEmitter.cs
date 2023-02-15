@@ -26,7 +26,6 @@ namespace Internal.TypeSystem
         private Dictionary<FieldDesc, EntityHandle> _fieldRefs = new Dictionary<FieldDesc, EntityHandle>();
         private Blob _mvidFixup;
         private BlobHandle _noArgsVoidReturnStaticMethodSigHandle;
-        // private BlobHandle _byteArrayFieldSigHandle;
         private BlobBuilder _rvaFieldData;
         private Dictionary<string, FieldDefinitionHandle> _rvaFieldHandles;
         protected TypeSystemContext _typeSystemContext;
@@ -79,16 +78,6 @@ namespace Internal.TypeSystem
 
         public void AllowUseOfAddStringAsRvaField()
         {
-            // BlobBuilder byteArrayFieldSig = new BlobBuilder();
-            // BlobEncoder signatureEncoder = new BlobEncoder(byteArrayFieldSig);
-
-            // signatureEncoder.FieldSignature()
-            //     .Array(out SignatureTypeEncoder elementType, out ArrayShapeEncoder arrayShape);
-            // elementType.Byte();
-            // arrayShape.Shape(1, ImmutableArray<int>.Empty, ImmutableArray<int>.Empty);
-
-            // _byteArrayFieldSigHandle = _metadataBuilder.GetOrAddBlob(byteArrayFieldSig);
-
             _rvaFieldData = new BlobBuilder();
             _rvaFieldHandles = new Dictionary<string, FieldDefinitionHandle>();
         }

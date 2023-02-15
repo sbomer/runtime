@@ -36,7 +36,6 @@ namespace ILCompiler
             {
                 Console.WriteLine("Waiting for debugger to attach. Press ENTER to continue");
                 Console.ReadLine();
-                Console.WriteLine("Continuing");
             }
         }
 

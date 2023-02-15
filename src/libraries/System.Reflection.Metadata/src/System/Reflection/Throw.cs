@@ -252,9 +252,9 @@ namespace System.Reflection
         }
 
         [DoesNotReturn]
-        internal static void HeapSizeLimitExceeded(HeapIndex heap, int size)
+        internal static void HeapSizeLimitExceeded(HeapIndex heap)
         {
-            throw new ImageFormatLimitationException(SR.Format(SR.HeapSizeLimitExceeded, heap, size));
+            throw new ImageFormatLimitationException(SR.Format(SR.HeapSizeLimitExceeded, heap));
         }
 
         [DoesNotReturn]

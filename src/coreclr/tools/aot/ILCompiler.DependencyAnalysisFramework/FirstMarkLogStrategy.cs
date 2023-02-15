@@ -51,7 +51,6 @@ namespace ILCompiler.DependencyAnalysisFramework
                 _reasonStringOnlyNodes ??= new HashSet<string>();
 
                 _reasonStringOnlyNodes.Add(reason);
-                Console.WriteLine("reason string: " + reason);
             }
 
             node.SetMark(new MarkData(reason, reasonNode, reasonNode2));
@@ -109,7 +108,7 @@ namespace ILCompiler.DependencyAnalysisFramework
                     else
                     {
                         Debug.Assert(markData.Reason != null);
-                        logEdgeVisitor.VisitEdge(markData.Reason, node); //
+                        logEdgeVisitor.VisitEdge(markData.Reason, node);
                     }
                 }
             }

@@ -158,12 +158,12 @@ namespace ILCompiler.DependencyAnalysisFramework
             {
                 logNodeVisitor.VisitNode(node);
             }
-            _marker.VisitLogNodes(MarkedNodesEnumerable(), logNodeVisitor); //
+            _marker.VisitLogNodes(MarkedNodesEnumerable(), logNodeVisitor);
         }
 
         public sealed override void VisitLogEdges(IDependencyAnalyzerLogEdgeVisitor<DependencyContextType> logEdgeVisitor)
         {
-            _marker.VisitLogEdges(MarkedNodesEnumerable(), logEdgeVisitor); //
+            _marker.VisitLogEdges(MarkedNodesEnumerable(), logEdgeVisitor);
         }
 
 

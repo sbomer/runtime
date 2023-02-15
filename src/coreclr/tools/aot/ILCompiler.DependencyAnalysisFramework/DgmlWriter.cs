@@ -35,7 +35,7 @@ namespace ILCompiler.DependencyAnalysisFramework
         {
             _xmlWrite.WriteStartElement("Nodes");
             {
-                nodeWriter(); //
+                nodeWriter();
             }
             _xmlWrite.WriteEndElement();
 
@@ -58,7 +58,7 @@ namespace ILCompiler.DependencyAnalysisFramework
                 {
                     dgmlWriter.WriteNodesAndEdges(() =>
                     {
-                        analysis.VisitLogNodes(dgmlWriter); //
+                        analysis.VisitLogNodes(dgmlWriter);
                     },
                     () =>
                     {
@@ -124,7 +124,7 @@ namespace ILCompiler.DependencyAnalysisFramework
         private void AddReason(object nodeA, object nodeB, string reason)
         {
             _xmlWrite.WriteStartElement("Link");
-            _xmlWrite.WriteAttributeString("Source", _nodeMappings[nodeA].ToString()); //
+            _xmlWrite.WriteAttributeString("Source", _nodeMappings[nodeA].ToString());
             _xmlWrite.WriteAttributeString("Target", _nodeMappings[nodeB].ToString());
             _xmlWrite.WriteAttributeString("Reason", reason);
             _xmlWrite.WriteEndElement();
@@ -142,7 +142,7 @@ namespace ILCompiler.DependencyAnalysisFramework
 
         void IDependencyAnalyzerLogEdgeVisitor<DependencyContextType>.VisitEdge(string root, DependencyNodeCore<DependencyContextType> dependedOn)
         {
-            // AddReason(root, dependedOn, null); //
+            AddReason(root, dependedOn, null);
         }
 
         void IDependencyAnalyzerLogNodeVisitor<DependencyContextType>.VisitCombinedNode(Tuple<DependencyNodeCore<DependencyContextType>, DependencyNodeCore<DependencyContextType>> node)

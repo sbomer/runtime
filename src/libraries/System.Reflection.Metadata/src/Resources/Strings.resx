@@ -304,7 +304,7 @@
     <value>The Debug directory was not of type {0}.</value>
   </data>
   <data name="HeapSizeLimitExceeded" xml:space="preserve">
-    <value>The limit on the size {1} of {0} heap has been exceeded.</value>
+    <value>The limit on the size of {0} heap has been exceeded.</value>
   </data>
   <data name="BuilderMustAligned" xml:space="preserve">
     <value>Builder must be aligned to 4 byte boundary.</value>
