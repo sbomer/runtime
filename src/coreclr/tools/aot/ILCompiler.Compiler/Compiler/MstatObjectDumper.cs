@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
@@ -20,7 +20,7 @@ namespace ILCompiler
     public class MstatObjectDumper : ObjectDumper
     {
         private const int VersionMajor = 1;
-        private const int VersionMinor = 4;
+        private const int VersionMinor = 2;
 
         private readonly string _fileName;
         private readonly TypeSystemMetadataEmitter _emitter;
