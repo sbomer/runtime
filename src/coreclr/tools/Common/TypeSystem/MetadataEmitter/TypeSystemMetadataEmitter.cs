@@ -26,8 +26,7 @@ namespace Internal.TypeSystem
         private Dictionary<FieldDesc, EntityHandle> _fieldRefs = new Dictionary<FieldDesc, EntityHandle>();
         private Blob _mvidFixup;
         private BlobHandle _noArgsVoidReturnStaticMethodSigHandle;
-        private BlobBuilder _rvaFieldData;
-        private Dictionary<string, FieldDefinitionHandle> _rvaFieldHandles;
+        private BlobHandle _stringStaticFieldSigHandle;
         protected TypeSystemContext _typeSystemContext;
 
         public TypeSystemMetadataEmitter(AssemblyName assemblyName, TypeSystemContext context, AssemblyFlags flags = default(AssemblyFlags), byte[] publicKeyArray = null)
@@ -76,10 +75,13 @@ namespace Internal.TypeSystem
             _noArgsVoidReturnStaticMethodSigHandle = _metadataBuilder.GetOrAddBlob(noArgsNoReturnStaticMethodSig);
         }
 
-        public void AllowUseOfAddStringAsRvaField()
+        public void AllowUseOfAddGlobalConstantField()
         {
-            _rvaFieldData = new BlobBuilder();
-            _rvaFieldHandles = new Dictionary<string, FieldDefinitionHandle>();
+            BlobBuilder stringStaticFieldSig = new BlobBuilder();
+            BlobEncoder signatureEncoder = new BlobEncoder(stringStaticFieldSig);
+
+            signatureEncoder.FieldSignature().String();
+            _stringStaticFieldSigHandle = _metadataBuilder.GetOrAddBlob(stringStaticFieldSig);
         }
 
         public MethodDefinitionHandle AddGlobalMethod(string name, InstructionEncoder il, int maxStack)
@@ -92,36 +94,15 @@ namespace Internal.TypeSystem
                 default(ParameterHandle));
         }
 
-        public FieldDefinitionHandle AddStringAsRvaField(string name)
+        public FieldDefinitionHandle AddGlobalConstantField(string value)
         {
-            if (!_rvaFieldHandles.TryGetValue(name, out var handle))
-            {
-                // Construct field signature
-                BlobBuilder byteArrayFieldSig = new BlobBuilder();
-                BlobEncoder signatureEncoder = new BlobEncoder(byteArrayFieldSig);
-                signatureEncoder.FieldSignature()
-                    .Array(out SignatureTypeEncoder elementType, out ArrayShapeEncoder arrayShape);
-                elementType.Byte();
-                var utf8 = System.Text.Encoding.UTF8.GetBytes(name);
-                var length = utf8.Length;
-
-                arrayShape.Shape(1, ImmutableArray.Create(length), ImmutableArray<int>.Empty);
-                var byteArrayFieldSigHandle = _metadataBuilder.GetOrAddBlob(byteArrayFieldSig);
-                Console.WriteLine(name);
-                var offset = _rvaFieldData.Count;
-                Console.WriteLine("\tlength: " + length);
-                Console.WriteLine("\toffset: " + offset);
-                _rvaFieldData.WriteUTF8(name);
-                handle = _metadataBuilder.AddFieldDefinition(
-                    FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.HasFieldRVA
-                    // PrivateScope is equivalent to IsCompilerControlled, which prevents duplicate field checking.
-                    // This allows all Rva fields to have the same name.
-                    | FieldAttributes.PrivateScope,
-                    _metadataBuilder.GetOrAddString("StringAsRvaField"),
-                     byteArrayFieldSigHandle);
-                _metadataBuilder.AddFieldRelativeVirtualAddress(handle, offset);
-            }
-            return handle;
+            var fieldHandle = _metadataBuilder.AddFieldDefinition(
+                FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal | FieldAttributes.HasDefault,
+                _metadataBuilder.GetOrAddString(""),
+                _stringStaticFieldSigHandle);
+            // This places the value into the blob heap as UTF-16. Gets around the user string heap size limit.
+            _metadataBuilder.AddConstant(fieldHandle, value);
+            return fieldHandle;
         }
 
         private static readonly Guid s_guid = new Guid("97F4DBD4-F6D1-4FAD-91B3-1001F92068E5");
@@ -133,8 +114,7 @@ namespace Internal.TypeSystem
         {
             var peHeaderBuilder = new PEHeaderBuilder();
             var peBuilder = new ManagedPEBuilder(peHeaderBuilder, new MetadataRootBuilder(_metadataBuilder), _ilBuilder,
-                deterministicIdProvider: content => s_contentId,
-                mappedFieldData: _rvaFieldData);
+                deterministicIdProvider: content => s_contentId);
 
             var peBlob = new BlobBuilder();
             var contentId = peBuilder.Serialize(peBlob);
@@ -145,9 +125,6 @@ namespace Internal.TypeSystem
         // Generate only the metadata blob as a byte[]
         public byte[] EmitToMetadataBlob()
         {
-            if (_rvaFieldData != null)
-                throw new InvalidOperationException("Cannot emit metadata blob when RVA field data is present");
-
             MetadataRootBuilder metadataRootBuilder = new MetadataRootBuilder(_metadataBuilder);
             BlobBuilder metadataBlobBuilder = new BlobBuilder();
             metadataRootBuilder.Serialize(metadataBlobBuilder, methodBodyStreamRva: 0, mappedFieldDataStreamRva: 0);
