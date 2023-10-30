@@ -162,6 +162,12 @@ namespace ILLink.RoslynAnalyzer.Tests
 		}
 
 		[Fact]
+		public Task GenericParameterWarningLocation ()
+		{
+			return RunTest ();
+		}
+
+		[Fact]
 		public Task InlineArrayDataflow ()
 		{
 			return RunTest ();
