@@ -13,6 +13,7 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 	{
 		readonly Dictionary<(IOperation, bool), TrimAnalysisAssignmentPattern> AssignmentPatterns;
 		readonly Dictionary<IOperation, TrimAnalysisFieldAccessPattern> FieldAccessPatterns;
+		readonly Dictionary<IOperation, TrimAnalysisGenericInstantiationPattern> GenericInstatiationPatterns;
 		readonly Dictionary<IOperation, TrimAnalysisMethodCallPattern> MethodCallPatterns;
 		readonly Dictionary<IOperation, TrimAnalysisReflectionAccessPattern> ReflectionAccessPatterns;
 		readonly ValueSetLattice<SingleValue> Lattice;
@@ -21,6 +22,7 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 		{
 			AssignmentPatterns = new Dictionary<(IOperation, bool), TrimAnalysisAssignmentPattern> ();
 			FieldAccessPatterns = new Dictionary<IOperation, TrimAnalysisFieldAccessPattern> ();
+			GenericInstatiationPatterns = new Dictionary<IOperation, TrimAnalysisGenericInstantiationPattern> ();
 			MethodCallPatterns = new Dictionary<IOperation, TrimAnalysisMethodCallPattern> ();
 			ReflectionAccessPatterns = new Dictionary<IOperation, TrimAnalysisReflectionAccessPattern> ();
 			Lattice = lattice;
@@ -54,6 +56,18 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 			// No Merge - there's nothing to merge since this pattern is uniquely identified by both the origin and the entity
 			// and there's only one way to "access" a field.
 			Debug.Assert (existingPattern == pattern, "Field access patterns should be identical");
+		}
+
+		public void Add (TrimAnalysisGenericInstantiationPattern pattern)
+		{
+			if (!GenericInstatiationPatterns.TryGetValue (pattern.Operation, out var existingPattern)) {
+				GenericInstatiationPatterns.Add (pattern.Operation, pattern);
+				return;
+			}
+
+			// No Merge - there's nothing to merge since this pattern is uniquely identified by both the origin and the entity
+			// and there's only one way to access the referenced method.
+			Debug.Assert (existingPattern == pattern, "Generic instantiation patterns should be identical");
 		}
 
 		public void Add (TrimAnalysisMethodCallPattern pattern)

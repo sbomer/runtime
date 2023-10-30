@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using ILLink.RoslynAnalyzer.DataFlow;
+using ILLink.RoslynAnalyzer.TrimAnalysis;
 using ILLink.Shared.DataFlow;
 using ILLink.Shared.TrimAnalysis;
 using ILLink.Shared.TypeSystemProxy;
@@ -289,6 +290,13 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 				arguments,
 				operation,
 				OwningSymbol));
+
+			if (GenericArgumentDataFlow.RequiresGenericArgumentDataFlow (method.Method)) {
+				TrimAnalysisPatterns.Add (new TrimAnalysisGenericInstantiationPattern (
+					method.Method,
+					operation,
+					OwningSymbol));
+			}
 
 			foreach (var argument in arguments) {
 				foreach (var argumentValue in argument) {

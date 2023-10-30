@@ -121,22 +121,6 @@ namespace ILLink.RoslynAnalyzer
 							context.ReportDiagnostic (diagnostic);
 					}
 				}, SymbolKind.NamedType);
-				// Examine generic instantiations in method return type and parameters.
-				// This includes property getters and setters.
-				context.RegisterSymbolAction (context => {
-					var method = (IMethodSymbol) context.Symbol;
-					if (method.IsInRequiresUnreferencedCodeAttributeScope (out _))
-						return;
-
-					var returnType = method.ReturnType;
-					foreach (var diagnostic in ProcessGenericParameters (returnType, GetPrimaryLocation (method.Locations)))
-						context.ReportDiagnostic (diagnostic);
-
-					foreach (var parameter in method.Parameters) {
-						foreach (var diagnostic in ProcessGenericParameters (parameter.Type, GetPrimaryLocation (parameter.Locations)))
-							context.ReportDiagnostic (diagnostic);
-					}
-				}, SymbolKind.Method);
 				// Examine generic instantiations in field type.
 				context.RegisterSymbolAction (context => {
 					var field = (IFieldSymbol) context.Symbol;
@@ -246,7 +230,7 @@ namespace ILLink.RoslynAnalyzer
 			}
 		}
 
-		static List<Diagnostic> GetDynamicallyAccessedMembersDiagnostics (SingleValue sourceValue, SingleValue targetValue, Location location)
+		public static List<Diagnostic> GetDynamicallyAccessedMembersDiagnostics (SingleValue sourceValue, SingleValue targetValue, Location location)
 		{
 			// The target should always be an annotated value, but the visitor design currently prevents
 			// declaring this in the type system.
