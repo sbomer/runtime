@@ -72,7 +72,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			class DerivedWithNoAnnotations<TUnknown>
 				: BaseWithPublicMethods<TUnknown>
 			{
-				[ExpectedWarning ("IL2091")]  // Compiler generates an implicit call to BaseWithPublicMethods<TUnknown>..ctor
+				// Compiler generates an implicit call to BaseWithPublicMethods<TUnknown>..ctor
+				// Analyzer doesn't see this implicit call.
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.NativeAot)]
 				public DerivedWithNoAnnotations () { }
 			}
 
@@ -442,7 +444,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			class MultipleReferencesToTheSameType<[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods, TUnknown>
 			{
 				// The warning is generated on the backing field
-				[ExpectedWarning ("IL2091", CompilerGeneratedCode = true, ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", CompilerGeneratedCode = true, ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static TypeWithPublicMethods<TUnknown> Property1 {
 					[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
 					get;
@@ -457,7 +459,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				}
 
 				// The warning is generated on the backing field
-				[ExpectedWarning ("IL2091", CompilerGeneratedCode = true, ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", CompilerGeneratedCode = true, ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static TypeWithPublicMethods<TUnknown> Property3 {
 					[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
 					get;
@@ -684,8 +686,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					IWithTwo<TPublicFields, TPublicMethods>.Method ();
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // local variable // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // local variable // NativeAOT_StorageSpaceType
 				static void InstanceMethodMismatch<TUnknown> ()
 				{
 					TypeWithPublicMethods<TUnknown> instance = GetInstanceForTypeWithPublicMethods<TUnknown> ();
@@ -737,8 +739,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				}
 
 				// The local variable
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // access to the field // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // access to the field // NativeAOT_StorageSpaceType
 				static void InstanceFieldMismatch<TUnknown> ()
 				{
 					TypeWithPublicMethods<TUnknown> instance = GetInstanceForTypeWithPublicMethods<TUnknown> ();
@@ -770,8 +772,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					TypeWithPublicMethods<TPublicMethods> t = null;
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void MultipleReferencesToTheSameType<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
 					TUnknown> ()
@@ -781,8 +783,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					TypeWithPublicMethods<TUnknown> t3 = null; // Warn
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods>
@@ -1146,8 +1148,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					bool a = _value is TypeWithPublicMethods<TPublicMethods>;
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void MultipleReferencesToTheSameMethod<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
 					TUnknown> ()
@@ -1157,8 +1159,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					bool a3 = _value is TypeWithPublicMethods<TUnknown>; // Warn
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods>
@@ -1191,8 +1193,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					object a = _value as TypeWithPublicMethods<TPublicMethods>;
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void MultipleReferencesToTheSameMethod<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
 					TUnknown> ()
@@ -1202,8 +1204,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					object a3 = _value as TypeWithPublicMethods<TUnknown>; // Warn
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods>
@@ -1242,8 +1244,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					}
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void MultipleReferencesToTheSameType<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
 					TUnknown> ()
@@ -1264,8 +1266,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					}
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods>
@@ -1305,8 +1307,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					}
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void MultipleReferencesToTheSameType<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
 					TUnknown> ()
@@ -1327,8 +1329,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					}
 				}
 
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
-				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.Analyzer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer)] // NativeAOT_StorageSpaceType
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods>
