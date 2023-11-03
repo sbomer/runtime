@@ -571,8 +571,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					Type t = typeof (TypeWithPublicMethods<TPublicMethods>);
 				}
 
-				[ExpectedWarning ("IL2091")]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void MultipleReferencesToTheSameType<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
 					TUnknown> ()
@@ -582,8 +582,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					t = typeof (TypeWithPublicMethods<TUnknown>); // Warn
 				}
 
-				[ExpectedWarning ("IL2091")]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods>
@@ -717,8 +717,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					_ = TypeWithPublicMethods<TPublicMethods>.Field;
 				}
 
-				[ExpectedWarning ("IL2091")]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void MultipleReferencesToTheSameField<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
 					TUnknown> ()
@@ -728,8 +728,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					TypeWithPublicMethods<TUnknown>.Field = ""; // Warn
 				}
 
-				[ExpectedWarning ("IL2091")]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods>
@@ -998,9 +998,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				//    ldtoken field
 				//    ldtoken owningtype
 				// In order to call the right Expression APIs.
-				[ExpectedWarning ("IL2091")]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void MultipleReferencesToTheSameField<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
@@ -1015,9 +1015,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				//    ldtoken field
 				//    ldtoken owningtype
 				// In order to call the right Expression APIs.
-				[ExpectedWarning ("IL2091")]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
@@ -1052,9 +1052,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				//    ldtoken method (getter)
 				//    ldtoken owningtype
 				// In order to call the right Expression APIs.
-				[ExpectedWarning ("IL2091")]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void MultipleReferencesToTheSameProperty<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)] TPublicMethods,
@@ -1069,9 +1069,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				//    ldtoken method (getter)
 				//    ldtoken owningtype
 				// In order to call the right Expression APIs.
-				[ExpectedWarning ("IL2091")]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
-				[ExpectedWarning ("IL2091")]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				[ExpectedWarning ("IL2091", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				static void TwoMismatchesInOneStatement<
 					[DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicFields)] TPublicFields,
@@ -1434,8 +1434,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				public static void RUCMethod () { }
 			}
 
-			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields))]
-			[ExpectedWarning ("IL2026", "--RUCMethod--")]
+			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 			static void GenericMethodNesting<TUnknown> ()
 			{
 				GenericMethodNoRequirements<RequiresMethods<RequiresNothing<TUnknown>>> (); // No warning
@@ -1443,8 +1443,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				GenericMethodNoRequirements<RequiresMethods<RequiresNothing<RequiresMethods<TypeWithRUCMethod>>>> (); // IL2026
 			}
 
-			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields))]
-			[ExpectedWarning ("IL2026", "--RUCMethod--")]
+			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 			static void GenericMethodNestingAccessToT<TUnknown> ()
 			{
 				GenericMethodNoRequirementsAccessToT<RequiresMethods<RequiresNothing<TUnknown>>> (); // No warning
@@ -1452,8 +1452,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				GenericMethodNoRequirementsAccessToT<RequiresMethods<RequiresNothing<RequiresMethods<TypeWithRUCMethod>>>> (); // IL2026
 			}
 
-			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields))]
-			[ExpectedWarning ("IL2026", "--RUCMethod--")]
+			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 			static void GenericInstanceMethodNesting<TUnknown> ()
 			{
 				GenericTypeWithMethodAndField<TestType> instance = new ();
@@ -1462,10 +1462,10 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				instance.GenericInstanceMethod<RequiresMethods<RequiresNothing<RequiresMethods<TypeWithRUCMethod>>>> (); // IL2026
 			}
 
-			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields")]
-			[ExpectedWarning ("IL2091", "TUnknown", "RequiresMethods")]
-			[ExpectedWarning ("IL2026", "--RUCMethod--")]
-			[ExpectedWarning ("IL2026", "--RUCMethod--")]
+			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2091", "TUnknown", "RequiresMethods", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 			static void MethodOnGenericTypeNesting<TUnknown> ()
 			{
 				GenericTypeWithMethodAndField<RequiresMethods<RequiresNothing<TUnknown>>>.GenericMethod<string> (); // No warning
@@ -1475,8 +1475,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					.GenericMethod<RequiresNothing<RequiresFields<RequiresMethods<TypeWithRUCMethod>>>> (); // IL2026
 			}
 
-			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields))]
-			[ExpectedWarning ("IL2026", "--RUCMethod--")]
+			[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 			static void FieldOnGenericTypeNesting<TUnknown> ()
 			{
 				GenericTypeWithMethodAndField<RequiresMethods<RequiresNothing<TUnknown>>>.Field = 0; // No warning
@@ -1495,7 +1495,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					: Base<RequiresMethods<RequiresNothing<TUnknown>>>
 				{ }
 
-				[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields))]
+				[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				class DerivedWithFields<TUnknown>
 					: Base<RequiresMethods<RequiresNothing<RequiresFields<TUnknown>>>>
 				{
@@ -1504,7 +1504,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					}
 				}
 
-				[ExpectedWarning ("IL2026", "--RUCMethod--")]
+				[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				class DerivedWithRUC
 					: Base<RequiresMethods<RequiresNothing<RequiresMethods<TypeWithRUCMethod>>>>
 				{ }
@@ -1528,7 +1528,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					: IBase<RequiresMethods<RequiresNothing<TUnknown>>>
 				{ }
 
-				[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields))]
+				[ExpectedWarning ("IL2091", "TUnknown", "RequiresFields", nameof (DynamicallyAccessedMemberTypes.PublicFields), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				class DerivedWithFields<TUnknown>
 					: IBase<RequiresMethods<RequiresNothing<RequiresFields<TUnknown>>>>
 				{
@@ -1537,7 +1537,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 					}
 				}
 
-				[ExpectedWarning ("IL2026", "--RUCMethod--")]
+				[ExpectedWarning ("IL2026", "--RUCMethod--", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 				class DerivedWithRUC
 					: IBase<RequiresMethods<RequiresNothing<RequiresMethods<TypeWithRUCMethod>>>>
 				{ }
