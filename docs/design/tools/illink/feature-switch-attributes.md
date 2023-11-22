@@ -462,7 +462,7 @@ This is fundamentally the same idea outlined in https://github.com/dotnet/design
 
 ## Comparison with platform compatibility analyzer
 
-The platform compatibility analyzer is semantically very similar to the behavior described here, except that it doesn't come with ILLink/ILCompiler support for removing removing branches that are unreachable when publishing for a given platform.
+The platform compatibility analyzer is semantically very similar to the behavior described here, except that it doesn't come with ILLink/ILCompiler support for removing removing branches that are unreachable when publishing for a given platform. When we ship separate binaries for different platforms, we instead hard-code the OS platform checks to return false for non-matching platforms, and let ILLink/ILCompiler constant propagation remove unreachable branches.
 
 "Platforms" (instead of "features") are represented as strings, with optional versions.
 
