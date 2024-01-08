@@ -14,6 +14,8 @@ namespace Mono.Linker.Tests.TestCasesRunner
 		public TrimmingArgumentBuilder (TestCaseMetadataProvider metadataProvider)
 		{
 			_metadataProvider = metadataProvider;
+
+			AddFeature ("System.Resources.ResourceManager.AllowCustomResourceTypes", false);
 		}
 
 		public virtual void AddSearchDirectory (NPath directory)
@@ -91,6 +93,13 @@ namespace Mono.Linker.Tests.TestCasesRunner
 		public virtual void IgnoreLinkAttributes (bool value)
 		{
 			Append ("--ignore-link-attributes");
+			Append (value ? "true" : "false");
+		}
+
+		void AddFeature (string featureName, bool value)
+		{
+			Append ("--feature");
+			Append (featureName);
 			Append (value ? "true" : "false");
 		}
 
