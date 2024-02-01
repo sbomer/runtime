@@ -130,16 +130,30 @@ namespace ILLink.RoslynAnalyzer
 			});
 		}
 
+		private protected virtual bool IsInRequiresScope (ISymbol symbol, INamedTypeSymbol featureType)
+		{
+			Debug.Assert (IsRecognizedFeatureType (featureType));
+			Debug.Assert (featureType.Name == RequiresAttributeName); // TODO
+
+			return symbol.IsInRequiresScope (RequiresAttributeName, out _);
+		}
+
 		public bool CheckAndCreateRequiresDiagnostic (
 			IOperation operation,
 			ISymbol member,
 			ISymbol containingSymbol,
 			ImmutableArray<ISymbol> incompatibleMembers,
+			Compilation compilation,
 			[NotNullWhen (true)] out Diagnostic? diagnostic)
 		{
 			diagnostic = null;
+
+			var featureType = compilation.GetTypeByMetadataName (RequiresAttributeFullyQualifiedName);
+			if (featureType == null)
+				return false;
+
 			// Do not emit any diagnostic if caller is annotated with the attribute too.
-			if (containingSymbol.IsInRequiresScope (RequiresAttributeName, out _))
+			if (IsInRequiresScope (containingSymbol, featureType))
 				return false;
 
 			if (CreateSpecialIncompatibleMembersDiagnostic (operation, incompatibleMembers, member, out diagnostic))
@@ -349,6 +363,7 @@ namespace ILLink.RoslynAnalyzer
 				member,
 				containingSymbol,
 				incompatibleMembers,
+				context.Compilation,
 				out diagnostic);
 		}
 	}
