@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ILLink.Shared;
+using ILLink.Shared.DataFlow;
 using ILLink.Shared.TrimAnalysis;
 using ILLink.Shared.TypeSystemProxy;
 using Microsoft.CodeAnalysis;
@@ -62,8 +64,9 @@ namespace ILLink.RoslynAnalyzer
 		internal override bool IsAnalyzerEnabled (AnalyzerOptions options) =>
 			options.IsMSBuildPropertyValueTrue (MSBuildPropertyOptionNames.EnableTrimAnalyzer);
 
-		private protected override bool IsRequiresCheck (IPropertySymbol propertySymbol, Compilation compilation)
+		private protected override bool IsRequiresCheck (IPropertySymbol propertySymbol, Compilation compilation, [NotNullWhen(true)] out ValueSet<INamedTypeSymbol>? featureTypes)
 		{
+			featureTypes = null;
 			// "IsUnreferencedCodeSupported" is treated as a requires check for testing purposes only, and
 			// is not officially-supported product behavior.
 			var runtimeFeaturesType = compilation.GetTypeByMetadataName ("ILLink.RoslynAnalyzer.TestFeatures");
@@ -74,7 +77,15 @@ namespace ILLink.RoslynAnalyzer
 			if (isDynamicCodeSupportedProperty == null)
 				return false;
 
-			return SymbolEqualityComparer.Default.Equals (propertySymbol, isDynamicCodeSupportedProperty);
+			if (!SymbolEqualityComparer.Default.Equals (propertySymbol, isDynamicCodeSupportedProperty))
+				return false;
+
+			var type = compilation.GetTypeByMetadataName (RequiresAttributeFullyQualifiedName);
+			if (type == null)
+				return false;
+
+			featureTypes = new ValueSet<INamedTypeSymbol> (type);
+			return true;
 		}
 
 		protected override bool CreateSpecialIncompatibleMembersDiagnostic (

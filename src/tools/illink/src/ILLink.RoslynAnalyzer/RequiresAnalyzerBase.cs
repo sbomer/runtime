@@ -262,6 +262,9 @@ namespace ILLink.RoslynAnalyzer
 		/// <returns>True if the validation was successfull; otherwise, returns false.</returns>
 		protected abstract bool VerifyAttributeArguments (AttributeData attribute);
 
+		protected virtual bool IsFeatureAttribute (AttributeData attribute) =>
+			attribute.AttributeClass?.Name == RequiresAttributeName;
+
 		/// <summary>
 		/// Compares the member against a list of incompatible members, if the member exist in the list then it generates a custom diagnostic declared inside the function.
 		/// </summary>
@@ -300,22 +303,28 @@ namespace ILLink.RoslynAnalyzer
 		// - false return value indicating that a feature is supported
 		// - feature settings supplied by the project
 		// - custom feature checks defined in library code
-		private protected virtual bool IsRequiresCheck (IPropertySymbol propertySymbol, Compilation compilation) => false;
+		private protected abstract bool IsRequiresCheck (IPropertySymbol propertySymbol, Compilation compilation, [NotNullWhen (true)] out ValueSet<INamedTypeSymbol>? featureTypes);
 
-		internal static bool IsAnnotatedFeatureGuard (IPropertySymbol propertySymbol, DataFlowAnalyzerContext dataFlowAnalyzerContext, string featureName)
+		public virtual bool IsRecognizedFeatureType(INamedTypeSymbol type) {
+			return type.Name == RequiresAttributeName; // TODO
+		}
+
+		private bool IsAnnotatedFeatureGuard (IPropertySymbol propertySymbol, out ValueSet<INamedTypeSymbol>? featureTypes)
 		{
+			featureTypes = null;
 			// Only respect FeatureGuardAttribute on static boolean properties.
 			if (!propertySymbol.IsStatic || propertySymbol.Type.SpecialType != SpecialType.System_Boolean)
 				return false;
 
-			ValueSet<string> featureGuards = propertySymbol.GetFeatureGuardAnnotations (dataFlowAnalyzerContext.EnabledRequiresAnalyzers);
-			return featureGuards.Contains (featureName);
+
+			featureTypes = propertySymbol.GetFeatureGuardAnnotations (this);
+			return true;
 		}
 
-		internal bool IsFeatureGuard (IPropertySymbol propertySymbol, DataFlowAnalyzerContext dataFlowAnalyzerContext)
+		internal bool IsFeatureGuard (IPropertySymbol propertySymbol, Compilation compilation, [NotNullWhen (true)] out ValueSet<INamedTypeSymbol>? featureTypes)
 		{
-			return IsAnnotatedFeatureGuard (propertySymbol, dataFlowAnalyzerContext, RequiresAttributeFullyQualifiedName)
-				|| IsRequiresCheck (propertySymbol, dataFlowAnalyzerContext.Compilation);
+			return IsAnnotatedFeatureGuard (propertySymbol, out featureTypes)
+				|| IsRequiresCheck (propertySymbol, compilation, out featureTypes);
 		}
 
 		internal bool CheckAndCreateRequiresDiagnostic (

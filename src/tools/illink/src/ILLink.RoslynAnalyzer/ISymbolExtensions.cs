@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -22,6 +23,19 @@ namespace ILLink.RoslynAnalyzer
 			foreach (var attr in symbol.GetAttributes ())
 				if (attr.AttributeClass?.Name == attributeName)
 					return true;
+
+			return false;
+		}
+
+		internal static bool TryGetAttribute (this ISymbol member, Func<AttributeData, bool> isFeatureAttribute, [NotNullWhen (returnValue: true)] out AttributeData? attribute)
+		{
+			attribute = null;
+			foreach (var attr in member.GetAttributes ()) {
+				if (isFeatureAttribute (attr)) {
+					attribute = attr;
+					return true;
+				}
+			}
 
 			return false;
 		}
@@ -71,32 +85,40 @@ namespace ILLink.RoslynAnalyzer
 			return (DynamicallyAccessedMemberTypes) dynamicallyAccessedMembers.ConstructorArguments[0].Value!;
 		}
 
-		internal static ValueSet<string> GetFeatureGuardAnnotations (
+		internal static ValueSet<INamedTypeSymbol> GetFeatureGuardAnnotations (
 			this IPropertySymbol propertySymbol,
-			IEnumerable<RequiresAnalyzerBase> enabledRequiresAnalyzers)
+			IEnumerable<RequiresAnalyzerBase> analyzers)
 		{
-			ImmutableArray<string>.Builder featureSet = ImmutableArray.CreateBuilder<string> ();
-			foreach (var attributeData in propertySymbol.GetAttributes ()) {
-				if (IsFeatureGuardAttribute (attributeData, out string? featureName))
-					featureSet.Add (featureName);
+			ValueSet<INamedTypeSymbol> featureTypes = ValueSet<INamedTypeSymbol>.Empty;
+			foreach (var analyzer in analyzers) {
+				featureTypes = ValueSet<INamedTypeSymbol>.Union (
+					propertySymbol.GetFeatureGuardAnnotations (analyzer),
+					featureTypes);
 			}
-			return featureSet.Count == 0 ? ValueSet<string>.Empty : new ValueSet<string> (featureSet);
+			return featureTypes;
+		}
 
-			bool IsFeatureGuardAttribute (AttributeData attributeData, [NotNullWhen (true)] out string? featureName) {
-				featureName = null;
+		internal static ValueSet<INamedTypeSymbol> GetFeatureGuardAnnotations (
+			this IPropertySymbol propertySymbol,
+			RequiresAnalyzerBase analyzer)
+		{
+			ImmutableArray<INamedTypeSymbol>.Builder featureSet = ImmutableArray.CreateBuilder<INamedTypeSymbol> ();
+			foreach (var attributeData in propertySymbol.GetAttributes ()) {
+				if (IsFeatureGuardAttribute (attributeData, out INamedTypeSymbol? featureType))
+					featureSet.Add (featureType);
+			}
+			return featureSet.Count == 0 ? ValueSet<INamedTypeSymbol>.Empty : new (featureSet);
+
+			bool IsFeatureGuardAttribute (AttributeData attributeData, [NotNullWhen (true)] out INamedTypeSymbol? featureType) {
+				featureType = null;
 				if (attributeData.AttributeClass is not { } attrClass || !attrClass.HasName (DynamicallyAccessedMembersAnalyzer.FullyQualifiedFeatureGuardAttribute))
 					return false;
 
-				if (attributeData.ConstructorArguments is not [TypedConstant { Value: INamedTypeSymbol featureType }])
+				if (attributeData.ConstructorArguments is not [TypedConstant { Value: INamedTypeSymbol typeArgument }])
 					return false;
 
-				foreach (var analyzer in enabledRequiresAnalyzers) {
-					if (featureType.HasName (analyzer.RequiresAttributeFullyQualifiedName)) {
-						featureName = analyzer.RequiresAttributeFullyQualifiedName;
-						return true;
-					}
-				}
-				return false;
+				featureType = typeArgument;
+				return analyzer.IsRecognizedFeatureType(featureType);
 			}
 		}
 

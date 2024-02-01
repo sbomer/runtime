@@ -26,7 +26,7 @@ namespace ILLink.RoslynAnalyzer.DataFlow
 			DisabledFeatures = ValueSet<string>.Empty;
 		}
 
-		private FeatureChecksValue (ValueSet<string> enabled, ValueSet<string> disabled)
+		public FeatureChecksValue (ValueSet<string> enabled, ValueSet<string> disabled)
 		{
 			EnabledFeatures = enabled;
 			DisabledFeatures = disabled;

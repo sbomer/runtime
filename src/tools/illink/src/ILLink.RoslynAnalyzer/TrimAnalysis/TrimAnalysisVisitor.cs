@@ -447,8 +447,11 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 			if (featureGuards.IsEmpty())
 				return;
 
+			// Convert ValueSet<INamedTypeSymbol> to ValueSet<string>
+			var featureNameGuards = new ValueSet<string> (featureGuards.GetKnownValues().Select (f => f.ToDisplayString ())); // TODO
+
 			TrimAnalysisPatterns.Add (
-				new TrimAnalysisReturnValuePattern (returnConditionValue, featureGuards, operation, propertySymbol));
+				new TrimAnalysisReturnValuePattern (returnConditionValue, featureNameGuards, operation, propertySymbol));
 		}
 
 		public override MultiValue HandleDelegateCreation (IMethodSymbol method, IOperation operation, in FeatureContext featureContext)

@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ILLink.Shared;
+using ILLink.Shared.DataFlow;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -38,7 +40,8 @@ namespace ILLink.RoslynAnalyzer
 		internal override bool IsAnalyzerEnabled (AnalyzerOptions options) =>
 			options.IsMSBuildPropertyValueTrue (MSBuildPropertyOptionNames.EnableAotAnalyzer);
 
-		private protected override bool IsRequiresCheck (IPropertySymbol propertySymbol, Compilation compilation) {
+		private protected override bool IsRequiresCheck (IPropertySymbol propertySymbol, Compilation compilation, [NotNullWhen(true)] out ValueSet<INamedTypeSymbol>? featureTypes) {
+			featureTypes = null;
 			var runtimeFeaturesType = compilation.GetTypeByMetadataName ("System.Runtime.CompilerServices.RuntimeFeature");
 			if (runtimeFeaturesType == null)
 				return false;
@@ -47,7 +50,15 @@ namespace ILLink.RoslynAnalyzer
 			if (isDynamicCodeSupportedProperty == null)
 				return false;
 
-			return SymbolEqualityComparer.Default.Equals (propertySymbol, isDynamicCodeSupportedProperty);
+			if (!SymbolEqualityComparer.Default.Equals (propertySymbol, isDynamicCodeSupportedProperty))
+				return false;
+
+			var type = compilation.GetTypeByMetadataName (RequiresAttributeFullyQualifiedName);
+			if (type == null)
+				return false;
+
+			featureTypes = new ValueSet<INamedTypeSymbol> (type);
+			return true;
 		}
 
 		protected override bool VerifyAttributeArguments (AttributeData attribute) =>

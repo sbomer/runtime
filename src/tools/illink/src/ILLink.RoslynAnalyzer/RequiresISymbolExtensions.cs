@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
@@ -24,6 +25,22 @@ namespace ILLink.RoslynAnalyzer
 			// Also check the containing type
 			if (member.IsStatic || member.IsConstructor ())
 				return member.ContainingType.TryGetAttribute (requiresAttribute, out requiresAttributeData);
+
+			return false;
+		}
+
+		public static bool DoesMemberRequire (this ISymbol member, Func<AttributeData, bool> isFeatureAttribute, [NotNullWhen (returnValue: true)] out AttributeData? requiresAttributeData)
+		{
+			requiresAttributeData = null;
+			if (!member.IsStaticConstructor () && member.TryGetAttribute (isFeatureAttribute, out requiresAttributeData))
+				return true;
+
+			if (member is IMethodSymbol { AssociatedSymbol: { } associated } && associated.TryGetAttribute (isFeatureAttribute, out requiresAttributeData))
+				return true;
+
+			// Also check the containing type
+			if (member.IsStatic || member.IsConstructor ())
+				return member.ContainingType.TryGetAttribute (isFeatureAttribute, out requiresAttributeData);
 
 			return false;
 		}
