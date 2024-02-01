@@ -318,7 +318,7 @@ namespace ILLink.RoslynAnalyzer
 
 
 			featureTypes = propertySymbol.GetFeatureGuardAnnotations (this);
-			return true;
+			return !featureTypes.Value.IsEmpty ();
 		}
 
 		internal bool IsFeatureGuard (IPropertySymbol propertySymbol, Compilation compilation, [NotNullWhen (true)] out ValueSet<INamedTypeSymbol>? featureTypes)
