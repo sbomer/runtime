@@ -53,6 +53,22 @@ namespace ILLink.RoslynAnalyzer
 			return false;
 		}
 
+		internal static bool TryGetFeatureAttribute (this ISymbol member, string attributeName, INamedTypeSymbol featureType, [NotNullWhen (returnValue: true)] out AttributeData? attribute)
+		{
+			attribute = null;
+			foreach (var attr in member.GetAttributes ()) {
+				if (attr.AttributeClass is { } attrClass && attrClass.HasName (attributeName) && 
+					attr.ConstructorArguments.Length == 1 &&
+					attr.ConstructorArguments[0].Value is INamedTypeSymbol typeArgument &&
+					SymbolEqualityComparer.Default.Equals (typeArgument, featureType)) {
+					attribute = attr;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		internal static IEnumerable<AttributeData> GetAttributes (this ISymbol member, string attributeName)
 		{
 			foreach (var attr in member.GetAttributes ()) {

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ILLink.RoslynAnalyzer.DataFlow;
@@ -130,12 +131,23 @@ namespace ILLink.RoslynAnalyzer
 			});
 		}
 
-		private protected virtual bool IsInRequiresScope (ISymbol symbol, INamedTypeSymbol featureType)
+		private protected virtual ValueSet<INamedTypeSymbol> GetFeaturesInScope (ISymbol symbol, INamedTypeSymbol requiresAttributeType)
 		{
-			Debug.Assert (IsRecognizedFeatureType (featureType));
-			Debug.Assert (featureType.Name == RequiresAttributeName); // TODO
+			if (symbol.IsInRequiresScope (RequiresAttributeName, out _))
+				return new ValueSet<INamedTypeSymbol> (requiresAttributeType);
 
-			return symbol.IsInRequiresScope (RequiresAttributeName, out _);
+			return ValueSet<INamedTypeSymbol>.Empty;
+		}
+
+		private protected virtual bool GetRequiredFeatures (ISymbol member, INamedTypeSymbol requiresAttributeType, [NotNullWhen (true)] out ValueSet<INamedTypeSymbol>? requiredFeatures, [NotNullWhen (true)] out AttributeData? attribute)
+		{
+			requiredFeatures = null;
+			attribute = null;
+			if (!member.DoesMemberRequire (RequiresAttributeName, out attribute))
+				return false;
+
+			requiredFeatures = new ValueSet<INamedTypeSymbol> (requiresAttributeType);
+			return true;
 		}
 
 		public bool CheckAndCreateRequiresDiagnostic (
@@ -148,13 +160,12 @@ namespace ILLink.RoslynAnalyzer
 		{
 			diagnostic = null;
 
-			var featureType = compilation.GetTypeByMetadataName (RequiresAttributeFullyQualifiedName);
-			if (featureType == null)
+			var requiresAttributeType = compilation.GetTypeByMetadataName (RequiresAttributeFullyQualifiedName);
+			if (requiresAttributeType == null)
 				return false;
 
 			// Do not emit any diagnostic if caller is annotated with the attribute too.
-			if (IsInRequiresScope (containingSymbol, featureType))
-				return false;
+			var availableFeatures = GetFeaturesInScope (containingSymbol, requiresAttributeType);
 
 			if (CreateSpecialIncompatibleMembersDiagnostic (operation, incompatibleMembers, member, out diagnostic))
 				return diagnostic != null;
@@ -163,14 +174,22 @@ namespace ILLink.RoslynAnalyzer
 			while (member is IMethodSymbol method && method.OverriddenMethod != null && SymbolEqualityComparer.Default.Equals (method.ReturnType, method.OverriddenMethod.ReturnType))
 				member = method.OverriddenMethod;
 
-			if (!member.DoesMemberRequire (RequiresAttributeName, out var requiresAttribute))
+			// TODO: multiple requires attributes?
+			if (!GetRequiredFeatures (member, requiresAttributeType, out var requiredFeatures, out var requiresAttribute))
 				return false;
 
 			if (!VerifyAttributeArguments (requiresAttribute))
 				return false;
 
-			diagnostic = CreateRequiresDiagnostic (operation, member, requiresAttribute);
-			return true;
+			foreach (var requiredFeature in requiredFeatures.Value.GetKnownValues ()) {
+				if (availableFeatures.Contains (requiredFeature))
+					continue;
+
+				diagnostic = CreateRequiresDiagnostic (operation, member, requiresAttribute);
+				return true; // TODO: multiple!
+			}
+
+			return false;
 		}
 
 		[Flags]
@@ -276,9 +295,6 @@ namespace ILLink.RoslynAnalyzer
 		/// <returns>True if the validation was successfull; otherwise, returns false.</returns>
 		protected abstract bool VerifyAttributeArguments (AttributeData attribute);
 
-		protected virtual bool IsFeatureAttribute (AttributeData attribute) =>
-			attribute.AttributeClass?.Name == RequiresAttributeName;
-
 		/// <summary>
 		/// Compares the member against a list of incompatible members, if the member exist in the list then it generates a custom diagnostic declared inside the function.
 		/// </summary>
@@ -350,7 +366,7 @@ namespace ILLink.RoslynAnalyzer
 			[NotNullWhen (true)] out Diagnostic? diagnostic)
 		{
 			// Warnings are not emitted if the featureContext says the feature is available.
-			if (featureContext.IsEnabled (RequiresAttributeFullyQualifiedName)) {
+			if (featureContext.IsEnabled (RequiresAttributeFullyQualifiedName)) { // TODO: extensibility here?
 				diagnostic = null;
 				return false;
 			}
