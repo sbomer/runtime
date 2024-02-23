@@ -8417,11 +8417,17 @@ namespace System.Diagnostics.CodeAnalysis
         public ExperimentalAttribute(string diagnosticId) { }
         public string DiagnosticId { get { throw null; } }
         public string? UrlFormat { get; set; }
-    }    
+    }
     [AttributeUsage(AttributeTargets.Property, Inherited=false, AllowMultiple=true)]
     public sealed class FeatureCheckAttribute : Attribute
     {
         public FeatureCheckAttribute(Type featureType) { }
+        public Type FeatureType { get { throw null; } }
+    }
+    [AttributeUsage(AttributeTargets.Class, Inherited=false, AllowMultiple=true)]
+    public sealed class FeatureDependsOnAttribute : Attribute
+    {
+        public FeatureDependsOnAttribute(Type featureType) { }
         public Type FeatureType { get { throw null; } }
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, Inherited=false)]
