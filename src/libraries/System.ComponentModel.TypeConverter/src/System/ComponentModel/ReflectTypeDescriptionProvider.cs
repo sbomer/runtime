@@ -130,7 +130,7 @@ namespace System.ComponentModel
                 _cacheConverterInstance = cacheConverterInstance;
             }
 
-            public TypeConverter GetOrCreateConverterInstance(Type innerType)
+            public TypeConverter GetOrCreateConverterInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type innerType)
             {
                 if (!_cacheConverterInstance)
                 {
@@ -154,7 +154,8 @@ namespace System.ComponentModel
         /// </remarks>
         private static Dictionary<object, IntrinsicTypeConverterData> IntrinsicTypeConverters
         {
-            [RequiresUnreferencedCode("NullableConverter's UnderlyingType cannot be statically discovered.")]
+            [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067:UnrecognizedReflectionPattern",
+                Justification = "CreateNullableConverter argument requires DynamicallyAccessedMemberTypes.All. The only callsite that invokes the lambda cached for s_intrinsicNullableKey satisfies this requirement.")]
             get
             {
                 return LazyInitializer.EnsureInitialized(ref s_intrinsicTypeConverters, () => new Dictionary<object, IntrinsicTypeConverterData>(32)
@@ -200,9 +201,7 @@ namespace System.ComponentModel
             }
         }
 
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
-            Justification = "IntrinsicTypeConverters is marked with RequiresUnreferencedCode. It is the only place that should call this.")]
-        private static NullableConverter CreateNullableConverter(Type type) => new NullableConverter(type);
+        private static NullableConverter CreateNullableConverter([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type) => new NullableConverter(type);
 
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067:UnrecognizedReflectionPattern",
             Justification = "Trimmer does not trim enums")]
@@ -367,7 +366,7 @@ namespace System.ComponentModel
         /// it will be used to retrieve attributes. Otherwise, _type
         /// will be used.
         /// </summary>
-        [RequiresUnreferencedCode("NullableConverter's UnderlyingType cannot be statically discovered. The Type of instance cannot be statically discovered.")]
+        [RequiresUnreferencedCode("The Type of instance cannot be statically discovered.")]
         internal TypeConverter GetConverter([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type, object? instance)
         {
             ReflectedTypeData td = GetTypeData(type, true)!;
@@ -492,7 +491,7 @@ namespace System.ComponentModel
         /// it will be used to retrieve attributes. Otherwise, _type
         /// will be used.
         /// </summary>
-        [RequiresUnreferencedCode("The Type of instance cannot be statically discovered. NullableConverter's UnderlyingType cannot be statically discovered.")]
+        [RequiresUnreferencedCode("The Type of instance cannot be statically discovered.")]
         internal TypeConverter GetExtendedConverter(object instance)
         {
             return GetConverter(instance.GetType(), instance);
@@ -1449,8 +1448,7 @@ namespace System.ComponentModel
         /// The strongly-typed dictionary maps object types to converter data objects which lazily
         /// creates (and caches for re-use, where applicable) converter instances.
         /// </summary>
-        [RequiresUnreferencedCode("NullableConverter's UnderlyingType cannot be statically discovered.")]
-        private static TypeConverter GetIntrinsicTypeConverter(Type callingType)
+        private static TypeConverter GetIntrinsicTypeConverter([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type callingType)
         {
             TypeConverter converter;
 
