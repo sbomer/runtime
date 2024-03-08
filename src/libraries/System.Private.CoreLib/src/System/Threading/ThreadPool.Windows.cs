@@ -10,6 +10,7 @@ namespace System.Threading
 {
     public static partial class ThreadPool
     {
+        [FeatureSwitchDefinition("System.Threading.ThreadPool.UseWindowsThreadPool")]
         internal static bool UseWindowsThreadPool { get; } =
             AppContextConfigHelper.GetBooleanConfig("System.Threading.ThreadPool.UseWindowsThreadPool", "DOTNET_ThreadPool_UseWindowsThreadPool");
 

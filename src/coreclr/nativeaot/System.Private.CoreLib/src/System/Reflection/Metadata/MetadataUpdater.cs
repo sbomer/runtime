@@ -10,6 +10,7 @@ namespace System.Reflection.Metadata
             throw new PlatformNotSupportedException();
         }
 
+        [FeatureSwitchDefinition("System.Reflection.Metadata.MetadataUpdater.IsSupported")]
         public static bool IsSupported => false;
     }
 }

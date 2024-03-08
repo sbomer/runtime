@@ -59,6 +59,7 @@ namespace System.Reflection.Metadata
         /// <summary>
         /// Returns true if the apply assembly update is enabled and available.
         /// </summary>
+        [FeatureSwitchDefinition("System.Reflection.Metadata.MetadataUpdater.IsSupported")]
         public static bool IsSupported { get; } = IsApplyUpdateSupported();
     }
 }

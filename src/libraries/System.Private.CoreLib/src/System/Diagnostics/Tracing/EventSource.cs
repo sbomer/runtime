@@ -225,6 +225,7 @@ namespace System.Diagnostics.Tracing
     public partial class EventSource : IDisposable
     {
 
+        [FeatureSwitchDefinition("System.Diagnostics.Tracing.EventSource.IsSupported")]
         internal static bool IsSupported { get; } = InitializeIsSupported();
 
         private static bool InitializeIsSupported() =>

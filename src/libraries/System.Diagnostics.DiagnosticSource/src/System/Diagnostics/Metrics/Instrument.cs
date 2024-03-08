@@ -118,6 +118,7 @@ namespace System.Diagnostics.Metrics
         /// <summary>
         /// Checks if there is any listeners for this instrument.
         /// </summary>
+        [FeatureSwitchDefinition("System.Diagnostics.Metrics.Meter.IsSupported")]
         public bool Enabled => _subscriptions.First is not null;
 
         /// <summary>

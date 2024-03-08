@@ -18,6 +18,7 @@ namespace System.Diagnostics.Metrics
         private Dictionary<string, List<Instrument>> _nonObservableInstrumentsCache = new();
         internal bool Disposed { get; private set; }
 
+        [FeatureSwitchDefinition("System.Diagnostics.Metrics.Meter.IsSupported")]
         internal static bool IsSupported { get; } = InitializeIsSupported();
 
         private static bool InitializeIsSupported() =>

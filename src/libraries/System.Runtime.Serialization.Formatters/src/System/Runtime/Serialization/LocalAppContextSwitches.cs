@@ -8,6 +8,8 @@ namespace System
     internal static partial class LocalAppContextSwitches
     {
         private static int s_binaryFormatterEnabled;
+
+        [FeatureSwitchDefinition("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization")]
         public static bool BinaryFormatterEnabled
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

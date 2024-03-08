@@ -29,6 +29,7 @@ namespace Internal.Runtime.InteropServices
         // To indicate the specific error when IsSupported is false
         private const int HostFeatureDisabled = unchecked((int)0x800080a7);
 
+        [FeatureSwitchDefinition("System.Runtime.InteropServices.EnableConsumingManagedCodeFromNativeHosting")]
         [FeatureGuard(typeof(RequiresUnreferencedCodeAttribute))]
         private static bool IsSupported { get; } = InitializeIsSupported();
 

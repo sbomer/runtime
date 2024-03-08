@@ -59,8 +59,8 @@ namespace System.ComponentModel
                     _value = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
                 }
 
-                // Looking for ad hoc created TypeDescriptor.ConvertFromInvariantString(Type, string)
                 [RequiresUnreferencedCode("Generic TypeConverters may require the generic types to be annotated. For example, NullableConverter requires the underlying type to be DynamicallyAccessedMembers All.")]
+                // Looking for ad hoc created TypeDescriptor.ConvertFromInvariantString(Type, string)
                 static bool TryConvertFromInvariantString(
                     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type typeToConvert,
                     string? stringValue,

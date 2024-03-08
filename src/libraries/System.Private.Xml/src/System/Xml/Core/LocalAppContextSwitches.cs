@@ -59,6 +59,7 @@ namespace System.Xml
         }
 
         private static int s_isNetworkingEnabledByDefault;
+        [FeatureSwitchDefinition("System.Xml.XmlResolver.IsNetworkingEnabledByDefault")]
         public static bool IsNetworkingEnabledByDefault
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -26,6 +26,7 @@ namespace System.Threading
 #endif
         }
 
+        [FeatureSwitchDefinition("System.Threading.Thread.EnableAutoreleasePool")]
         public static bool EnableAutoreleasePool { get; } = CheckEnableAutoreleasePool();
 
         [ThreadStatic]

@@ -89,7 +89,7 @@ namespace Internal.StackTraceMetadata
             return null;
         }
 
-        // Can be rewritten to false through a feature switch.
+        [FeatureSwitchDefinition("System.Reflection.IsReflectionExecutionAvailable")]
         private static bool IsReflectionExecutionAvailable() => true;
 
         /// <summary>

@@ -8,6 +8,8 @@ namespace System
     internal static partial class LocalAppContextSwitches
     {
         private static int s_enableUnsafeUTF7Encoding;
+
+        [FeatureSwitchDefinition("System.Text.Encoding.EnableUnsafeUTF7Encoding")]
         public static bool EnableUnsafeUTF7Encoding
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

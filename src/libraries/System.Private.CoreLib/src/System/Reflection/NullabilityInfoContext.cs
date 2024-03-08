@@ -17,6 +17,7 @@ namespace System.Reflection
         private readonly Dictionary<Module, NotAnnotatedStatus> _publicOnlyModules = new();
         private readonly Dictionary<MemberInfo, NullabilityState> _context = new();
 
+        [FeatureSwitchDefinition("System.Reflection.NullabilityInfoContext.IsSupported")]
         internal static bool IsSupported { get; } =
             AppContext.TryGetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", out bool isSupported) ? isSupported : true;
 
