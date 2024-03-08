@@ -38,7 +38,7 @@ namespace System.Net.Http
                 }
 
                 HttpMessageHandler handler = _underlyingHandler;
-                if (DiagnosticsHandler.IsGloballyEnabled())
+                if (DiagnosticsHandler.IsGloballyEnabled)
                 {
                     handler = new DiagnosticsHandler(handler, DistributedContextPropagator.Current);
                 }

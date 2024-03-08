@@ -43,7 +43,7 @@ namespace System.Net.Http
                         // We only setup these handlers for the native handler. SocketsHttpHandler already does this internally.
                         HttpMessageHandler handler = _nativeHandler!;
 
-                        if (DiagnosticsHandler.IsGloballyEnabled())
+                        if (DiagnosticsHandler.IsGloballyEnabled)
                         {
                             handler = new DiagnosticsHandler(handler, DistributedContextPropagator.Current);
                         }

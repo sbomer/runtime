@@ -14,10 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ILLinkSubstitutionsXmls Condition="'$(TargetPlatformIdentifier)' == ''" Include="$(ILLinkDirectory)ILLink.Substitutions.NonMobile.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="System.Runtime.Serialization.Formatters.TypeForwards.cs" />
     <Compile Include="System\Runtime\Serialization\DeserializationEventHandler.cs" />
     <Compile Include="System\Runtime\Serialization\Formatter.cs" />

@@ -4,17 +4,8 @@
     <TargetFramework>$(NetCoreAppCurrent)</TargetFramework>
     <DefineConstants> $(DefineConstants);FEATURE_FAST_CREATE</DefineConstants>
     <NoWarn>$(NoWarn);CA1859</NoWarn>
-    <!--
-      Disable constant propagation so that methods referenced from ILLink.Substitutions.xml don't get inlined
-      with a wrong value at library build time and the substitution can still be selected at publish time.
-    -->
-    <ILLinkDisableIPConstProp>true</ILLinkDisableIPConstProp>
     <UseCompilerGeneratedDocXmlFile>false</UseCompilerGeneratedDocXmlFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ILLinkSubstitutionsXmls Include="$(ILLinkDirectory)ILLink.Substitutions.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="$(CommonPath)System\Obsoletions.cs"

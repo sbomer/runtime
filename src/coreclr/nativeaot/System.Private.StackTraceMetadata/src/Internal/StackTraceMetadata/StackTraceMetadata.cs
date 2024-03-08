@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Runtime.General;
 
 using Internal.Metadata.NativeFormat;
@@ -60,7 +61,7 @@ namespace Internal.StackTraceMetadata
             isStackTraceHidden = false;
 
             // We haven't found information in the stack trace metadata tables, but maybe reflection will have this
-            if (IsReflectionExecutionAvailable() && ReflectionExecution.TryGetMethodMetadataFromStartAddress(methodStartAddress,
+            if (IsReflectionExecutionAvailable && ReflectionExecution.TryGetMethodMetadataFromStartAddress(methodStartAddress,
                 out MetadataReader reader,
                 out TypeDefinitionHandle typeHandle,
                 out MethodHandle methodHandle))
@@ -90,7 +91,7 @@ namespace Internal.StackTraceMetadata
         }
 
         [FeatureSwitchDefinition("System.Reflection.IsReflectionExecutionAvailable")]
-        private static bool IsReflectionExecutionAvailable() => true;
+        private static bool IsReflectionExecutionAvailable => true;
 
         /// <summary>
         /// This hashtable supports mapping from module start addresses to per-module method name resolvers.
