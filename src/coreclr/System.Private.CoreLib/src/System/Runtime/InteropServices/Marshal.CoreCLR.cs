@@ -334,6 +334,7 @@ namespace System.Runtime.InteropServices
             => (obj == null) || !RuntimeHelpers.GetMethodTable(obj)->ContainsGCPointers;
 
 #if TARGET_WINDOWS
+        [FeatureSwitchDefinition("System.Runtime.InteropServices.BuiltInComInterop.IsSupported")]
         [FeatureGuard(typeof(RequiresUnreferencedCodeAttribute))]
         internal static bool IsBuiltInComSupported { get; } = IsBuiltInComSupportedInternal();
 

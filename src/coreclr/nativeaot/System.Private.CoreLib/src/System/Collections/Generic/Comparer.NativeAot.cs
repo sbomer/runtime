@@ -12,7 +12,7 @@ namespace System.Collections.Generic
 {
     public abstract partial class Comparer<T> : IComparer, IComparer<T>
     {
-        // The AOT compiler can flip this to false under certain circumstances.
+        [FeatureSwitchDefinition("System.Collections.Generic.DefaultComparers")]
         private static bool SupportsGenericIComparableInterfaces => true;
 
         [Intrinsic]

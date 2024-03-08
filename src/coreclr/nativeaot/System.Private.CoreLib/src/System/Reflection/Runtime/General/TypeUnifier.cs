@@ -36,7 +36,7 @@ namespace System.Reflection.Runtime.General
 {
     internal static partial class TypeUnifier
     {
-        // This can be replaced at native compile time using a feature switch.
+        [FeatureSwitchDefinition("System.Reflection.IsTypeConstructionEagerlyValidated")]
         internal static bool IsTypeConstructionEagerlyValidated => true;
 
         public static RuntimeTypeInfo GetArrayType(this RuntimeTypeInfo elementType)
