@@ -51,8 +51,6 @@ namespace System.Linq.Expressions.Interpreter
             if (!CanCreateArbitraryDelegates)
                 return new MethodInfoCallInstruction(info, argumentCount);
 
-            // This code should be unreachable in AOT. The analyzer currently doesn't understand feature switches
-#pragma warning disable IL3050
             if (!info.IsStatic && info.DeclaringType!.IsValueType)
             {
                 return new MethodInfoCallInstruction(info, argumentCount);
@@ -116,7 +114,6 @@ namespace System.Linq.Expressions.Interpreter
             s_cache[info] = res;
 
             return res;
-#pragma warning restore IL3050
         }
 
         private static CallInstruction GetArrayAccessor(MethodInfo info, int argumentCount)

@@ -8,7 +8,6 @@ namespace System.Runtime.CompilerServices
     public static partial class RuntimeFeature
     {
         [FeatureSwitchDefinition("System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported")]
-        [FeatureGuard(typeof(RequiresDynamicCodeAttribute))]
         public static bool IsDynamicCodeSupported
         {
 #if MONO
