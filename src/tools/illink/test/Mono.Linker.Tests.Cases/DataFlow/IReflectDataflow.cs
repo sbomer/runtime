@@ -166,6 +166,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			[Kept]
 			public static void Test ()
 			{
+				// Not unknown... value with static type.
 				new MyReflectOverType (typeof (TestType)).GetFields (BindingFlags.Instance | BindingFlags.Public);
 			}
 		}

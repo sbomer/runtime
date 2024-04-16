@@ -20,7 +20,7 @@
     <ContractProject>$(MSBuildThisFileDirectory)ref\Mono.Linker.csproj</ContractProject>
     <RollForward>Major</RollForward>
     <UseAppHost>false</UseAppHost>
-    <NoWarn>$(NoWarn);NU5131</NoWarn>
+    <NoWarn>$(NoWarn);NU5131;SA1027</NoWarn>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddReferenceAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
     <DefineConstants>$(DefineConstants);ILLINK</DefineConstants>
   </PropertyGroup>

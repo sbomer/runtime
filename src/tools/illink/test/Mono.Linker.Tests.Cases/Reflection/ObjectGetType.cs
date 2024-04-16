@@ -682,8 +682,7 @@ namespace Mono.Linker.Tests.Cases.Reflection
 			}
 
 			[Kept]
-			// https://github.com/dotnet/linker/issues/2755
-			[ExpectedWarning ("IL2075", "GetMethod", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2075", "GetMethod")]
 			public static void Test ()
 			{
 				new Derived ().GetType ().GetMethod ("Method");

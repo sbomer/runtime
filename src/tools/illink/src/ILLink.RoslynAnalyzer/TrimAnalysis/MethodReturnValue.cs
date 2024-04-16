@@ -20,7 +20,7 @@ namespace ILLink.Shared.TrimAnalysis
 		{
 			MethodSymbol = methodSymbol;
 			DynamicallyAccessedMemberTypes = dynamicallyAccessedMemberTypes;
-			StaticType = new (methodSymbol.ReturnType);
+			StaticType = new (methodSymbol.ReturnType); // TODO
 		}
 
 		public readonly IMethodSymbol MethodSymbol;

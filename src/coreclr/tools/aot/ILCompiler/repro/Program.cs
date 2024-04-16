@@ -5,8 +5,7 @@ using System;
 
 class Program
 {
-    static void Main()
-    {
-        Console.WriteLine("Hello world");
-    }
+    static void Main() => Console.WriteLine(new Action(Test<string>).Method);
+
+    static void Test<T>() { }
 }

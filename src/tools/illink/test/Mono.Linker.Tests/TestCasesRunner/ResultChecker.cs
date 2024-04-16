@@ -799,6 +799,10 @@ namespace Mono.Linker.Tests.TestCasesRunner
 							if (!expectedWarningCode.StartsWith ("IL")) {
 								Assert.Fail ($"The warning code specified in {nameof (ExpectedWarningAttribute)} must start with the 'IL' prefix. Specified value: '{expectedWarningCode}'.");
 							}
+							if (expectedWarningCode.Contains("2098")) {
+								Console.WriteLine("Expected IL2098...");
+								Debug.WriteLine("Here");
+							}
 							var expectedMessageContains = ((CustomAttributeArgument[]) attr.GetConstructorArgumentValue (1)).Select (a => (string) a.Value).ToArray ();
 							string fileName = (string) attr.GetPropertyValue ("FileName");
 							int? sourceLine = (int?) attr.GetPropertyValue ("SourceLine");
@@ -810,6 +814,7 @@ namespace Mono.Linker.Tests.TestCasesRunner
 							bool expectedWarningFound = false;
 
 							foreach (var loggedMessage in loggedMessages) {
+								Console.WriteLine("Examining logged message " + loggedMessage);
 
 								if (loggedMessage.Category != MessageCategory.Warning || loggedMessage.Code != expectedWarningCodeNumber)
 									continue;
@@ -821,24 +826,34 @@ namespace Mono.Linker.Tests.TestCasesRunner
 										break;
 									}
 								}
-								if (messageNotFound)
+								if (messageNotFound) {
+									Console.WriteLine("Not found 1");
 									continue;
+								}
 
 								if (fileName != null) {
-									if (loggedMessage.Origin == null)
+									if (loggedMessage.Origin == null) {
+										Console.WriteLine("Not found 2");
 										continue;
+									}
 
 									var actualOrigin = loggedMessage.Origin.Value;
 									if (actualOrigin.FileName != null) {
 										// Note: string.Compare(string, StringComparison) doesn't exist in .NET Framework API set
-										if (actualOrigin.FileName.IndexOf (fileName, StringComparison.OrdinalIgnoreCase) < 0)
+										if (actualOrigin.FileName.IndexOf (fileName, StringComparison.OrdinalIgnoreCase) < 0) {
+											Console.WriteLine("Not found 3");
 											continue;
+										}
 
-										if (sourceLine != null && loggedMessage.Origin?.SourceLine != sourceLine.Value)
+										if (sourceLine != null && loggedMessage.Origin?.SourceLine != sourceLine.Value) {
+											Console.WriteLine("Not found 4");
 											continue;
+										}
 
-										if (sourceColumn != null && loggedMessage.Origin?.SourceColumn != sourceColumn.Value)
+										if (sourceColumn != null && loggedMessage.Origin?.SourceColumn != sourceColumn.Value) {
+											Console.WriteLine("Not found 5");
 											continue;
+										}
 									} else {
 										// The warning was logged with member/ILoffset, so it didn't have line/column info filled
 										// but it will be computed from PDBs, so instead compare it in a string representation
@@ -853,8 +868,10 @@ namespace Mono.Linker.Tests.TestCasesRunner
 										}
 
 										string actualOriginString = actualOrigin.ToString () ?? "";
-										if (!actualOriginString.EndsWith (expectedOrigin, StringComparison.OrdinalIgnoreCase))
+										if (!actualOriginString.EndsWith (expectedOrigin, StringComparison.OrdinalIgnoreCase)) {
+											Console.WriteLine("Not found 6");
 											continue;
+										}
 									}
 								} else if (isCompilerGeneratedCode == true) {
 									if (loggedMessage.Origin?.Provider is not IMemberDefinition memberDefinition)
@@ -897,13 +914,18 @@ namespace Mono.Linker.Tests.TestCasesRunner
 											break;
 										}
 									}
+									Console.WriteLine("Not found 10");
 									continue;
 								} else {
+									Console.WriteLine("Origins:");
+									Console.WriteLine("LoggedMessage origin: " + (loggedMessage.Origin?.Provider as IMemberDefinition)?.FullName);
+									Console.WriteLine("ExpectedWarning origin: " + (attrProvider as IMemberDefinition)?.FullName);
 									if (LogMessageHasSameOriginMember (loggedMessage, attrProvider)) {
 										expectedWarningFound = true;
 										loggedMessages.Remove (loggedMessage);
 										break;
 									}
+									Console.WriteLine("Not found 11");
 									continue;
 								}
 
