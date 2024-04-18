@@ -32,6 +32,7 @@ namespace Mono.Linker.Tests.Cases.Reflection
 			DeepInterfaceHierarchy.Test ();
 
 			ConstructorAsSource.Test ();
+			SealedConstructorAsSource.Test ();
 
 			InterfaceSeenFirst.Test ();
 			AnnotationsRequestedOnImplementation.Test ();
@@ -684,6 +685,38 @@ namespace Mono.Linker.Tests.Cases.Reflection
 			[Kept]
 			// https://github.com/dotnet/linker/issues/2755
 			[ExpectedWarning ("IL2075", "GetMethod", ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			public static void Test ()
+			{
+				new Derived ().GetType ().GetMethod ("Method");
+			}
+		}
+
+		[Kept]
+		class SealedConstructorAsSource
+		{
+			[Kept]
+			[KeptMember (".ctor()")]
+			public class Base 
+			{
+
+			}
+
+			[Kept]
+			[KeptMember (".ctor()")]
+			[KeptBaseType (typeof (Base))]
+			public sealed class Derived : Base
+			{
+				[Kept]
+				[KeptAttributeAttribute (typeof (RequiresUnreferencedCodeAttribute))]
+				[RequiresUnreferencedCode (nameof (Method))]
+				public void Method () { }
+
+				[RequiresUnreferencedCode (nameof (UnusedMethod))]
+				public void UnusedMethod () { }
+			}
+
+			[Kept]
+			[ExpectedWarning ("IL2026", nameof (Derived.Method))]
 			public static void Test ()
 			{
 				new Derived ().GetType ().GetMethod ("Method");
