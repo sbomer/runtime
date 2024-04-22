@@ -41,7 +41,13 @@ namespace System.ComponentModel
             _parent = parent;
         }
 
-        public virtual void AddKnownReflectedType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
+        public virtual void AddKnownReflectedType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicConstructors
+        | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicMethods
+        | DynamicallyAccessedMemberTypes.NonPublicMethods | DynamicallyAccessedMemberTypes.PublicFields
+        | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicNestedTypes
+        | DynamicallyAccessedMemberTypes.NonPublicNestedTypes | DynamicallyAccessedMemberTypes.PublicProperties
+        | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicEvents
+        | DynamicallyAccessedMemberTypes.NonPublicEvents)] T>()
         {
             // We allow this to be a no-op since the caller may not know if the provider supports known types.
         }

@@ -974,7 +974,13 @@ namespace System.ComponentModel
             return td;
         }
 
-        public override void AddKnownReflectedType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
+        public override void AddKnownReflectedType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicConstructors
+        | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicMethods
+        | DynamicallyAccessedMemberTypes.NonPublicMethods | DynamicallyAccessedMemberTypes.PublicFields
+        | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicNestedTypes
+        | DynamicallyAccessedMemberTypes.NonPublicNestedTypes | DynamicallyAccessedMemberTypes.PublicProperties
+        | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicEvents
+        | DynamicallyAccessedMemberTypes.NonPublicEvents)] T>()
         {
             Type componentType = typeof(T);
             ReflectedTypeData? td = null;

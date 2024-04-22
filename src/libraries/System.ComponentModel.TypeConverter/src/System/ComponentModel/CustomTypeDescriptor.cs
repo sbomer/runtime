@@ -75,8 +75,6 @@ namespace System.ComponentModel
 
             return FallBackToLegacyProvider();
 
-            [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
-                Justification = "Chaining from known type provider to legacy provider is supported when TypeDescriptor.IsTrimmable is false.")]
             AttributeCollection FallBackToLegacyProvider() => GetAttributes();
         }
 
