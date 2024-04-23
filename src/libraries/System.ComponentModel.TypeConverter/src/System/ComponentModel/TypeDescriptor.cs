@@ -23,7 +23,12 @@ namespace System.ComponentModel
         internal const DynamicallyAccessedMemberTypes ReflectTypesDynamicallyAccessedMembers = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicFields;
         internal const string DesignTimeAttributeTrimmed = "Design-time attributes are not preserved when trimming. Types referenced by attributes like EditorAttribute and DesignerAttribute may not be available after trimming.";
 
-        // Mapping of type or object hash to a provider list.
+        [FeatureSwitchDefinition("System.ComponentModel.TypeDescriptor.IsComObjectDescriptorSupported")]
+        [FeatureGuard(typeof(RequiresUnreferencedCodeAttribute))]
+#pragma warning disable IL4000 // MSBuild logic will ensure that the switch is disabled in trimmed scenarios.
+        internal static bool IsComObjectDescriptorSupported => AppContext.TryGetSwitch("System.ComponentModel.TypeDescriptor.IsComObjectDescriptorSupported", out bool isEnabled) ? isEnabled : true;
+#pragma warning restore IL4000
+
         // Note: this is initialized at class load because we
         // lock on it for thread safety. It is used from nearly
         // every call to this class, so it will be created soon after
@@ -1742,11 +1747,19 @@ namespace System.ComponentModel
 
                 if (type.IsCOMObject)
                 {
+                    if (!IsComObjectDescriptorSupported)
+                    {
+                        throw new NotSupportedException(SR.ComObjectDescriptorsNotSupported);
+                    }
                     type = ComObjectType;
                 }
                 else if (OperatingSystem.IsWindows()
                     && ComWrappers.TryGetComInstance(instance, out nint unknown))
                 {
+                    if (!IsComObjectDescriptorSupported)
+                    {
+                        throw new NotSupportedException(SR.ComObjectDescriptorsNotSupported);
+                    }
                     // ComObjectType uses the Windows Forms provided ComNativeDescriptor. It currently has hard Win32
                     // API dependencies. Even though ComWrappers work with other platforms, restricting to Windows until
                     // such time that the ComNativeDescriptor can handle basic COM types on other platforms.
@@ -2524,6 +2537,7 @@ namespace System.ComponentModel
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Type ComObjectType
         {
+            [RequiresUnreferencedCode("COM type descriptors are not trim-compatible.")]
             [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
             get => typeof(TypeDescriptorComObject);
         }
@@ -2571,6 +2585,7 @@ namespace System.ComponentModel
         [DisallowNull]
         public static IComNativeDescriptorHandler? ComNativeDescriptorHandler
         {
+            [RequiresUnreferencedCode("COM type descriptors are not trim-compatible.")]
             get
             {
                 TypeDescriptionNode? typeDescriptionNode = NodeFor(ComObjectType);
@@ -2583,6 +2598,7 @@ namespace System.ComponentModel
                 while (typeDescriptionNode != null && comNativeDescriptionProvider == null);
                 return comNativeDescriptionProvider?.Handler;
             }
+            [RequiresUnreferencedCode("COM type descriptors are not trim-compatible.")]
             set
             {
                 TypeDescriptionNode? typeDescriptionNode = NodeFor(ComObjectType);
@@ -3036,6 +3052,11 @@ namespace System.ComponentModel
 
             public ComNativeDescriptorProxy()
             {
+                if (!IsComObjectDescriptorSupported)
+                {
+                    throw new NotSupportedException(SR.ComObjectDescriptorsNotSupported);
+                }
+
                 Type realComNativeDescriptor = Type.GetType("System.Windows.Forms.ComponentModel.Com2Interop.ComNativeDescriptor, System.Windows.Forms", throwOnError: true)!;
                 _comNativeDescriptor = (TypeDescriptionProvider)Activator.CreateInstance(realComNativeDescriptor)!;
             }
