@@ -227,8 +227,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			arr[0].RequiresAll ();
 		}
 
-		// Trimmer code doesnt handle locals from different branches separetely, therefore merges incorrectly GetMethods with Unknown producing both warnings
-		[ExpectedWarning ("IL2072", nameof (ArrayDataFlow.GetMethods), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+		// Analyzer produces an incomplete set of warnings
+		// https://github.com/dotnet/linker/issues/3047
+		[ExpectedWarning ("IL2072", nameof (DataFlowTypeExtensions.RequiresAll), ProducedBy = Tool.Trimmer | Tool.NativeAot)]
 		[ExpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll))]
 		static void TestMergedArrayElementWithUnknownIndex (int i)
 		{
@@ -580,7 +581,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				arr[0].RequiresAll ();
 			}
 
-			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll))]
+			// Linker produces incomplete set of IL2072 warnings https://github.com/dotnet/linker/issues/2158
+			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), ProducedBy = Tool.Analyzer)]
 			[ExpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll))]
 			static void TestNullCoalescingAssignment ()
 			{
@@ -590,11 +592,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				arr[0].RequiresAll ();
 			}
 
-			[ExpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll),
-				ProducedBy = Tool.Analyzer)]
-			// https://github.com/dotnet/linker/issues/2746
-			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll),
-				ProducedBy = Tool.Trimmer | Tool.NativeAot)]
+			[ExpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll))]
 			static void TestNullCoalescingAssignmentToEmpty ()
 			{
 				Type[] arr = new Type[1];

@@ -139,7 +139,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 		[Kept]
 		class BranchGotoType1
 		{
-			[Kept] // unnecessary
+			[Kept]
 			public string field;
 		}
 
@@ -163,7 +163,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 		[Kept]
 		class BranchIfType1
 		{
-			[Kept] // unneccessary
+			[Kept]
 			public string field;
 		}
 
@@ -194,7 +194,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 		{
 			[Kept]
 			public void Method () { }
-			[Kept] // unnecessary
+			[Kept]
 			public string field;
 		}
 

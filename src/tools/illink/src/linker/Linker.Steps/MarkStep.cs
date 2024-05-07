@@ -3597,7 +3597,7 @@ namespace Mono.Linker.Steps
 		{
 			// This method is only called on reflection access to compiler-generated methods.
 			// This should be uncommon, so don't cache the result.
-			if (ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForMethodBody (Context, methodIL.Method))
+			if (ReflectionDataFlowAnalysis.RequiresReflectionMethodBodyScannerForMethodBody (Context, methodIL.Method))
 				return true;
 
 			foreach (Instruction instruction in methodIL.Instructions) {
@@ -3608,7 +3608,7 @@ namespace Mono.Linker.Steps
 					break;
 
 				case OperandType.InlineMethod:
-					if (ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForCallSite (Context, (MethodReference) instruction.Operand))
+					if (ReflectionDataFlowAnalysis.RequiresReflectionMethodBodyScannerForCallSite (Context, (MethodReference) instruction.Operand))
 						return true;
 					break;
 				}
@@ -3646,7 +3646,7 @@ namespace Mono.Linker.Steps
 					MarkType (eh.CatchType, new DependencyInfo (DependencyKind.CatchType, methodIL.Method));
 
 			requiresReflectionMethodBodyScanner =
-				ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForMethodBody (Context, methodIL.Method);
+				ReflectionDataFlowAnalysis.RequiresReflectionMethodBodyScannerForMethodBody (Context, methodIL.Method);
 			using var _ = ScopeStack.PushLocalScope (new MessageOrigin (methodIL.Method));
 			foreach (Instruction instruction in methodIL.Instructions)
 				MarkInstruction (instruction, methodIL.Method, ref requiresReflectionMethodBodyScanner);
@@ -3693,10 +3693,10 @@ namespace Mono.Linker.Steps
 				// Field address loads (as those can be used to store values to annotated field and thus must be checked)
 				Code.Ldflda or
 				Code.Ldsflda
-					=> ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForAccess (Context, (FieldReference) instruction.Operand),
+					=> ReflectionDataFlowAnalysis.RequiresReflectionMethodBodyScannerForAccess (Context, (FieldReference) instruction.Operand),
 				// For ref fields, ldfld loads an address which can be used to store values to annotated fields
 				Code.Ldfld or Code.Ldsfld when ((FieldReference) instruction.Operand).FieldType.IsByRefOrPointer ()
-					=> ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForAccess (Context, (FieldReference) instruction.Operand),
+					=> ReflectionDataFlowAnalysis.RequiresReflectionMethodBodyScannerForAccess (Context, (FieldReference) instruction.Operand),
 				// Other field operations are not interesting as they don't need to be checked
 				_ => false
 			};
@@ -3725,7 +3725,7 @@ namespace Mono.Linker.Steps
 					MethodReference methodReference = (MethodReference) instruction.Operand;
 
 					requiresReflectionMethodBodyScanner |=
-						ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForCallSite (Context, methodReference);
+						ReflectionDataFlowAnalysis.RequiresReflectionMethodBodyScannerForCallSite (Context, methodReference);
 
 					ScopeStack.UpdateCurrentScopeInstructionOffset (instruction.Offset);
 					if (markForReflectionAccess) {
@@ -3852,8 +3852,8 @@ namespace Mono.Linker.Steps
 				return;
 
 			Debug.Assert (ScopeStack.CurrentScope.Origin.Provider == methodIL.Method);
-			var scanner = new ReflectionMethodBodyScanner (Context, this, ScopeStack.CurrentScope.Origin);
-			scanner.InterproceduralScan (methodIL);
+			var trimDataFlowAnalysis = new ReflectionDataFlowAnalysis (Context);
+			trimDataFlowAnalysis.InterproceduralScan (methodIL.Method, this);
 		}
 
 		protected class AttributeProviderPair

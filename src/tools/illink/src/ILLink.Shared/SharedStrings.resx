@@ -1161,6 +1161,12 @@
   <data name="InterfaceRequiresMismatchMessage" xml:space="preserve">
     <value>Interface member '{2}' with '{0}' has an implementation member '{1}' without '{0}'</value>
   </data>
+  <data name="InvalidILMessage" xml:space="preserve">
+    <value>Invalid IL found in method.</value>
+  </data>
+  <data name="InvalidILTitle" xml:space="preserve">
+    <value>Invalid IL found in method.</value>
+  </data>
   <data name="RequiresOnBaseClassMessage" xml:space="preserve">
     <value>Type '{0}' derives from '{1}' which has 'RequiresUnreferencedCodeAttribute'. {2}{3}</value>
   </data>

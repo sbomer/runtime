@@ -22,6 +22,7 @@ namespace Mono.Linker
 
 #pragma warning disable RS0030 // Wrapper which provides safe access to the property
 		public Collection<Instruction> Instructions => Body.Instructions;
+		public bool HasExceptionHandlers => Body.HasExceptionHandlers;
 		public Collection<ExceptionHandler> ExceptionHandlers => Body.ExceptionHandlers;
 		public Collection<VariableDefinition> Variables => Body.Variables;
 #pragma warning restore RS0030

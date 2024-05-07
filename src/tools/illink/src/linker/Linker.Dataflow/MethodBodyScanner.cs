@@ -47,23 +47,21 @@ namespace Mono.Linker.Dataflow
 		protected readonly LinkContext _context;
 		protected readonly InterproceduralStateLattice InterproceduralStateLattice;
 		protected static ValueSetLattice<SingleValue> MultiValueLattice => default;
+		protected readonly ReflectionHandler _handler;
 
-		protected MethodBodyScanner (LinkContext context)
+		protected MethodBodyScanner (LinkContext context, ReflectionHandler handler)
 		{
+			this._handler = handler;
 			this._context = context;
 			this.InterproceduralStateLattice = new InterproceduralStateLattice (default, default, context);
 		}
 
 		internal MultiValue ReturnValue { get; private set; }
 
-		protected virtual void WarnAboutInvalidILInMethod (MethodBody method, int ilOffset)
-		{
-		}
-
-		private void CheckForInvalidStack (Stack<StackSlot> stack, int depthRequired, MethodBody method, int ilOffset)
+		private static void CheckForInvalidStack (Stack<StackSlot> stack, int depthRequired, MethodBody method, int ilOffset)
 		{
 			if (stack.Count < depthRequired) {
-				WarnAboutInvalidILInMethod (method, ilOffset);
+				ReflectionHandler.WarnAboutInvalidILInMethod (method, ilOffset);
 				while (stack.Count < depthRequired)
 					stack.Push (new StackSlot ()); // Push dummy values to avoid crashes.
 												   // Analysis of this method will be incorrect.
@@ -75,13 +73,13 @@ namespace Mono.Linker.Dataflow
 			stack.Push (new StackSlot ());
 		}
 
-		private void PushUnknownAndWarnAboutInvalidIL (Stack<StackSlot> stack, MethodBody methodBody, int offset)
+		private static void PushUnknownAndWarnAboutInvalidIL (Stack<StackSlot> stack, MethodBody methodBody, int offset)
 		{
-			WarnAboutInvalidILInMethod (methodBody, offset);
+			ReflectionHandler.WarnAboutInvalidILInMethod (methodBody, offset);
 			PushUnknown (stack);
 		}
 
-		private StackSlot PopUnknown (Stack<StackSlot> stack, int count, MethodBody method, int ilOffset)
+		private static StackSlot PopUnknown (Stack<StackSlot> stack, int count, MethodBody method, int ilOffset)
 		{
 			if (count < 1)
 				throw new InvalidOperationException ();
@@ -275,7 +273,7 @@ namespace Mono.Linker.Dataflow
 			interproceduralState.TrackMethod (method);
 		}
 
-		protected virtual void Scan (MethodIL methodIL, ref InterproceduralState interproceduralState)
+		public virtual void Scan (MethodIL methodIL, ref InterproceduralState interproceduralState)
 		{
 			MethodBody methodBody = methodIL.Body;
 			MethodDefinition thisMethod = methodBody.Method;
@@ -542,7 +540,7 @@ namespace Mono.Linker.Dataflow
 
 				case Code.Stfld:
 				case Code.Stsfld:
-					ScanStfld (operation, currentStack, thisMethod, methodBody, locals, ref interproceduralState);
+					ScanStfld (operation, currentStack, methodBody, locals, ref interproceduralState);
 					break;
 
 				case Code.Cpobj:
@@ -652,7 +650,7 @@ namespace Mono.Linker.Dataflow
 						bool hasReturnValue = !methodBody.Method.ReturnsVoid ();
 
 						if (currentStack.Count != (hasReturnValue ? 1 : 0)) {
-							WarnAboutInvalidILInMethod (methodBody, operation.Offset);
+							ReflectionHandler.WarnAboutInvalidILInMethod (methodBody, operation.Offset);
 						}
 						if (hasReturnValue) {
 							StackSlot retValue = PopUnknown (currentStack, 1, methodBody, operation.Offset);
@@ -717,8 +715,6 @@ namespace Mono.Linker.Dataflow
 			}
 		}
 
-		protected abstract SingleValue GetMethodParameterValue (ParameterProxy parameter);
-
 		private void ScanLdarg (Instruction operation, Stack<StackSlot> currentStack, MethodDefinition thisMethod)
 		{
 			Code code = operation.OpCode.Code;
@@ -734,7 +730,7 @@ namespace Mono.Linker.Dataflow
 			StackSlot slot = new StackSlot (
 				isByRef
 				? new ParameterReferenceValue (param)
-				: GetMethodParameterValue (param));
+				: _handler.GetMethodParameterValue (param));
 			currentStack.Push (slot);
 		}
 
@@ -747,14 +743,14 @@ namespace Mono.Linker.Dataflow
 			var valueToStore = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 			ParameterIndex paramNum = ParameterHelpers.GetParameterIndex (thisMethod, operation);
 			ParameterProxy param = new (thisMethod, paramNum);
-			var targetValue = GetMethodParameterValue (param);
+			var targetValue = _handler.GetMethodParameterValue (param);
 			if (targetValue is MethodParameterValue targetParameterValue)
-				HandleStoreParameter (thisMethod, targetParameterValue, operation, valueToStore.Value);
+				_handler.HandleStoreParameter (targetParameterValue, operation, valueToStore.Value);
 
 			// If the targetValue is MethodThisValue do nothing - it should never happen really, and if it does, there's nothing we can track there
 		}
 
-		private void ScanLdloc (
+		private static void ScanLdloc (
 			Instruction operation,
 			Stack<StackSlot> currentStack,
 			MethodIL methodIL,
@@ -817,7 +813,7 @@ namespace Mono.Linker.Dataflow
 			}
 		}
 
-		private void ScanStloc (
+		private static void ScanStloc (
 			Instruction operation,
 			Stack<StackSlot> currentStack,
 			MethodIL methodIL,
@@ -827,7 +823,7 @@ namespace Mono.Linker.Dataflow
 			StackSlot valueToStore = PopUnknown (currentStack, 1, methodIL.Body, operation.Offset);
 			VariableDefinition localDef = GetLocalDef (operation, methodIL.Variables);
 			if (localDef == null) {
-				WarnAboutInvalidILInMethod (methodIL.Body, operation.Offset);
+				ReflectionHandler.WarnAboutInvalidILInMethod (methodIL.Body, operation.Offset);
 				return;
 			}
 
@@ -864,19 +860,19 @@ namespace Mono.Linker.Dataflow
 					StoreMethodLocalValue (locals, source, localReference.LocalDefinition, curBasicBlock);
 					break;
 				case FieldReferenceValue fieldReference
-				when GetFieldValue (fieldReference.FieldDefinition).AsSingleValue () is FieldValue fieldValue:
-					HandleStoreField (method, fieldValue, operation, source);
+				when _handler.GetFieldValue (fieldReference.FieldDefinition).AsSingleValue () is FieldValue fieldValue:
+					_handler.HandleStoreField (fieldValue, operation, source);
 					break;
 				case ParameterReferenceValue parameterReference
-				when GetMethodParameterValue (parameterReference.Parameter) is MethodParameterValue parameterValue:
-					HandleStoreParameter (method, parameterValue, operation, source);
+				when _handler.GetMethodParameterValue (parameterReference.Parameter) is MethodParameterValue parameterValue:
+					_handler.HandleStoreParameter (parameterValue, operation, source);
 					break;
 				case MethodReturnValue methodReturnValue:
 					// Ref returns don't have special ReferenceValue values, so assume if the target here is a MethodReturnValue then it must be a ref return value
-					HandleStoreMethodReturnValue (method, methodReturnValue, operation, source);
+					_handler.HandleStoreMethodReturnValue (methodReturnValue, operation, source);
 					break;
 				case FieldValue fieldValue:
-					HandleStoreField (method, fieldValue, operation, DereferenceValue (source, locals, ref ipState));
+					_handler.HandleStoreField (fieldValue, operation, DereferenceValue (source, locals, ref ipState));
 					break;
 				case IValueWithStaticType valueWithStaticType:
 					if (valueWithStaticType.StaticType is not null && _context.Annotations.FlowAnnotations.IsTypeInterestingForDataflow (valueWithStaticType.StaticType.Value.Type))
@@ -894,8 +890,6 @@ namespace Mono.Linker.Dataflow
 			}
 
 		}
-
-		protected abstract MultiValue GetFieldValue (FieldDefinition field);
 
 		private void ScanLdfld (
 			Instruction operation,
@@ -921,27 +915,14 @@ namespace Mono.Linker.Dataflow
 			} else if (CompilerGeneratedState.IsHoistedLocal (field)) {
 				value = interproceduralState.GetHoistedLocal (new HoistedLocalKey (field));
 			} else {
-				value = GetFieldValue (field);
+				value = _handler.GetFieldValue (field);
 			}
 			currentStack.Push (new StackSlot (value));
-		}
-
-		protected virtual void HandleStoreField (MethodDefinition method, FieldValue field, Instruction operation, MultiValue valueToStore)
-		{
-		}
-
-		protected virtual void HandleStoreParameter (MethodDefinition method, MethodParameterValue parameter, Instruction operation, MultiValue valueToStore)
-		{
-		}
-
-		protected virtual void HandleStoreMethodReturnValue (MethodDefinition method, MethodReturnValue thisParameter, Instruction operation, MultiValue sourceValue)
-		{
 		}
 
 		private void ScanStfld (
 			Instruction operation,
 			Stack<StackSlot> currentStack,
-			MethodDefinition thisMethod,
 			MethodBody methodBody,
 			LocalVariableStore locals,
 			ref InterproceduralState interproceduralState)
@@ -957,7 +938,7 @@ namespace Mono.Linker.Dataflow
 					return;
 				}
 
-				foreach (var value in GetFieldValue (field).AsEnumerable ()) {
+				foreach (var value in _handler.GetFieldValue (field).AsEnumerable ()) {
 					// GetFieldValue may return different node types, in which case they can't be stored to.
 					// At least not yet.
 					if (value is not FieldValue fieldValue)
@@ -966,7 +947,7 @@ namespace Mono.Linker.Dataflow
 					// Incomplete handling of ref fields -- if we're storing a reference to a value, pretend it's just the value
 					MultiValue valueToStore = DereferenceValue (valueToStoreSlot.Value, locals, ref interproceduralState);
 
-					HandleStoreField (thisMethod, fieldValue, operation, valueToStore);
+					_handler.HandleStoreField (fieldValue, operation, valueToStore);
 				}
 			}
 		}
@@ -982,7 +963,7 @@ namespace Mono.Linker.Dataflow
 			return (VariableDefinition) operation.Operand;
 		}
 
-		private ValueNodeList PopCallArguments (
+		private static ValueNodeList PopCallArguments (
 			Stack<StackSlot> currentStack,
 			MethodReference methodCalled,
 			MethodBody containingMethodBody,
@@ -1020,12 +1001,12 @@ namespace Mono.Linker.Dataflow
 						dereferencedValue,
 						CompilerGeneratedState.IsHoistedLocal (fieldReferenceValue.FieldDefinition)
 							? interproceduralState.GetHoistedLocal (new HoistedLocalKey (fieldReferenceValue.FieldDefinition))
-							: GetFieldValue (fieldReferenceValue.FieldDefinition));
+							: _handler.GetFieldValue (fieldReferenceValue.FieldDefinition));
 					break;
 				case ParameterReferenceValue parameterReferenceValue:
 					dereferencedValue = MultiValue.Union (
 						dereferencedValue,
-						GetMethodParameterValue (parameterReferenceValue.Parameter));
+						_handler.GetMethodParameterValue (parameterReferenceValue.Parameter));
 					break;
 				case LocalVariableReferenceValue localVariableReferenceValue:
 					if (locals.TryGetValue (localVariableReferenceValue.LocalDefinition, out var valueBasicBlockPair))
@@ -1097,7 +1078,7 @@ namespace Mono.Linker.Dataflow
 			foreach (var argument in methodArguments)
 				dereferencedMethodParams.Add (DereferenceValue (argument, locals, ref interproceduralState));
 			MultiValue methodReturnValue;
-			bool handledFunction = HandleCall (
+			bool handledFunction = _handler.HandleCall (
 				callingMethodBody,
 				calledMethod,
 				operation,
@@ -1134,13 +1115,6 @@ namespace Mono.Linker.Dataflow
 
 		public TypeDefinition? ResolveToTypeDefinition (TypeReference typeReference) => typeReference.ResolveToTypeDefinition (_context);
 
-		public abstract bool HandleCall (
-			MethodBody callingMethodBody,
-			MethodReference calledMethod,
-			Instruction operation,
-			ValueNodeList methodParams,
-			out MultiValue methodReturnValue);
-
 		// Limit tracking array values to 32 values for performance reasons. There are many arrays much longer than 32 elements in .NET, but the interesting ones for trimming are nearly always less than 32 elements.
 		private const int MaxTrackedArrayValues = 32;
 
@@ -1154,7 +1128,7 @@ namespace Mono.Linker.Dataflow
 			}
 		}
 
-		private void ScanStelem (
+		private static void ScanStelem (
 			Instruction operation,
 			Stack<StackSlot> currentStack,
 			MethodBody methodBody,
@@ -1176,7 +1150,7 @@ namespace Mono.Linker.Dataflow
 			}
 		}
 
-		private void ScanLdelem (
+		private static void ScanLdelem (
 			Instruction operation,
 			Stack<StackSlot> currentStack,
 			MethodBody methodBody,
