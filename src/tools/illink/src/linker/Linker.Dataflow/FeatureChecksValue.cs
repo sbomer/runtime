@@ -7,8 +7,8 @@ namespace Mono.Linker.DataFlow
 {
 	public struct FeatureChecksValue : INegate<FeatureChecksValue>, IDeepCopyValue<FeatureChecksValue>
 	{
-        public FeatureChecksValue Negate () => default;
+		public FeatureChecksValue Negate () => default;
 
-        public FeatureChecksValue DeepCopy () => default;
+		public FeatureChecksValue DeepCopy () => default;
 	}
 }

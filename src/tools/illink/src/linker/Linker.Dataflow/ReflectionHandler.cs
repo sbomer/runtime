@@ -50,7 +50,7 @@ namespace Mono.Linker.Dataflow
 
 		public bool HandleCall (MethodBody callingMethodBody, MethodReference calledMethod, Instruction operation, ValueNodeList methodParams, out MultiValue methodReturnValue)
 		{
-			methodReturnValue = new ();
+			methodReturnValue = default;
 
 			var reflectionProcessed = _markStep.ProcessReflectionDependency (callingMethodBody, operation);
 			if (reflectionProcessed)

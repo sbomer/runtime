@@ -32,7 +32,7 @@ namespace Mono.Linker.Dataflow
 
 
 		public ReflectionDataFlowAnalysis (LinkContext context)
-			: base (new (new ValueSetLattice<SingleValue> ()), new BasicBlockState<MultiValue, FeatureContext> (default (MultiValue)))
+			: base (new (default (ValueSetLattice<SingleValue>)), new BasicBlockState<MultiValue, FeatureContext> (default (MultiValue)))
 		{
 			_interproceduralStateLattice = default;
 			_context = context;

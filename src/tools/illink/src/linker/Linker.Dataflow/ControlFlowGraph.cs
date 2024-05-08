@@ -25,15 +25,15 @@ namespace Mono.Linker.Dataflow
 	{
 		private readonly int _id;
 
-		private readonly MethodIL _methodBody;
+		private readonly MethodIL _methodIL;
 
 		private readonly int _startInstructionIndex;
 
 		private readonly int _endInstructionIndex;
 
-		public BasicBlock (MethodIL methodBody, int id, int start, int end)
+		public BasicBlock (MethodIL methodIL, int id, int start, int end)
 		{
-			_methodBody = methodBody;
+			_methodIL = methodIL;
 			_startInstructionIndex = start;
 			_endInstructionIndex = end;
 			_id = id;
@@ -41,18 +41,18 @@ namespace Mono.Linker.Dataflow
 
 		public ConditionKind ConditionKind => throw new NotImplementedException ();
 
-		public MethodIL MethodBody => _methodBody;
+		public MethodIL MethodIL => _methodIL;
 
 		public int Id => _id;
 
-		public Instruction? FirstInstruction => _startInstructionIndex >= 0 ? _methodBody.Instructions[_startInstructionIndex] : null;
+		public Instruction? FirstInstruction => _startInstructionIndex >= 0 ? _methodIL.Instructions[_startInstructionIndex] : null;
 
-		public Instruction? LastInstruction => _endInstructionIndex >= 0 ? _methodBody.Instructions[_endInstructionIndex] : null;
+		public Instruction? LastInstruction => _endInstructionIndex >= 0 ? _methodIL.Instructions[_endInstructionIndex] : null;
 
 		public IEnumerable<Instruction> GetInstructions ()
 		{
 			for (int i = _startInstructionIndex; i <= _endInstructionIndex; i++) {
-				yield return _methodBody.Instructions[i];
+				yield return _methodIL.Instructions[i];
 			}
 		}
 
@@ -61,11 +61,14 @@ namespace Mono.Linker.Dataflow
 			return _startInstructionIndex == other._startInstructionIndex && _endInstructionIndex == other._endInstructionIndex;
 		}
 
+		public override bool Equals (object? obj) => obj is BasicBlock other && Equals (other);
+		public override int GetHashCode () => HashCode.Combine (_methodIL, _startInstructionIndex, _endInstructionIndex, _id);
+
 		public override string ToString ()
 		{
 			if (_endInstructionIndex == -1) return "Empty";
 
-			return $"[IL_{_methodBody.Instructions[_startInstructionIndex].Offset:X4}, IL_{_methodBody.Instructions[_endInstructionIndex].Offset:X4}]";
+			return $"[IL_{_methodIL.Instructions[_startInstructionIndex].Offset:X4}, IL_{_methodIL.Instructions[_endInstructionIndex].Offset:X4}]";
 		}
 	}
 

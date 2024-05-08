@@ -74,7 +74,7 @@ namespace Mono.Linker.Dataflow
 
 		public static IEnumerable<Instruction> GetJumpTargets (this Instruction operation)
 		{
-			Object value = operation.Operand;
+			object value = operation.Operand;
 			if (value is Instruction inst)
 				return new Instruction[1] { inst };
 

@@ -45,6 +45,9 @@ namespace ILLink.Shared.DataFlow
 			return equals;
 		}
 
+		public override bool Equals (object? obj) => obj is ValueStack<TValue> other && Equals (other);
+		public override int GetHashCode () => HashUtils.Combine (_stack?.GetHashCode () ?? typeof (Stack<TValue>).GetHashCode (), _capacity);
+
 		public IEnumerator<TValue> GetEnumerator ()
 		{
 			return _stack?.GetEnumerator () ?? Enumerable.Empty<TValue> ().GetEnumerator ();

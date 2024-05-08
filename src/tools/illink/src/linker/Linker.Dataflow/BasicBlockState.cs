@@ -18,6 +18,9 @@ namespace Mono.Linker.Dataflow
 		{
 			return variableDefinition == other.variableDefinition;
 		}
+
+		public override bool Equals (object? obj) => obj is LocalKey other && Equals (other);
+		public override int GetHashCode () => variableDefinition.GetHashCode ();
 	}
 
 	public struct BasicBlockState<TValue, TContext> : IEquatable<BasicBlockState<TValue, TContext>>
@@ -32,6 +35,9 @@ namespace Mono.Linker.Dataflow
 		{
 			return Locals.Equals (other.Locals) && Stack.Equals (other.Stack);
 		}
+
+		public override bool Equals (object? obj) => obj is BasicBlockState<TValue, TContext> other && Equals (other);
+		public override int GetHashCode () => HashCode.Combine (Locals, Stack);
 
 		public BasicBlockState (TValue defaultValue)
 			: this (new DefaultValueDictionary<LocalKey, TValue> (defaultValue), new ValueStack<TValue> ())

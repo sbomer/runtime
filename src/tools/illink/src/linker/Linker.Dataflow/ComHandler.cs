@@ -69,9 +69,11 @@ namespace Mono.Linker.Dataflow
 		public static bool ComDangerousMethod (MethodDefinition methodDefinition, LinkContext context)
 		{
 			bool comDangerousMethod = IsComInterop (methodDefinition.MethodReturnType, methodDefinition.ReturnType, context);
+#pragma warning disable RS0030 // MethodDefinition.Parameters is banned. Here we iterate through the parameters and don't need to worry about the 'this' parameter.
 			foreach (ParameterDefinition pd in methodDefinition.Parameters) {
 				comDangerousMethod |= IsComInterop (pd, pd.ParameterType, context);
 			}
+#pragma warning restore RS0030
 
 			return comDangerousMethod;
 		}

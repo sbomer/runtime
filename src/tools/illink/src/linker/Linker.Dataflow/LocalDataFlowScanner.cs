@@ -33,7 +33,7 @@ namespace Mono.Linker.Dataflow
 		public InterproceduralState InterproceduralState;
 
 
-		public MultiValue ReturnValue { private set; get; }
+		public MultiValue ReturnValue { get; private set; }
 
 
 		public LocalDataFlowScanner (LinkContext context, ReflectionHandler handler, InterproceduralState interproceduralState)
@@ -56,10 +56,10 @@ namespace Mono.Linker.Dataflow
 
 		public virtual void Scan (BasicBlock block, BasicBlockDataFlowState<MultiValue, FeatureContext, ValueSetLattice<SingleValue>, FeatureContextLattice> state)
 		{
-			MethodDefinition thisMethod = block.MethodBody.Method;
+			MethodIL methodIL = block.MethodIL;
+			MethodDefinition thisMethod = methodIL.Method;
 
-
-			ReturnValue = new ();
+			ReturnValue = default;
 			foreach (Instruction operation in block.GetInstructions ()) {
 				switch (operation.OpCode.Code) {
 				case Code.Add:
@@ -171,7 +171,7 @@ namespace Mono.Linker.Dataflow
 				case Code.Ldloc_S:
 				case Code.Ldloca:
 				case Code.Ldloca_S:
-					ScanLdloc (operation, state, thisMethod);
+					ScanLdloc (operation, state, methodIL);
 					//ValidateNoReferenceToReference (locals, methodBody.Method, operation.Offset);
 					break;
 
@@ -336,7 +336,7 @@ namespace Mono.Linker.Dataflow
 				case Code.Stloc_1:
 				case Code.Stloc_2:
 				case Code.Stloc_3:
-					ScanStloc (operation, state, thisMethod.Body);
+					ScanStloc (operation, state, methodIL);
 					//ValidateNoReferenceToReference (locals, methodBody.Method, operation.Offset);
 					break;
 
@@ -409,7 +409,7 @@ namespace Mono.Linker.Dataflow
 						if (hasReturnValue) {
 							MultiValue retValue = PopUnknown (state, 1);
 							// If the return value is a reference, treat it as the value itself for now
-							//	We can handle ref return values better later
+							// We can handle ref return values better later
 							ReturnValue = MultiValueLattice.Meet (ReturnValue, DereferenceValue (retValue, state));
 							//ValidateNoReferenceToReference (locals, methodBody.Method, operation.Offset);
 						}
@@ -496,9 +496,9 @@ namespace Mono.Linker.Dataflow
 		private static void ScanLdloc (
 			Instruction operation,
 			BasicBlockDataFlowState<MultiValue, FeatureContext, ValueSetLattice<SingleValue>, FeatureContextLattice> state,
-			MethodDefinition method)
+			MethodIL methodIL)
 		{
-			VariableDefinition localDef = GetLocalDef (operation, method.Body.Variables);
+			VariableDefinition localDef = GetLocalDef (operation, methodIL.Variables);
 			if (localDef == null) {
 				throw new InvalidOperationException ("Invalid local variable index");
 			}
@@ -555,10 +555,10 @@ namespace Mono.Linker.Dataflow
 		private static void ScanStloc (
 			Instruction operation,
 			BasicBlockDataFlowState<MultiValue, FeatureContext, ValueSetLattice<SingleValue>, FeatureContextLattice> state,
-			MethodBody methodBody)
+			MethodIL methodIL)
 		{
 			MultiValue valueToStore = PopUnknown (state, 1);
-			VariableDefinition localDef = GetLocalDef (operation, methodBody.Variables);
+			VariableDefinition localDef = GetLocalDef (operation, methodIL.Variables);
 			if (localDef == null) {
 				throw new InvalidOperationException ("Invalid local variable index");
 			}
@@ -700,7 +700,7 @@ namespace Mono.Linker.Dataflow
 			int countToPop = 0;
 			if (!isNewObj && methodCalled.HasThis && !methodCalled.ExplicitThis)
 				countToPop++;
-			countToPop += methodCalled.Parameters.Count;
+			countToPop += methodCalled.GetMetadataParametersCount ();
 
 			ValueNodeList methodParams = new ValueNodeList (countToPop);
 			for (int iParam = 0; iParam < countToPop; ++iParam) {
@@ -766,7 +766,7 @@ namespace Mono.Linker.Dataflow
 					if (parameter.GetReferenceKind () is not (ReferenceKind.Ref or ReferenceKind.Out))
 						continue;
 					var newByRefValue = _context.Annotations.FlowAnnotations.GetMethodParameterValue (parameter);
-					StoreInReference (methodArguments[(int) parameter.Index], newByRefValue, callingMethodBody.Method, operation, state)	;
+					StoreInReference (methodArguments[(int) parameter.Index], newByRefValue, callingMethodBody.Method, operation, state);
 				}
 			} else {
 				// We couldn't resolve the method, so we put unknown values into the ref and out arguments
