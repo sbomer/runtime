@@ -27,7 +27,9 @@ namespace Mono.Linker.Tests
 
 			if (member.MetadataToken.TokenType == TokenType.Method) {
 				ControlFlowGraph cfg = default;
-				ControlFlowGraph.TryCreate ((member as MethodReference).Resolve ().Body, out cfg);
+				var method = (MethodDefinition) ((member as MethodReference).Resolve ());
+				var methodIL = MethodIL.Create (method.Body);
+				ControlFlowGraph.TryCreate (methodIL, out cfg);
 				Assert.AreEqual (expectedDisplayName, cfg.ToString ());
 			}
 		}
