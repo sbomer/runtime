@@ -218,8 +218,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			nameof (LocalDataFlow) + "." + nameof (GetWithPublicFields) + "()")]
 		// ILLink produces extraneous warnings
 		[ExpectedWarning ("IL2072", nameof (DataFlowStringExtensions) + "." + nameof (DataFlowStringExtensions.RequiresPublicFields) + "(String)",
-			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()",
-			ProducedBy = Tool.Trimmer)]
+			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()", Tool.Trimmer, "")]
 		public static void TestBranchMergeFinally ()
 		{
 			string str = GetWithPublicMethods ();
@@ -245,11 +244,6 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			return;
 		}
 
-		public static void TestBranchIf ()
-		{
-			string str = GetWithPublicMethods ();
-			if (String.Empty.Length == 0) {
-				str = GetWithPublicFields ();
 				str.RequiresPublicFields ();
 			}
 		}
@@ -291,8 +285,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 
 		// Analyzer gets this right (no warning), but trimmer merges all branches going forward.
 		[ExpectedWarning ("IL2072", nameof (DataFlowStringExtensions) + "." + nameof (DataFlowStringExtensions.RequiresPublicFields),
-			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()",
-			ProducedBy = Tool.Trimmer)]
+			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()", Tool.Trimmer, "")]
 		public static void TestBranchTry ()
 		{
 			string str = GetWithPublicMethods ();
@@ -308,8 +301,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 
 		// Analyzer gets this right (no warning), but trimmer merges all branches going forward.
 		[ExpectedWarning ("IL2072", nameof (DataFlowStringExtensions) + "." + nameof (DataFlowStringExtensions.RequiresPublicFields),
-			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()",
-			ProducedBy = Tool.Trimmer)]
+			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()", Tool.Trimmer, "")]
 		public static void TestBranchCatch ()
 		{
 			string str = GetWithPublicMethods ();
@@ -324,8 +316,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 
 		// Analyzer gets this right (no warning), but trimmer merges all branches going forward.
 		[ExpectedWarning ("IL2072", nameof (DataFlowStringExtensions) + "." + nameof (DataFlowStringExtensions.RequiresPublicFields),
-			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()",
-			ProducedBy = Tool.Trimmer)]
+			nameof (LocalDataFlow) + "." + nameof (GetWithPublicMethods) + "()", Tool.Trimmer, "")]
 		public static void TestBranchFinally ()
 		{
 			string str = GetWithPublicMethods ();
@@ -411,10 +402,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			}
 		}
 
-		// https://github.com/dotnet/linker/issues/2273
 		// Analyzer doesn't see through foreach over array at all -  will not warn
-		[ExpectedWarning ("IL2063", ProducedBy = Tool.Trimmer)] // The types loaded from the array don't have annotations, so the "return" should warn
-		[ExpectedWarning ("IL2073", ProducedBy = Tool.Analyzer)] // Analyzer tracks resultType as the value from IEnumerable.Current.get()
+		[ExpectedWarning ("IL2063", Tool.Trimmer, "https://github.com/dotnet/runtime/issues/96646")] // The types loaded from the array don't have annotations, so the "return" should warn
+		[ExpectedWarning ("IL2073", Tool.Analyzer, "https://github.com/dotnet/runtime/issues/96646")] // Analyzer tracks resultType as the value from IEnumerable.Current.get()
 		[return: DynamicallyAccessedMembers (DynamicallyAccessedMemberTypes.PublicMethods)]
 		public static Type TestBackwardEdgeWithLdElem (Type[] types = null)
 		{
