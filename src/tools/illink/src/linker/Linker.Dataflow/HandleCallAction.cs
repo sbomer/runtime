@@ -59,7 +59,7 @@ namespace ILLink.Shared.TrimAnalysis
 
 			switch (intrinsicId) {
 			case IntrinsicId.None: {
-					if (ReflectionMethodBodyScanner.IsPInvokeDangerous (calledMethod.Method, _context, out bool comDangerousMethod)) {
+					if (ComHandler.IsPInvokeDangerous (calledMethod.Method, _context, out bool comDangerousMethod)) {
 						Debug.Assert (comDangerousMethod); // Currently COM dangerous is the only one we detect
 						_diagnosticContext.AddDiagnostic (DiagnosticId.CorrectnessOfCOMCannotBeGuaranteed, calledMethod.GetDisplayName ());
 					}
@@ -150,7 +150,7 @@ namespace ILLink.Shared.TrimAnalysis
 								.ApplyDynamicallyAccessedMembersToTypeHierarchy (staticType);
 
 							// Return a value which is "unknown type" with annotation. For now we'll use the return value node
-							// for the method, which means we're loosing the information about which staticType this
+							// for the method, which means we're losing the information about which staticType this
 							// started with. For now we don't need it, but we can add it later on.
 							AddReturnValue (_context.Annotations.FlowAnnotations.GetMethodReturnValue (calledMethod, _isNewObj, annotation));
 						}

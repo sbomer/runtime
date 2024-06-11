@@ -558,8 +558,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 				arr[0].RequiresAll ();
 			}
 
-			// Linker produces incomplete set of IL2072 warnings https://github.com/dotnet/linker/issues/2158
-			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), ProducedBy = Tool.Analyzer)]
+			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer, "https://github.com/dotnet/linker/issues/2158")]
 			[ExpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll))]
 			static void TestNullCoalescingAssignment ()
 			{

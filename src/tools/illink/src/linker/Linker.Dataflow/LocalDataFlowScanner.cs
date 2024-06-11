@@ -692,11 +692,8 @@ namespace Mono.Linker.Dataflow
 		private static ValueNodeList PopCallArguments (
 			BasicBlockDataFlowState<MultiValue, FeatureContext, ValueSetLattice<SingleValue>, FeatureContextLattice> state,
 			MethodReference methodCalled,
-			bool isNewObj,
-			out SingleValue? newObjValue)
+			bool isNewObj)
 		{
-			newObjValue = null;
-
 			int countToPop = 0;
 			if (!isNewObj && methodCalled.HasThis && !methodCalled.ExplicitThis)
 				countToPop++;
@@ -709,8 +706,7 @@ namespace Mono.Linker.Dataflow
 			}
 
 			if (isNewObj) {
-				newObjValue = UnknownValue.Instance;
-				methodParams.Add (newObjValue);
+				methodParams.Add (UnknownValue.Instance);
 			}
 			methodParams.Reverse ();
 			return methodParams;
@@ -788,33 +784,16 @@ namespace Mono.Linker.Dataflow
 
 			bool isNewObj = operation.OpCode.Code == Code.Newobj;
 
-			SingleValue? newObjValue;
-			ValueNodeList methodArguments = PopCallArguments (state, calledMethod, isNewObj, out newObjValue);
+			ValueNodeList methodArguments = PopCallArguments (state, calledMethod, isNewObj);
 
 			var dereferencedMethodParams = new List<MultiValue> ();
 			foreach (var argument in methodArguments)
 				dereferencedMethodParams.Add (DereferenceValue (argument, state));
-			MultiValue methodReturnValue;
-			bool handledFunction = _handler.HandleCall (
+			MultiValue methodReturnValue = _handler.HandleCall (
 				callingMethodBody,
 				calledMethod,
 				operation,
-				new ValueNodeList (dereferencedMethodParams),
-				out methodReturnValue);
-
-			// Handle the return value or newobj result
-			if (!handledFunction) {
-				if (isNewObj) {
-					if (newObjValue == null)
-						methodReturnValue = new MultiValue (UnknownValue.Instance);
-					else
-						methodReturnValue = newObjValue;
-				} else {
-					if (!calledMethod.ReturnsVoid ()) {
-						methodReturnValue = UnknownValue.Instance;
-					}
-				}
-			}
+				new ValueNodeList (dereferencedMethodParams));
 
 			if (isNewObj || !calledMethod.ReturnsVoid ())
 				state.Push (methodReturnValue);

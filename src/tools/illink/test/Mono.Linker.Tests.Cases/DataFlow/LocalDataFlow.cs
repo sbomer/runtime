@@ -244,6 +244,10 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			return;
 		}
 
+		public static void TestBranchIf ()
+		{
+			string str = GetWithPublicMethods ();
+			if (String.Empty.Length == 0) {
 				str.RequiresPublicFields ();
 			}
 		}

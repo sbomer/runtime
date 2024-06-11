@@ -3610,7 +3610,7 @@ namespace Mono.Linker.Steps
 
 			requiresReflectionMethodBodyScanner =
 				ReflectionDataFlowAnalysis.RequiresReflectionMethodBodyScannerForMethodBody (Context, methodIL.Method);
-			ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForMethodBody (Context, methodIL.Method);
+			MessageOrigin ilOrigin = new MessageOrigin (methodIL.Method);
 			foreach (Instruction instruction in methodIL.Instructions)
 				MarkInstruction (instruction, methodIL.Method, ref requiresReflectionMethodBodyScanner, ref ilOrigin);
 
