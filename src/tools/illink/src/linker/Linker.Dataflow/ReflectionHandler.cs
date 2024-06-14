@@ -120,7 +120,7 @@ namespace Mono.Linker.Dataflow
 
 			var handleCallAction = new HandleCallAction (context, operation, markStep, reflectionMarker, diagnosticContext, callingMethodDefinition, calledMethod);
 			var intrinsicId = Intrinsics.GetIntrinsicIdForMethod (calledMethodDefinition);
-			if (!handleCallAction.Invoke (callingMethodDefinition, instanceValue, argumentValues, intrinsicId, out MultiValue methodReturnValue))
+			if (!handleCallAction.Invoke (calledMethodDefinition, instanceValue, argumentValues, intrinsicId, out MultiValue methodReturnValue))
 				throw new NotImplementedException ($"Unhandled intrinsic: {intrinsicId}");
 			return methodReturnValue;
 		}

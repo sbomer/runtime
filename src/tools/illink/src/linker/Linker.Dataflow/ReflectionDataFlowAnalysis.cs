@@ -34,7 +34,7 @@ namespace Mono.Linker.Dataflow
 		public ReflectionDataFlowAnalysis (LinkContext context)
 			: base (new (default (ValueSetLattice<SingleValue>)), new BasicBlockState<MultiValue, FeatureContext> (default (MultiValue)))
 		{
-			_interproceduralStateLattice = default;
+			_interproceduralStateLattice = new InterproceduralStateLattice (default, default, context);
 			_context = context;
 			_trimAnalysisPatternStore = new TrimAnalysisPatternStore (this.lattice.LocalsLattice.ValueLattice, context);
 		}
@@ -51,7 +51,7 @@ namespace Mono.Linker.Dataflow
 
 				// Flow state through all methods encountered so far, as long as there
 				// are changes discovered in the hoisted local state on entry to any method.
-				Debug.Assert (oldInterproceduralState.MethodBodies.IsUnknown ());
+				Debug.Assert (!oldInterproceduralState.MethodBodies.IsUnknown ());
 				foreach (var methodBodyValue in oldInterproceduralState.MethodBodies.GetKnownValues ())
 					AnalyzeMethod (methodBodyValue, parent, ref interproceduralState);
 			}
