@@ -225,32 +225,32 @@ namespace Mono.Linker.Dataflow
 			int blockStart = 0;
 
 			// Add extra first block
-			AddBlock (methodBody, blocks, firstInstructionToBlock, -1, -1);
+			AddBlock (-1, -1);
 
 			var leaders = methodBody.GetInitialBasicBlockInstructions ();
 
 			for (int i = 1; i < methodBody.Instructions.Count; i++) {
 				if (leaders.Contains (methodBody.Instructions[i].Offset)) {
-					AddBlock (methodBody, blocks, firstInstructionToBlock, blockStart, i - 1);
+					AddBlock (blockStart, i - 1);
 					blockStart = i;
 				}
 			}
 
-			AddBlock (methodBody, blocks, firstInstructionToBlock, blockStart, methodBody.Instructions.Count - 1);
+			AddBlock (blockStart, methodBody.Instructions.Count - 1);
 
 			// Add extra last block
-			AddBlock (methodBody, blocks, firstInstructionToBlock, -1, -1);
+			AddBlock (-1, -1);
 
 			return blocks;
-		}
 
-		private static void AddBlock (MethodIL methodBody, List<BasicBlock> blocks, Dictionary<int, BasicBlock> firstInstructionToBlock, int ilStart, int ilEnd)
-		{
-			var block = new BasicBlock (methodBody, blocks.Count, ilStart, ilEnd);
-			blocks.Add (block);
+			void AddBlock (int ilStart, int ilEnd)
+			{
+				var block = new BasicBlock (methodBody, blocks.Count, ilStart, ilEnd);
+				blocks.Add (block);
 
-			if (ilStart >= 0) {
-				firstInstructionToBlock[methodBody.Instructions[ilStart].Offset] = block;
+				if (ilStart >= 0) {
+					firstInstructionToBlock[methodBody.Instructions[ilStart].Offset] = block;
+				}
 			}
 		}
 	}
