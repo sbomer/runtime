@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Tracing;
 using System.Linq;
@@ -75,7 +76,8 @@ namespace Mono.Linker.Dataflow
 	public struct ControlFlowGraph : IControlFlowGraph<BasicBlock, Region>
 	{
 		private readonly List<BasicBlock> _blocks;
-		private readonly List<List<int>> _predecessors;
+		private readonly List<List<(int Source, bool IsConditional)>> _predecessors;
+		private readonly List<List<(int Target, bool IsConditional)>> _successors;
 
 		public override string ToString ()
 		{
@@ -94,10 +96,11 @@ namespace Mono.Linker.Dataflow
 
 		public BasicBlock Entry => _blocks[0];
 
-		private ControlFlowGraph (List<BasicBlock> blocks, List<List<int>> predecessors)
+		private ControlFlowGraph (List<BasicBlock> blocks, (List<List<(int Source, bool IsConditional)>> Predecessors, List<List<(int Target, bool IsConditional)>> Successors) edges)
 		{
 			_blocks = blocks;
-			_predecessors = predecessors;
+			_predecessors = edges.Predecessors;
+			_successors = edges.Successors;
 		}
 
 		public static bool TryCreate (MethodIL method, out ControlFlowGraph cfg)
@@ -126,14 +129,29 @@ namespace Mono.Linker.Dataflow
 
 		public IEnumerable<ControlFlowBranch> GetPredecessors (BasicBlock block)
 		{
-			foreach (var prevBlockId in _predecessors[block.Id]) {
-				yield return new ControlFlowBranch (_blocks[prevBlockId], block, ImmutableArray<Region>.Empty, isConditional: false);
+			foreach (var prevBlock in _predecessors[block.Id]) {
+				yield return new ControlFlowBranch (_blocks[prevBlock.Source], block, ImmutableArray<Region>.Empty, prevBlock.IsConditional);
 			}
 		}
 
-		public ControlFlowBranch? GetConditionalSuccessor (BasicBlock block) => throw new NotImplementedException ();
+		public ControlFlowBranch? GetConditionalSuccessor (BasicBlock block) {
+			foreach (var nextBlock in _successors[block.Id]) {
+				if (nextBlock.IsConditional) {
+					return new ControlFlowBranch (block, _blocks[nextBlock.Target], ImmutableArray<Region>.Empty, true);
+				}
+			}
+			return null;
+		}
 
-		public ControlFlowBranch? GetFallThroughSuccessor (BasicBlock block) => throw new NotImplementedException ();
+		public ControlFlowBranch? GetFallThroughSuccessor (BasicBlock block) {
+			foreach (var nextBlock in _successors[block.Id]) {
+				if (!nextBlock.IsConditional) {
+					return new ControlFlowBranch (block, _blocks[nextBlock.Target], ImmutableArray<Region>.Empty, false);
+				}
+			}
+			return null;
+		}
+
 		public bool TryGetEnclosingTryOrCatchOrFilter (BasicBlock block, [NotNullWhen (true)] out Region tryOrCatchOrFilterRegion)
 		{
 			return false;
@@ -174,16 +192,18 @@ namespace Mono.Linker.Dataflow
 			throw new NotImplementedException ();
 		}
 
-		public static List<List<int>> GetEdges (Dictionary<int, BasicBlock> firstInstructionToBlock, List<BasicBlock> blocks)
+		public static (List<List<(int Source, bool IsConditional)>>, List<List<(int Target, bool IsConditional)>>) GetEdges (Dictionary<int, BasicBlock> firstInstructionToBlock, List<BasicBlock> blocks)
 		{
-			var predecessors = new List<List<int>> (blocks.Count);
+			var predecessors = new List<List<(int Source, bool IsConditional)>> (blocks.Count);
+			var successors = new List<List<(int Target, bool IsConditional)>> (blocks.Count);
 
 			foreach (var _ in blocks) {
-				predecessors.Add (new List<int> ());
+				predecessors.Add (new List<(int Source, bool IsConditional)> ());
+				successors.Add (new List<(int Target, bool IsConditional)> ());
 			}
 
 			//Add initial block connections
-			predecessors[1].Add (0);
+			AddEdge (0, 1, false);
 
 			foreach (var basicBlock in blocks) {
 
@@ -191,32 +211,45 @@ namespace Mono.Linker.Dataflow
 					continue;
 				}
 
-				// Handle conditional branches
+				// Handle branches
 				if (basicBlock.LastInstruction.OpCode.IsControlFlowInstruction ()) {
 					var jumpTargets = basicBlock.LastInstruction.GetJumpTargets ();
+					bool isConditionalBranch = basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Cond_Branch;
 
 					foreach (var jumpTarget in jumpTargets) {
 						var targetId = firstInstructionToBlock[jumpTarget.Offset].Id;
-						predecessors[targetId].Add (basicBlock.Id);
+						AddEdge (basicBlock.Id, targetId, isConditionalBranch);
 					}
 
-					if (basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Cond_Branch && basicBlock.LastInstruction.Next != null) {
+					if (isConditionalBranch && basicBlock.LastInstruction.Next != null) {
 						var targetId = firstInstructionToBlock[basicBlock.LastInstruction.Next.Offset].Id;
-						predecessors[targetId].Add (basicBlock.Id);
+						AddEdge (basicBlock.Id, targetId, false);
 					}
 				}
 				// Handle last block predecessors
 				else if (basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Return) {
-					predecessors[blocks.Count - 1].Add (basicBlock.Id);
+					AddEdge (basicBlock.Id, blocks.Count - 1, false);
 				}
 				// Handle fall through
 				else if ((basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Next || basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Call) && basicBlock.LastInstruction.Next != null) {
 					var targetId = firstInstructionToBlock[basicBlock.LastInstruction.Next.Offset].Id;
-					predecessors[targetId].Add (basicBlock.Id);
+					AddEdge (basicBlock.Id, targetId, false);
 				}
 			}
 
-			return predecessors;
+			return (predecessors, successors);
+
+			void AddEdge (int source, int target, bool isConditional)
+			{
+				predecessors[target].Add ((source, isConditional));
+				successors[source].Add ((target, isConditional));
+				// At most two branch targets
+				Debug.Assert (successors[source].Count <= 2);
+				if (successors[source].Count == 2) {
+					// And at most one each of conditional or fall-through branch
+					Debug.Assert (successors[source][0].IsConditional != successors[source][1].IsConditional);
+				}
+			}
 		}
 
 		private static List<BasicBlock> ConstructBasicBlocks (MethodIL methodBody, Dictionary<int, BasicBlock> firstInstructionToBlock)
