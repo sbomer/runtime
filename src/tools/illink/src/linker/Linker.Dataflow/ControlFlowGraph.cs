@@ -76,8 +76,8 @@ namespace Mono.Linker.Dataflow
 	public struct ControlFlowGraph : IControlFlowGraph<BasicBlock, Region>
 	{
 		private readonly List<BasicBlock> _blocks;
-		private readonly List<List<(int Source, bool IsConditional)>> _predecessors;
-		private readonly List<List<(int Target, bool IsConditional)>> _successors;
+		private readonly List<List<(int Source, ConditionKind ConditionKind)>> _predecessors;
+		private readonly List<List<(int Target, ConditionKind ConditionKind)>> _successors;
 
 		public override string ToString ()
 		{
@@ -96,7 +96,7 @@ namespace Mono.Linker.Dataflow
 
 		public BasicBlock Entry => _blocks[0];
 
-		private ControlFlowGraph (List<BasicBlock> blocks, (List<List<(int Source, bool IsConditional)>> Predecessors, List<List<(int Target, bool IsConditional)>> Successors) edges)
+		private ControlFlowGraph (List<BasicBlock> blocks, (List<List<(int Source, ConditionKind ConditionKind)>> Predecessors, List<List<(int Target, ConditionKind ConditionKind)>> Successors) edges)
 		{
 			_blocks = blocks;
 			_predecessors = edges.Predecessors;
@@ -129,27 +129,16 @@ namespace Mono.Linker.Dataflow
 
 		public IEnumerable<ControlFlowBranch> GetPredecessors (BasicBlock block)
 		{
-			foreach (var prevBlock in _predecessors[block.Id]) {
-				yield return new ControlFlowBranch (_blocks[prevBlock.Source], block, ImmutableArray<Region>.Empty, prevBlock.IsConditional);
+			foreach (var pred in _predecessors[block.Id]) {
+				yield return new ControlFlowBranch (_blocks[pred.Source], block, ImmutableArray<Region>.Empty, pred.ConditionKind);
 			}
 		}
 
-		public ControlFlowBranch? GetConditionalSuccessor (BasicBlock block) {
-			foreach (var nextBlock in _successors[block.Id]) {
-				if (nextBlock.IsConditional) {
-					return new ControlFlowBranch (block, _blocks[nextBlock.Target], ImmutableArray<Region>.Empty, true);
-				}
+		public IEnumerable<ControlFlowBranch> GetSuccessors (BasicBlock block)
+		{
+			foreach (var succ in _successors[block.Id]) {
+				yield return new ControlFlowBranch (block, _blocks[succ.Target], ImmutableArray<Region>.Empty, succ.ConditionKind);
 			}
-			return null;
-		}
-
-		public ControlFlowBranch? GetFallThroughSuccessor (BasicBlock block) {
-			foreach (var nextBlock in _successors[block.Id]) {
-				if (!nextBlock.IsConditional) {
-					return new ControlFlowBranch (block, _blocks[nextBlock.Target], ImmutableArray<Region>.Empty, false);
-				}
-			}
-			return null;
 		}
 
 		public bool TryGetEnclosingTryOrCatchOrFilter (BasicBlock block, [NotNullWhen (true)] out Region tryOrCatchOrFilterRegion)
@@ -192,18 +181,18 @@ namespace Mono.Linker.Dataflow
 			throw new NotImplementedException ();
 		}
 
-		public static (List<List<(int Source, bool IsConditional)>>, List<List<(int Target, bool IsConditional)>>) GetEdges (Dictionary<int, BasicBlock> firstInstructionToBlock, List<BasicBlock> blocks)
+		public static (List<List<(int Source, ConditionKind ConditionKind)>>, List<List<(int Target, ConditionKind ConditionKind)>>) GetEdges (Dictionary<int, BasicBlock> firstInstructionToBlock, List<BasicBlock> blocks)
 		{
-			var predecessors = new List<List<(int Source, bool IsConditional)>> (blocks.Count);
-			var successors = new List<List<(int Target, bool IsConditional)>> (blocks.Count);
+			var predecessors = new List<List<(int Source, ConditionKind ConditionKind)>> (blocks.Count);
+			var successors = new List<List<(int Target, ConditionKind ConditionKind)>> (blocks.Count);
 
 			foreach (var _ in blocks) {
-				predecessors.Add (new List<(int Source, bool IsConditional)> ());
-				successors.Add (new List<(int Target, bool IsConditional)> ());
+				predecessors.Add (new List<(int Source, ConditionKind ConditionKind)> ());
+				successors.Add (new List<(int Target, ConditionKind ConditionKind)> ());
 			}
 
 			//Add initial block connections
-			AddEdge (0, 1, false);
+			AddEdge (0, 1, ConditionKind.Unconditional);
 
 			foreach (var basicBlock in blocks) {
 
@@ -211,44 +200,56 @@ namespace Mono.Linker.Dataflow
 					continue;
 				}
 
+				var conditionKind = ConditionKind.Unconditional;
 				// Handle branches
 				if (basicBlock.LastInstruction.OpCode.IsControlFlowInstruction ()) {
 					var jumpTargets = basicBlock.LastInstruction.GetJumpTargets ();
 					bool isConditionalBranch = basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Cond_Branch;
+					if (isConditionalBranch) {
+						conditionKind = basicBlock.LastInstruction.OpCode.Code switch {
+							Code.Brtrue => ConditionKind.WhenTrue,
+							Code.Brtrue_S => ConditionKind.WhenTrue,
+							Code.Brfalse => ConditionKind.WhenFalse,
+							Code.Brfalse_S => ConditionKind.WhenFalse,
+							_ => ConditionKind.Unknown
+						};
+					}
 
 					foreach (var jumpTarget in jumpTargets) {
 						var targetId = firstInstructionToBlock[jumpTarget.Offset].Id;
-						AddEdge (basicBlock.Id, targetId, isConditionalBranch);
+						AddEdge (basicBlock.Id, targetId, conditionKind);
 					}
 
 					if (isConditionalBranch && basicBlock.LastInstruction.Next != null) {
 						var targetId = firstInstructionToBlock[basicBlock.LastInstruction.Next.Offset].Id;
-						AddEdge (basicBlock.Id, targetId, false);
+						AddEdge (basicBlock.Id, targetId, conditionKind);
 					}
 				}
 				// Handle last block predecessors
 				else if (basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Return) {
-					AddEdge (basicBlock.Id, blocks.Count - 1, false);
+					AddEdge (basicBlock.Id, blocks.Count - 1, conditionKind);
 				}
 				// Handle fall through
 				else if ((basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Next || basicBlock.LastInstruction.OpCode.FlowControl == FlowControl.Call) && basicBlock.LastInstruction.Next != null) {
 					var targetId = firstInstructionToBlock[basicBlock.LastInstruction.Next.Offset].Id;
-					AddEdge (basicBlock.Id, targetId, false);
+					AddEdge (basicBlock.Id, targetId, conditionKind);
 				}
 			}
 
 			return (predecessors, successors);
 
-			void AddEdge (int source, int target, bool isConditional)
+			void AddEdge (int source, int target, ConditionKind conditionKind)
 			{
-				predecessors[target].Add ((source, isConditional));
-				successors[source].Add ((target, isConditional));
-				// At most two branch targets
-				Debug.Assert (successors[source].Count <= 2);
-				if (successors[source].Count == 2) {
-					// And at most one each of conditional or fall-through branch
-					Debug.Assert (successors[source][0].IsConditional != successors[source][1].IsConditional);
+				if (conditionKind is ConditionKind.WhenTrue or ConditionKind.WhenFalse) {
+					// WhenTrue/WhenFalse branches should have exactly two targets
+					if (successors[source].Count == 1) {
+						var existingEdge = successors[source][0];
+						Debug.Assert (existingEdge.ConditionKind is ConditionKind.WhenTrue or ConditionKind.WhenFalse);
+						Debug.Assert (existingEdge.ConditionKind != conditionKind);
+					}
 				}
+				predecessors[target].Add ((source, conditionKind));
+				successors[source].Add ((target, conditionKind));
 			}
 		}
 
