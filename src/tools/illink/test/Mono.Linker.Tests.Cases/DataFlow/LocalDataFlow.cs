@@ -248,6 +248,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 		{
 			string str = GetWithPublicMethods ();
 			if (String.Empty.Length == 0) {
+				str = GetWithPublicFields ();
 				str.RequiresPublicFields ();
 			}
 		}

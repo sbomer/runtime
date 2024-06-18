@@ -282,6 +282,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			}
 
 			[ExpectedWarning ("IL2070")]
+			[ExpectedWarning ("IL2075")]
 			static void EnumerateInterfacesOnBaseTypes_Unannotated (Type type)
 			{
 				Type? t = type;
