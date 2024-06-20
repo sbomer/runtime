@@ -222,7 +222,11 @@ namespace Mono.Linker.Dataflow
 
 					if (isConditionalBranch && basicBlock.LastInstruction.Next != null) {
 						var targetId = firstInstructionToBlock[basicBlock.LastInstruction.Next.Offset].Id;
-						AddEdge (basicBlock.Id, targetId, conditionKind);
+						AddEdge (basicBlock.Id, targetId, conditionKind switch {
+							ConditionKind.WhenTrue => ConditionKind.WhenFalse,
+							ConditionKind.WhenFalse => ConditionKind.WhenTrue,
+							_ => ConditionKind.Unknown
+						});
 					}
 				}
 				// Handle last block predecessors
