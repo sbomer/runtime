@@ -835,7 +835,7 @@ namespace Mono.Linker.Dataflow
 						MarkArrayValuesAsUnknown (arrValue);
 					} else {
 						// When we know the index, we can record the value at that index.
-						StoreMethodLocalValue (arrValue.IndexValues, valueToStore, indexToStoreAtInt.Value, block.Id, MaxTrackedArrayValues);
+						StoreMethodLocalValue (arrValue.IndexValues, ArrayValue.SanitizeArrayElementValue (valueToStore), indexToStoreAtInt.Value, block.Id, MaxTrackedArrayValues);
 					}
 				}
 			}
