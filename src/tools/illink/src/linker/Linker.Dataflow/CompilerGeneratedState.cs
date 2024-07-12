@@ -346,7 +346,7 @@ namespace Mono.Linker.Dataflow
 					for (int i = 0; i < typeRef.GenericArguments.Count; i++) {
 						var typeArg = typeRef.GenericArguments[i];
 						// Start with the existing parameters, in case we can't find the mapped one
-						ICustomAttributeProvider userAttrs = generatedType.GenericParameters[i];
+						ICustomAttributeProvider userAttr = generatedType.GenericParameters[i];
 						// The type parameters of the state machine types are alpha renames of the
 						// the method parameters, so the type ref should always be a GenericParameter. However,
 						// in the case of nesting, there may be multiple renames, so if the parameter is a method
@@ -354,16 +354,16 @@ namespace Mono.Linker.Dataflow
 						// the original owner of that state machine.
 						if (typeArg is GenericParameter { Owner: { } owner } param) {
 							if (owner is MethodReference) {
-								userAttrs = param;
+								userAttr = param;
 							} else {
 								// Must be a type ref
 								var owningRef = (TypeReference) owner;
 								if (!CompilerGeneratedNames.IsStateMachineOrDisplayClass (owningRef.Name)) {
-									userAttrs = param;
+									userAttr = param;
 								} else if (context.TryResolve ((TypeReference) param.Owner) is { } owningType) {
 									MapGeneratedTypeTypeParameters (owningType, generatedTypeToTypeArgs, context);
 									if (generatedTypeToTypeArgs[owningType].OriginalAttributes is { } owningAttrs) {
-										userAttrs = owningAttrs[param.Position];
+										userAttr = owningAttrs[param.Position];
 									} else {
 										Debug.Assert (false, "This should be impossible in valid code");
 									}
@@ -371,7 +371,7 @@ namespace Mono.Linker.Dataflow
 							}
 						}
 
-						typeArgs[i] = userAttrs;
+						typeArgs[i] = userAttr;
 					}
 
 					generatedTypeToTypeArgs[generatedType] = typeInfo with { OriginalAttributes = typeArgs };
