@@ -157,11 +157,12 @@ namespace Mono.Linker.Dataflow
 								// Find calls to state machine constructors that occur outside the type
 								if (referencedMethod.IsConstructor &&
 									referencedMethod.DeclaringType is var generatedType &&
+									generatedType.HasGenericParameters &&
 									// Don't consider calls in the same type, like inside a static constructor
 									method.DeclaringType != generatedType &&
 									CompilerGeneratedNames.IsLambdaDisplayClass (generatedType.Name)) {
 									// fill in null for now, attribute providers will be filled in later
-									if (!generatedTypeToTypeArgs.TryAdd (generatedType, new TypeArgumentInfo (method, null))) {
+									if (!generatedTypeToTypeArgs.TryAdd (generatedType, new TypeArgumentInfo (method, instruction, null))) {
 										var alreadyAssociatedMethod = generatedTypeToTypeArgs[generatedType].CreatingMethod;
 										_context.LogWarning (new MessageOrigin (method), DiagnosticId.MethodsAreAssociatedWithUserMethod, method.GetDisplayName (), alreadyAssociatedMethod.GetDisplayName (), generatedType.GetDisplayName ());
 									}
@@ -192,6 +193,7 @@ namespace Mono.Linker.Dataflow
 								if (field.DeclaringType is var generatedType &&
 									// Don't consider field accesses in the same type, like inside a static constructor
 									method.DeclaringType != generatedType &&
+									generatedType.HasGenericParameters &&
 									CompilerGeneratedNames.IsLambdaDisplayClass (generatedType.Name)) {
 									if (!generatedTypeToTypeArgs.TryAdd (generatedType, new TypeArgumentInfo (method, null))) {
 										// It's expected that there may be multiple methods associated with the same static closure environment.
@@ -218,7 +220,8 @@ namespace Mono.Linker.Dataflow
 					}
 					// Already warned above if multiple methods map to the same type
 					// Fill in null for argument providers now, the real providers will be filled in later
-					generatedTypeToTypeArgs[stateMachineType] = new TypeArgumentInfo (method, null);
+					if (stateMachineType.HasGenericParameters)
+						generatedTypeToTypeArgs[stateMachineType] = new TypeArgumentInfo (method, "state machine method", null);
 				}
 			}
 
@@ -446,6 +449,7 @@ namespace Mono.Linker.Dataflow
 		/// </summary>
 		public IReadOnlyList<ICustomAttributeProvider>? GetGeneratedTypeAttributes (TypeDefinition generatedType)
 		{
+			Debug.Assert (generatedType.HasGenericParameters);
 			Debug.Assert (CompilerGeneratedNames.IsStateMachineOrDisplayClass (generatedType.Name));
 
 			var typeToCache = GetCompilerGeneratedStateForType (generatedType);
