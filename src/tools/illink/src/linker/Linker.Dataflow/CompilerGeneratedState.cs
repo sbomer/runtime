@@ -161,8 +161,8 @@ namespace Mono.Linker.Dataflow
 									// Don't consider calls in the same type, like inside a static constructor
 									method.DeclaringType != generatedType &&
 									CompilerGeneratedNames.IsLambdaDisplayClass (generatedType.Name)) {
-									// fill in null for now, attribute providers will be filled in later
-									if (!generatedTypeToTypeArgs.TryAdd (generatedType, new TypeArgumentInfo (method, instruction, null))) {
+									var typeParams = GetTypeParametersFromInstruction (generatedType, instruction, _context);
+									if (!generatedTypeToTypeArgs.TryAdd (generatedType, new TypeArgumentInfo (method, typeParams))) {
 										var alreadyAssociatedMethod = generatedTypeToTypeArgs[generatedType].CreatingMethod;
 										_context.LogWarning (new MessageOrigin (method), DiagnosticId.MethodsAreAssociatedWithUserMethod, method.GetDisplayName (), alreadyAssociatedMethod.GetDisplayName (), generatedType.GetDisplayName ());
 									}
@@ -195,7 +195,8 @@ namespace Mono.Linker.Dataflow
 									method.DeclaringType != generatedType &&
 									generatedType.HasGenericParameters &&
 									CompilerGeneratedNames.IsLambdaDisplayClass (generatedType.Name)) {
-									if (!generatedTypeToTypeArgs.TryAdd (generatedType, new TypeArgumentInfo (method, null))) {
+									var typeParams = GetTypeParametersFromInstruction (generatedType, instruction, _context);
+									if (!generatedTypeToTypeArgs.TryAdd (generatedType, new TypeArgumentInfo (method, typeParams))) {
 										// It's expected that there may be multiple methods associated with the same static closure environment.
 										// All of these methods will substitute the same type arguments into the closure environment
 										// (if it is generic). Don't warn.
@@ -221,7 +222,7 @@ namespace Mono.Linker.Dataflow
 					// Already warned above if multiple methods map to the same type
 					// Fill in null for argument providers now, the real providers will be filled in later
 					if (stateMachineType.HasGenericParameters)
-						generatedTypeToTypeArgs[stateMachineType] = new TypeArgumentInfo (method, "state machine method", null);
+						generatedTypeToTypeArgs[stateMachineType] = new TypeArgumentInfo (method, null);
 				}
 			}
 
@@ -332,93 +333,126 @@ namespace Mono.Linker.Dataflow
 				Debug.Assert (CompilerGeneratedNames.IsStateMachineOrDisplayClass (generatedType.Name));
 
 				var typeInfo = generatedTypeToTypeArgs[generatedType];
-				if (typeInfo.OriginalAttributes is not null) {
-					return;
+				var typeParams = typeInfo.OriginalAttributes;
+
+				if (typeParams is null) {
+					var method = typeInfo.CreatingMethod;
+					if (method.Body is { } body) {
+						var typeRef = ScanForInit (generatedType, body, context);
+						if (typeRef is null)
+							return;
+						typeParams = GetTypeParametersFromTypeRef (generatedType, typeRef);
+					}
 				}
-				var method = typeInfo.CreatingMethod;
-				if (method.Body is { } body) {
-					var typeArgs = new ICustomAttributeProvider[generatedType.GenericParameters.Count];
-					var typeRef = ScanForInit (generatedType, body, context);
-					if (typeRef is null) {
-						return;
-					}
 
-					for (int i = 0; i < typeRef.GenericArguments.Count; i++) {
-						var typeArg = typeRef.GenericArguments[i];
-						// Start with the existing parameters, in case we can't find the mapped one
-						ICustomAttributeProvider userAttr = generatedType.GenericParameters[i];
-						// The type parameters of the state machine types are alpha renames of the
-						// the method parameters, so the type ref should always be a GenericParameter. However,
-						// in the case of nesting, there may be multiple renames, so if the parameter is a method
-						// we know we're done, but if it's another state machine, we have to keep looking to find
-						// the original owner of that state machine.
-						if (typeArg is GenericParameter { Owner: { } owner } param) {
-							if (owner is MethodReference) {
-								userAttr = param;
-							} else {
-								// Must be a type ref
-								var owningRef = (TypeReference) owner;
-								if (!CompilerGeneratedNames.IsStateMachineOrDisplayClass (owningRef.Name)) {
-									userAttr = param;
-								} else if (context.TryResolve ((TypeReference) param.Owner) is { } owningType) {
-									MapGeneratedTypeTypeParameters (owningType, generatedTypeToTypeArgs, context);
-									if (generatedTypeToTypeArgs[owningType].OriginalAttributes is { } owningAttrs) {
-										userAttr = owningAttrs[param.Position];
-									} else {
-										Debug.Assert (false, "This should be impossible in valid code");
-									}
-								}
-							}
-						}
+				if (typeParams is null)
+					return;
 
-						typeArgs[i] = userAttr;
-					}
+				var newTypeParams = new ICustomAttributeProvider[generatedType.GenericParameters.Count];
+				for (int i = 0; i < typeParams.Count; i++)
+					newTypeParams[i] = GetOriginalTypeParameter ((GenericParameter) typeParams[i]);
 
-					generatedTypeToTypeArgs[generatedType] = typeInfo with { OriginalAttributes = typeArgs };
+				generatedTypeToTypeArgs[generatedType] = typeInfo with { OriginalAttributes = newTypeParams };
+
+				GenericParameter GetOriginalTypeParameter (GenericParameter parameter)
+				{
+					// The type parameters of the state machine types are alpha renames of the
+					// the method parameters, so the type ref should always be a GenericParameter. However,
+					// in the case of nesting, there may be multiple renames, so if the parameter is a method
+					// we know we're done, but if it's another state machine, we have to keep looking to find
+					// the original owner of that state machine.
+
+					if (parameter.Owner is not TypeReference owner)
+						return parameter;
+
+					if (!CompilerGeneratedNames.IsStateMachineOrDisplayClass (owner.Name))
+						return parameter;
+
+					if (context.TryResolve (owner) is not { } owningType)
+						return parameter;
+
+					MapGeneratedTypeTypeParameters (owningType, generatedTypeToTypeArgs, context);
+					if (generatedTypeToTypeArgs[owningType].OriginalAttributes is { } owningAttrs)
+						return (GenericParameter) owningAttrs[parameter.Position];
+
+					Debug.Assert (false, "This should be impossible in valid code");
+					return parameter;
 				}
 			}
 
-			static GenericInstanceType? ScanForInit (
-				TypeDefinition compilerGeneratedType,
-				MethodBody body,
-				LinkContext context)
+			static GenericInstanceType? ScanForInit (TypeDefinition compilerGeneratedType, MethodBody body, LinkContext context)
 			{
 				foreach (var instr in context.GetMethodIL (body).Instructions) {
-					bool handled = false;
-					switch (instr.OpCode.Code) {
-					case Code.Initobj:
-					case Code.Newobj: {
-							if (instr.Operand is MethodReference { DeclaringType: GenericInstanceType typeRef }
-								&& compilerGeneratedType == context.TryResolve (typeRef)) {
-								return typeRef;
-							}
-							handled = true;
-						}
-						break;
-					case Code.Stsfld:
-					case Code.Ldsfld: {
-							if (instr.Operand is FieldReference { DeclaringType: GenericInstanceType typeRef }
-								&& compilerGeneratedType == context.TryResolve (typeRef)) {
-								return typeRef;
-							}
-							handled = true;
-						}
-						break;
-					}
+					if (CheckForInit (compilerGeneratedType, instr, context) is { } typeRef)
+						return typeRef;
+				}
+				return null;
+			}
 
-					// Also look for type substitutions into generic methods
-					// (such as AsyncTaskMethodBuilder::Start<TStateMachine>).
-					if (!handled && instr.OpCode.OperandType is OperandType.InlineMethod) {
-						if (instr.Operand is GenericInstanceMethod gim) {
-							foreach (var tr in gim.GenericArguments) {
-								if (tr is GenericInstanceType git && compilerGeneratedType == context.TryResolve (git)) {
-									return git;
-								}
+			static GenericInstanceType? CheckForInit (TypeDefinition compilerGeneratedType, Instruction instr, LinkContext context)
+			{
+				bool handled = false;
+				switch (instr.OpCode.Code) {
+				case Code.Initobj:
+				case Code.Newobj: {
+						if (instr.Operand is MethodReference { DeclaringType: GenericInstanceType typeRef }
+							&& compilerGeneratedType == context.TryResolve (typeRef)) {
+							return typeRef;
+						}
+						handled = true;
+					}
+					break;
+				case Code.Stsfld:
+				case Code.Ldsfld: {
+						if (instr.Operand is FieldReference { DeclaringType: GenericInstanceType typeRef }
+							&& compilerGeneratedType == context.TryResolve (typeRef)) {
+							return typeRef;
+						}
+						handled = true;
+					}
+					break;
+				}
+
+				// Also look for type substitutions into generic methods
+				// (such as AsyncTaskMethodBuilder::Start<TStateMachine>).
+				if (!handled && instr.OpCode.OperandType is OperandType.InlineMethod) {
+					if (instr.Operand is GenericInstanceMethod gim) {
+						foreach (var tr in gim.GenericArguments) {
+							if (tr is GenericInstanceType git && compilerGeneratedType == context.TryResolve (git)) {
+								return git;
 							}
 						}
 					}
 				}
+
 				return null;
+			}
+
+			static ICustomAttributeProvider[]? GetTypeParametersFromInstruction (
+				TypeDefinition generatedType,
+				Instruction instruction,
+				LinkContext context
+			)
+			{
+				var typeRef = CheckForInit (generatedType, instruction, context);
+				if (typeRef is null)
+					return null;
+				return GetTypeParametersFromTypeRef (generatedType, typeRef);
+			}
+
+			static ICustomAttributeProvider[] GetTypeParametersFromTypeRef (
+				TypeDefinition generatedType,
+				GenericInstanceType typeRef
+			)
+			{
+				ICustomAttributeProvider[]? typeParams = null;
+				typeParams = new ICustomAttributeProvider[generatedType.GenericParameters.Count];
+				for (int i = 0; i < typeRef.GenericArguments.Count; i++) {
+					typeParams[i] = typeRef.GenericArguments[i] is GenericParameter param
+						? param
+						: generatedType.GenericParameters[i];
+				}
+				return typeParams;
 			}
 		}
 
