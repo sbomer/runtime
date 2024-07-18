@@ -15,7 +15,7 @@ namespace Mono.Linker
 		// Returns the members of the type bound by memberTypes. For DynamicallyAccessedMemberTypes.All, this returns all members of the type and its
 		// nested types, including interface implementations, plus the same or any base types or implemented interfaces.
 		// DynamicallyAccessedMemberTypes.PublicNestedTypes and NonPublicNestedTypes do the same for members of the selected nested types.
-		public static IEnumerable<IMetadataTokenProvider> GetDynamicallyAccessedMembers (this TypeDefinition typeDefinition, LinkContext context, DynamicallyAccessedMemberTypes memberTypes, bool declaredOnly = false)
+		public static IEnumerable<IMetadataTokenProvider> GetDynamicallyAccessedMembers (this TypeReference typeDefinition, LinkContext context, DynamicallyAccessedMemberTypes memberTypes, bool declaredOnly = false)
 		{
 			if (memberTypes == DynamicallyAccessedMemberTypes.None)
 				yield break;
@@ -111,8 +111,11 @@ namespace Mono.Linker
 			}
 		}
 
-		public static IEnumerable<MethodDefinition> GetConstructorsOnType (this TypeDefinition type, Func<MethodDefinition, bool>? filter, BindingFlags? bindingFlags = null)
+		public static IEnumerable<MethodDefinition> GetConstructorsOnType (this TypeReference typeRef, Func<MethodDefinition, bool>? filter, BindingFlags? bindingFlags = null)
 		{
+			if (typeRef is not TypeDefinition type)
+				yield break;
+
 			foreach (var method in type.Methods) {
 				if (!method.IsConstructor)
 					continue;
@@ -136,9 +139,9 @@ namespace Mono.Linker
 			}
 		}
 
-		public static IEnumerable<MethodDefinition> GetMethodsOnTypeHierarchy (this TypeDefinition thisType, LinkContext context, Func<MethodDefinition, bool>? filter, BindingFlags? bindingFlags = null)
+		public static IEnumerable<MethodDefinition> GetMethodsOnTypeHierarchy (this TypeReference thisType, LinkContext context, Func<MethodDefinition, bool>? filter, BindingFlags? bindingFlags = null)
 		{
-			TypeDefinition? type = thisType;
+			TypeDefinition? type = thisType as TypeDefinition;
 			bool onBaseType = false;
 			while (type != null) {
 				foreach (var method in type.Methods) {
@@ -180,9 +183,9 @@ namespace Mono.Linker
 			}
 		}
 
-		public static IEnumerable<FieldDefinition> GetFieldsOnTypeHierarchy (this TypeDefinition thisType, LinkContext context, Func<FieldDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
+		public static IEnumerable<FieldDefinition> GetFieldsOnTypeHierarchy (this TypeReference thisType, LinkContext context, Func<FieldDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
 		{
-			TypeDefinition? type = thisType;
+			TypeDefinition? type = thisType as TypeDefinition;
 			bool onBaseType = false;
 			while (type != null) {
 				foreach (var field in type.Fields) {
@@ -220,9 +223,12 @@ namespace Mono.Linker
 			}
 		}
 
-		public static IEnumerable<TypeDefinition> GetNestedTypesOnType (this TypeDefinition type, Func<TypeDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
+		public static IEnumerable<TypeDefinition> GetNestedTypesOnType (this TypeReference type, Func<TypeDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
 		{
-			foreach (var nestedType in type.NestedTypes) {
+			if (type is not TypeDefinition typeDef)
+				yield break;
+
+			foreach (var nestedType in typeDef.NestedTypes) {
 				if (filter != null && !filter (nestedType))
 					continue;
 
@@ -240,9 +246,9 @@ namespace Mono.Linker
 			}
 		}
 
-		public static IEnumerable<PropertyDefinition> GetPropertiesOnTypeHierarchy (this TypeDefinition thisType, LinkContext context, Func<PropertyDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
+		public static IEnumerable<PropertyDefinition> GetPropertiesOnTypeHierarchy (this TypeReference thisType, LinkContext context, Func<PropertyDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
 		{
-			TypeDefinition? type = thisType;
+			TypeDefinition? type = thisType as TypeDefinition;
 			bool onBaseType = false;
 			while (type != null) {
 				foreach (var property in type.Properties) {
@@ -289,9 +295,9 @@ namespace Mono.Linker
 			}
 		}
 
-		public static IEnumerable<EventDefinition> GetEventsOnTypeHierarchy (this TypeDefinition thisType, LinkContext context, Func<EventDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
+		public static IEnumerable<EventDefinition> GetEventsOnTypeHierarchy (this TypeReference thisType, LinkContext context, Func<EventDefinition, bool>? filter, BindingFlags? bindingFlags = BindingFlags.Default)
 		{
-			TypeDefinition? type = thisType;
+			TypeDefinition? type = thisType as TypeDefinition;
 			bool onBaseType = false;
 			while (type != null) {
 				foreach (var @event in type.Events) {
@@ -340,9 +346,9 @@ namespace Mono.Linker
 
 		// declaredOnly will cause this to retrieve interfaces recursively required by the type, but doesn't necessarily
 		// include interfaces required by any base types.
-		public static IEnumerable<InterfaceImplementation> GetAllInterfaceImplementations (this TypeDefinition thisType, LinkContext context, bool declaredOnly)
+		public static IEnumerable<InterfaceImplementation> GetAllInterfaceImplementations (this TypeReference thisType, LinkContext context, bool declaredOnly)
 		{
-			TypeDefinition? type = thisType;
+			TypeDefinition? type = thisType as TypeDefinition;
 			while (type != null) {
 				foreach (var i in type.Interfaces) {
 					yield return i;
@@ -364,10 +370,13 @@ namespace Mono.Linker
 
 		// declaredOnly will cause this to retrieve only members of the type, not of its base types. This includes interfaces recursively
 		// required by this type (but not members of these interfaces, or interfaces required only by base types).
-		public static void GetAllOnType (this TypeDefinition type, LinkContext context, bool declaredOnly, List<IMetadataTokenProvider> members) => GetAllOnType (type, context, declaredOnly, members, new HashSet<TypeDefinition> ());
+		public static void GetAllOnType (this TypeReference type, LinkContext context, bool declaredOnly, List<IMetadataTokenProvider> members) => GetAllOnType (type, context, declaredOnly, members, new HashSet<TypeDefinition> ());
 
-		static void GetAllOnType (TypeDefinition type, LinkContext context, bool declaredOnly, List<IMetadataTokenProvider> members, HashSet<TypeDefinition> types)
+		static void GetAllOnType (TypeReference typeRef, LinkContext context, bool declaredOnly, List<IMetadataTokenProvider> members, HashSet<TypeDefinition> types)
 		{
+			if (typeRef is not TypeDefinition type)
+				return;
+
 			if (!types.Add (type))
 				return;
 
