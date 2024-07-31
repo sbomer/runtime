@@ -730,9 +730,12 @@ namespace ILLink.Shared.TrimAnalysis
 		}
 
 		// Trimming dataflow value creation. Eventually more of these should be shared.
-		internal SingleValue GetFieldValue (FieldDefinition field)
+		internal SingleValue GetFieldValue (FieldDefinition field, ArrayHeapValue heap)
 			=> field.Name switch {
-				"EmptyTypes" when field.DeclaringType.IsTypeOf (WellKnownType.System_Type) => ArrayValue.Create (0, field.DeclaringType),
+				// TODO: this one leaks out to attribute dataflow... why is it needed?
+				// can have an "array heap value" referenced from a custom attribute.
+				// even though it's not really.
+				"EmptyTypes" when field.DeclaringType.IsTypeOf (WellKnownType.System_Type) => heap.CreateArray (0, field.DeclaringType),
 				"Empty" when field.DeclaringType.IsTypeOf (WellKnownType.System_String) => new KnownStringValue (string.Empty),
 				_ => new FieldValue (field.FieldType, field, GetFieldAnnotation (field))
 			};

@@ -10,7 +10,7 @@ using MultiValue = ILLink.Shared.DataFlow.ValueSet<ILLink.Shared.DataFlow.Single
 
 namespace ILLink.Shared.TrimAnalysis
 {
-	internal sealed partial record ArrayValue : SingleValue
+	public sealed partial record ArrayValue : SingleValue
 	{
 		private static ValueSetLattice<SingleValue> MultiValueLattice => default;
 
@@ -18,7 +18,7 @@ namespace ILLink.Shared.TrimAnalysis
 
 		public partial bool TryGetValueByIndex (int index, out MultiValue value);
 
-		public static MultiValue SanitizeArrayElementValue (MultiValue input)
+		public static MultiValue SanitizeArrayElementValue (MultiValue input, ArrayHeapValue heap)
 		{
 			// We need to be careful about self-referencing arrays. It's easy to have an array which has one of the elements as itself:
 			// var arr = new object[1];
@@ -35,14 +35,14 @@ namespace ILLink.Shared.TrimAnalysis
 
 			bool needSanitization = false;
 			foreach (var v in input.AsEnumerable ()) {
-				if (v is ArrayValue)
+				if (heap.GetArray (v) is ArrayValue) // TODO: check directly for ArrayReferenceValue?
 					needSanitization = true;
 			}
 
 			if (!needSanitization)
 				return input;
 
-			return new(input.AsEnumerable ().Select (v => v is ArrayValue ? UnknownValue.Instance : v));
+			return new(input.AsEnumerable ().Select (v => heap.GetArray (v) is ArrayValue ? UnknownValue.Instance : v));
 		}
 	}
 }

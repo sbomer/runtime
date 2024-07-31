@@ -117,9 +117,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			arr[0].RequiresAll ();
 		}
 
-		[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
-		[ExpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
-		[UnexpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer | Tool.NativeAot, "https://github.com/dotnet/linker/issues/2737")]
+		[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer | Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
+		[ExpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer | Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
+		[UnexpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll), Tool.NativeAot, "https://github.com/dotnet/linker/issues/2737")]
 		static void TestArraySetElementOneElementMerged ()
 		{
 			Type[] arr = new Type[1];
@@ -548,9 +548,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 
 		class WriteCapturedArrayElement
 		{
-			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
-			[UnexpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
-			[UnexpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer | Tool.NativeAot, "https://github.com/dotnet/linker/issues/2737")]
+			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer | Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
+			[UnexpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer |Tool.Analyzer, "https://github.com/dotnet/linker/issues/2737")]
+			[UnexpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll), Tool.NativeAot, "https://github.com/dotnet/linker/issues/2737")]
 			static void TestNullCoalesce ()
 			{
 				Type[] arr = new Type[1];
@@ -579,8 +579,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 
 			[ExpectedWarning ("IL2072", nameof (GetWithPublicMethods), nameof (DataFlowTypeExtensions.RequiresAll))]
 			// (ILLink produces incomplete set of IL2072 warnings)
-			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer, "https://github.com/dotnet/linker/issues/2746")]
-			[ExpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer, "https://github.com/dotnet/linker/issues/2746")]
+			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer | Tool.Analyzer, "https://github.com/dotnet/linker/issues/2746")]
+			[ExpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer | Tool.Analyzer, "https://github.com/dotnet/linker/issues/2746")]
 			static void TestNullCoalescingAssignmentComplex ()
 			{
 				Type[] arr = new Type[1];
@@ -590,9 +590,9 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			}
 
 			// ILLink only incidentally matches the analyzer behavior here.
-			[UnexpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll), Tool.TrimmerAnalyzerAndNativeAot, "https://github.com/dotnet/linker/issues/2737")]
-			[ExpectedWarning("IL2072", nameof(GetUnknownType), nameof(DataFlowTypeExtensions.RequiresAll), Tool.None, "https://github.com/dotnet/linker/issues/2737")]
-			[ExpectedWarning("IL2072", nameof(GetTypeWithPublicConstructors), nameof(DataFlowTypeExtensions.RequiresAll), Tool.None, "https://github.com/dotnet/linker/issues/2737")]
+			[UnexpectedWarning ("IL2062", nameof (DataFlowTypeExtensions.RequiresAll), Tool.Analyzer | Tool.NativeAot, "https://github.com/dotnet/linker/issues/2737")]
+			[ExpectedWarning("IL2072", nameof(GetUnknownType), nameof(DataFlowTypeExtensions.RequiresAll), Tool.Trimmer, "https://github.com/dotnet/linker/issues/2737")]
+			[ExpectedWarning("IL2072", nameof(GetTypeWithPublicConstructors), nameof(DataFlowTypeExtensions.RequiresAll), Tool.Trimmer, "https://github.com/dotnet/linker/issues/2737")]
 			static void TestNullCoalescingAssignmentToEmptyComplex ()
 			{
 				Type[] arr = new Type[1];
@@ -615,7 +615,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			[Kept]
 			[ExpectedWarning ("IL2072", nameof (GetUnknownType), nameof (DataFlowTypeExtensions.RequiresAll))]
 			[ExpectedWarning ("IL2072", nameof (GetTypeWithPublicConstructors), nameof (DataFlowTypeExtensions.RequiresAll))]
-			[ExpectedWarning ("IL2072", nameof (GetWithPublicMethods), nameof (DataFlowTypeExtensions.RequiresAll), Tool.None, "https://github.com/dotnet/runtime/issues/90335")]
+			[ExpectedWarning ("IL2072", nameof (GetWithPublicMethods), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer, "https://github.com/dotnet/runtime/issues/90335")]
+			[ExpectedWarning ("IL2072", nameof (GetWithPublicMethods), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer, "https://github.com/dotnet/runtime/issues/90335")]
 			// Analysis hole:
 			// The array element assignment assigns to a temp array created as a copy of
 			// arr1 or arr2, and writes to it aren't reflected back in arr1/arr2.
@@ -665,8 +666,8 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 
 			[ExpectedWarning ("IL2087", nameof (T), nameof (DataFlowTypeExtensions.RequiresAll))]
 			[ExpectedWarning ("IL2087", nameof (U), nameof (DataFlowTypeExtensions.RequiresPublicFields))]
-			[ExpectedWarning ("IL2087", nameof (V), nameof (DataFlowTypeExtensions.RequiresAll), Tool.None, "https://github.com/dotnet/linker/issues/2158")]
-			[ExpectedWarning ("IL2087", nameof (V), nameof (DataFlowTypeExtensions.RequiresPublicFields), Tool.None, "https://github.com/dotnet/linker/issues/2158")]
+			[ExpectedWarning ("IL2087", nameof (V), nameof (DataFlowTypeExtensions.RequiresAll), Tool.Trimmer, "https://github.com/dotnet/linker/issues/2158")]
+			[ExpectedWarning ("IL2087", nameof (V), nameof (DataFlowTypeExtensions.RequiresPublicFields), Tool.Trimmer, "https://github.com/dotnet/linker/issues/2158")]
 			// Missing warnings for 'V' possibly assigned to arr or arr2 because write to temp
 			// array isn't reflected back in the local variables.
 			static void TestNullCoalesce<T, U, V> (bool b = false)
@@ -684,7 +685,7 @@ namespace Mono.Linker.Tests.Cases.DataFlow
 			// Missing warnings for 'V' possibly assigned to arr or arr2 because write to temp
 			// array isn't reflected back in the local variables. https://github.com/dotnet/linker/issues/2158
 			[ExpectedWarning ("IL2087", nameof (V), nameof (DataFlowTypeExtensions.RequiresAll), Tool.None, "https://github.com/dotnet/linker/issues/2158")]
-			[ExpectedWarning ("IL2087", nameof (V), nameof (DataFlowTypeExtensions.RequiresPublicFields), Tool.None, "https://github.com/dotnet/linker/issues/2158")]
+			[ExpectedWarning ("IL2087", nameof (V), nameof (DataFlowTypeExtensions.RequiresPublicFields), Tool.Trimmer, "https://github.com/dotnet/linker/issues/2158")]
 			// This also causes an extra analyzer warning for 'U' in 'arr', because the analyzer models the
 			// possible assignment of arr2 to arr, without overwriting index '0'. And it produces a warning
 			// for each possible value, unlike ILLink/ILCompiler, which produce an unknown value for a merged

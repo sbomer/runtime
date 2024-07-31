@@ -12,18 +12,8 @@ using MultiValue = ILLink.Shared.DataFlow.ValueSet<ILLink.Shared.DataFlow.Single
 
 namespace ILLink.Shared.TrimAnalysis
 {
-	internal partial record ArrayValue
+	public partial record ArrayValue
 	{
-		public static MultiValue Create (MultiValue size, TypeReference elementType)
-		{
-			MultiValue result = MultiValueLattice.Top;
-			foreach (var sizeValue in size.AsEnumerable ()) {
-				result = MultiValueLattice.Meet (result, new MultiValue (new ArrayValue (sizeValue, elementType)));
-			}
-
-			return result;
-		}
-
 		public static ArrayValue Create (int size, TypeReference elementType)
 		{
 			return new ArrayValue (new ConstIntValue (size), elementType);
@@ -32,11 +22,12 @@ namespace ILLink.Shared.TrimAnalysis
 		/// <summary>
 		/// Constructs an array value of the given size
 		/// </summary>
-		ArrayValue (SingleValue size, TypeReference elementType)
+		public ArrayValue (SingleValue size, TypeReference elementType)
 		{
 			Size = size;
 			ElementType = elementType;
 			IndexValues = new Dictionary<int, ValueBasicBlockPair> ();
+			// id = nextId++;
 		}
 
 		public TypeReference ElementType { get; }

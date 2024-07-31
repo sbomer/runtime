@@ -15,6 +15,10 @@ using Mono.Collections.Generic;
 using LocalVariableStore = System.Collections.Generic.Dictionary<
 	Mono.Cecil.Cil.VariableDefinition,
 	Mono.Linker.Dataflow.ValueBasicBlockPair>;
+
+using LocalState = (System.Collections.Generic.Stack<Mono.Linker.Dataflow.StackSlot> Stack, System.Collections.Generic.Dictionary<
+	Mono.Cecil.Cil.VariableDefinition,
+	Mono.Linker.Dataflow.ValueBasicBlockPair> Locals, ILLink.Shared.TrimAnalysis.ArrayHeapValue Heap);
 using MultiValue = ILLink.Shared.DataFlow.ValueSet<ILLink.Shared.DataFlow.SingleValue>;
 
 namespace Mono.Linker.Dataflow
@@ -126,22 +130,35 @@ namespace Mono.Linker.Dataflow
 			return new Stack<StackSlot> (newStack);
 		}
 
+		private static LocalVariableStore MergeLocals (LocalVariableStore a, LocalVariableStore b)
+		{
+			// TODO:
+			// for now, this never merges anything.
+			if (string.Empty.Length == 0)
+				Debug.WriteLine(b);
+			return a;
+		}
+
 		private static void ClearStack (ref Stack<StackSlot>? stack)
 		{
 			stack = null;
 		}
 
-		private static void NewKnownStack (Dictionary<int, Stack<StackSlot>> knownStacks, int newOffset, Stack<StackSlot> newStack)
+		private static void NewKnownStack (Dictionary<int, LocalState> knownStacksAndLocals, int newOffset, Stack<StackSlot> newStack, LocalVariableStore newLocals, ArrayHeapValue newHeap)
 		{
 			// No need to merge in empty stacks
-			if (newStack.Count == 0) {
+			if (newStack.Count == 0 & newLocals.Count == 0) {
 				return;
 			}
 
-			if (knownStacks.TryGetValue (newOffset, out Stack<StackSlot>? value)) {
-				knownStacks[newOffset] = MergeStack (value, newStack);
+			if (knownStacksAndLocals.TryGetValue (newOffset, out LocalState localState)) {
+				var stack = localState.Stack;
+				var locals = localState.Locals;
+				var heap = localState.Heap;
+				knownStacksAndLocals[newOffset] = (MergeStack (stack, newStack), MergeLocals (locals, newLocals), heap.Meet (newHeap));
 			} else {
-				knownStacks.Add (newOffset, new Stack<StackSlot> (newStack.Reverse ()));
+				// TODO: copy locals and heap!
+				knownStacksAndLocals.Add (newOffset, (new Stack<StackSlot> (newStack.Reverse ()), newLocals, newHeap));
 			}
 		}
 
@@ -277,15 +294,17 @@ namespace Mono.Linker.Dataflow
 
 		protected virtual void Scan (MethodIL methodIL, ref InterproceduralState interproceduralState)
 		{
+			if (methodIL.Method.ToString().Contains("SvenTest"))
+				Debug.WriteLine("H");
 			MethodBody methodBody = methodIL.Body;
 			MethodDefinition thisMethod = methodBody.Method;
 
-			LocalVariableStore locals = new (methodIL.Variables.Count);
-
-			Dictionary<int, Stack<StackSlot>> knownStacks = new Dictionary<int, Stack<StackSlot>> ();
+			Dictionary<int, LocalState> knownStacksAndLocals = new Dictionary<int, LocalState> ();
 			Stack<StackSlot>? currentStack = new Stack<StackSlot> (methodBody.MaxStackSize);
+			LocalVariableStore locals = new (methodIL.Variables.Count);
+			ArrayHeapValue heap = new ();
 
-			ScanExceptionInformation (knownStacks, methodIL);
+			ScanExceptionInformation (knownStacksAndLocals, methodIL);
 
 			BasicBlockIterator blockIterator = new BasicBlockIterator (methodIL);
 
@@ -293,13 +312,18 @@ namespace Mono.Linker.Dataflow
 			foreach (Instruction operation in methodIL.Instructions) {
 				int curBasicBlock = blockIterator.MoveNext (operation);
 
-				if (knownStacks.TryGetValue (operation.Offset, out Stack<StackSlot>? knownValue)) {
+				if (knownStacksAndLocals.TryGetValue (operation.Offset, out LocalState localState)) {
+					Stack<StackSlot> knownValue = localState.Stack;
+					LocalVariableStore knownLocals = localState.Locals;
+					ArrayHeapValue knownHeap = localState.Heap;
 					if (currentStack == null) {
 						// The stack copy constructor reverses the stack
 						currentStack = new Stack<StackSlot> (knownValue.Reverse ());
 					} else {
 						currentStack = MergeStack (currentStack, knownValue);
 					}
+					locals = MergeLocals (locals, knownLocals);
+					heap = heap.Meet (knownHeap);
 				}
 
 				currentStack ??= new Stack<StackSlot> (methodBody.MaxStackSize);
@@ -498,12 +522,13 @@ namespace Mono.Linker.Dataflow
 				case Code.Ldsfld:
 				case Code.Ldflda:
 				case Code.Ldsflda:
-					ScanLdfld (operation, currentStack, methodBody, ref interproceduralState);
+					ScanLdfld (operation, currentStack, methodBody, ref interproceduralState, heap);
 					break;
 
 				case Code.Newarr: {
 						StackSlot count = PopUnknown (currentStack, 1, methodBody, operation.Offset);
-						currentStack.Push (new StackSlot (ArrayValue.Create (count.Value, (TypeReference) operation.Operand)));
+						var array = heap.CreateArray (count.Value, (TypeReference) operation.Operand);
+						currentStack.Push (new StackSlot (array));
 					}
 					break;
 
@@ -516,7 +541,7 @@ namespace Mono.Linker.Dataflow
 				case Code.Stelem_R8:
 				case Code.Stelem_Any:
 				case Code.Stelem_Ref:
-					ScanStelem (operation, currentStack, methodBody, curBasicBlock);
+					ScanStelem (operation, currentStack, methodBody, curBasicBlock, heap);
 					break;
 
 				case Code.Ldelem_I:
@@ -532,7 +557,7 @@ namespace Mono.Linker.Dataflow
 				case Code.Ldelem_Any:
 				case Code.Ldelem_Ref:
 				case Code.Ldelema:
-					ScanLdelem (operation, currentStack, methodBody, curBasicBlock);
+					ScanLdelem (operation, currentStack, methodBody, curBasicBlock, heap);
 					break;
 
 				case Code.Cpblk:
@@ -542,7 +567,7 @@ namespace Mono.Linker.Dataflow
 
 				case Code.Stfld:
 				case Code.Stsfld:
-					ScanStfld (operation, currentStack, thisMethod, methodBody, locals, ref interproceduralState);
+					ScanStfld (operation, currentStack, thisMethod, methodBody, locals, ref interproceduralState, heap);
 					break;
 
 				case Code.Cpobj:
@@ -558,7 +583,7 @@ namespace Mono.Linker.Dataflow
 				case Code.Stind_R8:
 				case Code.Stind_Ref:
 				case Code.Stobj:
-					ScanIndirectStore (operation, currentStack, methodBody, locals, curBasicBlock, ref interproceduralState);
+					ScanIndirectStore (operation, currentStack, methodBody, locals, curBasicBlock, ref interproceduralState, heap);
 					ValidateNoReferenceToReference (locals, methodBody.Method, operation.Offset);
 					break;
 
@@ -595,7 +620,7 @@ namespace Mono.Linker.Dataflow
 				case Code.Brtrue:
 				case Code.Brtrue_S:
 					PopUnknown (currentStack, 1, methodBody, operation.Offset);
-					NewKnownStack (knownStacks, ((Instruction) operation.Operand).Offset, currentStack);
+					NewKnownStack (knownStacksAndLocals, ((Instruction) operation.Operand).Offset, currentStack, locals, heap);
 					break;
 
 				case Code.Calli: {
@@ -620,7 +645,7 @@ namespace Mono.Linker.Dataflow
 				case Code.Callvirt:
 				case Code.Newobj:
 					TrackNestedFunctionReference ((MethodReference) operation.Operand, ref interproceduralState);
-					HandleCall (methodBody, operation, currentStack, locals, ref interproceduralState, curBasicBlock);
+					HandleCall (methodBody, operation, currentStack, locals, ref interproceduralState, curBasicBlock, heap);
 					ValidateNoReferenceToReference (locals, methodBody.Method, operation.Offset);
 					break;
 
@@ -630,14 +655,14 @@ namespace Mono.Linker.Dataflow
 
 				case Code.Br:
 				case Code.Br_S:
-					NewKnownStack (knownStacks, ((Instruction) operation.Operand).Offset, currentStack);
+					NewKnownStack (knownStacksAndLocals, ((Instruction) operation.Operand).Offset, currentStack, locals, heap);
 					ClearStack (ref currentStack);
 					break;
 
 				case Code.Leave:
 				case Code.Leave_S:
 					ClearStack (ref currentStack);
-					NewKnownStack (knownStacks, ((Instruction) operation.Operand).Offset, new Stack<StackSlot> (methodBody.MaxStackSize));
+					NewKnownStack (knownStacksAndLocals, ((Instruction) operation.Operand).Offset, new Stack<StackSlot> (methodBody.MaxStackSize), locals, heap);
 					break;
 
 				case Code.Endfilter:
@@ -658,7 +683,7 @@ namespace Mono.Linker.Dataflow
 							StackSlot retValue = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 							// If the return value is a reference, treat it as the value itself for now
 							// We can handle ref return values better later
-							ReturnValue = MultiValueLattice.Meet (ReturnValue, DereferenceValue (retValue.Value, locals, ref interproceduralState));
+							ReturnValue = MultiValueLattice.Meet (ReturnValue, DereferenceValue (retValue.Value, locals, ref interproceduralState, heap));
 							ValidateNoReferenceToReference (locals, methodBody.Method, operation.Offset);
 						}
 						ClearStack (ref currentStack);
@@ -669,7 +694,7 @@ namespace Mono.Linker.Dataflow
 						PopUnknown (currentStack, 1, methodBody, operation.Offset);
 						Instruction[] targets = (Instruction[]) operation.Operand;
 						foreach (Instruction target in targets) {
-							NewKnownStack (knownStacks, target.Offset, currentStack);
+							NewKnownStack (knownStacksAndLocals, target.Offset, currentStack, locals, heap);
 						}
 						break;
 					}
@@ -695,24 +720,30 @@ namespace Mono.Linker.Dataflow
 				case Code.Blt_Un:
 				case Code.Blt_Un_S:
 					PopUnknown (currentStack, 2, methodBody, operation.Offset);
-					NewKnownStack (knownStacks, ((Instruction) operation.Operand).Offset, currentStack);
+					NewKnownStack (knownStacksAndLocals, ((Instruction) operation.Operand).Offset, currentStack, locals, heap);
 					break;
 				}
 			}
+
+			if (methodIL.Method.ToString().Contains("SvenTest"))
+				Debug.WriteLine("H");
 		}
 
-		private static void ScanExceptionInformation (Dictionary<int, Stack<StackSlot>> knownStacks, MethodIL methodIL)
+		private static void ScanExceptionInformation (Dictionary<int, LocalState> knownStacksAndLocals, MethodIL methodIL)
 		{
 			foreach (ExceptionHandler exceptionClause in methodIL.ExceptionHandlers) {
 				Stack<StackSlot> catchStack = new Stack<StackSlot> (1);
 				catchStack.Push (new StackSlot ());
+				LocalVariableStore catchLocals = new LocalVariableStore (); // TODO?
+				// for now, this never merges anything.
+				var heap = new ArrayHeapValue (); // TODO?
 
 				if (exceptionClause.HandlerType == ExceptionHandlerType.Filter) {
-					NewKnownStack (knownStacks, exceptionClause.FilterStart.Offset, catchStack);
-					NewKnownStack (knownStacks, exceptionClause.HandlerStart.Offset, catchStack);
+					NewKnownStack (knownStacksAndLocals, exceptionClause.FilterStart.Offset, catchStack, catchLocals, heap);
+					NewKnownStack (knownStacksAndLocals, exceptionClause.HandlerStart.Offset, catchStack, catchLocals, heap);
 				}
 				if (exceptionClause.HandlerType == ExceptionHandlerType.Catch) {
-					NewKnownStack (knownStacks, exceptionClause.HandlerStart.Offset, catchStack);
+					NewKnownStack (knownStacksAndLocals, exceptionClause.HandlerStart.Offset, catchStack, catchLocals, heap);
 				}
 			}
 		}
@@ -840,12 +871,13 @@ namespace Mono.Linker.Dataflow
 			MethodBody methodBody,
 			LocalVariableStore locals,
 			int curBasicBlock,
-			ref InterproceduralState ipState)
+			ref InterproceduralState ipState,
+			ArrayHeapValue heap)
 		{
 			StackSlot valueToStore = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 			StackSlot destination = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 
-			StoreInReference (destination.Value, valueToStore.Value, methodBody.Method, operation, locals, curBasicBlock, ref ipState);
+			StoreInReference (destination.Value, valueToStore.Value, methodBody.Method, operation, locals, curBasicBlock, ref ipState, heap);
 		}
 
 		/// <summary>
@@ -856,7 +888,7 @@ namespace Mono.Linker.Dataflow
 		/// <param name="method">The method body that contains the operation causing the store</param>
 		/// <param name="operation">The instruction causing the store</param>
 		/// <exception cref="LinkerFatalErrorException">Throws if <paramref name="target"/> is not a valid target for an indirect store.</exception>
-		protected void StoreInReference (MultiValue target, MultiValue source, MethodDefinition method, Instruction operation, LocalVariableStore locals, int curBasicBlock, ref InterproceduralState ipState)
+		protected void StoreInReference (MultiValue target, MultiValue source, MethodDefinition method, Instruction operation, LocalVariableStore locals, int curBasicBlock, ref InterproceduralState ipState, ArrayHeapValue heap)
 		{
 			foreach (var value in target.AsEnumerable ()) {
 				switch (value) {
@@ -864,7 +896,7 @@ namespace Mono.Linker.Dataflow
 					StoreMethodLocalValue (locals, source, localReference.LocalDefinition, curBasicBlock);
 					break;
 				case FieldReferenceValue fieldReference
-				when GetFieldValue (fieldReference.FieldDefinition).AsSingleValue () is FieldValue fieldValue:
+				when GetFieldValue (fieldReference.FieldDefinition, heap).AsSingleValue () is FieldValue fieldValue:
 					HandleStoreField (method, fieldValue, operation, source);
 					break;
 				case ParameterReferenceValue parameterReference
@@ -876,7 +908,7 @@ namespace Mono.Linker.Dataflow
 					HandleStoreMethodReturnValue (method, methodReturnValue, operation, source);
 					break;
 				case FieldValue fieldValue:
-					HandleStoreField (method, fieldValue, operation, DereferenceValue (source, locals, ref ipState));
+					HandleStoreField (method, fieldValue, operation, DereferenceValue (source, locals, ref ipState, heap));
 					break;
 				case IValueWithStaticType valueWithStaticType:
 					if (valueWithStaticType.StaticType is not null && _context.Annotations.FlowAnnotations.IsTypeInterestingForDataflow (valueWithStaticType.StaticType.Value.Type))
@@ -895,13 +927,14 @@ namespace Mono.Linker.Dataflow
 
 		}
 
-		protected abstract MultiValue GetFieldValue (FieldDefinition field);
+		protected abstract MultiValue GetFieldValue (FieldDefinition field, ArrayHeapValue heap);
 
 		private void ScanLdfld (
 			Instruction operation,
 			Stack<StackSlot> currentStack,
 			MethodBody methodBody,
-			ref InterproceduralState interproceduralState)
+			ref InterproceduralState interproceduralState,
+			ArrayHeapValue heap)
 		{
 			Code code = operation.OpCode.Code;
 			if (code == Code.Ldfld || code == Code.Ldflda)
@@ -921,7 +954,7 @@ namespace Mono.Linker.Dataflow
 			} else if (CompilerGeneratedState.IsHoistedLocal (field)) {
 				value = interproceduralState.GetHoistedLocal (new HoistedLocalKey (field));
 			} else {
-				value = GetFieldValue (field);
+				value = GetFieldValue (field, heap);
 			}
 			currentStack.Push (new StackSlot (value));
 		}
@@ -944,7 +977,8 @@ namespace Mono.Linker.Dataflow
 			MethodDefinition thisMethod,
 			MethodBody methodBody,
 			LocalVariableStore locals,
-			ref InterproceduralState interproceduralState)
+			ref InterproceduralState interproceduralState,
+			ArrayHeapValue heap)
 		{
 			StackSlot valueToStoreSlot = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 			if (operation.OpCode.Code == Code.Stfld)
@@ -957,14 +991,14 @@ namespace Mono.Linker.Dataflow
 					return;
 				}
 
-				foreach (var value in GetFieldValue (field).AsEnumerable ()) {
+				foreach (var value in GetFieldValue (field, heap).AsEnumerable ()) {
 					// GetFieldValue may return different node types, in which case they can't be stored to.
 					// At least not yet.
 					if (value is not FieldValue fieldValue)
 						continue;
 
 					// Incomplete handling of ref fields -- if we're storing a reference to a value, pretend it's just the value
-					MultiValue valueToStore = DereferenceValue (valueToStoreSlot.Value, locals, ref interproceduralState);
+					MultiValue valueToStore = DereferenceValue (valueToStoreSlot.Value, locals, ref interproceduralState, heap);
 
 					HandleStoreField (thisMethod, fieldValue, operation, valueToStore);
 				}
@@ -1006,7 +1040,7 @@ namespace Mono.Linker.Dataflow
 			return methodParams;
 		}
 
-		internal MultiValue DereferenceValue (MultiValue maybeReferenceValue, LocalVariableStore locals, ref InterproceduralState interproceduralState)
+		internal MultiValue DereferenceValue (MultiValue maybeReferenceValue, LocalVariableStore locals, ref InterproceduralState interproceduralState, ArrayHeapValue heap)
 		{
 			MultiValue dereferencedValue = MultiValueLattice.Top;
 			foreach (var value in maybeReferenceValue.AsEnumerable ()) {
@@ -1016,7 +1050,7 @@ namespace Mono.Linker.Dataflow
 						dereferencedValue,
 						CompilerGeneratedState.IsHoistedLocal (fieldReferenceValue.FieldDefinition)
 							? interproceduralState.GetHoistedLocal (new HoistedLocalKey (fieldReferenceValue.FieldDefinition))
-							: GetFieldValue (fieldReferenceValue.FieldDefinition));
+							: GetFieldValue (fieldReferenceValue.FieldDefinition, heap));
 					break;
 				case ParameterReferenceValue parameterReferenceValue:
 					dereferencedValue = MultiValue.Union (
@@ -1053,7 +1087,8 @@ namespace Mono.Linker.Dataflow
 			Instruction operation,
 			LocalVariableStore locals,
 			int curBasicBlock,
-			ref InterproceduralState ipState)
+			ref InterproceduralState ipState,
+			ArrayHeapValue heap)
 		{
 			if (_context.TryResolve (calledMethod) is MethodDefinition calledMethodDefinition) {
 				// We resolved the method and can put the ref/out values into the arguments
@@ -1061,7 +1096,7 @@ namespace Mono.Linker.Dataflow
 					if (parameter.GetReferenceKind () is not (ReferenceKind.Ref or ReferenceKind.Out))
 						continue;
 					var newByRefValue = _context.Annotations.FlowAnnotations.GetMethodParameterValue (parameter);
-					StoreInReference (methodArguments[(int) parameter.Index], newByRefValue, callingMethodBody.Method, operation, locals, curBasicBlock, ref ipState);
+					StoreInReference (methodArguments[(int) parameter.Index], newByRefValue, callingMethodBody.Method, operation, locals, curBasicBlock, ref ipState, heap);
 				}
 			} else {
 				// We couldn't resolve the method, so we put unknown values into the ref and out arguments
@@ -1069,7 +1104,7 @@ namespace Mono.Linker.Dataflow
 				foreach (var (argument, refKind) in methodArguments.Zip (calledMethod.GetParameterReferenceKinds ())) {
 					if (refKind is not (ReferenceKind.Ref or ReferenceKind.Out))
 						continue;
-					StoreInReference (argument, UnknownValue.Instance, callingMethodBody.Method, operation, locals, curBasicBlock, ref ipState);
+					StoreInReference (argument, UnknownValue.Instance, callingMethodBody.Method, operation, locals, curBasicBlock, ref ipState, heap);
 				}
 			}
 		}
@@ -1080,7 +1115,8 @@ namespace Mono.Linker.Dataflow
 			Stack<StackSlot> currentStack,
 			LocalVariableStore locals,
 			ref InterproceduralState interproceduralState,
-			int curBasicBlock)
+			int curBasicBlock,
+			ArrayHeapValue heap)
 		{
 			MethodReference calledMethod = (MethodReference) operation.Operand;
 
@@ -1089,21 +1125,22 @@ namespace Mono.Linker.Dataflow
 			ValueNodeList methodArguments = PopCallArguments (currentStack, calledMethod, callingMethodBody, isNewObj, operation.Offset);
 			var dereferencedMethodParams = new List<MultiValue> ();
 			foreach (var argument in methodArguments)
-				dereferencedMethodParams.Add (DereferenceValue (argument, locals, ref interproceduralState));
+				dereferencedMethodParams.Add (DereferenceValue (argument, locals, ref interproceduralState, heap));
 			MultiValue methodReturnValue = HandleCall (
 				callingMethodBody,
 				calledMethod,
 				operation,
-				new ValueNodeList (dereferencedMethodParams));
+				new ValueNodeList (dereferencedMethodParams),
+				heap);
 
 			if (isNewObj || !calledMethod.ReturnsVoid ())
 				currentStack.Push (new StackSlot (methodReturnValue));
 
-			AssignRefAndOutParameters (callingMethodBody, calledMethod, methodArguments, operation, locals, curBasicBlock, ref interproceduralState);
+			AssignRefAndOutParameters (callingMethodBody, calledMethod, methodArguments, operation, locals, curBasicBlock, ref interproceduralState, heap);
 
 			foreach (var param in methodArguments) {
 				foreach (var v in param.AsEnumerable ()) {
-					if (v is ArrayValue arr) {
+					if (heap.GetArray (v) is ArrayValue arr) {
 						MarkArrayValuesAsUnknown (arr, curBasicBlock);
 					}
 				}
@@ -1116,7 +1153,8 @@ namespace Mono.Linker.Dataflow
 			MethodBody callingMethodBody,
 			MethodReference calledMethod,
 			Instruction operation,
-			ValueNodeList methodParams);
+			ValueNodeList methodParams,
+			ArrayHeapValue heap);
 
 		// Limit tracking array values to 32 values for performance reasons. There are many arrays much longer than 32 elements in .NET, but the interesting ones for trimming are nearly always less than 32 elements.
 		private const int MaxTrackedArrayValues = 32;
@@ -1135,19 +1173,20 @@ namespace Mono.Linker.Dataflow
 			Instruction operation,
 			Stack<StackSlot> currentStack,
 			MethodBody methodBody,
-			int curBasicBlock)
+			int curBasicBlock,
+			ArrayHeapValue heap)
 		{
 			StackSlot valueToStore = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 			StackSlot indexToStoreAt = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 			StackSlot arrayToStoreIn = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 			int? indexToStoreAtInt = indexToStoreAt.Value.AsConstInt ();
 			foreach (var array in arrayToStoreIn.Value.AsEnumerable ()) {
-				if (array is ArrayValue arrValue) {
+				if (heap.GetArray (array) is ArrayValue arrValue) {
 					if (indexToStoreAtInt == null) {
 						MarkArrayValuesAsUnknown (arrValue, curBasicBlock);
 					} else {
 						// When we know the index, we can record the value at that index.
-						StoreMethodLocalValue (arrValue.IndexValues, ArrayValue.SanitizeArrayElementValue (valueToStore.Value), indexToStoreAtInt.Value, curBasicBlock, MaxTrackedArrayValues);
+						StoreMethodLocalValue (arrValue.IndexValues, ArrayValue.SanitizeArrayElementValue (valueToStore.Value, heap), indexToStoreAtInt.Value, curBasicBlock, MaxTrackedArrayValues);
 					}
 				}
 			}
@@ -1157,11 +1196,12 @@ namespace Mono.Linker.Dataflow
 			Instruction operation,
 			Stack<StackSlot> currentStack,
 			MethodBody methodBody,
-			int curBasicBlock)
+			int curBasicBlock,
+			ArrayHeapValue heap)
 		{
 			StackSlot indexToLoadFrom = PopUnknown (currentStack, 1, methodBody, operation.Offset);
 			StackSlot arrayToLoadFrom = PopUnknown (currentStack, 1, methodBody, operation.Offset);
-			if (arrayToLoadFrom.Value.AsSingleValue () is not ArrayValue arr) {
+			if (heap.GetArray (arrayToLoadFrom.Value) is not ArrayValue arr) {
 				PushUnknown (currentStack);
 				return;
 			}

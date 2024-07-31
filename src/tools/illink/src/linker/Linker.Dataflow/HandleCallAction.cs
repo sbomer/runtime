@@ -52,7 +52,8 @@ namespace ILLink.Shared.TrimAnalysis
 			MultiValue instanceValue,
 			IReadOnlyList<MultiValue> argumentValues,
 			IntrinsicId intrinsicId,
-			out MultiValue? methodReturnValue)
+			out MultiValue? methodReturnValue,
+			ArrayHeapValue heap)
 		{
 			MultiValue? maybeMethodReturnValue = methodReturnValue = null;
 			Debug.Assert (calledMethod.Method == _context.Resolve (_calledMethodReference));
@@ -66,7 +67,7 @@ namespace ILLink.Shared.TrimAnalysis
 					if (_context.Annotations.DoesMethodRequireUnreferencedCode (calledMethod.Method, out RequiresUnreferencedCodeAttribute? requiresUnreferencedCode))
 						MarkStep.ReportRequiresUnreferencedCode (calledMethod.GetDisplayName (), requiresUnreferencedCode, _diagnosticContext);
 
-					return TryHandleSharedIntrinsic (calledMethod, instanceValue, argumentValues, intrinsicId, out methodReturnValue);
+					return TryHandleSharedIntrinsic (calledMethod, instanceValue, argumentValues, intrinsicId, out methodReturnValue, heap);
 				}
 
 			case IntrinsicId.TypeDelegator_Ctor: {
@@ -77,7 +78,7 @@ namespace ILLink.Shared.TrimAnalysis
 				break;
 
 			case IntrinsicId.Array_Empty: {
-					AddReturnValue (ArrayValue.Create (0, ((GenericInstanceMethod) _calledMethodReference).GenericArguments[0]));
+					AddReturnValue (heap.CreateArray (0, ((GenericInstanceMethod) _calledMethodReference).GenericArguments[0]));
 				}
 				break;
 

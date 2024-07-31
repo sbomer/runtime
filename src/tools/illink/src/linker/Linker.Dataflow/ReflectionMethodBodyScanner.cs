@@ -98,7 +98,7 @@ namespace Mono.Linker.Dataflow
 		MethodParameterValue GetMethodParameterValue (ParameterProxy parameter, DynamicallyAccessedMemberTypes dynamicallyAccessedMemberTypes)
 			=> _annotations.GetMethodParameterValue (parameter, dynamicallyAccessedMemberTypes);
 
-		protected override MultiValue GetFieldValue (FieldDefinition field) => _annotations.GetFieldValue (field);
+		protected override MultiValue GetFieldValue (FieldDefinition field, ArrayHeapValue heap) => _annotations.GetFieldValue (field, heap);
 
 		private void HandleStoreValueWithDynamicallyAccessedMembers (ValueWithDynamicallyAccessedMembers targetValue, Instruction operation, MultiValue sourceValue)
 		{
@@ -117,7 +117,7 @@ namespace Mono.Linker.Dataflow
 		protected override void HandleStoreMethodReturnValue (MethodDefinition method, MethodReturnValue returnValue, Instruction operation, MultiValue valueToStore)
 			=> HandleStoreValueWithDynamicallyAccessedMembers (returnValue, operation, valueToStore);
 
-		public override MultiValue HandleCall (MethodBody callingMethodBody, MethodReference calledMethod, Instruction operation, ValueNodeList methodParams)
+		public override MultiValue HandleCall (MethodBody callingMethodBody, MethodReference calledMethod, Instruction operation, ValueNodeList methodParams, ArrayHeapValue heap)
 		{
 			var reflectionProcessed = _markStep.ProcessReflectionDependency (callingMethodBody, operation);
 			if (reflectionProcessed) {
@@ -147,7 +147,8 @@ namespace Mono.Linker.Dataflow
 				calledMethod,
 				instanceValue,
 				arguments,
-				_origin
+				_origin,
+				heap
 			));
 
 			var diagnosticContext = new DiagnosticContext (_origin, diagnosticsEnabled: false, _context);
@@ -159,7 +160,8 @@ namespace Mono.Linker.Dataflow
 				diagnosticContext,
 				_reflectionMarker,
 				_context,
-				_markStep);
+				_markStep,
+				heap);
 		}
 
 		public static MultiValue HandleCall (
@@ -170,7 +172,8 @@ namespace Mono.Linker.Dataflow
 			DiagnosticContext diagnosticContext,
 			ReflectionMarker reflectionMarker,
 			LinkContext context,
-			MarkStep markStep)
+			MarkStep markStep,
+			ArrayHeapValue heap)
 		{
 			var origin = diagnosticContext.Origin;
 			var calledMethodDefinition = context.TryResolve (calledMethod);
@@ -185,7 +188,7 @@ namespace Mono.Linker.Dataflow
 
 			var handleCallAction = new HandleCallAction (context, operation, markStep, reflectionMarker, diagnosticContext, callingMethodDefinition, calledMethod);
 			var intrinsicId = Intrinsics.GetIntrinsicIdForMethod (calledMethodDefinition);
-			if (!handleCallAction.Invoke (calledMethodDefinition, instanceValue, argumentValues, intrinsicId, out MultiValue methodReturnValue))
+			if (!handleCallAction.Invoke (calledMethodDefinition, instanceValue, argumentValues, intrinsicId, out MultiValue methodReturnValue, heap))
 				throw new NotImplementedException ($"Unhandled intrinsic: {intrinsicId}");
 			return methodReturnValue;
 		}

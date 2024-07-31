@@ -214,7 +214,7 @@ namespace ILLink.Shared.TrimAnalysis
 
                 case IntrinsicId.Array_Empty:
                     {
-                        AddReturnValue(ArrayValue.Create(0, calledMethod.Method.Instantiation[0]));
+                        AddReturnValue(heap.CreateArray(0, calledMethod.Method.Instantiation[0]));
                     }
                     break;
 
@@ -518,7 +518,7 @@ namespace ILLink.Shared.TrimAnalysis
             }
 
             // Is this an array we model?
-            if (typesValue is not ArrayValue array)
+            if (heap.GetArray (typesValue) is ArrayValue array)
             {
                 return false;
             }

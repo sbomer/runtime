@@ -625,7 +625,7 @@ namespace ILCompiler.Dataflow
                         {
                             StackSlot count = PopUnknown(currentStack, 1, methodBody, offset);
                             var arrayElement = (TypeDesc)methodBody.GetObject(reader.ReadILToken());
-                            currentStack.Push(new StackSlot(ArrayValue.Create(count.Value, arrayElement)));
+                            currentStack.Push(new StackSlot(heap.CreateArray(count.Value, arrayElement)));
                         }
                         break;
 

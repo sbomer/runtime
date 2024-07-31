@@ -36,10 +36,10 @@ namespace Mono.Linker.Dataflow
 			}
 		}
 
-		public void ProcessAttributeDataflow (FieldDefinition field, CustomAttributeArgument value)
+		public void ProcessAttributeDataflow (FieldDefinition field, CustomAttributeArgument value, ArrayHeapValue heap)
 		{
 			MultiValue valueNode = GetValueForCustomAttributeArgument (value);
-			var fieldValueCandidate = _context.Annotations.FlowAnnotations.GetFieldValue (field);
+			var fieldValueCandidate = _context.Annotations.FlowAnnotations.GetFieldValue (field, heap);
 			if (fieldValueCandidate is not ValueWithDynamicallyAccessedMembers fieldValue)
 				return;
 

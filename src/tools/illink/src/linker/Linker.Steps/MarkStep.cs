@@ -68,6 +68,7 @@ namespace Mono.Linker.Steps
 		protected List<(MethodBody, MessageOrigin)> _unreachableBodies;
 
 		readonly List<(TypeDefinition Type, MethodBody Body, Instruction Instr)> _pending_isinst_instr;
+		readonly ArrayHeapValue _attributeArrayHeap;
 
 		// Stores, for compiler-generated methods only, whether they require the reflection
 		// method body scanner.
@@ -221,6 +222,7 @@ namespace Mono.Linker.Steps
 			_pending_isinst_instr = new List<(TypeDefinition, MethodBody, Instruction)> ();
 			_entireTypesMarked = new HashSet<TypeDefinition> ();
 			_compilerGeneratedMethodRequiresScanner = new Dictionary<MethodBody, bool> ();
+			_attributeArrayHeap = new ();
 		}
 
 		public AnnotationStore Annotations => Context.Annotations;
@@ -325,6 +327,7 @@ namespace Mono.Linker.Steps
 					MarkEntireType (nested, new DependencyInfo (DependencyKind.NestedType, type), origin);
 			}
 
+			var heap = new ArrayHeapValue ();
 			MarkTypeVisibleToReflection (type, type, reason, origin);
 			MarkCustomAttributes (type, new DependencyInfo (DependencyKind.CustomAttribute, type), origin);
 			MarkTypeSpecialCustomAttributes (type, origin);
@@ -1243,7 +1246,7 @@ namespace Mono.Linker.Steps
 
 			if (field != null && Annotations.FlowAnnotations.RequiresDataFlowAnalysis (field)) {
 				var scanner = new AttributeDataFlow (Context, this, origin);
-				scanner.ProcessAttributeDataflow (field, namedArgument.Argument);
+				scanner.ProcessAttributeDataflow (field, namedArgument.Argument, _attributeArrayHeap);
 			}
 		}
 

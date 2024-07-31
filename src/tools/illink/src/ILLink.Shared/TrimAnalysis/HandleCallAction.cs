@@ -28,13 +28,13 @@ namespace ILLink.Shared.TrimAnalysis
 		private readonly RequireDynamicallyAccessedMembersAction _requireDynamicallyAccessedMembersAction;
 		private readonly bool _isNewObj;
 
-		public bool Invoke (MethodProxy calledMethod, MultiValue instanceValue, IReadOnlyList<MultiValue> argumentValues, IntrinsicId intrinsicId, out MultiValue methodReturnValue)
+		public bool Invoke (MethodProxy calledMethod, MultiValue instanceValue, IReadOnlyList<MultiValue> argumentValues, IntrinsicId intrinsicId, out MultiValue methodReturnValue, ArrayHeapValue heap)
 		{
 			MultiValue? maybeMethodReturnValue;
 
 			var handledIntrinsic =
-				TryHandleIntrinsic (calledMethod, instanceValue, argumentValues, intrinsicId, out maybeMethodReturnValue) ||
-				TryHandleSharedIntrinsic (calledMethod, instanceValue, argumentValues, intrinsicId, out maybeMethodReturnValue);
+				TryHandleIntrinsic (calledMethod, instanceValue, argumentValues, intrinsicId, out maybeMethodReturnValue, heap) ||
+				TryHandleSharedIntrinsic (calledMethod, instanceValue, argumentValues, intrinsicId, out maybeMethodReturnValue, heap);
 
 			// As a convenience, if the code above didn't set the return value (and the method has a return value),
 			// we will set it to be an unknown value with the return type of the method.
@@ -70,14 +70,16 @@ namespace ILLink.Shared.TrimAnalysis
 			MultiValue instanceValue,
 			IReadOnlyList<MultiValue> argumentValues,
 			IntrinsicId intrinsicId,
-			out MultiValue? methodReturnValue);
+			out MultiValue? methodReturnValue,
+			ArrayHeapValue heap);
 
 		bool TryHandleSharedIntrinsic (
 			MethodProxy calledMethod,
 			MultiValue instanceValue,
 			IReadOnlyList<MultiValue> argumentValues,
 			IntrinsicId intrinsicId,
-			out MultiValue? methodReturnValue)
+			out MultiValue? methodReturnValue,
+			ArrayHeapValue heap)
 		{
 			MultiValue? returnValue = methodReturnValue = null;
 
@@ -746,13 +748,13 @@ namespace ILLink.Shared.TrimAnalysis
 						GetDynamicallyAccessedMemberTypesFromBindingFlagsForMethods (bindingFlags));
 
 					// This is true even if we "don't know" - so it's only false if we're sure that there are no type arguments
-					bool hasTypeArguments = (argumentValues[2].AsSingleValue () as ArrayValue)?.Size.AsConstInt () != 0;
+					bool hasTypeArguments = heap.GetArray (argumentValues[2])?.Size.AsConstInt () != 0;
 					foreach (var value in argumentValues[0].AsEnumerable ()) {
 						if (value is SystemTypeValue systemTypeValue) {
 							foreach (var stringParam in argumentValues[1].AsEnumerable ()) {
 								if (stringParam is KnownStringValue stringValue) {
 									foreach (var method in GetMethodsOnTypeHierarchy (systemTypeValue.RepresentedType, stringValue.Contents, bindingFlags)) {
-										ValidateGenericMethodInstantiation (method.RepresentedMethod, argumentValues[2], calledMethod);
+										ValidateGenericMethodInstantiation (method.RepresentedMethod, argumentValues[2], calledMethod, heap);
 										MarkMethod (method.RepresentedMethod);
 									}
 								} else {
@@ -874,7 +876,7 @@ namespace ILLink.Shared.TrimAnalysis
 							//  without any good reason to do so.
 
 							foreach (var argumentValue in argumentValues[0].AsEnumerable ()) {
-								if ((argumentValue as ArrayValue)?.TryGetValueByIndex (0, out var underlyingMultiValue) == true) {
+								if (heap.GetArray (argumentValue)?.TryGetValueByIndex (0, out var underlyingMultiValue) == true) {
 									foreach (var underlyingValue in underlyingMultiValue.AsEnumerable ()) {
 										switch (underlyingValue) {
 										// Don't warn on these types - it will throw instead
@@ -909,7 +911,7 @@ namespace ILLink.Shared.TrimAnalysis
 						} else {
 							// Any other type - perform generic parameter validation
 							var genericParameterValues = GetGenericParameterValues (typeValue.RepresentedType.GetGenericParameters ());
-							if (!AnalyzeGenericInstantiationTypeArray (argumentValues[0], genericParameterValues)) {
+							if (!AnalyzeGenericInstantiationTypeArray (argumentValues[0], genericParameterValues, heap)) {
 								_diagnosticContext.AddDiagnostic (DiagnosticId.MakeGenericType, calledMethod.GetDisplayName ());
 							}
 						}
@@ -1003,10 +1005,10 @@ namespace ILLink.Shared.TrimAnalysis
 						bindingFlags = BindingFlags.Public | BindingFlags.Instance;
 
 					int? ctorParameterCount = calledMethod.GetMetadataParametersCount () switch {
-						1 => (argumentValues[0].AsSingleValue () as ArrayValue)?.Size.AsConstInt (),
-						2 => (argumentValues[1].AsSingleValue () as ArrayValue)?.Size.AsConstInt (),
-						4 => (argumentValues[2].AsSingleValue () as ArrayValue)?.Size.AsConstInt (),
-						5 => (argumentValues[3].AsSingleValue () as ArrayValue)?.Size.AsConstInt (),
+						1 => heap.GetArray (argumentValues[0])?.Size.AsConstInt (),
+						2 => heap.GetArray (argumentValues[1])?.Size.AsConstInt (),
+						4 => heap.GetArray (argumentValues[2])?.Size.AsConstInt (),
+						5 => heap.GetArray (argumentValues[3])?.Size.AsConstInt (),
 						_ => null,
 					};
 
@@ -1046,7 +1048,7 @@ namespace ILLink.Shared.TrimAnalysis
 
 					foreach (var methodValue in instanceValue.AsEnumerable ()) {
 						if (methodValue is SystemReflectionMethodBaseValue methodBaseValue) {
-							ValidateGenericMethodInstantiation (methodBaseValue.RepresentedMethod, argumentValues[0], calledMethod);
+							ValidateGenericMethodInstantiation (methodBaseValue.RepresentedMethod, argumentValues[0], calledMethod, heap);
 						} else if (methodValue == NullValue.Instance) {
 							// Nothing to do
 						} else {
@@ -1089,9 +1091,8 @@ namespace ILLink.Shared.TrimAnalysis
 							int argsParam = calledMethod.HasMetadataParametersCount (2) || calledMethod.HasMetadataParametersCount (3) ? 1 : 3;
 
 							if (argumentValues.Count > argsParam) {
-								if (argumentValues[argsParam].AsSingleValue () is ArrayValue arrayValue &&
-									arrayValue.Size.AsConstInt () != null)
-									ctorParameterCount = arrayValue.Size.AsConstInt ();
+								if (heap.GetArray (argumentValues[argsParam])?.Size.AsConstInt () is int arraySize)
+									ctorParameterCount = arraySize;
 								else if (argumentValues[argsParam].AsSingleValue () is NullValue)
 									ctorParameterCount = 0;
 							}
@@ -1242,7 +1243,7 @@ namespace ILLink.Shared.TrimAnalysis
 				yield return NullValue.Instance;
 		}
 
-		private bool AnalyzeGenericInstantiationTypeArray (in MultiValue arrayParam, ImmutableArray<GenericParameterValue> genericParameters)
+		private bool AnalyzeGenericInstantiationTypeArray (in MultiValue arrayParam, ImmutableArray<GenericParameterValue> genericParameters, ArrayHeapValue heap)
 		{
 			bool hasRequirements = false;
 			foreach (var genericParameter in genericParameters) {
@@ -1257,7 +1258,7 @@ namespace ILLink.Shared.TrimAnalysis
 				return true;
 
 			foreach (var typesValue in arrayParam.AsEnumerable ()) {
-				if (typesValue is not ArrayValue array) {
+				if (heap.GetArray (typesValue) is not ArrayValue array) {
 					return false;
 				}
 
@@ -1305,14 +1306,15 @@ namespace ILLink.Shared.TrimAnalysis
 		private void ValidateGenericMethodInstantiation (
 			MethodProxy genericMethod,
 			in MultiValue genericParametersArray,
-			MethodProxy reflectionMethod)
+			MethodProxy reflectionMethod,
+			ArrayHeapValue heap)
 		{
 			if (!genericMethod.HasGenericParameters ()) {
 				return;
 			}
 
 			var genericParameterValues = GetGenericParameterValues (genericMethod.GetGenericParameters ());
-			if (!AnalyzeGenericInstantiationTypeArray (genericParametersArray, genericParameterValues)) {
+			if (!AnalyzeGenericInstantiationTypeArray (genericParametersArray, genericParameterValues, heap)) {
 				_diagnosticContext.AddDiagnostic (DiagnosticId.MakeGenericMethod, reflectionMethod.GetDisplayName ());
 			}
 		}

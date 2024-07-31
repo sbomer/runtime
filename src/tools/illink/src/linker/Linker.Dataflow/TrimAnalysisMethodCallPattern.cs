@@ -19,18 +19,21 @@ namespace Mono.Linker.Dataflow
 		public readonly MultiValue Instance;
 		public readonly ImmutableArray<MultiValue> Arguments;
 		public readonly MessageOrigin Origin;
+		public readonly ArrayHeapValue Heap;
 
 		public TrimAnalysisMethodCallPattern (
 			Instruction operation,
 			MethodReference calledMethod,
 			MultiValue instance,
 			ImmutableArray<MultiValue> arguments,
-			MessageOrigin origin)
+			MessageOrigin origin,
+			ArrayHeapValue heap)
 		{
 			Debug.Assert (origin.Provider is MethodDefinition);
 			Operation = operation;
 			CalledMethod = calledMethod;
 			Instance = instance.DeepCopy ();
+			Heap = heap;
 			if (arguments.IsEmpty) {
 				Arguments = ImmutableArray<MultiValue>.Empty;
 			} else {
@@ -58,7 +61,8 @@ namespace Mono.Linker.Dataflow
 				CalledMethod,
 				lattice.Meet (Instance, other.Instance),
 				argumentsBuilder.ToImmutable (),
-				Origin);
+				Origin,
+				Heap.Meet (other.Heap));
 		}
 
 		public void MarkAndProduceDiagnostics (ReflectionMarker reflectionMarker, MarkStep markStep, LinkContext context)
@@ -69,7 +73,8 @@ namespace Mono.Linker.Dataflow
 				diagnosticContext,
 				reflectionMarker,
 				context,
-				markStep);
+				markStep,
+				Heap);
 		}
 	}
 }
