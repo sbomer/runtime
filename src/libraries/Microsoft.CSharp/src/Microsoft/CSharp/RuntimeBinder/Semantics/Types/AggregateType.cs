@@ -77,6 +77,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public AggregateType BaseClass
         {
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             get
             {
                 if (_baseType == null)
@@ -303,10 +304,12 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public override Type AssociatedSystemType
         {
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             get => _associatedSystemType ??= CalculateAssociatedSystemType();
         }
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Type CalculateAssociatedSystemType()
         {
             Type uninstantiatedType = OwningAggregate.AssociatedSystemType;

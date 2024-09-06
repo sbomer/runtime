@@ -31,10 +31,12 @@ namespace Microsoft.CSharp.RuntimeBinder
         public BindingFlag BindingFlags => 0;
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public Expr DispatchPayload(RuntimeBinder runtimeBinder, ArgumentObject[] arguments, LocalVariableSymbol[] locals)
             => runtimeBinder.BindBinaryOperation(this, arguments, locals);
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public void PopulateSymbolTableWithName(Type callingType, ArgumentObject[] arguments)
         {
             string name = Operation.GetCLROperatorName();
@@ -70,6 +72,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /// <param name="callingContext">The <see cref="Type"/> that indicates where this operation is defined.</param>
         /// <param name="argumentInfo">The sequence of <see cref="CSharpArgumentInfo"/> instances for the arguments to this operation.</param>
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public CSharpBinaryOperationBinder(
             ExpressionType operation,
             bool isChecked,

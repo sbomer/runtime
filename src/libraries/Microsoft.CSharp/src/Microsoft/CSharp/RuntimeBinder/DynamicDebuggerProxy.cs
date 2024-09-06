@@ -133,6 +133,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         }
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public static object TryEvalUnaryOperators<T>(T obj, ExpressionType oper, Type accessibilityContext)
         {
             if (oper == ExpressionType.IsTrue || oper == ExpressionType.IsFalse)
@@ -231,6 +232,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /// <param name="typeArguments">Generic type arguments if there are any.</param>
         /// <returns>Result of method invocation.</returns>
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public static object TryEvalMethodVarArgs(
             object[] methodArgs,
             Type[] argTypes,
@@ -310,6 +312,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /// <param name="accessibilityContext">Type that determines context in which method should be called.</param>
         /// <returns>Result of property invocation.</returns>
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public static object TryGetMemberValueVarArgs(
             object[] propArgs,
             Type[] argTypes,
@@ -344,6 +347,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /// <param name="accessibilityContext">Type that determines context in which method should be called.</param>
         /// <returns>Result of property invocation.</returns>
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public static object TrySetMemberValue<TObject, TValue>(
             TObject obj,
             string propName,
@@ -376,6 +380,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /// <param name="accessibilityContext">Type that determines context in which method should be called.</param>
         /// <returns>Result of property invocation.</returns>
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public static object TrySetMemberValueVarArgs(
             object[] propArgs,
             Type[] argTypes,

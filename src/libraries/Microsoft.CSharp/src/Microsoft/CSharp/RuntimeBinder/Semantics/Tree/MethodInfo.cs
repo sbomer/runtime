@@ -23,6 +23,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public MethodInfo MethodInfo
         {
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             get
             {
                 // To do this, we need to construct a type array of the parameter types,
@@ -148,6 +149,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public override object Object
         {
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             get => MethodInfo;
         }
     }

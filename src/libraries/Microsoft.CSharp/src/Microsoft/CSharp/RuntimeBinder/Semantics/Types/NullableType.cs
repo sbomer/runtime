@@ -48,6 +48,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public override Type AssociatedSystemType
         {
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             get => typeof(Nullable<>).MakeGenericType(UnderlyingType.AssociatedSystemType);
         }
 

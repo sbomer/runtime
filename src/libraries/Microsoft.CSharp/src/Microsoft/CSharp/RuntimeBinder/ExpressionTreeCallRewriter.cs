@@ -86,6 +86,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         protected override Expr VisitCALL(ExprCall pExpr)
         {
             if (pExpr.PredefinedMethod == PREDEFMETH.PM_COUNT)
@@ -241,6 +242,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateCall(ExprCall pExpr)
         {
             // Our arguments are: object, methodinfo, parameters.
@@ -285,6 +287,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateArrayIndex(ExprCall pExpr)
         {
             // We have two possibilities here - we're either a single index array, in which
@@ -312,6 +315,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateConvert(ExprCall pExpr)
         {
             PREDEFMETH pm = pExpr.PredefinedMethod;
@@ -382,6 +386,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateProperty(ExprCall pExpr)
         {
             ExprList list = (ExprList)pExpr.OptionalArguments;
@@ -420,6 +425,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateField(ExprCall pExpr)
         {
             ExprList list = (ExprList)pExpr.OptionalArguments;
@@ -448,6 +454,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateInvoke(ExprCall pExpr)
         {
             ExprList list = (ExprList)pExpr.OptionalArguments;
@@ -460,6 +467,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateNew(ExprCall pExpr)
         {
             ExprList list = (ExprList)pExpr.OptionalArguments;
@@ -483,6 +491,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateAssignment(ExprCall pExpr)
         {
             ExprList list = (ExprList)pExpr.OptionalArguments;
@@ -495,6 +504,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateBinaryOperator(ExprCall pExpr)
         {
             ExprList list = (ExprList)pExpr.OptionalArguments;
@@ -558,6 +568,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateUserDefinedBinaryOperator(ExprCall pExpr)
         {
             ExprList list = (ExprList)pExpr.OptionalArguments;
@@ -635,6 +646,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateUnaryOperator(ExprCall pExpr)
         {
             PREDEFMETH pm = pExpr.PredefinedMethod;
@@ -660,6 +672,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GenerateUserDefinedUnaryOperator(ExprCall pExpr)
         {
             PREDEFMETH pm = pExpr.PredefinedMethod;
@@ -692,6 +705,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         /////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression GetExpression(Expr pExpr)
         {
             if (pExpr is ExprWrap wrap)
@@ -885,6 +899,7 @@ namespace Microsoft.CSharp.RuntimeBinder
         }
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private Expression[] GetArgumentsFromArrayInit(ExprArrayInit arrinit)
         {
             List<Expression> expressions = new List<Expression>();

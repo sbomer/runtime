@@ -222,6 +222,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         ////////////////////////////////////////////////////////////////////////////////
 
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public bool HasConversion()
         {
             SymbolTable.AddConversionsForType(AssociatedSystemType);

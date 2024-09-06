@@ -355,6 +355,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             Returns true when searching should continue to the interfaces.
         ******************************************************************************/
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         private bool LookupInClass(AggregateType typeStart, ref AggregateType ptypeEnd)
         {
             Debug.Assert(!_swtFirst || _fMulti);
@@ -518,6 +519,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 TypeVarsAllowed only applies to the most derived type (not base types).
         ***************************************************************************************************/
         [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+        [RequiresDynamicCode(Binder.AOTWarning)]
         public bool Lookup(CType typeSrc, Expr obj, ParentSymbol symWhere, Name name, int arity, MemLookFlags flags)
         {
             Debug.Assert((flags & ~MemLookFlags.All) == 0);

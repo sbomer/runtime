@@ -88,6 +88,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             // ----------------------------------------------------------------------------
 
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             public void Bind()
             {
                 Debug.Assert(_pGroup.SymKind == SYMKIND.SK_MethodSymbol || _pGroup.SymKind == SYMKIND.SK_PropertySymbol && 0 != (_pGroup.Flags & EXPRFLAG.EXF_INDEXER));
@@ -109,6 +110,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
 
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             private void LookForCandidates()
             {
                 bool fExpanded = false;
@@ -307,6 +309,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
 
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             private bool GetResultOfBind()
             {
                 // We looked at all the evidence, and we come to render the verdict:
@@ -855,6 +858,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
 
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             private Result DetermineCurrentTypeArgs()
             {
                 TypeArray typeArgs = _pGroup.TypeArgs;
@@ -906,6 +910,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
 
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             private bool ArgumentsAreConvertible()
             {
                 bool containsErrorSym = false;
@@ -1070,6 +1075,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             // ----------------------------------------------------------------------------
 
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             private void ReportErrorsOnSuccess()
             {
                 // used for Methods and Indexers
@@ -1090,6 +1096,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
 
             [RequiresUnreferencedCode(Binder.TrimmerWarning)]
+            [RequiresDynamicCode(Binder.AOTWarning)]
             private RuntimeBinderException ReportErrorsOnFailure()
             {
                 // First and foremost, report if the user specified a name more than once.
