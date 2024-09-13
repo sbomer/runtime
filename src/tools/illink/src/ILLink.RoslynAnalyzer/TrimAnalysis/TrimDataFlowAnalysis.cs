@@ -48,6 +48,7 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 				new FeatureContextLattice (),
 				initialContext: FeatureContext.None)
 		{
+			Debug.WriteLine("TrimDataFlowAnalysis for owning symbol " + context.OwningSymbol);
 			TrimAnalysisPatterns = new TrimAnalysisPatternStore (lattice.LocalStateLattice.Lattice.ValueLattice, lattice.ContextLattice);
 			_dataFlowAnalyzerContext = dataFlowAnalyzerContext;
 		}

@@ -121,6 +121,7 @@ namespace ILLink.RoslynAnalyzer
 						return;
 
 					var location = GetPrimaryLocation (type.Locations);
+					AnalyzeCompilerGeneratedConstructors (type);
 
 					if (type.BaseType is INamedTypeSymbol baseType)
 						GenericArgumentDataFlow.ProcessGenericArgumentDataFlow (location, baseType, context.ReportDiagnostic);
@@ -145,6 +146,15 @@ namespace ILLink.RoslynAnalyzer
 					VerifyMemberOnlyApplyToTypesOrStrings (context, context.Symbol);
 				}, SymbolKind.Field);
 			});
+		}
+
+		static void AnalyzeCompilerGeneratedConstructors (INamedTypeSymbol type)
+		{
+			if (type.ToString().Contains("DerivedWithoutRequiresWithImplicitConstructor"))
+				Debug.WriteLine(type);
+			foreach (var ctor in type.InstanceConstructors) {
+				Debug.WriteLine(ctor);
+			}
 		}
 
 		static void VerifyMemberOnlyApplyToTypesOrStrings (SymbolAnalysisContext context, ISymbol member)

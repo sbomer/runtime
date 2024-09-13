@@ -125,6 +125,13 @@ namespace Mono.Linker.Tests.Cases.RequiresCapability
 			public static void StaticMethod () { }
 		}
 
+		[ExpectedWarning ("IL2109")]
+		[ExpectedWarning ("IL2026", Tool.Trimmer | Tool.NativeAot, "https://github.com/dotnet/runtime/issues/107660", CompilerGeneratedCode = true)]
+		class DerivedWithoutRequiresWithImplicitConstructor : ClassWithRequires
+		{
+			public static void StaticMethod () { }
+		}
+
 		[UnconditionalSuppressMessage ("trim", "IL2109")]
 		class TestUnconditionalSuppressMessage : ClassWithRequires
 		{
@@ -426,6 +433,8 @@ namespace Mono.Linker.Tests.Cases.RequiresCapability
 			DerivedWithoutRequires.ShouldntWarn (null);
 			DerivedWithoutRequires.Instance.ToString ();
 			DerivedWithoutRequires2.StaticMethod ();
+			var b = new DerivedWithoutRequiresWithImplicitConstructor ();
+			DerivedWithoutRequiresWithImplicitConstructor.StaticMethod ();
 		}
 
 		[ExpectedWarning ("IL2026", "RequiresOnClass.DerivedWithRequires.StaticMethodInInheritedClass()", "--DerivedWithRequires--")]
