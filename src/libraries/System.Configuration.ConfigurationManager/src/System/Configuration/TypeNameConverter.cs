@@ -6,6 +6,7 @@ using System.Globalization;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("TODO. GetType on type we can't guarantee is assembly-qualified.")]
     public sealed class TypeNameConverter : ConfigurationConverterBase
     {
         public override object ConvertTo(ITypeDescriptorContext ctx, CultureInfo ci, object value, Type type)

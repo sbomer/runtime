@@ -42,6 +42,7 @@ namespace System.Configuration
         private OverrideModeSetting _overrideMode; // The override mode at the current config path
         private OverrideModeSetting _overrideModeDefault; // The default mode for the section in _configurationSection
         private ProtectedConfigurationProvider _protectionProvider;
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         private string _typeName;
 
         internal SectionInformation(ConfigurationSection associatedConfigurationSection)
@@ -356,6 +357,7 @@ namespace System.Configuration
         internal bool RequirePermissionModified => _modifiedFlags[FlagRequirePermission];
 
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         public string Type
         {
             get { return _typeName; }

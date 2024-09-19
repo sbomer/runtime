@@ -28,6 +28,7 @@ namespace System.Configuration
         public virtual ConfigurationValidatorBase ValidatorInstance
             => (ConfigurationValidatorBase)TypeUtil.CreateInstance(ValidatorType);
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         public Type ValidatorType { get; }
 
         // Used for limiting the visibility of types that can be accessed in the reflection

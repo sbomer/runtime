@@ -46,7 +46,10 @@ namespace System.Configuration
                 throw new InvalidOperationException(SR.Config_cannot_edit_configurationsectiongroup_when_not_attached);
         }
 
-        public void Add(string name, ConfigurationSectionGroup sectionGroup)
+        public void Add(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string name,
+            ConfigurationSectionGroup sectionGroup)
         {
             VerifyIsAttachedToConfigRecord();
             _configRecord.AddConfigurationSectionGroup(_configSectionGroup.SectionGroupName, name, sectionGroup);

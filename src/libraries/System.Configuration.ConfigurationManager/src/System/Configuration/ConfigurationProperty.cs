@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace System.Configuration
@@ -17,7 +18,10 @@ namespace System.Configuration
         private volatile bool _isTypeInited;
         private ConfigurationPropertyOptions _options;
 
-        public ConfigurationProperty(string name, Type type)
+        public ConfigurationProperty(
+            string name,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type type)
         {
             object defaultValue = null;
 
@@ -65,6 +69,7 @@ namespace System.Configuration
             SetDefaultValue(defaultValue);
         }
 
+        [RequiresUnreferencedCode("ConverterTypeName doesn't keep non-public ctors required by TypeUtil.CreateInstance")]
         internal ConfigurationProperty(PropertyInfo info)
         {
             Debug.Assert(info != null, "info != null");
@@ -179,7 +184,11 @@ namespace System.Configuration
             }
         }
 
-        public Type Type { get; private set; }
+        public Type Type {
+            [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+            get;
+            private set;
+        }
 
         public object DefaultValue { get; private set; }
 

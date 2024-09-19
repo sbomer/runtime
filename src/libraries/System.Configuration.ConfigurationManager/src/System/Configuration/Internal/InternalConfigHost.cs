@@ -1,11 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security;
 
 namespace System.Configuration.Internal
 {
+    [RequiresUnreferencedCode("TODO")]
     internal sealed class InternalConfigHost : IInternalConfigHost
     {
         private const FileAttributes InvalidAttributesForWrite = FileAttributes.ReadOnly | FileAttributes.Hidden;
@@ -177,6 +179,7 @@ namespace System.Configuration.Internal
             return Type.GetType(typeName, throwOnError);
         }
 
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         string IInternalConfigHost.GetConfigTypeName(Type t)
         {
             return t.AssemblyQualifiedName;

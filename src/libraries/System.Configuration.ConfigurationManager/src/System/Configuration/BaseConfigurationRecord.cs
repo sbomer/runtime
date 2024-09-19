@@ -1809,6 +1809,7 @@ namespace System.Configuration
         // Note: This function valiates that the factory record has not been
         //       declared before in a parent record. (it does not check
         //       current record, which allows you to update list)
+        [RequiresUnreferencedCode("VerifyAndGetNonEmptyStringAttribute reads out a type name.")]
         private void ScanFactoriesRecursive(XmlUtil xmlUtil, string parentConfigKey, Hashtable factoryList)
         {
             // discard any accumulated local errors

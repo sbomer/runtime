@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -15,7 +16,11 @@ namespace System.Diagnostics
     {
         private const string SystemDiagnostics = "System.Diagnostics.";
 
-        internal static object GetRuntimeObject(string className, Type baseType, string initializeData)
+        internal static object GetRuntimeObject(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string className,
+            Type baseType,
+            string initializeData)
         {
             object newObject = null;
             Type objectType = null;
@@ -141,6 +146,7 @@ namespace System.Diagnostics
             return newObject;
         }
 
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         private static Type MapToBuiltInTypes(string className)
         {
             string name = className.Substring(SystemDiagnostics.Length);

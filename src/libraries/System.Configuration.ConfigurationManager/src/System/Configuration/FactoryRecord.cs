@@ -29,6 +29,7 @@ namespace System.Configuration
             string group,
             string name,
             object factory,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             string factoryTypeName,
             SimpleBitVector32 flags,
             ConfigurationAllowDefinition allowDefinition,
@@ -54,7 +55,13 @@ namespace System.Configuration
         }
 
         // constructor used for group
-        internal FactoryRecord(string configKey, string group, string name, string factoryTypeName, string filename,
+        internal FactoryRecord(
+            string configKey,
+            string group,
+            string name,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string factoryTypeName,
+            string filename,
             int lineNumber)
         {
             ConfigKey = configKey;
@@ -71,6 +78,7 @@ namespace System.Configuration
             string configKey,
             string group,
             string name,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             string factoryTypeName,
             bool allowLocation,
             ConfigurationAllowDefinition allowDefinition,
@@ -107,6 +115,7 @@ namespace System.Configuration
 
         internal object Factory { get; set; }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         internal string FactoryTypeName { get; set; }
 
         internal ConfigurationAllowDefinition AllowDefinition { get; set; }
@@ -181,7 +190,11 @@ namespace System.Configuration
         }
 
         // by cloning we contain a single copy of the strings referred to in the factory and section records
-        internal FactoryRecord CloneSectionGroup(string factoryTypeName, string filename, int lineNumber)
+        internal FactoryRecord CloneSectionGroup(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string factoryTypeName,
+            string filename,
+            int lineNumber)
         {
             if (FactoryTypeName != null) factoryTypeName = FactoryTypeName;
 
@@ -199,7 +212,10 @@ namespace System.Configuration
                 Errors);
         }
 
-        internal bool IsEquivalentType(IInternalConfigHost host, string typeName)
+        internal bool IsEquivalentType(
+            IInternalConfigHost host,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string typeName)
         {
             try
             {
@@ -226,7 +242,10 @@ namespace System.Configuration
             return false;
         }
 
-        internal bool IsEquivalentSectionGroupFactory(IInternalConfigHost host, string typeName)
+        internal bool IsEquivalentSectionGroupFactory(
+            IInternalConfigHost host,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string typeName)
         {
             if ((typeName == null) || (FactoryTypeName == null))
                 return true;
@@ -236,6 +255,7 @@ namespace System.Configuration
 
         internal bool IsEquivalentSectionFactory(
             IInternalConfigHost host,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             string typeName,
             bool allowLocation,
             ConfigurationAllowDefinition allowDefinition,

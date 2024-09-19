@@ -810,7 +810,10 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionGroupCollection.Add().
         // Note this method DOES NOT update the associated ConfigurationSectionGroupCollection.
-        internal void AddConfigurationSectionGroup(string group, string name,
+        internal void AddConfigurationSectionGroup(
+            string group,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string name,
             ConfigurationSectionGroup configSectionGroup)
         {
             // <location> tags can't have a <configSections> declaration.

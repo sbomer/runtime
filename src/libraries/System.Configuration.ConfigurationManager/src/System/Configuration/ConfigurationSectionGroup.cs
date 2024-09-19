@@ -10,6 +10,7 @@ namespace System.Configuration
         private MgmtConfigurationRecord _configRecord;
         private ConfigurationSectionGroupCollection _configSectionGroups;
         private ConfigurationSectionCollection _configSections;
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         private string _typeName;
 
         internal bool Attached => _configRecord != null;
@@ -26,7 +27,9 @@ namespace System.Configuration
 
         public string Type
         {
+            [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             get { return _typeName; }
+            [param: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             set
             {
                 if (IsRoot)

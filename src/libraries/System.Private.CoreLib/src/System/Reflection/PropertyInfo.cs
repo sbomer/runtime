@@ -13,6 +13,7 @@ namespace System.Reflection
 
         public override MemberTypes MemberType => MemberTypes.Property;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         public abstract Type PropertyType { get; }
         public abstract ParameterInfo[] GetIndexParameters();
 

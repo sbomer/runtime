@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Configuration.Internal;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Versioning;
 
@@ -17,6 +18,8 @@ namespace System.Configuration
     {
         private readonly MgmtConfigurationRecord _configRecord;
         private readonly object[] _hostInitConfigurationParams;
+
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         private readonly Type _typeConfigHost;
         private Func<string, string> _assemblyStringTransformer;
         private ContextInformation _evalContext;
@@ -25,7 +28,11 @@ namespace System.Configuration
         private Stack _sectionsStack;
         private Func<string, string> _typeStringTransformer;
 
-        internal Configuration(string locationSubPath, Type typeConfigHost, params object[] hostInitConfigurationParams)
+        internal Configuration(
+            string locationSubPath,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type typeConfigHost,
+            params object[] hostInitConfigurationParams)
         {
             _typeConfigHost = typeConfigHost;
             _hostInitConfigurationParams = hostInitConfigurationParams;

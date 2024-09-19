@@ -8,6 +8,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
     public abstract class ConfigurationSection : ConfigurationElement
     {
         protected ConfigurationSection()
