@@ -1041,50 +1041,50 @@ namespace System.Configuration
                         lastWasText = true;
                         break;
                     case XmlNodeType.Element:
+                    {
+                        // Write "<elem"
+                        utilWriter.Write('<');
+                        utilWriter.Write(reader.Name);
+
+                        lineWidth += reader.Name.Length + 2;
+
+                        int c = reader.AttributeCount;
+                        for (int i = 0; i < c; i++)
                         {
-                            // Write "<elem"
-                            utilWriter.Write('<');
-                            utilWriter.Write(reader.Name);
-
-                            lineWidth += reader.Name.Length + 2;
-
-                            int c = reader.AttributeCount;
-                            for (int i = 0; i < c; i++)
+                            // Add new line if we've exceeded the line width
+                            bool writeSpace;
+                            if (lineWidth > MaxLineWidth)
                             {
-                                // Add new line if we've exceeded the line width
-                                bool writeSpace;
-                                if (lineWidth > MaxLineWidth)
-                                {
-                                    utilWriter.AppendIndent(linePosition, indent, reader.Depth - 1, true);
-                                    lineWidth = indent;
-                                    writeSpace = false;
-                                    utilWriter.Flush();
-                                    sbLengthLastNewLine = ((StringWriter)utilWriter.Writer).GetStringBuilder().Length;
-                                }
-                                else writeSpace = true;
-
-                                // Write the attribute
-                                reader.MoveToNextAttribute();
+                                utilWriter.AppendIndent(linePosition, indent, reader.Depth - 1, true);
+                                lineWidth = indent;
+                                writeSpace = false;
                                 utilWriter.Flush();
-                                int startLength = ((StringWriter)utilWriter.Writer).GetStringBuilder().Length;
-                                if (writeSpace) utilWriter.AppendSpace();
-
-                                utilWriter.Write(reader.Name);
-                                utilWriter.Write('=');
-                                utilWriter.AppendAttributeValue(reader);
-                                utilWriter.Flush();
-                                lineWidth += ((StringWriter)utilWriter.Writer).GetStringBuilder().Length - startLength;
+                                sbLengthLastNewLine = ((StringWriter)utilWriter.Writer).GetStringBuilder().Length;
                             }
+                            else writeSpace = true;
+
+                            // Write the attribute
+                            reader.MoveToNextAttribute();
+                            utilWriter.Flush();
+                            int startLength = ((StringWriter)utilWriter.Writer).GetStringBuilder().Length;
+                            if (writeSpace) utilWriter.AppendSpace();
+
+                            utilWriter.Write(reader.Name);
+                            utilWriter.Write('=');
+                            utilWriter.AppendAttributeValue(reader);
+                            utilWriter.Flush();
+                            lineWidth += ((StringWriter)utilWriter.Writer).GetStringBuilder().Length - startLength;
                         }
+                    }
 
-                        // position reader back on element
-                        reader.MoveToElement();
+                    // position reader back on element
+                    reader.MoveToElement();
 
-                        // write closing tag
-                        if (reader.IsEmptyElement) utilWriter.Write(" />");
-                        else utilWriter.Write('>');
+                    // write closing tag
+                    if (reader.IsEmptyElement) utilWriter.Write(" />");
+                    else utilWriter.Write('>');
 
-                        break;
+                    break;
                     case XmlNodeType.EndElement:
                         utilWriter.Write("</");
                         utilWriter.Write(reader.Name);
@@ -1094,9 +1094,9 @@ namespace System.Configuration
                         utilWriter.AppendEntityRef(reader.Name);
                         break;
 
-                    // Ignore <?xml and <!DOCTYPE nodes
-                    // case XmlNodeType.XmlDeclaration:
-                    // case XmlNodeType.DocumentType:
+                        // Ignore <?xml and <!DOCTYPE nodes
+                        // case XmlNodeType.XmlDeclaration:
+                        // case XmlNodeType.DocumentType:
                 }
 
                 // put each new element on a new line

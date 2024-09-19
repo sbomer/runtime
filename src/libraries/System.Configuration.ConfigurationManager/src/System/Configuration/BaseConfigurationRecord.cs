@@ -1825,243 +1825,243 @@ namespace System.Configuration
                 switch (xmlUtil.Reader.Name)
                 {
                     case SectionGroupTag: // <sectionGroup>
-                        {
-                            string tagName = null;
-                            string typeName = null;
+                    {
+                        string tagName = null;
+                        string typeName = null;
 
-                            int lineNumber = xmlUtil.Reader.LineNumber;
-                            while (xmlUtil.Reader.MoveToNextAttribute())
-                                switch (xmlUtil.Reader.Name)
-                                {
-                                    case SectionGroupNameAttribute:
-                                        tagName = xmlUtil.Reader.Value;
-                                        VerifySectionName(tagName, xmlUtil, ExceptionAction.Local, false);
-                                        break;
-                                    case SectionGroupTypeAttribute:
-                                        xmlUtil.VerifyAndGetNonEmptyStringAttribute(ExceptionAction.Local, out typeName);
-                                        break;
-                                    default:
-                                        xmlUtil.AddErrorUnrecognizedAttribute(ExceptionAction.Local);
-                                        break;
-                                }
-
-                            // Move back to the element
-                            xmlUtil.Reader.MoveToElement();
-
-                            if (!xmlUtil.VerifyRequiredAttribute(tagName, SectionGroupNameAttribute, ExceptionAction.NonSpecific))
+                        int lineNumber = xmlUtil.Reader.LineNumber;
+                        while (xmlUtil.Reader.MoveToNextAttribute())
+                            switch (xmlUtil.Reader.Name)
                             {
-                                // Without a name="", we cannot continue parsing the sections and groups within.
-                                // Skip the entire section.
-                                xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true);
-                                xmlUtil.StrictSkipToNextElement(ExceptionAction.NonSpecific);
+                                case SectionGroupNameAttribute:
+                                    tagName = xmlUtil.Reader.Value;
+                                    VerifySectionName(tagName, xmlUtil, ExceptionAction.Local, false);
+                                    break;
+                                case SectionGroupTypeAttribute:
+                                    xmlUtil.VerifyAndGetNonEmptyStringAttribute(ExceptionAction.Local, out typeName);
+                                    break;
+                                default:
+                                    xmlUtil.AddErrorUnrecognizedAttribute(ExceptionAction.Local);
+                                    break;
+                            }
+
+                        // Move back to the element
+                        xmlUtil.Reader.MoveToElement();
+
+                        if (!xmlUtil.VerifyRequiredAttribute(tagName, SectionGroupNameAttribute, ExceptionAction.NonSpecific))
+                        {
+                            // Without a name="", we cannot continue parsing the sections and groups within.
+                            // Skip the entire section.
+                            xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true);
+                            xmlUtil.StrictSkipToNextElement(ExceptionAction.NonSpecific);
+                        }
+                        else
+                        {
+                            string configKey = CombineConfigKey(parentConfigKey, tagName);
+
+                            FactoryRecord factoryRecord = (FactoryRecord)factoryList[configKey];
+                            if (factoryRecord != null)
+                            {
+                                // Error: duplicate <sectionGroup> declaration
+                                xmlUtil.SchemaErrors.AddError(
+                                    new ConfigurationErrorsException(SR.Format(SR.Config_tag_name_already_defined_at_this_level, tagName), xmlUtil),
+                                    ExceptionAction.Local);
                             }
                             else
                             {
-                                string configKey = CombineConfigKey(parentConfigKey, tagName);
+                                // Look for a factory of the same name in the parent
+                                FactoryRecord parentFactoryRecord = _parent.FindFactoryRecord(configKey, true);
+                                if (parentFactoryRecord != null)
+                                {
+                                    configKey = parentFactoryRecord.ConfigKey;
 
-                                FactoryRecord factoryRecord = (FactoryRecord)factoryList[configKey];
-                                if (factoryRecord != null)
-                                {
-                                    // Error: duplicate <sectionGroup> declaration
-                                    xmlUtil.SchemaErrors.AddError(
-                                        new ConfigurationErrorsException(SR.Format(SR.Config_tag_name_already_defined_at_this_level, tagName), xmlUtil),
-                                        ExceptionAction.Local);
-                                }
-                                else
-                                {
-                                    // Look for a factory of the same name in the parent
-                                    FactoryRecord parentFactoryRecord = _parent.FindFactoryRecord(configKey, true);
-                                    if (parentFactoryRecord != null)
+                                    // make sure that an ancestor has not defined a <section> with the same name as the <sectionGroup>
+                                    if ((parentFactoryRecord != null) &&
+                                        (!parentFactoryRecord.IsGroup || !parentFactoryRecord.IsEquivalentSectionGroupFactory(Host, typeName)))
                                     {
-                                        configKey = parentFactoryRecord.ConfigKey;
-
-                                        // make sure that an ancestor has not defined a <section> with the same name as the <sectionGroup>
-                                        if ((parentFactoryRecord != null) &&
-                                            (!parentFactoryRecord.IsGroup || !parentFactoryRecord.IsEquivalentSectionGroupFactory(Host, typeName)))
-                                        {
-                                            xmlUtil.SchemaErrors.AddError(
-                                                new ConfigurationErrorsException(SR.Format(SR.Config_tag_name_already_defined, tagName), xmlUtil),
-                                                ExceptionAction.Local);
-                                            parentFactoryRecord = null;
-                                        }
+                                        xmlUtil.SchemaErrors.AddError(
+                                            new ConfigurationErrorsException(SR.Format(SR.Config_tag_name_already_defined, tagName), xmlUtil),
+                                            ExceptionAction.Local);
+                                        parentFactoryRecord = null;
                                     }
-
-                                    factoryRecord = parentFactoryRecord?.CloneSectionGroup(typeName, xmlUtil.Filename, lineNumber)
-                                        ?? new FactoryRecord(configKey, parentConfigKey, tagName, typeName, xmlUtil.Filename, lineNumber);
-
-                                    factoryList[configKey] = factoryRecord;
                                 }
 
-                                // Add any errors we may have encountered
-                                factoryRecord.AddErrors(xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true));
+                                factoryRecord = parentFactoryRecord?.CloneSectionGroup(typeName, xmlUtil.Filename, lineNumber)
+                                    ?? new FactoryRecord(configKey, parentConfigKey, tagName, typeName, xmlUtil.Filename, lineNumber);
 
-                                // continue recursive scan
-                                ScanFactoriesRecursive(xmlUtil, configKey, factoryList);
+                                factoryList[configKey] = factoryRecord;
                             }
 
-                            continue;
+                            // Add any errors we may have encountered
+                            factoryRecord.AddErrors(xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true));
+
+                            // continue recursive scan
+                            ScanFactoriesRecursive(xmlUtil, configKey, factoryList);
                         }
+
+                        continue;
+                    }
 
                     case SectionTag: // <section>
-                        {
-                            string tagName = null;
-                            string typeName = null;
-                            ConfigurationAllowDefinition allowDefinition = ConfigurationAllowDefinition.Everywhere;
-                            ConfigurationAllowExeDefinition allowExeDefinition = ConfigurationAllowExeDefinition.MachineToApplication;
-                            OverrideModeSetting overrideModeDefault = OverrideModeSetting.s_sectionDefault;
-                            bool allowLocation = true;
-                            bool restartOnExternalChanges = true;
-                            bool requirePermission = true;
-                            bool gotType = false;
+                    {
+                        string tagName = null;
+                        string typeName = null;
+                        ConfigurationAllowDefinition allowDefinition = ConfigurationAllowDefinition.Everywhere;
+                        ConfigurationAllowExeDefinition allowExeDefinition = ConfigurationAllowExeDefinition.MachineToApplication;
+                        OverrideModeSetting overrideModeDefault = OverrideModeSetting.s_sectionDefault;
+                        bool allowLocation = true;
+                        bool restartOnExternalChanges = true;
+                        bool requirePermission = true;
+                        bool gotType = false;
 
-                            // parse section attributes
-                            int lineNumber = xmlUtil.Reader.LineNumber;
-                            while (xmlUtil.Reader.MoveToNextAttribute())
-                                switch (xmlUtil.Reader.Name)
-                                {
-                                    case SectionNameAttribute:
-                                        tagName = xmlUtil.Reader.Value;
-                                        VerifySectionName(tagName, xmlUtil, ExceptionAction.Local, false);
-                                        break;
-                                    case SectionTypeAttribute:
-                                        xmlUtil.VerifyAndGetNonEmptyStringAttribute(ExceptionAction.Local, out typeName);
-                                        gotType = true;
-                                        break;
-                                    case SectionAllowLocationAttribute:
-                                        xmlUtil.VerifyAndGetBooleanAttribute(ExceptionAction.Local, true, out allowLocation);
-                                        break;
-                                    case SectionAllowExeDefinitionAttribute:
-                                        try
-                                        {
-                                            allowExeDefinition = AllowExeDefinitionToEnum(xmlUtil.Reader.Value, xmlUtil);
-                                        }
-                                        catch (ConfigurationException ce)
-                                        {
-                                            xmlUtil.SchemaErrors.AddError(ce, ExceptionAction.Local);
-                                        }
-                                        break;
-                                    case SectionAllowDefinitionAttribute:
-                                        try
-                                        {
-                                            allowDefinition = AllowDefinitionToEnum(xmlUtil);
-                                        }
-                                        catch (ConfigurationException ce)
-                                        {
-                                            xmlUtil.SchemaErrors.AddError(ce, ExceptionAction.Local);
-                                        }
-                                        break;
-                                    case SectionRestartonExternalChangesAttribute:
-                                        xmlUtil.VerifyAndGetBooleanAttribute(ExceptionAction.Local, true, out restartOnExternalChanges);
-                                        break;
-                                    case SectionRequirePermissionAttribute:
-                                        xmlUtil.VerifyAndGetBooleanAttribute(ExceptionAction.Local, true, out requirePermission);
-                                        break;
-                                    case SectionOverrideModeDefaultAttribute:
-                                        try
-                                        {
-                                            overrideModeDefault = OverrideModeSetting.CreateFromXmlReadValue(
-                                                OverrideModeSetting.ParseOverrideModeXmlValue(xmlUtil.Reader.Value, xmlUtil));
-
-                                            // Inherit means Allow when coming from the default value
-                                            if (overrideModeDefault.OverrideMode == OverrideMode.Inherit)
-                                                overrideModeDefault.ChangeModeInternal(OverrideMode.Allow);
-                                        }
-                                        catch (ConfigurationException ce)
-                                        {
-                                            xmlUtil.SchemaErrors.AddError(ce, ExceptionAction.Local);
-                                        }
-                                        break;
-                                    default:
-                                        xmlUtil.AddErrorUnrecognizedAttribute(ExceptionAction.Local);
-                                        break;
-                                }
-
-                            // if on an attribute move back to the element
-                            xmlUtil.Reader.MoveToElement();
-
-                            if (!xmlUtil.VerifyRequiredAttribute(
-                                tagName, SectionNameAttribute, ExceptionAction.NonSpecific))
+                        // parse section attributes
+                        int lineNumber = xmlUtil.Reader.LineNumber;
+                        while (xmlUtil.Reader.MoveToNextAttribute())
+                            switch (xmlUtil.Reader.Name)
                             {
-                                // Without a name, we cannot continue to create a factoryRecord.
-                                xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true);
+                                case SectionNameAttribute:
+                                    tagName = xmlUtil.Reader.Value;
+                                    VerifySectionName(tagName, xmlUtil, ExceptionAction.Local, false);
+                                    break;
+                                case SectionTypeAttribute:
+                                    xmlUtil.VerifyAndGetNonEmptyStringAttribute(ExceptionAction.Local, out typeName);
+                                    gotType = true;
+                                    break;
+                                case SectionAllowLocationAttribute:
+                                    xmlUtil.VerifyAndGetBooleanAttribute(ExceptionAction.Local, true, out allowLocation);
+                                    break;
+                                case SectionAllowExeDefinitionAttribute:
+                                    try
+                                    {
+                                        allowExeDefinition = AllowExeDefinitionToEnum(xmlUtil.Reader.Value, xmlUtil);
+                                    }
+                                    catch (ConfigurationException ce)
+                                    {
+                                        xmlUtil.SchemaErrors.AddError(ce, ExceptionAction.Local);
+                                    }
+                                    break;
+                                case SectionAllowDefinitionAttribute:
+                                    try
+                                    {
+                                        allowDefinition = AllowDefinitionToEnum(xmlUtil);
+                                    }
+                                    catch (ConfigurationException ce)
+                                    {
+                                        xmlUtil.SchemaErrors.AddError(ce, ExceptionAction.Local);
+                                    }
+                                    break;
+                                case SectionRestartonExternalChangesAttribute:
+                                    xmlUtil.VerifyAndGetBooleanAttribute(ExceptionAction.Local, true, out restartOnExternalChanges);
+                                    break;
+                                case SectionRequirePermissionAttribute:
+                                    xmlUtil.VerifyAndGetBooleanAttribute(ExceptionAction.Local, true, out requirePermission);
+                                    break;
+                                case SectionOverrideModeDefaultAttribute:
+                                    try
+                                    {
+                                        overrideModeDefault = OverrideModeSetting.CreateFromXmlReadValue(
+                                            OverrideModeSetting.ParseOverrideModeXmlValue(xmlUtil.Reader.Value, xmlUtil));
+
+                                        // Inherit means Allow when coming from the default value
+                                        if (overrideModeDefault.OverrideMode == OverrideMode.Inherit)
+                                            overrideModeDefault.ChangeModeInternal(OverrideMode.Allow);
+                                    }
+                                    catch (ConfigurationException ce)
+                                    {
+                                        xmlUtil.SchemaErrors.AddError(ce, ExceptionAction.Local);
+                                    }
+                                    break;
+                                default:
+                                    xmlUtil.AddErrorUnrecognizedAttribute(ExceptionAction.Local);
+                                    break;
+                            }
+
+                        // if on an attribute move back to the element
+                        xmlUtil.Reader.MoveToElement();
+
+                        if (!xmlUtil.VerifyRequiredAttribute(
+                            tagName, SectionNameAttribute, ExceptionAction.NonSpecific))
+                        {
+                            // Without a name, we cannot continue to create a factoryRecord.
+                            xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true);
+                        }
+                        else
+                        {
+                            // Verify that the Type attribute was present.
+                            // Note that 'typeName' will be null if the attribute was present
+                            // but specified as an empty string.
+                            if (!gotType)
+                                xmlUtil.AddErrorRequiredAttribute(SectionTypeAttribute, ExceptionAction.Local);
+
+                            string configKey = CombineConfigKey(parentConfigKey, tagName);
+
+                            FactoryRecord factoryRecord = (FactoryRecord)factoryList[configKey];
+                            if (factoryRecord != null)
+                            {
+                                // Error: duplicate section declaration
+                                xmlUtil.SchemaErrors.AddError(
+                                    new ConfigurationErrorsException(
+                                        SR.Format(SR.Config_tag_name_already_defined_at_this_level, tagName),
+                                        xmlUtil),
+                                    ExceptionAction.Local);
                             }
                             else
                             {
-                                // Verify that the Type attribute was present.
-                                // Note that 'typeName' will be null if the attribute was present
-                                // but specified as an empty string.
-                                if (!gotType)
-                                    xmlUtil.AddErrorRequiredAttribute(SectionTypeAttribute, ExceptionAction.Local);
-
-                                string configKey = CombineConfigKey(parentConfigKey, tagName);
-
-                                FactoryRecord factoryRecord = (FactoryRecord)factoryList[configKey];
-                                if (factoryRecord != null)
+                                FactoryRecord parentFactoryRecord = _parent.FindFactoryRecord(configKey, true);
+                                if (parentFactoryRecord != null)
                                 {
-                                    // Error: duplicate section declaration
-                                    xmlUtil.SchemaErrors.AddError(
-                                        new ConfigurationErrorsException(
-                                            SR.Format(SR.Config_tag_name_already_defined_at_this_level, tagName),
-                                            xmlUtil),
-                                        ExceptionAction.Local);
-                                }
-                                else
-                                {
-                                    FactoryRecord parentFactoryRecord = _parent.FindFactoryRecord(configKey, true);
-                                    if (parentFactoryRecord != null)
+                                    // We have a parent factory record with the same name
+                                    configKey = parentFactoryRecord.ConfigKey;
+
+                                    // Look for collisions
+                                    if (parentFactoryRecord.IsGroup)
                                     {
-                                        // We have a parent factory record with the same name
-                                        configKey = parentFactoryRecord.ConfigKey;
-
-                                        // Look for collisions
-                                        if (parentFactoryRecord.IsGroup)
-                                        {
-                                            // Already a <sectionGroup> with this name
-                                            xmlUtil.SchemaErrors.AddError(
-                                                new ConfigurationErrorsException(
-                                                    SR.Format(SR.Config_tag_name_already_defined, tagName), xmlUtil),
-                                                ExceptionAction.Local);
-                                            parentFactoryRecord = null;
-                                        }
-                                        else if (!parentFactoryRecord.IsEquivalentSectionFactory(
-                                            Host, typeName, allowLocation, allowDefinition, allowExeDefinition, restartOnExternalChanges, requirePermission))
-                                        {
-                                            // Already a <section> with the same name
-                                            xmlUtil.SchemaErrors.AddError(
-                                                new ConfigurationErrorsException(SR.Format(SR.Config_tag_name_already_defined, tagName), xmlUtil),
-                                                ExceptionAction.Local);
-                                            parentFactoryRecord = null;
-                                        }
+                                        // Already a <sectionGroup> with this name
+                                        xmlUtil.SchemaErrors.AddError(
+                                            new ConfigurationErrorsException(
+                                                SR.Format(SR.Config_tag_name_already_defined, tagName), xmlUtil),
+                                            ExceptionAction.Local);
+                                        parentFactoryRecord = null;
                                     }
-
-                                    // Note - Clone will propagate the IsFromTrustedConfigRecord bit,
-                                    // which is what we want - if this record is a duplicate of an ancestor,
-                                    // the ancestor may be from a trusted config record.
-                                    factoryRecord = parentFactoryRecord?.CloneSection(xmlUtil.Filename, lineNumber)
-                                        ?? new FactoryRecord(
-                                            configKey,
-                                            parentConfigKey,
-                                            tagName,
-                                            typeName,
-                                            allowLocation,
-                                            allowDefinition,
-                                            allowExeDefinition,
-                                            overrideModeDefault,
-                                            restartOnExternalChanges,
-                                            requirePermission,
-                                            _flags[IsTrusted],
-                                            isUndeclared: false,
-                                            filename: xmlUtil.Filename,
-                                            lineNumber: lineNumber);
-
-                                    factoryList[configKey] = factoryRecord;
+                                    else if (!parentFactoryRecord.IsEquivalentSectionFactory(
+                                        Host, typeName, allowLocation, allowDefinition, allowExeDefinition, restartOnExternalChanges, requirePermission))
+                                    {
+                                        // Already a <section> with the same name
+                                        xmlUtil.SchemaErrors.AddError(
+                                            new ConfigurationErrorsException(SR.Format(SR.Config_tag_name_already_defined, tagName), xmlUtil),
+                                            ExceptionAction.Local);
+                                        parentFactoryRecord = null;
+                                    }
                                 }
 
-                                // Add any errors we may have encountered
-                                factoryRecord.AddErrors(xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true));
+                                // Note - Clone will propagate the IsFromTrustedConfigRecord bit,
+                                // which is what we want - if this record is a duplicate of an ancestor,
+                                // the ancestor may be from a trusted config record.
+                                factoryRecord = parentFactoryRecord?.CloneSection(xmlUtil.Filename, lineNumber)
+                                    ?? new FactoryRecord(
+                                        configKey,
+                                        parentConfigKey,
+                                        tagName,
+                                        typeName,
+                                        allowLocation,
+                                        allowDefinition,
+                                        allowExeDefinition,
+                                        overrideModeDefault,
+                                        restartOnExternalChanges,
+                                        requirePermission,
+                                        _flags[IsTrusted],
+                                        isUndeclared: false,
+                                        filename: xmlUtil.Filename,
+                                        lineNumber: lineNumber);
+
+                                factoryList[configKey] = factoryRecord;
                             }
-                            break;
+
+                            // Add any errors we may have encountered
+                            factoryRecord.AddErrors(xmlUtil.SchemaErrors.RetrieveAndResetLocalErrors(true));
                         }
+                        break;
+                    }
                     case RemoveTag: // <remove>
                         // Find the name attribute
                         string name = null;
