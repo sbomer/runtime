@@ -423,6 +423,7 @@ namespace System.Configuration
             return level;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.Configuration.Configuration(String, Type, params Object[])")]
         internal static Configuration OpenExeConfiguration(ConfigurationFileMap fileMap, bool isMachine,
             ConfigurationUserLevel userLevel, string exePath)
         {

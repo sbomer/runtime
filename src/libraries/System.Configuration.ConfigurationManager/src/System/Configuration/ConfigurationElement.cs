@@ -710,6 +710,7 @@ namespace System.Configuration
             return hHashCode;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.CreatePropertyBagFromType(Type)")]
         private static bool PropertiesFromType(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
             Type type,
@@ -734,6 +735,7 @@ namespace System.Configuration
             return firstTimeInit;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.CreateConfigurationPropertyFromAttributes(PropertyInfo)")]
         private static ConfigurationPropertyCollection CreatePropertyBagFromType(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
             Type type)
@@ -766,6 +768,7 @@ namespace System.Configuration
             return properties;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(PropertyInfo)")]
         private static ConfigurationProperty CreateConfigurationPropertyFromAttributes(PropertyInfo propertyInformation)
         {
             Debug.Assert(propertyInformation != null, "propertyInformation != null");

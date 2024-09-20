@@ -198,6 +198,7 @@ namespace System.Configuration
             return OpenExeConfigurationImpl(fileMap, false, userLevel, null, preLoad);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ClientConfigurationHost.OpenExeConfiguration(ConfigurationFileMap, Boolean, ConfigurationUserLevel, String)")]
         private static Configuration OpenExeConfigurationImpl(ConfigurationFileMap fileMap, bool isMachine,
             ConfigurationUserLevel userLevel, string exePath, bool preLoad = false)
         {

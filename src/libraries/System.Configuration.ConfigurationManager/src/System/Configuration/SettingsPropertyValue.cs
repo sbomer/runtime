@@ -30,6 +30,7 @@ namespace System.Configuration
 
         public object PropertyValue
         {
+            [RequiresUnreferencedCode("Deserialize")]
             get
             {
                 if (!Deserialized)
@@ -59,6 +60,7 @@ namespace System.Configuration
 
         public object SerializedValue
         {
+            [RequiresUnreferencedCode("SerializePropertyValue")]
             get
             {
                 if (_changedSinceLastSerialized)
@@ -75,6 +77,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream)")]
         private object Deserialize()
         {
             object value = null;
@@ -170,6 +173,7 @@ namespace System.Configuration
             return value;
         }
 
+        [RequiresUnreferencedCode("Calls System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream)")]
         private static object GetObjectFromString(Type type, SettingsSerializeAs serializeAs, string serializedValue)
         {
             // Deal with string types
@@ -214,6 +218,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Serialize(Stream, Object)")]
         private object SerializePropertyValue()
         {
             if (_value == null)
@@ -243,6 +248,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.ComponentModel.TypeDescriptor.GetConverter(Type)")]
         private static string ConvertObjectToString(object propertyValue, Type type, SettingsSerializeAs serializeAs, bool throwOnError)
         {
             if (serializeAs == SettingsSerializeAs.ProviderSpecific)

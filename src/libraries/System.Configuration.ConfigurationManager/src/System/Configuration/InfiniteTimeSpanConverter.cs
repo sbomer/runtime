@@ -6,6 +6,7 @@ using System.Globalization;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("TODO")]
     public sealed class InfiniteTimeSpanConverter : ConfigurationConverterBase
     {
         private static readonly TypeConverter s_timeSpanConverter = TypeDescriptor.GetConverter(typeof(TimeSpan));

@@ -22,6 +22,7 @@ namespace System.Diagnostics
 
         protected override object GetElementKey(ConfigurationElement element) => ((ListenerElement)element).Name;
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.GetRuntimeObject()")]
         public IEnumerable<TraceListener> GetRuntimeObject()
         {
             List<TraceListener> listeners = new();
@@ -170,6 +171,7 @@ namespace System.Diagnostics
 
         public override int GetHashCode() => base.GetHashCode();
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.BaseGetRuntimeObject()")]
         public TraceListener GetRuntimeObject()
         {
             if (_runtimeObject != null)
@@ -298,6 +300,7 @@ namespace System.Diagnostics
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.GetRuntimeObject()")]
         internal TraceListener RefreshRuntimeObject(TraceListener listener)
         {
             _runtimeObject = null;

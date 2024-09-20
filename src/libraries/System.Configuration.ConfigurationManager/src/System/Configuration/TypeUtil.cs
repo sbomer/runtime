@@ -39,8 +39,12 @@ namespace System.Configuration
         /// Find type references that used to be found without assembly names
         /// </summary>
         [UnconditionalSuppressMessage("TrimAnalysis", "IL2073",
-            Justification = "The annotations require fully-qualified type names, which will always return null. " + 
+            Justification = "The annotations require fully-qualified type names, which will always return null. " +
                 "The annotation mismatch from the other return statements are unreachable in correctly annotated trimmed apps.")]
+        [UnconditionalSuppressMessage("TrimAnalysis", "IL2026",
+            Justification = "The call to Assembly.GetType is unreachable in correctly annotated trimmed apps.")]
+        [UnconditionalSuppressMessage("TrimAnalysis", "IL2057",
+            Justification = "The call to Type.GetType with typeString and assembly is unreachable in correctly annotated trimmed apps.")]
         [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         private static Type GetImplicitType(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -121,7 +125,7 @@ namespace System.Configuration
         internal static Type GetType(
             IInternalConfigHost host,
             // TODO: does this actually need any annotations?
-            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             string typeString,
             bool throwOnError)
         {

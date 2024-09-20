@@ -184,7 +184,8 @@ namespace System.Configuration
             }
         }
 
-        public Type Type {
+        public Type Type
+        {
             [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             get;
             private set;
@@ -208,6 +209,7 @@ namespace System.Configuration
 
         public TypeConverter Converter
         {
+            [RequiresUnreferencedCode("")]
             get
             {
                 CreateConverter();
@@ -387,6 +389,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.ComponentModel.TypeDescriptor.GetConverter(Type)")]
         private void CreateConverter()
         {
             if (_converter != null) return;

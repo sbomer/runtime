@@ -13,6 +13,7 @@ namespace System.Configuration.Internal
     // The BaseConfigurationRecord hierarchy is protected with the
     // _hierarchyLock. Functions that assume that the lock as been
     // taken begin with the prefix "hl", for example, "hlFindConfigRecord".
+    [RequiresUnreferencedCode("TODO")]
     internal sealed class InternalConfigRoot : IInternalConfigRoot
     {
         private ReaderWriterLock _hierarchyLock;
@@ -39,6 +40,7 @@ namespace System.Configuration.Internal
         public event InternalConfigEventHandler ConfigChanged;
         public event InternalConfigEventHandler ConfigRemoved;
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         void IInternalConfigRoot.Init(IInternalConfigHost host, bool isDesignTime)
         {
             Host = host;
@@ -91,6 +93,7 @@ namespace System.Configuration.Internal
 
         // Get the config record for a path.
         // If the record does not exist, create it if it is needed.
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         public IInternalConfigRecord GetConfigRecord(string configPath)
         {
             if (!ConfigPathUtility.IsValid(configPath)) throw ExceptionUtil.ParameterInvalid(nameof(configPath));
@@ -271,6 +274,7 @@ namespace System.Configuration.Internal
 
         // Clear the result of a configSection evaluation at a particular point
         // in the hierarchy.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.HlClearResultRecursive(String, Boolean)")]
         public void ClearResult(BaseConfigurationRecord configRecord, string configKey, bool forceEvaluation)
         {
             string[] parts = ConfigPathUtility.GetParts(configRecord.ConfigPath);

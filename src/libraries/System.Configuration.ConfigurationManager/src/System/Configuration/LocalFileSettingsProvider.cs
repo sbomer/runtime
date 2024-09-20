@@ -433,6 +433,7 @@ namespace System.Configuration
             return isUser;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.SettingsPropertyValue.SerializedValue")]
         private XmlElement SerializeToXmlElement(SettingsProperty setting, SettingsPropertyValue value)
         {
             XmlDocument doc = new XmlDocument();

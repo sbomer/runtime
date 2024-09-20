@@ -7,6 +7,9 @@ namespace System.Configuration.Internal
     {
         IInternalConfigHost Host { get; }
         IInternalConfigRoot Root { get; }
-        void Init(Type typeConfigHost, params object[] hostInitParams);
+        void Init(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type typeConfigHost,
+            params object[] hostInitParams);
     }
 }

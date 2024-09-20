@@ -7,7 +7,6 @@ using System.Security;
 
 namespace System.Configuration.Internal
 {
-    [RequiresUnreferencedCode("TODO")]
     internal sealed class InternalConfigHost : IInternalConfigHost
     {
         private const FileAttributes InvalidAttributesForWrite = FileAttributes.ReadOnly | FileAttributes.Hidden;
@@ -174,13 +173,19 @@ namespace System.Configuration.Internal
             return ProtectedConfigurationSection.EncryptSection(clearTextXml, protectionProvider);
         }
 
-        Type IInternalConfigHost.GetConfigType(string typeName, bool throwOnError)
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+        Type IInternalConfigHost.GetConfigType(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string typeName,
+            bool throwOnError)
         {
             return Type.GetType(typeName, throwOnError);
         }
 
-        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-        string IInternalConfigHost.GetConfigTypeName(Type t)
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+        string IInternalConfigHost.GetConfigTypeName(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type t)
         {
             return t.AssemblyQualifiedName;
         }

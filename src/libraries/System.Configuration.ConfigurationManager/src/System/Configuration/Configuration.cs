@@ -28,6 +28,7 @@ namespace System.Configuration
         private Stack _sectionsStack;
         private Func<string, string> _typeStringTransformer;
 
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         internal Configuration(
             string locationSubPath,
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]

@@ -13,7 +13,8 @@ namespace System.Configuration
         public virtual bool IsReadOnly { get; set; }
         public virtual object DefaultValue { get; set; }
 
-        public virtual Type PropertyType {
+        public virtual Type PropertyType
+        {
             [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             get;
             set;

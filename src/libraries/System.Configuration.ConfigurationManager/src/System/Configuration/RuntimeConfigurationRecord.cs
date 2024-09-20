@@ -7,6 +7,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("TODO")]
     internal sealed class RuntimeConfigurationRecord : BaseConfigurationRecord
     {
         private static readonly SimpleBitVector32 s_runtimeClassFlags = new SimpleBitVector32(
@@ -20,6 +21,7 @@ namespace System.Configuration
 
         protected override SimpleBitVector32 ClassFlags => s_runtimeClassFlags;
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.Init(IInternalConfigRoot, BaseConfigurationRecord, String, String)")]
         internal static IInternalConfigRecord Create(
             InternalConfigRoot configRoot,
             IInternalConfigRecord parent,

@@ -9,6 +9,7 @@ namespace System.Configuration.Internal
         private ImplicitMachineConfigHost _configHost;
         private IInternalConfigRoot _configRoot;
 
+        // [RequiresUnreferencedCode("Calls InternalConfigRoot")]
         void IConfigSystem.Init(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             Type typeConfigHost,

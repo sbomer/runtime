@@ -80,6 +80,7 @@ namespace System.Configuration
         // the record itself require an update.
         private bool RecordItselfRequiresUpdates => NamespaceChangeNeeded != NamespaceChange.None;
 
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Init(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         internal static MgmtConfigurationRecord Create(
             IInternalConfigRoot configRoot,
             IInternalConfigRecord parent,
@@ -91,6 +92,7 @@ namespace System.Configuration
             return configRecord;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.Init(IInternalConfigRoot, BaseConfigurationRecord, String, String)")]
         private void Init(
             IInternalConfigRoot configRoot,
             IInternalConfigRecord parent,
@@ -425,6 +427,7 @@ namespace System.Configuration
 
         // Return the outer XML of a section as a string.
         // Return null if the section does not exist in the file.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetSectionXmlReader(String[], SectionInput)")]
         internal string GetRawXml(string configKey)
         {
             // Get the section record created during Init

@@ -11,8 +11,9 @@ namespace System.Diagnostics
 
         /// <summary>
         /// Register the configuration system to apply settings from configuration files
-        /// to <seealso cref="System.Diagnostics.TraceSource"/> and related classes.
+        /// to <seealso cref="TraceSource"/> and related classes.
         /// </summary>
+        [RequiresUnreferencedCode("TODO")]
         public static void Register()
         {
             if (!s_registered)
@@ -152,6 +153,7 @@ namespace System.Diagnostics
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElementsCollection.GetRuntimeObject()")]
         private static void ConfigureTraceSettings()
         {
             // Ported from https://referencesource.microsoft.com/#System/compmod/system/diagnostics/TraceInternal.cs,06360b4de5e221c2, https://referencesource.microsoft.com/#System/compmod/system/diagnostics/TraceInternal.cs,37

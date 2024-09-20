@@ -95,10 +95,15 @@ namespace System.Configuration.Internal
             ProtectedConfigurationSection protectedConfigSection);
 
         [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-        Type GetConfigType(string typeName, bool throwOnError);
+        Type GetConfigType(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            string typeName,
+            bool throwOnError);
 
         [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-        string GetConfigTypeName(Type t);
+        string GetConfigTypeName(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type t);
 
         bool IsTrustedConfigPath(string configPath);
 

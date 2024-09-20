@@ -5,6 +5,7 @@ using System.Runtime.Versioning;
 
 namespace System.Configuration
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
     public class ConfigurationSectionGroup
     {
         private MgmtConfigurationRecord _configRecord;

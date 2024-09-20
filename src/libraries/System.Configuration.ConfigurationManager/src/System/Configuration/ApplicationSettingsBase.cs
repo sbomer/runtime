@@ -11,6 +11,7 @@ namespace System.Configuration
     /// <summary>
     /// Base settings class for client applications.
     /// </summary>
+    [RequiresUnreferencedCode("TODO")]
     public abstract class ApplicationSettingsBase : SettingsBase, INotifyPropertyChanged
     {
         private bool _explicitSerializeOnClass;
@@ -90,6 +91,7 @@ namespace System.Configuration
         [Browsable(false)]
         public override SettingsContext Context
         {
+            // [RequiresUnreferencedCode("TODO")]
             get
             {
                 if (_context == null)
@@ -125,6 +127,7 @@ namespace System.Configuration
         [Browsable(false)]
         public override SettingsPropertyCollection Properties
         {
+            // [RequiresUnreferencedCode("TODO")]
             get
             {
                 if (_settings == null)
@@ -170,6 +173,7 @@ namespace System.Configuration
         [Browsable(false)]
         public override SettingsProviderCollection Providers
         {
+            // [RequiresUnreferencedCode("TODO")]
             get
             {
                 if (_providers == null)
@@ -278,6 +282,7 @@ namespace System.Configuration
         /// Used in conjunction with Upgrade - retrieves the previous value of a setting from the provider.
         /// Provider must implement IApplicationSettingsProvider to support this.
         /// </summary>
+        // [RequiresUnreferencedCode("TODO")]
         public object GetPreviousVersion(string propertyName)
         {
             if (Properties.Count == 0)
@@ -438,6 +443,7 @@ namespace System.Configuration
         /// Creates a SettingsProperty object using the metadata on the given property
         /// and returns it.
         /// </summary>
+        [RequiresUnreferencedCode("Calls System.ComponentModel.TypeDescriptor.GetConverter(Type)")]
         private SettingsProperty CreateSetting(PropertyInfo propertyInfo)
         {
             // Initialization method -
@@ -535,6 +541,7 @@ namespace System.Configuration
         /// Ensures this class is initialized. Initialization involves reflecting over properties and building
         /// a list of SettingsProperty's.
         /// </summary>
+        [RequiresUnreferencedCode("Calls System.Configuration.ApplicationSettingsBase.CreateSetting(PropertyInfo)")]
         private void EnsureInitialized()
         {
             // Initialization method -
