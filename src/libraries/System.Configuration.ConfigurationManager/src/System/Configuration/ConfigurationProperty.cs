@@ -190,11 +190,7 @@ namespace System.Configuration
         }
 
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-        public Type Type
-        {
-            get;
-            private set;
-        }
+        public Type Type { get; private set; }
 
         public object DefaultValue { get; private set; }
 
