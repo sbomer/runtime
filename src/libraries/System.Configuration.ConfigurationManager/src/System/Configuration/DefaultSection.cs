@@ -5,6 +5,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("Base type has RUC: https://github.com/dotnet/runtime/issues/107660")]
     public sealed class DefaultSection : ConfigurationSection
     {
         private static volatile ConfigurationPropertyCollection s_properties;
@@ -12,7 +13,7 @@ namespace System.Configuration
 
         private string _rawXml = string.Empty;
 
-        [RequiresUnreferencedCode("Base")]
+        // [RequiresUnreferencedCode("Base")]
         public DefaultSection()
         {
             EnsureStaticPropertyBag();
@@ -55,7 +56,9 @@ namespace System.Configuration
             _isModified = true;
         }
 
-        [RequiresUnreferencedCode("Base virtual has RUC")]
+        // [RequiresUnreferencedCode("Base virtual has RUC")]
+        // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+        //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override string SerializeSection(ConfigurationElement parentSection, string name,
             ConfigurationSaveMode saveMode)
         {

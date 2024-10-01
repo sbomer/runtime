@@ -5,14 +5,15 @@ using System.Runtime.CompilerServices;
 
 namespace System.Diagnostics
 {
+    [RequiresUnreferencedCode("Base type has RUC: https://github.com/dotnet/runtime/issues/107660")]
     internal sealed class FilterElement : TypedElement
     {
         private static readonly ConditionalWeakTable<TraceFilter, string> s_initData = new();
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.TypedElement(Type)")]
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.TypedElement(Type)")]
         public FilterElement() : base(typeof(TraceFilter)) { }
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.BaseGetRuntimeObject()")]
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.BaseGetRuntimeObject()")]
         public TraceFilter GetRuntimeObject()
         {
             TraceFilter newFilter = (TraceFilter)BaseGetRuntimeObject();
@@ -20,7 +21,7 @@ namespace System.Diagnostics
             return newFilter;
         }
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.FilterElement.GetRuntimeObject()")]
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.FilterElement.GetRuntimeObject()")]
         internal TraceFilter RefreshRuntimeObject(TraceFilter filter)
         {
             if (Type.GetType(TypeName) != filter.GetType() || InitDataChanged(filter))

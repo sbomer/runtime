@@ -8,6 +8,7 @@ using System.Xml;
 namespace System.Configuration
 {
     [DebuggerDisplay("Count = {Count}")]
+    [RequiresUnreferencedCode("Base type has RUC: https://github.com/dotnet/runtime/issues/107660")]
     public abstract class ConfigurationElementCollection : ConfigurationElement, ICollection
     {
         internal const string DefaultAddItemName = "add";
@@ -27,10 +28,10 @@ namespace System.Configuration
         internal bool InternalAddToEnd;
         internal string InternalElementTagName = string.Empty;
 
-        [RequiresUnreferencedCode("Base")]
+        // [RequiresUnreferencedCode("Base")]
         protected ConfigurationElementCollection() { }
 
-        [RequiresUnreferencedCode("Base")]
+        // [RequiresUnreferencedCode("Base")]
         protected ConfigurationElementCollection(IComparer comparer)
         {
             if (comparer is null)
@@ -47,7 +48,7 @@ namespace System.Configuration
         {
             get { return _addElement; }
 
-            [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
+            // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 _addElement = value;
@@ -60,7 +61,7 @@ namespace System.Configuration
         {
             get { return _removeElement; }
 
-            [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
+            // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -73,7 +74,7 @@ namespace System.Configuration
         {
             get { return _clearElement; }
 
-            [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
+            // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -253,9 +254,9 @@ namespace System.Configuration
             return hHashCode;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
-            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
+        // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+        //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override void Unmerge(ConfigurationElement sourceElement,
             ConfigurationElement parentElement,
             ConfigurationSaveMode saveMode)
@@ -463,9 +464,9 @@ namespace System.Configuration
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
-            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
+        // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+        //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override void Reset(ConfigurationElement parentElement)
         {
             ConfigurationElementCollection parentCollection = parentElement as ConfigurationElementCollection;
@@ -502,19 +503,19 @@ namespace System.Configuration
             ((ICollection)this).CopyTo(array, index);
         }
 
-        [RequiresUnreferencedCode("BaseAdd")]
+        // [RequiresUnreferencedCode("BaseAdd")]
         protected virtual void BaseAdd(ConfigurationElement element)
         {
             BaseAdd(element, ThrowOnDuplicate);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
         protected internal void BaseAdd(ConfigurationElement element, bool throwIfExists)
         {
             BaseAdd(element, throwIfExists, false);
         }
 
-        [RequiresUnreferencedCode("BaseAddInternal")]
+        // [RequiresUnreferencedCode("BaseAddInternal")]
         private void BaseAdd(ConfigurationElement element, bool throwIfExists, bool ignoreLocks)
         {
             bool flagAsReplaced = false;
@@ -623,7 +624,7 @@ namespace System.Configuration
             return -1;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
         private void BaseAddInternal(int index, ConfigurationElement element, bool flagAsReplaced, bool ignoreLocks)
         {
             // Allow the element to initialize itself after its
@@ -689,13 +690,13 @@ namespace System.Configuration
             _modified = true;
         }
 
-        [RequiresUnreferencedCode("BaseAdd")]
+        // [RequiresUnreferencedCode("BaseAdd")]
         protected virtual void BaseAdd(int index, ConfigurationElement element)
         {
             BaseAdd(index, element, false);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAddInternal(Int32, ConfigurationElement, Boolean, Boolean)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAddInternal(Int32, ConfigurationElement, Boolean, Boolean)")]
         private void BaseAdd(int index, ConfigurationElement element, bool ignoreLocks)
         {
             if (IsReadOnly()) throw new ConfigurationErrorsException(SR.Config_base_read_only);
@@ -1046,9 +1047,9 @@ namespace System.Configuration
             _modified = true;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
-            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
+        // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+        //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override bool SerializeElement(XmlWriter writer, bool serializeCollectionKey)
         {
             ConfigurationElementCollectionType type = CollectionType;
@@ -1113,9 +1114,9 @@ namespace System.Configuration
             return dataToWrite;
         }
 
-        [RequiresUnreferencedCode("BaseAdd")]
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
-            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
+        // [RequiresUnreferencedCode("BaseAdd")]
+        // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+        //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected override bool OnDeserializeUnrecognizedElement(string elementName, XmlReader reader)
         {
             if ((CollectionType == ConfigurationElementCollectionType.AddRemoveClearMap) ||
