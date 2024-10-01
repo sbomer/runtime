@@ -33,6 +33,7 @@ namespace System.Configuration
 
         public SettingsProperty(
             string name,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             Type propertyType,
             SettingsProvider provider,
             bool isReadOnly,
