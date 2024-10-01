@@ -20,10 +20,10 @@ namespace System.Configuration
 
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection { s_propName, s_propConnectionString, s_propProviderName };
 
-        [RequiresUnreferencedCode("Base")]
+        // [RequiresUnreferencedCode("Base")]
         public ConnectionStringSettings() { }
 
-        [RequiresUnreferencedCode("TODO")]
+        // [RequiresUnreferencedCode("TODO")]
         public ConnectionStringSettings(string name, string connectionString)
             : this()
         {
@@ -31,7 +31,7 @@ namespace System.Configuration
             ConnectionString = connectionString;
         }
 
-        [RequiresUnreferencedCode("Base")]
+        // [RequiresUnreferencedCode("Base")]
         public ConnectionStringSettings(string name, string connectionString, string providerName)
             : this()
         {

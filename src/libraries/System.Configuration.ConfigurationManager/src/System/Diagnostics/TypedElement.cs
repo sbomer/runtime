@@ -53,7 +53,7 @@ namespace System.Diagnostics
             }
         }
 
-        [RequiresUnreferencedCode("TypeName can't be annotated to satisfy GetRuntimeObject.")]
+        // [RequiresUnreferencedCode("TypeName can't be annotated to satisfy GetRuntimeObject.")]
         protected object BaseGetRuntimeObject()
         {
             return _runtimeObject ??= TraceUtils.GetRuntimeObject(TypeName, _baseType, InitData);

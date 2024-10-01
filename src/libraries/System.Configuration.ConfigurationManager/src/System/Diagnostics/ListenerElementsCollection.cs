@@ -83,7 +83,7 @@ namespace System.Diagnostics
         protected override string ElementName => "add";
     }
 
-    [RequiresUnreferencedCode("Static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions)")]
+    [RequiresUnreferencedCode("Static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions), ConfigurationProperty on property")]
     internal sealed class ListenerElement : TypedElement
     {
         private static readonly ConfigurationProperty s_propFilter = new("filter", typeof(FilterElement), null, ConfigurationPropertyOptions.None);
@@ -97,7 +97,7 @@ namespace System.Diagnostics
 
         private static readonly ConditionalWeakTable<TraceListener, string> s_initData = new();
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.TypedElement(Type)")]
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.TypedElement(Type)")]
         public ListenerElement(bool allowReferences) : base(typeof(TraceListener))
         {
             _allowReferences = allowReferences;
@@ -179,7 +179,7 @@ namespace System.Diagnostics
 
         public override int GetHashCode() => base.GetHashCode();
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.BaseGetRuntimeObject()")]
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.BaseGetRuntimeObject()")]
         public TraceListener GetRuntimeObject()
         {
             if (_runtimeObject != null)
@@ -308,7 +308,7 @@ namespace System.Diagnostics
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.GetRuntimeObject()")]
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.GetRuntimeObject()")]
         internal TraceListener RefreshRuntimeObject(TraceListener listener)
         {
             _runtimeObject = null;
