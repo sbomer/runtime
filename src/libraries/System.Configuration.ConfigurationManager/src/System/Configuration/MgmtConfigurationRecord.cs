@@ -125,6 +125,8 @@ namespace System.Configuration
         }
 
         [RequiresUnreferencedCode("Access to RUC ctor of DefaultSection")]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected override object CreateSectionFactory(FactoryRecord factoryRecord)
         {
             // Get the type of the factory

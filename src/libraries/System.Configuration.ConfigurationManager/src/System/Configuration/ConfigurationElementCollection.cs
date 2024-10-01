@@ -254,6 +254,8 @@ namespace System.Configuration
         }
 
         [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override void Unmerge(ConfigurationElement sourceElement,
             ConfigurationElement parentElement,
             ConfigurationSaveMode saveMode)
@@ -462,6 +464,8 @@ namespace System.Configuration
         }
 
         [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override void Reset(ConfigurationElement parentElement)
         {
             ConfigurationElementCollection parentCollection = parentElement as ConfigurationElementCollection;
@@ -1043,6 +1047,8 @@ namespace System.Configuration
         }
 
         [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override bool SerializeElement(XmlWriter writer, bool serializeCollectionKey)
         {
             ConfigurationElementCollectionType type = CollectionType;
@@ -1108,6 +1114,8 @@ namespace System.Configuration
         }
 
         [RequiresUnreferencedCode("BaseAdd")]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
+            Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected override bool OnDeserializeUnrecognizedElement(string elementName, XmlReader reader)
         {
             if ((CollectionType == ConfigurationElementCollectionType.AddRemoveClearMap) ||
