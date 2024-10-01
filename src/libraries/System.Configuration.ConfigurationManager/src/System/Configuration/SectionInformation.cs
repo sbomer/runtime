@@ -692,6 +692,7 @@ namespace System.Configuration
             return RawXml ?? _configRecord?.GetRawXml(ConfigKey);
         }
 
+        [RequiresUnreferencedCode("MgmtConfigurationRecord.SetRawXml")]
         public void SetRawXml(string rawXml)
         {
             VerifyIsEditable();

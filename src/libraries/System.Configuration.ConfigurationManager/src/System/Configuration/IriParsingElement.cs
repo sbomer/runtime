@@ -3,6 +3,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("ConfigurationProperty on a property")] // TODO
     public sealed class IriParsingElement : ConfigurationElement
     {
         internal const bool EnabledDefaultValue = false;

@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("Overrides NameObjectCollectionBase.GetEnumerator with RUC")]
     public sealed class ConfigurationSectionGroupCollection : NameObjectCollectionBase
     {
         private readonly ConfigurationSectionGroup _configSectionGroup;
@@ -27,10 +28,18 @@ namespace System.Configuration
         }
 
         // Indexer via name
-        public ConfigurationSectionGroup this[string name] => Get(name);
+        public ConfigurationSectionGroup this[string name]
+        {
+            // [RequiresUnreferencedCode("Get")]
+            get => Get(name);
+        }
 
         // Indexer via integer index.
-        public ConfigurationSectionGroup this[int index] => Get(index);
+        public ConfigurationSectionGroup this[int index]
+        {
+            // [RequiresUnreferencedCode("Get")]
+            get => Get(index);
+        }
 
         // Remove the collection from configuration system, and remove all entries
         // in the base collection so that enumeration will return an empty collection.
@@ -46,6 +55,7 @@ namespace System.Configuration
                 throw new InvalidOperationException(SR.Config_cannot_edit_configurationsectiongroup_when_not_attached);
         }
 
+        // [RequiresUnreferencedCode("AddConfigurationSectionGroup")]
         public void Add(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             string name,
@@ -56,7 +66,7 @@ namespace System.Configuration
             BaseAdd(name, name);
         }
 
-        [RequiresUnreferencedCode("Remove")]
+        // [RequiresUnreferencedCode("Remove")]
         public void Clear()
         {
             VerifyIsAttachedToConfigRecord();
@@ -69,6 +79,7 @@ namespace System.Configuration
             foreach (string key in allKeys) Remove(key);
         }
 
+        // [RequiresUnreferencedCode("Get")]
         public void CopyTo(ConfigurationSectionGroup[] array, int index)
         {
             if (array is null)
@@ -82,13 +93,13 @@ namespace System.Configuration
             for (int i = 0, j = index; i < c; i++, j++) array[j] = Get(i);
         }
 
-        [RequiresUnreferencedCode("Get")]
+        // [RequiresUnreferencedCode("Get")]
         public ConfigurationSectionGroup Get(int index)
         {
             return Get(GetKey(index));
         }
 
-        [RequiresUnreferencedCode("BaseConfigurationRecord")]
+        // [RequiresUnreferencedCode("BaseConfigurationRecord")]
         public ConfigurationSectionGroup Get(string name)
         {
             VerifyIsAttachedToConfigRecord();
@@ -110,6 +121,7 @@ namespace System.Configuration
             return _configRecord.GetSectionGroup(configKey);
         }
 
+        // [RequiresUnreferencedCode("Indexer")]
         public override IEnumerator GetEnumerator()
         {
             int c = Count;
@@ -129,7 +141,7 @@ namespace System.Configuration
         // definition, and the instance of ConfigurationSectionGroup will be detached from the collection.
         // However, the collection will still have a ConfigurationSectionGroup of that name in the collection,
         // only it will have the value of the immediate parent.
-        [RequiresUnreferencedCode("BaseConfigurationRecord")]
+        // [RequiresUnreferencedCode("BaseConfigurationRecord")]
         public void Remove(string name)
         {
             VerifyIsAttachedToConfigRecord();
@@ -141,7 +153,7 @@ namespace System.Configuration
             if (!_configRecord.SectionFactories.Contains(configKey)) BaseRemove(name);
         }
 
-        [RequiresUnreferencedCode("Remove")]
+        // [RequiresUnreferencedCode("Remove")]
         public void RemoveAt(int index)
         {
             VerifyIsAttachedToConfigRecord();

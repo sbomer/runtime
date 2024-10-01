@@ -119,7 +119,11 @@ namespace System.Configuration
             }
         }
 
-        public ConfigurationSectionCollection Sections => RootSectionGroup.Sections;
+        public ConfigurationSectionCollection Sections
+        {
+            [RequiresUnreferencedCode("ConfigurationSectionGroup.Sections")]
+            get => RootSectionGroup.Sections;
+        }
 
         public ConfigurationSectionGroupCollection SectionGroups => RootSectionGroup.SectionGroups;
 

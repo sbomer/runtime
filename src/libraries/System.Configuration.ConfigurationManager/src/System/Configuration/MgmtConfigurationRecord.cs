@@ -1969,6 +1969,7 @@ namespace System.Configuration
             utilWriter.Write(FormatConfigurationEndElement);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.WriteUnwrittenConfigDeclarations(SectionUpdates, XmlUtilWriter, Int32, Int32, Boolean)")]
         private void WriteNewConfigDeclarations(SectionUpdates declarationUpdates, XmlUtilWriter utilWriter,
             int linePosition, int indent, bool skipFirstIndent)
         {

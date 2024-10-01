@@ -24,6 +24,7 @@ namespace System.Configuration
         private const string ApplicationSettingsGroupPrefix = ApplicationSettingsGroupName + "/";
         private const string UserSettingsGroupPrefix = UserSettingsGroupName + "/";
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ClientSettingsStore.ClientSettingsConfigurationHost.OpenExeConfiguration(ConfigurationUserLevel)")]
         private static Configuration GetUserConfig(bool isRoaming)
         {
             ConfigurationUserLevel userLevel = isRoaming ? ConfigurationUserLevel.PerUserRoaming :
@@ -150,6 +151,7 @@ namespace System.Configuration
             return settings;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.PrivilegedConfigurationManager.ConnectionStrings")]
         internal static ConnectionStringSettingsCollection ReadConnectionStrings()
         {
             return PrivilegedConfigurationManager.ConnectionStrings;

@@ -29,6 +29,7 @@ namespace System.Configuration
         }
 
         // Add a section definition update to the correct location update.
+        [RequiresUnreferencedCode("Calls System.Configuration.SectionUpdates.AddSection(Update)")]
         internal DefinitionUpdate AddUpdate(OverrideModeSetting overrideMode, bool inheritInChildApps, bool moved,
             string updatedXml, SectionRecord sectionRecord)
         {

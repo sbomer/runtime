@@ -244,6 +244,7 @@ namespace System.Configuration
                 PreloadConfigurationSectionGroup(sectionGroup);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationSectionGroup.Sections")]
         private static void PreloadConfigurationSectionGroup(ConfigurationSectionGroup sectionGroup)
         {
             if (null == sectionGroup) return;

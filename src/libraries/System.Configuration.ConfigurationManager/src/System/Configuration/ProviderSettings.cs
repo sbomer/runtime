@@ -103,6 +103,7 @@ namespace System.Configuration
             base.Reset(parentElement);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ProviderSettings.SetProperty(String, String)")]
         internal bool UpdatePropertyCollection()
         {
             bool bIsModified = false;
@@ -179,6 +180,7 @@ namespace System.Configuration
             base[setPropName] = value;
         }
 
+        [RequiresUnreferencedCode("ConfigurationProperty")]
         protected override bool OnDeserializeUnrecognizedAttribute(string name, string value)
         {
             ConfigurationProperty propName = new ConfigurationProperty(name, typeof(string), value);

@@ -14,6 +14,7 @@ namespace System.Diagnostics
         // Setting for Switch.switchSetting
         internal static SwitchElementsCollection SwitchSettings
         {
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();
@@ -26,6 +27,7 @@ namespace System.Diagnostics
         {
             [ResourceExposure(ResourceScope.Machine)]
             [ResourceConsumption(ResourceScope.Machine)]
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();
@@ -42,6 +44,7 @@ namespace System.Diagnostics
         // Setting for TraceInternal.AutoFlush
         internal static bool AutoFlush
         {
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();
@@ -58,6 +61,7 @@ namespace System.Diagnostics
         // Setting for TraceInternal.UseGlobalLock
         internal static bool UseGlobalLock
         {
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();
@@ -74,6 +78,7 @@ namespace System.Diagnostics
         // Setting for TraceInternal.IndentSize
         internal static int IndentSize
         {
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();
@@ -89,6 +94,7 @@ namespace System.Diagnostics
 
         internal static ListenerElementsCollection SharedListeners
         {
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();
@@ -99,6 +105,7 @@ namespace System.Diagnostics
 
         internal static SourceElementsCollection Sources
         {
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();
@@ -109,6 +116,7 @@ namespace System.Diagnostics
 
         internal static SystemDiagnosticsSection SystemDiagnosticsSection
         {
+            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
             get
             {
                 Initialize();

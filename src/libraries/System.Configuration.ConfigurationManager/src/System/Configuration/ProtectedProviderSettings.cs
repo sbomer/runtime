@@ -3,6 +3,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("ConfigurationProperty on a property")] // TODO
     public class ProtectedProviderSettings : ConfigurationElement
     {
         private readonly ConfigurationProperty _propProviders =
