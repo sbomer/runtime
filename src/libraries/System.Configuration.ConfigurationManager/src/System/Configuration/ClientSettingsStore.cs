@@ -319,7 +319,6 @@ namespace System.Configuration
             /// If this is a stream that represents a user.config file that we know about, we ask
             /// the host to assert appropriate permissions.
             /// </summary>
-            // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
             public override void WriteCompleted(string streamName, bool success, object writeContext)
             {
                 if (string.Equals(streamName, ConfigurationManagerInternalFactory.Instance.ExeLocalConfigPath, StringComparison.OrdinalIgnoreCase) ||

@@ -33,7 +33,6 @@ namespace System.Configuration
         private HybridDictionary _streamInfoUpdates;
 
         // don't allow instantiation except by Create
-        // [RequiresUnreferencedCode("Base")]
         private MgmtConfigurationRecord() { }
 
         // The parent config record cast to this type
@@ -82,7 +81,6 @@ namespace System.Configuration
         // the record itself require an update.
         private bool RecordItselfRequiresUpdates => NamespaceChangeNeeded != NamespaceChange.None;
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Init(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         internal static MgmtConfigurationRecord Create(
             IInternalConfigRoot configRoot,
             IInternalConfigRecord parent,
@@ -94,7 +92,6 @@ namespace System.Configuration
             return configRecord;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.Init(IInternalConfigRoot, BaseConfigurationRecord, String, String)")]
         private void Init(
             IInternalConfigRoot configRoot,
             IInternalConfigRecord parent,
@@ -125,7 +122,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("Access to RUC ctor of DefaultSection")]
         // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
         //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected override object CreateSectionFactory(FactoryRecord factoryRecord)
@@ -432,7 +428,6 @@ namespace System.Configuration
 
         // Return the outer XML of a section as a string.
         // Return null if the section does not exist in the file.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetSectionXmlReader(String[], SectionInput)")]
         internal string GetRawXml(string configKey)
         {
             // Get the section record created during Init
@@ -451,7 +446,6 @@ namespace System.Configuration
         // This method will throw out any changes made to the section up to this point.
         //
         // If xmlElement is null or empty, it is equivalent to calling RevertToParent
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.ValidateSectionXml(String, String)")]
         internal void SetRawXml(ConfigurationSection configSection, string xmlElement)
         {
             // Null or empty is equivalent to RevertToParent().
@@ -599,7 +593,6 @@ namespace System.Configuration
         // and contains no more or less than a single element.
         //
         // Throws a ConfigurationErrorsException if there is an error.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.SplitConfigKey(String, out String, out String)")]
         private static void ValidateSectionXml(string xmlElement, string configKey)
         {
             if (string.IsNullOrEmpty(xmlElement))
@@ -661,7 +654,6 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionCollection.Add().
         // Note this method DOES NOT update the associated ConfigurationSectionCollection.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void AddConfigurationSection(string group, string name, ConfigurationSection configSection)
         {
             // <configSections> is not permitted within a <location> tag.
@@ -749,7 +741,6 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionCollection.Remove().
         // Note this method DOES NOT update the associated ConfigurationSectionCollection.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void RemoveConfigurationSection(string group, string name)
         {
             bool sectionIsUsed = false; // Is section used in our record
@@ -822,7 +813,6 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionGroupCollection.Add().
         // Note this method DOES NOT update the associated ConfigurationSectionGroupCollection.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void AddConfigurationSectionGroup(
             string group,
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -914,7 +904,6 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionGroupCollection.Remove().
         // Note this method DOES NOT update the associated ConfigurationSectionCollection.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void RemoveConfigurationSectionGroup(string group, string name)
         {
             // Validate arguments
@@ -965,7 +954,6 @@ namespace System.Configuration
         }
 
         // Update the config file with the changes in each ConfigurationSection
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.MonitorStream(String, String, String)")]
         internal void SaveAs(string filename, ConfigurationSaveMode saveMode, bool forceUpdateAll)
         {
             // Get the updates.
@@ -1306,7 +1294,6 @@ namespace System.Configuration
         }
 
         // Gather all the updates to the configuration section declarations.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
         private SectionUpdates GetConfigDeclarationUpdates(ConfigurationSaveMode saveMode)
         {
             if (IsLocationConfig)
@@ -1539,7 +1526,6 @@ namespace System.Configuration
         }
 
         // Gather all the updates to the configuration section definitions.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.InitProtectedConfigurationSection()")]
         private void GetConfigDefinitionUpdates(
             bool requireUpdates, ConfigurationSaveMode saveMode, bool forceSaveAll,
             out ConfigDefinitionUpdates definitionUpdates, out ArrayList configSourceUpdates)
@@ -1760,7 +1746,6 @@ namespace System.Configuration
 
         // After the config file has been written out, update the section records
         // to reflect changes that were made in the config file.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.MonitorStream(String, String, String)")]
         private void UpdateRecords()
         {
             if (_factoryRecords != null)
@@ -1944,7 +1929,6 @@ namespace System.Configuration
         }
 
         // Create a new config file.
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.WriteNewConfigDeclarations(SectionUpdates, XmlUtilWriter, Int32, Int32, Boolean)")]
         private void CreateNewConfig(
             SectionUpdates declarationUpdates,
             ConfigDefinitionUpdates definitionUpdates,
@@ -1975,7 +1959,6 @@ namespace System.Configuration
             utilWriter.Write(FormatConfigurationEndElement);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.WriteUnwrittenConfigDeclarations(SectionUpdates, XmlUtilWriter, Int32, Int32, Boolean)")]
         private void WriteNewConfigDeclarations(SectionUpdates declarationUpdates, XmlUtilWriter utilWriter,
             int linePosition, int indent, bool skipFirstIndent)
         {
@@ -1989,7 +1972,6 @@ namespace System.Configuration
             if (skipFirstIndent) utilWriter.AppendSpacesToLinePosition(linePosition);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.WriteUnwrittenConfigDeclarationsRecursive(SectionUpdates, XmlUtilWriter, Int32, Int32, Boolean)")]
         private void WriteUnwrittenConfigDeclarations(SectionUpdates declarationUpdates, XmlUtilWriter utilWriter,
             int linePosition, int indent, bool skipFirstIndent)
         {
@@ -1997,7 +1979,6 @@ namespace System.Configuration
                 skipFirstIndent);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
         private void WriteUnwrittenConfigDeclarationsRecursive(SectionUpdates declarationUpdates,
             XmlUtilWriter utilWriter, int linePosition, int indent, bool skipFirstIndent)
         {
@@ -2216,7 +2197,6 @@ namespace System.Configuration
         }
 
         // Copy a config file, replacing sections with updates.
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.CopyConfigDeclarationsRecursive(SectionUpdates, XmlUtil, XmlUtilWriter, String, Int32, Int32)")]
         private void CopyConfig(SectionUpdates declarationUpdates, ConfigDefinitionUpdates definitionUpdates,
             byte[] buffer, string filename, NamespaceChange namespaceChange, XmlUtilWriter utilWriter)
         {
@@ -2395,7 +2375,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
         private static bool CopyConfigDeclarationsRecursive(
             SectionUpdates declarationUpdates, XmlUtil xmlUtil, XmlUtilWriter utilWriter, string group,
             int parentLinePosition, int parentIndent)
@@ -2624,7 +2603,6 @@ namespace System.Configuration
         }
 
         // Copy configuration sections from the original configuration file.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.NormalizeLocationSubPath(String, IConfigErrorInfo)")]
         private bool CopyConfigDefinitionsRecursive(
             ConfigDefinitionUpdates configDefinitionUpdates, XmlUtil xmlUtil, XmlUtilWriter utilWriter,
             bool locationPathApplies, LocationUpdates locationUpdates, SectionUpdates sectionUpdates,

@@ -14,7 +14,6 @@ namespace System.Diagnostics
         protected object _runtimeObject;
         private readonly Type _baseType;
 
-        // [RequiresUnreferencedCode("Base")]
         public TypedElement(Type baseType) : base()
         {
             _properties = new ConfigurationPropertyCollection();
@@ -57,7 +56,6 @@ namespace System.Diagnostics
             }
         }
 
-        // [RequiresUnreferencedCode("TypeName can't be annotated to satisfy GetRuntimeObject.")]
         protected object BaseGetRuntimeObject()
         {
             return _runtimeObject ??= TraceUtils.GetRuntimeObject(TypeName, _baseType, InitData);

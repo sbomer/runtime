@@ -197,7 +197,6 @@ namespace System.Configuration
 
         private ProtectedConfigurationSection ProtectedConfig
         {
-            // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.InitProtectedConfigurationSection()")]
             get
             {
                 if (!_flags[ProtectedDataInitialized]) InitProtectedConfigurationSection();
@@ -260,19 +259,16 @@ namespace System.Configuration
             ThrowIfParseErrors(_initErrors);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetSection(String, Boolean, Boolean)")]
         public object GetSection(string configKey)
         {
             return GetSection(configKey, false, true);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetSection(String, Boolean, Boolean)")]
         public object GetLkgSection(string configKey)
         {
             return GetSection(configKey, true, true);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigRoot.ClearResult(BaseConfigurationRecord, String, Boolean)")]
         public void RefreshSection(string configKey)
         {
             _configRoot.ClearResult(this, configKey, true);
@@ -314,7 +310,6 @@ namespace System.Configuration
             return Host.PrefetchSection(factoryRecord.Group, factoryRecord.Name);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.InitConfigFromFile()")]
         internal void Init(
             IInternalConfigRoot configRoot,
             BaseConfigurationRecord parent,
@@ -533,7 +528,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.ScanFactories(XmlUtil)")]
         private void InitConfigFromFile()
         {
             bool implicitSectionsAdded = false;
@@ -695,7 +689,6 @@ namespace System.Configuration
         }
 
         // Refresh the Factory Record for a particular section.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.ScanFactories(XmlUtil)")]
         private void RefreshFactoryRecord(string configKey)
         {
             Hashtable factoryList = null;
@@ -756,7 +749,6 @@ namespace System.Configuration
             ThrowIfParseErrors(errors);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetSectionRecursive(String, Boolean, Boolean, Boolean, Boolean, out Object, out Object)")]
         private object GetSection(string configKey, bool getLkg, bool checkPermission)
         {
             object resultRuntimeObject;
@@ -775,7 +767,6 @@ namespace System.Configuration
             return resultRuntimeObject;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.Evaluate(FactoryRecord, SectionRecord, Object, Boolean, Boolean, out Object, out Object)")]
         private void GetSectionRecursive(
             string configKey, bool getLkg, bool checkPermission, bool getRuntimeObject, bool requestIsHere,
             out object result, out object resultRuntimeObject)
@@ -1156,7 +1147,6 @@ namespace System.Configuration
         // when getLkg == true.
         //
         // The complete success of the evaluation is determined by the return value.
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.EvaluateOne(String[], SectionInput, Boolean, FactoryRecord, SectionRecord, Object)")]
         private bool Evaluate(
             FactoryRecord factoryRecord, SectionRecord sectionRecord, object parentResult,
             bool getLkg, bool getRuntimeObject, out object result, out object resultRuntimeObject)
@@ -1341,7 +1331,6 @@ namespace System.Configuration
             return success;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetSectionXmlReader(String[], SectionInput)")]
         private object EvaluateOne(
             string[] keys, SectionInput input, bool isTrusted,
             FactoryRecord factoryRecord, SectionRecord sectionRecord, object parentResult)
@@ -1550,7 +1539,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetProtectionProviderFromName(String, Boolean)")]
         protected ConfigXmlReader GetSectionXmlReader(string[] keys, SectionInput input)
         {
             ConfigXmlReader reader;
@@ -1605,7 +1593,6 @@ namespace System.Configuration
             return reader;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.ProtectedConfigurationSection.GetProviderFromName(String)")]
         internal ProtectedConfigurationProvider GetProtectionProviderFromName(string providerName, bool throwIfNotFound)
         {
             if (!string.IsNullOrEmpty(providerName)) return ProtectedConfig.GetProviderFromName(providerName);
@@ -1616,7 +1603,6 @@ namespace System.Configuration
                 providerName));
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.GetSection(String, Boolean, Boolean)")]
         internal void InitProtectedConfigurationSection()
         {
             if (_flags[ProtectedDataInitialized]) return;
@@ -1764,7 +1750,6 @@ namespace System.Configuration
             return factoryRecord;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.ScanFactoriesRecursive(XmlUtil, String, Hashtable)")]
         private Hashtable ScanFactories(XmlUtil xmlUtil)
         {
             Hashtable factoryList = new Hashtable();
@@ -1825,7 +1810,6 @@ namespace System.Configuration
         // Note: This function valiates that the factory record has not been
         //       declared before in a parent record. (it does not check
         //       current record, which allows you to update list)
-        // [RequiresUnreferencedCode("VerifyAndGetNonEmptyStringAttribute reads out a type name.")]
         private void ScanFactoriesRecursive(XmlUtil xmlUtil, string parentConfigKey, Hashtable factoryList)
         {
             // discard any accumulated local errors
@@ -2329,13 +2313,11 @@ namespace System.Configuration
             return result;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.ScanSectionsRecursive(XmlUtil, String, Boolean, String, OverrideModeSetting, Boolean)")]
         private void ScanSections(XmlUtil xmlUtil)
         {
             ScanSectionsRecursive(xmlUtil, string.Empty, false, null, OverrideModeSetting.s_locationDefault, false);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.MonitorStream(String, String, String)")]
         private void ScanSectionsRecursive(
             XmlUtil xmlUtil,
             string parentConfigKey,
@@ -2720,7 +2702,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.ScanSectionsRecursive(XmlUtil, String, Boolean, String, OverrideModeSetting, Boolean)")]
         private void ScanLocationSection(XmlUtil xmlUtil)
         {
             string locationSubPath = null;
@@ -3236,7 +3217,6 @@ namespace System.Configuration
             return configSource;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.OnStreamChanged(String)")]
         protected object MonitorStream(string configKey, string configSource, string streamname)
         {
             lock (this)
@@ -3287,7 +3267,6 @@ namespace System.Configuration
             return version;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigRoot.ClearResult(BaseConfigurationRecord, String, Boolean)")]
         private void OnStreamChanged(string streamname)
         {
             bool notifyChanged;
@@ -3376,7 +3355,6 @@ namespace System.Configuration
         // If forceEvaluation == true, force a rescan of the config file to find
         // the section.
         // Requires the hierarchy lock to be acquired (hl)
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.RefreshFactoryRecord(String)")]
         internal void HlClearResultRecursive(string configKey, bool forceEvaluatation)
         {
             // Refresh it's factory Record
@@ -3584,7 +3562,6 @@ namespace System.Configuration
             return protectionProvider;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.ProtectedConfig")]
         private ConfigXmlReader DecryptConfigSection(ConfigXmlReader reader,
             ProtectedConfigurationProvider protectionProvider)
         {

@@ -16,7 +16,6 @@ namespace System.Configuration
             foreach (KeyValueConfigurationElement element in _root.Settings) base.Add(element.Key, element.Value);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.KeyValueConfigurationElement.KeyValueConfigurationElement(String, String)")]
         public override void Add(string key, string value)
         {
             _root.Settings.Add(new KeyValueConfigurationElement(key, value));

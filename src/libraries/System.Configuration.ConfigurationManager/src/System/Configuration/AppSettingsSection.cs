@@ -23,7 +23,6 @@ namespace System.Configuration
 
         protected internal override ConfigurationPropertyCollection Properties => EnsureStaticPropertyBag();
 
-        // [RequiresUnreferencedCode("KeyValueInternalCollection")]
         internal NameValueCollection InternalSettings
             => _keyValueCollection ??= new KeyValueInternalCollection(this);
 
@@ -74,7 +73,6 @@ namespace System.Configuration
             return s_properties;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.AppSettingsSection.InternalSettings")]
         protected internal override object GetRuntimeObject()
         {
             SetReadOnly();

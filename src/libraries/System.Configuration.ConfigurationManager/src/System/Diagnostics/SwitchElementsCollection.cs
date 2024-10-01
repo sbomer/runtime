@@ -15,7 +15,6 @@ namespace System.Diagnostics
         public new SwitchElement this[string name] => (SwitchElement)BaseGet(name);
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.AddRemoveClearMap;
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.SwitchElement.SwitchElement()")]
         protected override ConfigurationElement CreateNewElement() => new SwitchElement();
         protected override object GetElementKey(ConfigurationElement element) => ((SwitchElement)element).Name;
     }

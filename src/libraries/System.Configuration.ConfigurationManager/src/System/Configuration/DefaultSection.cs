@@ -13,7 +13,6 @@ namespace System.Configuration
 
         private string _rawXml = string.Empty;
 
-        // [RequiresUnreferencedCode("Base")]
         public DefaultSection()
         {
             EnsureStaticPropertyBag();
@@ -56,7 +55,6 @@ namespace System.Configuration
             _isModified = true;
         }
 
-        // [RequiresUnreferencedCode("Base virtual has RUC")]
         // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
         //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override string SerializeSection(ConfigurationElement parentSection, string name,

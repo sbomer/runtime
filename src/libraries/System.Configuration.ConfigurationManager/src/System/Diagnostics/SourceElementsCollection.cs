@@ -20,7 +20,6 @@ namespace System.Diagnostics
 
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.SourceElement.SourceElement()")]
         protected override ConfigurationElement CreateNewElement()
         {
             SourceElement se = new SourceElement();

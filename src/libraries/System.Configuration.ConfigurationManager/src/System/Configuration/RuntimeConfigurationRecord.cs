@@ -21,7 +21,6 @@ namespace System.Configuration
 
         protected override SimpleBitVector32 ClassFlags => s_runtimeClassFlags;
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.Init(IInternalConfigRoot, BaseConfigurationRecord, String, String)")]
         internal static IInternalConfigRecord Create(
             InternalConfigRoot configRoot,
             IInternalConfigRecord parent,

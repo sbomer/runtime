@@ -40,7 +40,6 @@ namespace System.Configuration.Internal
         public event InternalConfigEventHandler ConfigChanged;
         public event InternalConfigEventHandler ConfigRemoved;
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         void IInternalConfigRoot.Init(IInternalConfigHost host, bool isDesignTime)
         {
             Host = host;
@@ -93,7 +92,6 @@ namespace System.Configuration.Internal
 
         // Get the config record for a path.
         // If the record does not exist, create it if it is needed.
-        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         public IInternalConfigRecord GetConfigRecord(string configPath)
         {
             if (!ConfigPathUtility.IsValid(configPath)) throw ExceptionUtil.ParameterInvalid(nameof(configPath));

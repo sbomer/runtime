@@ -19,7 +19,6 @@ namespace System.Diagnostics
 
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.AddRemoveClearMap;
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.ListenerElement(Boolean)")]
         protected override ConfigurationElement CreateNewElement() => new ListenerElement(true);
 
         protected override object GetElementKey(ConfigurationElement element) => ((ListenerElement)element).Name;
@@ -43,7 +42,6 @@ namespace System.Diagnostics
 
         protected internal override void InitializeDefault() => InitializeDefaultInternal();
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.ListenerElement(Boolean)")]
         internal void InitializeDefaultInternal()
         {
             ListenerElement defaultListener = new ListenerElement(false);
@@ -78,7 +76,6 @@ namespace System.Diagnostics
     {
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.ListenerElement(Boolean)")]
         protected override ConfigurationElement CreateNewElement() => new ListenerElement(false);
         protected override string ElementName => "add";
     }
@@ -97,7 +94,6 @@ namespace System.Diagnostics
 
         private static readonly ConditionalWeakTable<TraceListener, string> s_initData = new();
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.TypedElement(Type)")]
         public ListenerElement(bool allowReferences) : base(typeof(TraceListener))
         {
             _allowReferences = allowReferences;
@@ -187,7 +183,6 @@ namespace System.Diagnostics
 
         public override int GetHashCode() => base.GetHashCode();
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.BaseGetRuntimeObject()")]
         public TraceListener GetRuntimeObject()
         {
             if (_runtimeObject != null)
@@ -316,7 +311,6 @@ namespace System.Diagnostics
             }
         }
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.GetRuntimeObject()")]
         internal TraceListener RefreshRuntimeObject(TraceListener listener)
         {
             _runtimeObject = null;

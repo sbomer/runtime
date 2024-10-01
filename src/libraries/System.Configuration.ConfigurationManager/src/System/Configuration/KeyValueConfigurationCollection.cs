@@ -46,7 +46,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("TODO")]
         public void Add(string key, string value)
         {
             KeyValueConfigurationElement element = new KeyValueConfigurationElement(key, value);
@@ -63,7 +62,6 @@ namespace System.Configuration
             BaseClear();
         }
 
-        // [RequiresUnreferencedCode("TODO")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new KeyValueConfigurationElement();

@@ -66,7 +66,6 @@ namespace System.Configuration
             return streamUpdate;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigHost.StaticGetStreamVersion(String)")]
         public override object GetStreamVersion(string streamName)
         {
             StreamUpdate streamUpdate = GetStreamUpdate(streamName, false);
@@ -75,7 +74,6 @@ namespace System.Configuration
                 : Host.GetStreamVersion(streamName);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigHost.StaticOpenStreamForRead(String)")]
         public override Stream OpenStreamForRead(string streamName)
         {
             StreamUpdate streamUpdate = GetStreamUpdate(streamName, false);
@@ -84,7 +82,6 @@ namespace System.Configuration
                 : Host.OpenStreamForRead(streamName);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigHost.StaticOpenStreamForWrite(String, String, ref Object)")]
         public override Stream OpenStreamForWrite(string streamName, string templateStreamName, ref object writeContext)
         {
             // Always attempt to write to the new stream name if it exists.
@@ -97,7 +94,6 @@ namespace System.Configuration
             return Host.OpenStreamForWrite(streamName, templateStreamName, ref writeContext);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigHost.StaticWriteCompleted(String, Boolean, Object)")]
         public override void WriteCompleted(string streamName, bool success, object writeContext)
         {
             StreamUpdate streamUpdate = GetStreamUpdate(streamName, true);
@@ -120,7 +116,6 @@ namespace System.Configuration
             return true;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigHost.StaticDeleteStream(String)")]
         public override void DeleteStream(string streamName)
         {
             StreamUpdate streamUpdate = GetStreamUpdate(streamName, false);
@@ -128,7 +123,6 @@ namespace System.Configuration
             else Host.DeleteStream(streamName);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigHost.StaticIsFile(String)")]
         public override bool IsFile(string streamName)
         {
             StreamUpdate streamUpdate = GetStreamUpdate(streamName, false);

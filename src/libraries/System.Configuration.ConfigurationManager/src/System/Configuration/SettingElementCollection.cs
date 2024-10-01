@@ -23,7 +23,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("TODO")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new SettingElement();

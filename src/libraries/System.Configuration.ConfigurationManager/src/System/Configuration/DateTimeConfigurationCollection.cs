@@ -42,7 +42,6 @@ namespace System.Configuration
             BaseClear();
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.DateTimeConfigurationElement.DateTimeConfigurationElement()")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new DateTimeConfigurationElement();

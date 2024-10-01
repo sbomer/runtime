@@ -10,10 +10,8 @@ namespace System.Diagnostics
     {
         private static readonly ConditionalWeakTable<TraceFilter, string> s_initData = new();
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.TypedElement(Type)")]
         public FilterElement() : base(typeof(TraceFilter)) { }
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.BaseGetRuntimeObject()")]
         public TraceFilter GetRuntimeObject()
         {
             TraceFilter newFilter = (TraceFilter)BaseGetRuntimeObject();
@@ -21,7 +19,6 @@ namespace System.Diagnostics
             return newFilter;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Diagnostics.FilterElement.GetRuntimeObject()")]
         internal TraceFilter RefreshRuntimeObject(TraceFilter filter)
         {
             if (Type.GetType(TypeName) != filter.GetType() || InitDataChanged(filter))

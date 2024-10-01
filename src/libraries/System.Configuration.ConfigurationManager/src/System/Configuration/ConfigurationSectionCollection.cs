@@ -28,13 +28,11 @@ namespace System.Configuration
 
         public ConfigurationSection this[string name]
         {
-            // [RequiresUnreferencedCode("Get")]
             get => Get(name);
         }
 
         public ConfigurationSection this[int index]
         {
-            // [RequiresUnreferencedCode("Get")]
             get => Get(index);
         }
 
@@ -70,7 +68,6 @@ namespace System.Configuration
             foreach (string key in allKeys) Remove(key);
         }
 
-        // [RequiresUnreferencedCode("Get")]
         public void CopyTo(ConfigurationSection[] array, int index)
         {
             if (array is null)
@@ -84,13 +81,11 @@ namespace System.Configuration
             for (int i = 0, j = index; i < c; i++, j++) array[j] = Get(i);
         }
 
-        // [RequiresUnreferencedCode("Get")]
         public ConfigurationSection Get(int index)
         {
             return Get(GetKey(index));
         }
 
-        // [RequiresUnreferencedCode("GetSection")]
         public ConfigurationSection Get(string name)
         {
             VerifyIsAttachedToConfigRecord();
@@ -113,8 +108,6 @@ namespace System.Configuration
         }
 
         // Get an enumerator
-        // [RequiresUnreferencedCode("TODO")]
-        // [RequiresUnreferencedCode("TODO")]
         public override IEnumerator GetEnumerator()
         {
             int c = Count;
@@ -134,7 +127,6 @@ namespace System.Configuration
         // definition, and the instance of ConfigurationSection will be detached from the collection.
         // However, the collection will still have a ConfigurationSection of that name in the collection,
         // only it will have the value of the immediate parent.
-        // [RequiresUnreferencedCode("TODO")]
         public void Remove(string name)
         {
             VerifyIsAttachedToConfigRecord();

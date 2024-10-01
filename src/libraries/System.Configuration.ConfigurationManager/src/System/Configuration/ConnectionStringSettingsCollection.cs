@@ -64,7 +64,6 @@ namespace System.Configuration
             BaseRemove(name);
         }
 
-        // [RequiresUnreferencedCode("TODO")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new ConnectionStringSettings();

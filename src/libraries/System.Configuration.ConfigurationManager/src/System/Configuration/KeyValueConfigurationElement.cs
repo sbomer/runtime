@@ -21,10 +21,8 @@ namespace System.Configuration
 
         private bool _needsInit;
 
-        // [RequiresUnreferencedCode("Base")]
         internal KeyValueConfigurationElement() { }
 
-        // [RequiresUnreferencedCode("Base")]
         public KeyValueConfigurationElement(string key, string value)
         {
             _needsInit = true;

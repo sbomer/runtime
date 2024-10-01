@@ -50,7 +50,6 @@ namespace System.Configuration
             BaseClear();
         }
 
-        // [RequiresUnreferencedCode("TODO")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new ProviderSettings();

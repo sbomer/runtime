@@ -10,7 +10,6 @@ namespace System.Configuration.Internal
     {
         private InternalConfigConfigurationFactory() { }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.Configuration.Configuration(String, Type, params Object[])")]
         Configuration IInternalConfigConfigurationFactory.Create(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             Type typeConfigHost,

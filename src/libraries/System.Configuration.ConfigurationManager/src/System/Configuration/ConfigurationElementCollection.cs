@@ -28,10 +28,8 @@ namespace System.Configuration
         internal bool InternalAddToEnd;
         internal string InternalElementTagName = string.Empty;
 
-        // [RequiresUnreferencedCode("Base")]
         protected ConfigurationElementCollection() { }
 
-        // [RequiresUnreferencedCode("Base")]
         protected ConfigurationElementCollection(IComparer comparer)
         {
             if (comparer is null)
@@ -48,7 +46,6 @@ namespace System.Configuration
         {
             get { return _addElement; }
 
-            // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 _addElement = value;
@@ -61,7 +58,6 @@ namespace System.Configuration
         {
             get { return _removeElement; }
 
-            // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -74,7 +70,6 @@ namespace System.Configuration
         {
             get { return _clearElement; }
 
-            // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -254,7 +249,6 @@ namespace System.Configuration
             return hHashCode;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
         // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
         //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override void Unmerge(ConfigurationElement sourceElement,
@@ -464,7 +458,6 @@ namespace System.Configuration
             }
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
         // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
         //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override void Reset(ConfigurationElement parentElement)
@@ -503,19 +496,16 @@ namespace System.Configuration
             ((ICollection)this).CopyTo(array, index);
         }
 
-        // [RequiresUnreferencedCode("BaseAdd")]
         protected virtual void BaseAdd(ConfigurationElement element)
         {
             BaseAdd(element, ThrowOnDuplicate);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
         protected internal void BaseAdd(ConfigurationElement element, bool throwIfExists)
         {
             BaseAdd(element, throwIfExists, false);
         }
 
-        // [RequiresUnreferencedCode("BaseAddInternal")]
         private void BaseAdd(ConfigurationElement element, bool throwIfExists, bool ignoreLocks)
         {
             bool flagAsReplaced = false;
@@ -624,7 +614,6 @@ namespace System.Configuration
             return -1;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
         private void BaseAddInternal(int index, ConfigurationElement element, bool flagAsReplaced, bool ignoreLocks)
         {
             // Allow the element to initialize itself after its
@@ -690,13 +679,11 @@ namespace System.Configuration
             _modified = true;
         }
 
-        // [RequiresUnreferencedCode("BaseAdd")]
         protected virtual void BaseAdd(int index, ConfigurationElement element)
         {
             BaseAdd(index, element, false);
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAddInternal(Int32, ConfigurationElement, Boolean, Boolean)")]
         private void BaseAdd(int index, ConfigurationElement element, bool ignoreLocks)
         {
             if (IsReadOnly()) throw new ConfigurationErrorsException(SR.Config_base_read_only);
@@ -1047,7 +1034,6 @@ namespace System.Configuration
             _modified = true;
         }
 
-        // [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
         // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
         //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override bool SerializeElement(XmlWriter writer, bool serializeCollectionKey)
@@ -1114,7 +1100,6 @@ namespace System.Configuration
             return dataToWrite;
         }
 
-        // [RequiresUnreferencedCode("BaseAdd")]
         // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
         //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected override bool OnDeserializeUnrecognizedElement(string elementName, XmlReader reader)

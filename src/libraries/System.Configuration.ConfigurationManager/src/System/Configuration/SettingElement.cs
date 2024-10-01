@@ -25,12 +25,10 @@ namespace System.Configuration
             ConfigurationPropertyOptions.IsRequired);
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection() { s_propName, s_propSerializeAs, s_propValue };
 
-        // [RequiresUnreferencedCode("Base")]
         public SettingElement()
         {
         }
 
-        // [RequiresUnreferencedCode("TODO")]
         public SettingElement(string name, SettingsSerializeAs serializeAs) : this()
         {
             Name = name;

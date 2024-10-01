@@ -91,7 +91,6 @@ namespace System.Configuration
         [Browsable(false)]
         public override SettingsContext Context
         {
-            // [RequiresUnreferencedCode("TODO")]
             get
             {
                 if (_context == null)
@@ -127,7 +126,6 @@ namespace System.Configuration
         [Browsable(false)]
         public override SettingsPropertyCollection Properties
         {
-            // [RequiresUnreferencedCode("TODO")]
             get
             {
                 if (_settings == null)
@@ -173,7 +171,6 @@ namespace System.Configuration
         [Browsable(false)]
         public override SettingsProviderCollection Providers
         {
-            // [RequiresUnreferencedCode("TODO")]
             get
             {
                 if (_providers == null)
@@ -282,7 +279,6 @@ namespace System.Configuration
         /// Used in conjunction with Upgrade - retrieves the previous value of a setting from the provider.
         /// Provider must implement IApplicationSettingsProvider to support this.
         /// </summary>
-        // [RequiresUnreferencedCode("TODO")]
         public object GetPreviousVersion(string propertyName)
         {
             if (Properties.Count == 0)

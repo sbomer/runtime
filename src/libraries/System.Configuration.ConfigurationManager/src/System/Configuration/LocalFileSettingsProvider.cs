@@ -147,7 +147,6 @@ namespace System.Configuration
         /// <summary>
         ///     Abstract SettingsProvider method
         /// </summary>
-        // [RequiresUnreferencedCode("TODO")]
         public override void SetPropertyValues(SettingsContext context, SettingsPropertyValueCollection values)
         {
             string sectionName = GetSectionName(context);

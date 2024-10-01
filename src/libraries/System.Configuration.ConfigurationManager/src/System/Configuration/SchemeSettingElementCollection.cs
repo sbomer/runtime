@@ -43,7 +43,6 @@ namespace System.Configuration
             return BaseIndexOf(element);
         }
 
-        // [RequiresUnreferencedCode()]
         protected override ConfigurationElement CreateNewElement()
         {
             return new SchemeSettingElement();
