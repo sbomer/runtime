@@ -85,6 +85,8 @@ namespace System.Configuration
         public ConfigurationAllowDefinition AllowDefinition
         {
             get { return _allowDefinition; }
+
+            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
             set
             {
                 VerifyIsEditable();
@@ -106,6 +108,8 @@ namespace System.Configuration
         public ConfigurationAllowExeDefinition AllowExeDefinition
         {
             get { return _allowExeDefinition; }
+
+            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
             set
             {
                 VerifyIsEditable();
@@ -127,6 +131,8 @@ namespace System.Configuration
         public OverrideMode OverrideModeDefault
         {
             get { return _overrideModeDefault.OverrideMode; }
+
+            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
             set
             {
                 VerifyIsEditable();
@@ -153,6 +159,8 @@ namespace System.Configuration
         public bool AllowLocation
         {
             get { return _flags[FlagAllowLocation]; }
+
+            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
             set
             {
                 VerifyIsEditable();
@@ -298,11 +306,15 @@ namespace System.Configuration
         public bool IsLocked => _flags[FlagLocationLocked] || !IsDefinitionAllowed ||
             _configurationSection.ElementInformation.IsLocked;
 
-        public bool IsProtected => ProtectionProvider != null;
+        public bool IsProtected
+        {
+            [RequiresUnreferencedCode("ProtectionProvider")]
+            get => ProtectionProvider != null;
+        }
 
         public ProtectedConfigurationProvider ProtectionProvider
         {
-            [RequiresUnreferencedCode("TODO")]
+            [RequiresUnreferencedCode("GetProtectionProviderFromName")]
             get
             {
                 if (!_flags[FlagProtectionProviderDetermined] && (_configRecord != null))
@@ -320,6 +332,8 @@ namespace System.Configuration
         public bool RestartOnExternalChanges
         {
             get { return _flags[FlagRestartOnExternalChanges]; }
+
+            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
             set
             {
                 VerifyIsEditable();
@@ -341,6 +355,8 @@ namespace System.Configuration
         public bool RequirePermission
         {
             get { return _flags[FlagRequirePermission]; }
+
+            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
             set
             {
                 VerifyIsEditable();
@@ -364,6 +380,8 @@ namespace System.Configuration
         public string Type
         {
             get { return _typeName; }
+
+            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
             set
             {
                 if (string.IsNullOrEmpty(value)) throw ExceptionUtil.PropertyNullOrEmpty(nameof(Type));
@@ -566,6 +584,7 @@ namespace System.Configuration
         }
 
         // Force the section declaration to be written out during Save.
+        [RequiresUnreferencedCode("ForceDeclaration")]
         public void ForceDeclaration()
         {
             ForceDeclaration(true);
@@ -573,7 +592,7 @@ namespace System.Configuration
 
         // If force==false, it actually means don't declare it at
         // the current level.
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode("BaseConfigurationRecord")]
         public void ForceDeclaration(bool force)
         {
             VerifyIsEditable();

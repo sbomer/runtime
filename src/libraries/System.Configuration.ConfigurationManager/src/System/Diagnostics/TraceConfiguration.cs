@@ -29,6 +29,7 @@ namespace System.Diagnostics
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Refresh()")]
         private static void RefreshingConfiguration(object sender, EventArgs e) => DiagnosticsConfiguration.Refresh();
 
         [RequiresUnreferencedCode("SourceElement.SwitchType has unknown annotations, doesn't satisfy CreateSwitch.")]

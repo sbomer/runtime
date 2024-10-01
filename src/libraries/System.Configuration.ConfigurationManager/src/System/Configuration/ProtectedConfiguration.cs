@@ -25,6 +25,7 @@ namespace System.Configuration
 
         public static string DefaultProvider
         {
+            [RequiresUnreferencedCode("GetSection")]
             get
             {
                 ProtectedConfigurationSection config =

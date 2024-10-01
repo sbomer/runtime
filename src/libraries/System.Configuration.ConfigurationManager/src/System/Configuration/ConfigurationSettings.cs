@@ -12,6 +12,7 @@ namespace System.Configuration
         [Obsolete("ConfigurationSettings.AppSettings has been deprecated. Use System.Configuration.ConfigurationManager.AppSettings instead.")]
         public static NameValueCollection AppSettings
         {
+            [RequiresUnreferencedCode("AppSettings")]
             get
             {
                 return ConfigurationManager.AppSettings;

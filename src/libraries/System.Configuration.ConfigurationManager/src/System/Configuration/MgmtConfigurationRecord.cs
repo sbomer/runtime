@@ -446,6 +446,7 @@ namespace System.Configuration
         // This method will throw out any changes made to the section up to this point.
         //
         // If xmlElement is null or empty, it is equivalent to calling RevertToParent
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.ValidateSectionXml(String, String)")]
         internal void SetRawXml(ConfigurationSection configSection, string xmlElement)
         {
             // Null or empty is equivalent to RevertToParent().
@@ -1981,6 +1982,7 @@ namespace System.Configuration
             if (skipFirstIndent) utilWriter.AppendSpacesToLinePosition(linePosition);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.WriteUnwrittenConfigDeclarationsRecursive(SectionUpdates, XmlUtilWriter, Int32, Int32, Boolean)")]
         private void WriteUnwrittenConfigDeclarations(SectionUpdates declarationUpdates, XmlUtilWriter utilWriter,
             int linePosition, int indent, bool skipFirstIndent)
         {
@@ -2207,6 +2209,7 @@ namespace System.Configuration
         }
 
         // Copy a config file, replacing sections with updates.
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.CopyConfigDeclarationsRecursive(SectionUpdates, XmlUtil, XmlUtilWriter, String, Int32, Int32)")]
         private void CopyConfig(SectionUpdates declarationUpdates, ConfigDefinitionUpdates definitionUpdates,
             byte[] buffer, string filename, NamespaceChange namespaceChange, XmlUtilWriter utilWriter)
         {

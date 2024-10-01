@@ -3,6 +3,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
     [ConfigurationCollection(typeof(SchemeSettingElement),
         CollectionType = ConfigurationElementCollectionType.AddRemoveClearMap,
         AddItemName = AddItemName,
@@ -42,6 +43,7 @@ namespace System.Configuration
             return BaseIndexOf(element);
         }
 
+        // [RequiresUnreferencedCode()]
         protected override ConfigurationElement CreateNewElement()
         {
             return new SchemeSettingElement();

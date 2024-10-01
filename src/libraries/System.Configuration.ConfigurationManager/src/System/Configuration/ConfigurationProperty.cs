@@ -230,6 +230,7 @@ namespace System.Configuration
 
         internal string ClearElementName { get; }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ValidatePropertyName(String)")]
         private void ConstructorInit(
             string name,
             Type type,

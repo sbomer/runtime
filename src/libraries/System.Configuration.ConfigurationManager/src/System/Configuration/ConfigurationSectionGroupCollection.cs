@@ -56,6 +56,7 @@ namespace System.Configuration
             BaseAdd(name, name);
         }
 
+        [RequiresUnreferencedCode("Remove")]
         public void Clear()
         {
             VerifyIsAttachedToConfigRecord();
@@ -81,6 +82,7 @@ namespace System.Configuration
             for (int i = 0, j = index; i < c; i++, j++) array[j] = Get(i);
         }
 
+        [RequiresUnreferencedCode("Get")]
         public ConfigurationSectionGroup Get(int index)
         {
             return Get(GetKey(index));
@@ -139,6 +141,7 @@ namespace System.Configuration
             if (!_configRecord.SectionFactories.Contains(configKey)) BaseRemove(name);
         }
 
+        [RequiresUnreferencedCode("Remove")]
         public void RemoveAt(int index)
         {
             VerifyIsAttachedToConfigRecord();

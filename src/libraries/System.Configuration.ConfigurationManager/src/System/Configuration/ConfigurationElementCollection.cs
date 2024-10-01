@@ -253,7 +253,7 @@ namespace System.Configuration
             return hHashCode;
         }
 
-
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
         protected internal override void Unmerge(ConfigurationElement sourceElement,
             ConfigurationElement parentElement,
             ConfigurationSaveMode saveMode)
@@ -461,6 +461,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
         protected internal override void Reset(ConfigurationElement parentElement)
         {
             ConfigurationElementCollection parentCollection = parentElement as ConfigurationElementCollection;
@@ -497,11 +498,13 @@ namespace System.Configuration
             ((ICollection)this).CopyTo(array, index);
         }
 
+        [RequiresUnreferencedCode("BaseAdd")]
         protected virtual void BaseAdd(ConfigurationElement element)
         {
             BaseAdd(element, ThrowOnDuplicate);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAdd(ConfigurationElement, Boolean, Boolean)")]
         protected internal void BaseAdd(ConfigurationElement element, bool throwIfExists)
         {
             BaseAdd(element, throwIfExists, false);
@@ -682,11 +685,13 @@ namespace System.Configuration
             _modified = true;
         }
 
+        [RequiresUnreferencedCode("BaseAdd")]
         protected virtual void BaseAdd(int index, ConfigurationElement element)
         {
             BaseAdd(index, element, false);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElementCollection.BaseAddInternal(Int32, ConfigurationElement, Boolean, Boolean)")]
         private void BaseAdd(int index, ConfigurationElement element, bool ignoreLocks)
         {
             if (IsReadOnly()) throw new ConfigurationErrorsException(SR.Config_base_read_only);
@@ -1102,6 +1107,7 @@ namespace System.Configuration
             return dataToWrite;
         }
 
+        [RequiresUnreferencedCode("BaseAdd")]
         protected override bool OnDeserializeUnrecognizedElement(string elementName, XmlReader reader)
         {
             if ((CollectionType == ConfigurationElementCollectionType.AddRemoveClearMap) ||

@@ -68,6 +68,7 @@ namespace System.Configuration
 
         public ConfigurationSectionCollection Sections
         {
+            [RequiresUnreferencedCode("ConfigurationSectionCollection")]
             get
             {
                 if (_configSections == null)

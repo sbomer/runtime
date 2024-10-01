@@ -73,6 +73,7 @@ namespace System.Configuration
             IsNew = allSubgroupsAreNew && (_cMoved == _sections.Count);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.SectionUpdates.FindSectionUpdates(String, Boolean)")]
         internal void AddSection(Update update)
         {
             SectionUpdates sectionUpdates = FindSectionUpdates(update.ConfigKey, false);
@@ -83,6 +84,7 @@ namespace System.Configuration
             if (update.Moved) sectionUpdates._cMoved++;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.SectionUpdates.FindSectionUpdates(String, Boolean)")]
         internal void AddSectionGroup(Update update)
         {
             SectionUpdates sectionUpdates = FindSectionUpdates(update.ConfigKey, true);

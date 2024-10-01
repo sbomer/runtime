@@ -163,6 +163,7 @@ namespace System.Configuration
             return null;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object)")]
         private void SetProperty(string propName, string value)
         {
             ConfigurationProperty setPropName;

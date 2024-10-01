@@ -9,6 +9,10 @@ namespace System.Configuration
     {
         private static volatile IConfigurationManagerInternal s_instance;
 
-        internal static IConfigurationManagerInternal Instance => s_instance ??= new ConfigurationManagerInternal();
+        internal static IConfigurationManagerInternal Instance
+        {
+            [RequiresUnreferencedCode("Calls System.Configuration.Internal.ConfigurationManagerInternal.ConfigurationManagerInternal()")]
+            get => s_instance ??= new ConfigurationManagerInternal();
+        }
     }
 }

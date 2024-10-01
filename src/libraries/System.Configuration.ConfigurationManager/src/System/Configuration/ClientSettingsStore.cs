@@ -224,6 +224,7 @@ namespace System.Configuration
         /// A private configuration host that we use to write settings to config. We need this so we
         /// can enforce a quota on the size of stuff written out.
         /// </summary>
+        [RequiresUnreferencedCode("Overwrites WriteCompleted with RUC")]
         private sealed class ClientSettingsConfigurationHost : DelegatingConfigHost
         {
             private const string ClientConfigurationHostTypeName = "System.Configuration.ClientConfigurationHost, " + TypeUtil.ConfigurationManagerAssemblyName;
@@ -274,6 +275,7 @@ namespace System.Configuration
                 Host.InitForConfiguration(ref locationSubPath, out configPath, out locationConfigPath, configRoot, null, null, desiredConfigPath);
             }
 
+            [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
             private static bool IsKnownConfigFile(string filename)
             {
                 return
@@ -315,6 +317,7 @@ namespace System.Configuration
             /// If this is a stream that represents a user.config file that we know about, we ask
             /// the host to assert appropriate permissions.
             /// </summary>
+            // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
             public override void WriteCompleted(string streamName, bool success, object writeContext)
             {
                 if (string.Equals(streamName, ConfigurationManagerInternalFactory.Instance.ExeLocalConfigPath, StringComparison.OrdinalIgnoreCase) ||

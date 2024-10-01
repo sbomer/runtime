@@ -116,6 +116,7 @@ namespace System.Diagnostics
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.PrivilegedConfigurationManager.GetSection(String)")]
         private static SystemDiagnosticsSection GetConfigSection()
         {
             return s_configSection ??= (SystemDiagnosticsSection)PrivilegedConfigurationManager.GetSection("system.diagnostics");
@@ -124,9 +125,11 @@ namespace System.Diagnostics
         internal static bool IsInitializing() => s_initState == InitState.Initializing;
         internal static bool IsInitialized() => s_initState == InitState.Initialized;
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
         internal static bool CanInitialize() => (s_initState != InitState.Initializing) &&
             !ConfigurationManagerInternalFactory.Instance.SetConfigurationSystemInProgress;
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
         internal static void Initialize()
         {
             // Ported from https://referencesource.microsoft.com/#System/compmod/system/diagnostics/DiagnosticsConfiguration.cs,188

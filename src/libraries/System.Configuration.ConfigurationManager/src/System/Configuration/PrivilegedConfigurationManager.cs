@@ -5,7 +5,11 @@ namespace System.Configuration
 {
     internal static class PrivilegedConfigurationManager
     {
-        internal static ConnectionStringSettingsCollection ConnectionStrings => ConfigurationManager.ConnectionStrings;
+        internal static ConnectionStringSettingsCollection ConnectionStrings
+        {
+            [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.ConnectionStrings")]
+            get => ConfigurationManager.ConnectionStrings;
+        }
 
         [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.GetSection(String)")]
         internal static object GetSection(string sectionName)
