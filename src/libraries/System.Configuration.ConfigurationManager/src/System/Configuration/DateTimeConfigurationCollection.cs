@@ -4,6 +4,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
     [ConfigurationCollection(typeof(DateTimeConfigurationElement))]
     internal sealed class DateTimeConfigurationCollection : ConfigurationElementCollection
     {
@@ -41,6 +42,7 @@ namespace System.Configuration
             BaseClear();
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.DateTimeConfigurationElement.DateTimeConfigurationElement()")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new DateTimeConfigurationElement();

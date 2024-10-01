@@ -13,7 +13,7 @@ namespace System.Configuration.Internal
     // The BaseConfigurationRecord hierarchy is protected with the
     // _hierarchyLock. Functions that assume that the lock as been
     // taken begin with the prefix "hl", for example, "hlFindConfigRecord".
-    [RequiresUnreferencedCode("TODO")]
+    [RequiresUnreferencedCode("implements GetConfigRecord with RUC")]
     internal sealed class InternalConfigRoot : IInternalConfigRoot
     {
         private ReaderWriterLock _hierarchyLock;
@@ -93,7 +93,7 @@ namespace System.Configuration.Internal
 
         // Get the config record for a path.
         // If the record does not exist, create it if it is needed.
-        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
         public IInternalConfigRecord GetConfigRecord(string configPath)
         {
             if (!ConfigPathUtility.IsValid(configPath)) throw ExceptionUtil.ParameterInvalid(nameof(configPath));

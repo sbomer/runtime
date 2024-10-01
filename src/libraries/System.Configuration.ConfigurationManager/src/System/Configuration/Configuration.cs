@@ -186,16 +186,19 @@ namespace System.Configuration
             return sectionGroup;
         }
 
+        [RequiresUnreferencedCode("SaveAsImpl")]
         public void Save()
         {
             SaveAsImpl(null, ConfigurationSaveMode.Modified, false);
         }
 
+        [RequiresUnreferencedCode("SaveAsImpl")]
         public void Save(ConfigurationSaveMode saveMode)
         {
             SaveAsImpl(null, saveMode, false);
         }
 
+        [RequiresUnreferencedCode("SaveAsImpl")]
         public void Save(ConfigurationSaveMode saveMode, bool forceSaveAll)
         {
             SaveAsImpl(null, saveMode, forceSaveAll);
@@ -211,6 +214,7 @@ namespace System.Configuration
             SaveAs(filename, saveMode, false);
         }
 
+        [RequiresUnreferencedCode("SaveAsImpl")]
         public void SaveAs(string filename, ConfigurationSaveMode saveMode, bool forceSaveAll)
         {
             if (string.IsNullOrEmpty(filename)) throw ExceptionUtil.ParameterNullOrEmpty(nameof(filename));
@@ -218,6 +222,7 @@ namespace System.Configuration
             SaveAsImpl(filename, saveMode, forceSaveAll);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.SaveAs(String, ConfigurationSaveMode, Boolean)")]
         private void SaveAsImpl(string filename, ConfigurationSaveMode saveMode, bool forceSaveAll)
         {
             filename = string.IsNullOrEmpty(filename) ? null : Path.GetFullPath(filename);
@@ -227,6 +232,7 @@ namespace System.Configuration
         }
 
         // Force all sections and section groups to be instantiated.
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationSectionCollection.this[string]")]
         private static void ForceGroupsRecursive(ConfigurationSectionGroup group)
         {
             foreach (ConfigurationSection configSection in group.Sections)

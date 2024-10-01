@@ -5,6 +5,7 @@ using System.Configuration;
 
 namespace System.Diagnostics
 {
+    [RequiresUnreferencedCode("static field Calls System.Diagnostics.SharedListenerElementsCollection.SharedListenerElementsCollection()")]
     internal sealed class SystemDiagnosticsSection : ConfigurationSection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new();

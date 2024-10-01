@@ -29,7 +29,7 @@ namespace System.Diagnostics
         protected override object GetElementKey(ConfigurationElement element) => ((SourceElement)element).Name;
     }
 
-
+    [RequiresUnreferencedCode("static field Calls System.Diagnostics.ListenerElementsCollection.ListenerElementsCollection()")]
     internal sealed class SourceElement : ConfigurationElement
     {
         private static readonly ConfigurationPropertyCollection _properties = new();

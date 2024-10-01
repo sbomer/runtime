@@ -12,12 +12,14 @@ using System.Xml;
 namespace System.Diagnostics
 {
     [ConfigurationCollection(typeof(ListenerElement))]
+    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
     internal class ListenerElementsCollection : ConfigurationElementCollection
     {
         public new ListenerElement this[string name] => (ListenerElement)BaseGet(name);
 
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.AddRemoveClearMap;
 
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.ListenerElement(Boolean)")]
         protected override ConfigurationElement CreateNewElement() => new ListenerElement(true);
 
         protected override object GetElementKey(ConfigurationElement element) => ((ListenerElement)element).Name;
@@ -41,6 +43,7 @@ namespace System.Diagnostics
 
         protected internal override void InitializeDefault() => InitializeDefaultInternal();
 
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.ListenerElement(Boolean)")]
         internal void InitializeDefaultInternal()
         {
             ListenerElement defaultListener = new ListenerElement(false);
@@ -70,9 +73,12 @@ namespace System.Diagnostics
     [ConfigurationCollection(typeof(ListenerElement),
         AddItemName = "add",
         CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
     internal sealed class SharedListenerElementsCollection : ListenerElementsCollection
     {
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
+
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.ListenerElement(Boolean)")]
         protected override ConfigurationElement CreateNewElement() => new ListenerElement(false);
         protected override string ElementName => "add";
     }

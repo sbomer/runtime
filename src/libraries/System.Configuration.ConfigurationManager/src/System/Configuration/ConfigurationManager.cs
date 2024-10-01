@@ -22,6 +22,7 @@ namespace System.Configuration
 
         internal static bool SupportsUserConfig
         {
+            [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.PrepareConfigSystem()")]
             get
             {
                 PrepareConfigSystem();
@@ -134,7 +135,7 @@ namespace System.Configuration
             }
         }
 
-
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.EnsureConfigurationSystem()")]
         private static void PrepareConfigSystem()
         {
             // Ensure the configuration system is usable.
@@ -144,6 +145,7 @@ namespace System.Configuration
             if (s_initError != null) throw s_initError;
         }
 
+        [RequiresUnreferencedCode("PrepareConfigSystem")]
         public static object GetSection(string sectionName)
         {
             // Avoid unintended AV's by ensuring sectionName is not empty.
@@ -156,6 +158,7 @@ namespace System.Configuration
             return section;
         }
 
+        [RequiresUnreferencedCode("PrepareConfigSystem")]
         public static void RefreshSection(string sectionName)
         {
             // Avoid unintended AV's by ensuring sectionName is not empty.

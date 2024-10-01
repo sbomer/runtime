@@ -7,6 +7,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("Static fields call RUC ConfigurationProperty")]
     public sealed class ProtectedConfigurationSection : ConfigurationSection
     {
         private const string EncryptedSectionTemplate = "<{0} {1}=\"{2}\"> {3} </{0}>";
@@ -43,7 +44,7 @@ namespace System.Configuration
             set { base[s_propDefaultProvider] = value; }
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ProtectedConfigurationSection.InstantiateProvider(ProviderSettings)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProtectedConfigurationSection.InstantiateProvider(ProviderSettings)")]
         internal ProtectedConfigurationProvider GetProviderFromName(string providerName)
         {
             ProviderSettings ps = Providers[providerName];
@@ -54,7 +55,7 @@ namespace System.Configuration
             return InstantiateProvider(ps);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ProtectedConfigurationSection.InstantiateProvider(ProviderSettings)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProtectedConfigurationSection.InstantiateProvider(ProviderSettings)")]
         internal ProtectedConfigurationProviderCollection GetAllProviders()
         {
             ProtectedConfigurationProviderCollection coll = new ProtectedConfigurationProviderCollection();
@@ -79,7 +80,7 @@ namespace System.Configuration
             return provider;
         }
 
-        [RequiresUnreferencedCode("TODO")]
+        // [RequiresUnreferencedCode("TODO")]
         private static ProtectedConfigurationProvider InstantiateProvider(ProviderSettings pn)
         {
             Type t = TypeUtil.GetType(pn.Type, true);

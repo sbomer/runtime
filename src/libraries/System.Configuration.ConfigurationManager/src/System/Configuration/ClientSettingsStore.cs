@@ -32,6 +32,7 @@ namespace System.Configuration
             return ClientSettingsConfigurationHost.OpenExeConfiguration(userLevel);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.Configuration.GetSection(String)")]
         private static ClientSettingsSection GetConfigSection(Configuration config, string sectionName, bool declare)
         {
             string fullSectionName = UserSettingsGroupPrefix + sectionName;
@@ -54,6 +55,7 @@ namespace System.Configuration
 
         // Declares the section handler of a given section in its section group, if a declaration isn't already
         // present.
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationSectionCollection.this[string]")]
         private static void DeclareSection(Configuration config, string sectionName)
         {
             ConfigurationSectionGroup settingsGroup = config.GetSectionGroup(UserSettingsGroupName);
@@ -106,6 +108,7 @@ namespace System.Configuration
             return settings;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.OpenMappedExeConfiguration(ExeConfigurationFileMap, ConfigurationUserLevel)")]
         internal static IDictionary ReadSettingsFromFile(string configFileName, string sectionName, bool isUserScoped)
         {
             Hashtable settings = new Hashtable();
@@ -151,6 +154,7 @@ namespace System.Configuration
             return PrivilegedConfigurationManager.ConnectionStrings;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ClientSettingsStore.GetConfigSection(Configuration, String, Boolean)")]
         internal static void RevertToParent(string sectionName, bool isRoaming)
         {
             if (!ConfigurationManagerInternalFactory.Instance.SupportsUserConfig)

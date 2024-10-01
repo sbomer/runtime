@@ -18,7 +18,7 @@ namespace System.Configuration
         private volatile bool _isTypeInited;
         private ConfigurationPropertyOptions _options;
 
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode("SetDefaultValue")]
         public ConfigurationProperty(
             string name,
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -44,10 +44,12 @@ namespace System.Configuration
             : this(name, type, defaultValue, ConfigurationPropertyOptions.None)
         { }
 
+        [RequiresUnreferencedCode("Calls other RUC ctor")]
         public ConfigurationProperty(string name, Type type, object defaultValue, ConfigurationPropertyOptions options)
             : this(name, type, defaultValue, null, null, options)
         { }
 
+        [RequiresUnreferencedCode("Calls other RUC ctor")]
         public ConfigurationProperty(string name,
             Type type,
             object defaultValue,

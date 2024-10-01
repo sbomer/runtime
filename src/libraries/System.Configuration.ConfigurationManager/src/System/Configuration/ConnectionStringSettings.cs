@@ -4,6 +4,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("static fields call RUC ConnfigurationProperty")]
     public sealed class ConnectionStringSettings : ConfigurationElement
     {
         private static readonly ConfigurationProperty s_propName =
@@ -30,6 +31,7 @@ namespace System.Configuration
             ConnectionString = connectionString;
         }
 
+        [RequiresUnreferencedCode("Base")]
         public ConnectionStringSettings(string name, string connectionString, string providerName)
             : this()
         {

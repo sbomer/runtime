@@ -8,6 +8,7 @@ namespace System.Configuration
     {
         public static ProtectedConfigurationProviderCollection Providers
         {
+            [RequiresUnreferencedCode("GetAllProviders")]
             get
             {
                 ProtectedConfigurationSection config =

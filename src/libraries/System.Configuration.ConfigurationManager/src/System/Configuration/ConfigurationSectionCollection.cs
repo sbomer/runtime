@@ -25,9 +25,17 @@ namespace System.Configuration
             }
         }
 
-        public ConfigurationSection this[string name] => Get(name);
+        public ConfigurationSection this[string name]
+        {
+            [RequiresUnreferencedCode("Get")]
+            get => Get(name);
+        }
 
-        public ConfigurationSection this[int index] => Get(index);
+        public ConfigurationSection this[int index]
+        {
+            [RequiresUnreferencedCode("Get")]
+            get => Get(index);
+        }
 
         // Remove the collection from configuration system, and remove all entries
         // in the base collection so that enumeration will return an empty collection.
@@ -61,6 +69,7 @@ namespace System.Configuration
             foreach (string key in allKeys) Remove(key);
         }
 
+        [RequiresUnreferencedCode("Get")]
         public void CopyTo(ConfigurationSection[] array, int index)
         {
             if (array is null)
@@ -74,12 +83,13 @@ namespace System.Configuration
             for (int i = 0, j = index; i < c; i++, j++) array[j] = Get(i);
         }
 
+        [RequiresUnreferencedCode("Get")]
         public ConfigurationSection Get(int index)
         {
             return Get(GetKey(index));
         }
 
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode("GetSection")]
         public ConfigurationSection Get(string name)
         {
             VerifyIsAttachedToConfigRecord();

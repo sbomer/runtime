@@ -54,6 +54,7 @@ namespace System.Configuration
             _isModified = true;
         }
 
+        [RequiresUnreferencedCode("Base virtual has RUC")]
         protected internal override string SerializeSection(ConfigurationElement parentSection, string name,
             ConfigurationSaveMode saveMode)
         {
