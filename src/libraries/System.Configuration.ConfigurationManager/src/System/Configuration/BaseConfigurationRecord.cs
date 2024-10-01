@@ -2406,8 +2406,7 @@ namespace System.Configuration
                         configKey,
                         parentConfigKey,
                         tagName,
-                        // typeof(DefaultSection).AssemblyQualifiedName, // TODO
-                        "DefaultSection, System.Configuration.ConfigurationManager", // https://github.com/dotnet/runtime/issues/108082
+                        typeof(DefaultSection).AssemblyQualifiedName,
                         allowLocation: true,
                         allowDefinition: ConfigurationAllowDefinition.Everywhere,
                         allowExeDefinition: ConfigurationAllowExeDefinition.MachineToRoamingUser,
