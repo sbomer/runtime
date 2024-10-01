@@ -5,6 +5,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("static ConfigurationProperty")]
     public sealed class SettingElement : ConfigurationElement
     {
         private static readonly ConfigurationProperty s_propName = new ConfigurationProperty(

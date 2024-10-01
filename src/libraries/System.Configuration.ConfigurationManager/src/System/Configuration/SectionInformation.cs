@@ -230,6 +230,8 @@ namespace System.Configuration
         public string ConfigSource
         {
             get { return _configSource ?? string.Empty; }
+
+            [RequiresUnreferencedCode("BaseConfigurationRecord")]
             set
             {
                 VerifyIsEditable();
@@ -538,6 +540,7 @@ namespace System.Configuration
                 throw new InvalidOperationException(SR.Config_cannot_edit_locationattriubtes);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
         internal void VerifyIsEditableFactory()
         {
             if ((_configRecord != null) && _configRecord.IsLocationConfig)
@@ -570,6 +573,7 @@ namespace System.Configuration
 
         // If force==false, it actually means don't declare it at
         // the current level.
+        [RequiresUnreferencedCode("TODO")]
         public void ForceDeclaration(bool force)
         {
             VerifyIsEditable();

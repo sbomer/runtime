@@ -17,6 +17,7 @@ namespace System.Diagnostics
         protected override object GetElementKey(ConfigurationElement element) => ((SwitchElement)element).Name;
     }
 
+    [RequiresUnreferencedCode("static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions)")]
     internal sealed class SwitchElement : ConfigurationElement
     {
         private static readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();

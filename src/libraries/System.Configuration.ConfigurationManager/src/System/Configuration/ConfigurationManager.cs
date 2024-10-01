@@ -33,6 +33,7 @@ namespace System.Configuration
 
         public static NameValueCollection AppSettings
         {
+            [RequiresUnreferencedCode("GetSection")]
             get
             {
                 object section = GetSection("appSettings");
@@ -49,6 +50,7 @@ namespace System.Configuration
 
         public static ConnectionStringSettingsCollection ConnectionStrings
         {
+            [RequiresUnreferencedCode("GetSection")]
             get
             {
                 object section = GetSection("connectionStrings");

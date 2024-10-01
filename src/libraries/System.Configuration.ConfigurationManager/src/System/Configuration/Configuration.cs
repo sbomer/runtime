@@ -204,11 +204,13 @@ namespace System.Configuration
             SaveAsImpl(null, saveMode, forceSaveAll);
         }
 
+        [RequiresUnreferencedCode("SaveAs")]
         public void SaveAs(string filename)
         {
             SaveAs(filename, ConfigurationSaveMode.Modified, false);
         }
 
+        [RequiresUnreferencedCode("SaveAs")]
         public void SaveAs(string filename, ConfigurationSaveMode saveMode)
         {
             SaveAs(filename, saveMode, false);

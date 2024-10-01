@@ -3,6 +3,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("static ConfigurationProperty")]
     public sealed class UriSection : ConfigurationSection
     {
         private static readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();

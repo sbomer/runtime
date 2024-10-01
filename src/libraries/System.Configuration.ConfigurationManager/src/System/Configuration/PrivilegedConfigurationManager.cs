@@ -7,6 +7,7 @@ namespace System.Configuration
     {
         internal static ConnectionStringSettingsCollection ConnectionStrings => ConfigurationManager.ConnectionStrings;
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.GetSection(String)")]
         internal static object GetSection(string sectionName)
         {
             return ConfigurationManager.GetSection(sectionName);

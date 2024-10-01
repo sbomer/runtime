@@ -83,6 +83,7 @@ namespace System.Diagnostics
         protected override string ElementName => "add";
     }
 
+    [RequiresUnreferencedCode("Static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions)")]
     internal sealed class ListenerElement : TypedElement
     {
         private static readonly ConfigurationProperty s_propFilter = new("filter", typeof(FilterElement), null, ConfigurationPropertyOptions.None);

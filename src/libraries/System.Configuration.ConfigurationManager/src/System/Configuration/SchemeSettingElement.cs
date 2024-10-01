@@ -3,6 +3,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("static ConfigurationProperty")]
     public sealed class SchemeSettingElement : ConfigurationElement
     {
         private static readonly ConfigurationProperty s_name = new ConfigurationProperty(CommonConfigurationStrings.SchemeName, typeof(string), null,

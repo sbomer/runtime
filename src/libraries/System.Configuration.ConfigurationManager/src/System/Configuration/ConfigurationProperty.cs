@@ -40,6 +40,7 @@ namespace System.Configuration
             SetDefaultValue(defaultValue);
         }
 
+        [RequiresUnreferencedCode("Calls other RUC ctor")]
         public ConfigurationProperty(string name, Type type, object defaultValue)
             : this(name, type, defaultValue, ConfigurationPropertyOptions.None)
         { }
@@ -59,7 +60,7 @@ namespace System.Configuration
             : this(name, type, defaultValue, typeConverter, validator, options, null)
         { }
 
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode("SetDefaultValue")]
         public ConfigurationProperty(string name,
             Type type,
             object defaultValue,
@@ -275,6 +276,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
         private static void ValidatePropertyName(string name)
         {
             if (string.IsNullOrEmpty(name))

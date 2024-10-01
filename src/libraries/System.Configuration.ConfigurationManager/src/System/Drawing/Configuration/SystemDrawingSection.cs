@@ -5,6 +5,7 @@ using System.Configuration;
 
 namespace System.Drawing.Configuration
 {
+    [RequiresUnreferencedCode("static field calls ConfigurationProperty")]
     public sealed class SystemDrawingSection : ConfigurationSection
     {
         private const string BitmapSuffixSectionName = "bitmapSuffix";

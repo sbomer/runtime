@@ -11,6 +11,7 @@ namespace System.Diagnostics
     [ConfigurationCollection(typeof(SourceElement),
         AddItemName = "source",
         CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
     internal sealed class SourceElementsCollection : ConfigurationElementCollection
     {
         public new SourceElement this[string name] => (SourceElement)BaseGet(name);
@@ -19,6 +20,7 @@ namespace System.Diagnostics
 
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
 
+        // [RequiresUnreferencedCode("Calls System.Diagnostics.SourceElement.SourceElement()")]
         protected override ConfigurationElement CreateNewElement()
         {
             SourceElement se = new SourceElement();

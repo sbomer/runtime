@@ -7,6 +7,7 @@ using System.Security;
 
 namespace System.Configuration.Internal
 {
+    [RequiresUnreferencedCode("Implements DecryptSection/EncryptSection with RUC")]
     internal sealed class InternalConfigHost : IInternalConfigHost
     {
         private const FileAttributes InvalidAttributesForWrite = FileAttributes.ReadOnly | FileAttributes.Hidden;
@@ -161,12 +162,14 @@ namespace System.Configuration.Internal
             throw ExceptionUtil.UnexpectedError("IInternalConfigHost.CreateConfigurationContext");
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProtectedConfigurationSection.DecryptSection(String, ProtectedConfigurationProvider)")]
         string IInternalConfigHost.DecryptSection(string encryptedXml, ProtectedConfigurationProvider protectionProvider,
             ProtectedConfigurationSection protectedConfigSection)
         {
             return ProtectedConfigurationSection.DecryptSection(encryptedXml, protectionProvider);
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProtectedConfigurationSection.EncryptSection(String, ProtectedConfigurationProvider)")]
         string IInternalConfigHost.EncryptSection(string clearTextXml, ProtectedConfigurationProvider protectionProvider,
             ProtectedConfigurationSection protectedConfigSection)
         {

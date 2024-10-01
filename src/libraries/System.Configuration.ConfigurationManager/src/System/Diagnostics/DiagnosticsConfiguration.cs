@@ -153,6 +153,7 @@ namespace System.Diagnostics
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.RefreshSection(String)")]
         internal static void Refresh()
         {
             ConfigurationManager.RefreshSection("system.diagnostics");

@@ -21,7 +21,7 @@ namespace System.Configuration
     //      Reset(ConfigurationElement parentSection, object context)
     //      DeserializeSection(object context, XmlNode xmlNode)
     //      SerializeSection(ConfigurationElement parentSection, object context, string name)
-    [RequiresUnreferencedCode("TODO")] // Equals calls Properties which would need RUC.
+    [RequiresUnreferencedCode("Overrides Equals with RUC")] // Equals calls Properties which would need RUC.
     // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
     public abstract class ConfigurationElement
     {

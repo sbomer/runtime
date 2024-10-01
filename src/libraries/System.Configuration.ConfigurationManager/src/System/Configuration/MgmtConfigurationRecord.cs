@@ -593,6 +593,7 @@ namespace System.Configuration
         // and contains no more or less than a single element.
         //
         // Throws a ConfigurationErrorsException if there is an error.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.SplitConfigKey(String, out String, out String)")]
         private static void ValidateSectionXml(string xmlElement, string configKey)
         {
             if (string.IsNullOrEmpty(xmlElement))
@@ -654,6 +655,7 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionCollection.Add().
         // Note this method DOES NOT update the associated ConfigurationSectionCollection.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void AddConfigurationSection(string group, string name, ConfigurationSection configSection)
         {
             // <configSections> is not permitted within a <location> tag.
@@ -741,6 +743,7 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionCollection.Remove().
         // Note this method DOES NOT update the associated ConfigurationSectionCollection.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void RemoveConfigurationSection(string group, string name)
         {
             bool sectionIsUsed = false; // Is section used in our record
@@ -813,6 +816,7 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionGroupCollection.Add().
         // Note this method DOES NOT update the associated ConfigurationSectionGroupCollection.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void AddConfigurationSectionGroup(
             string group,
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -904,6 +908,7 @@ namespace System.Configuration
         //
         // Called from ConfigurationSectionGroupCollection.Remove().
         // Note this method DOES NOT update the associated ConfigurationSectionCollection.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.VerifySectionName(String, IConfigErrorInfo, Boolean)")]
         internal void RemoveConfigurationSectionGroup(string group, string name)
         {
             // Validate arguments
@@ -1295,6 +1300,7 @@ namespace System.Configuration
         }
 
         // Gather all the updates to the configuration section declarations.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
         private SectionUpdates GetConfigDeclarationUpdates(ConfigurationSaveMode saveMode)
         {
             if (IsLocationConfig)
@@ -1982,6 +1988,7 @@ namespace System.Configuration
                 skipFirstIndent);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
         private void WriteUnwrittenConfigDeclarationsRecursive(SectionUpdates declarationUpdates,
             XmlUtilWriter utilWriter, int linePosition, int indent, bool skipFirstIndent)
         {
@@ -2378,6 +2385,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
         private static bool CopyConfigDeclarationsRecursive(
             SectionUpdates declarationUpdates, XmlUtil xmlUtil, XmlUtilWriter utilWriter, string group,
             int parentLinePosition, int parentIndent)
@@ -2606,6 +2614,7 @@ namespace System.Configuration
         }
 
         // Copy configuration sections from the original configuration file.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.NormalizeLocationSubPath(String, IConfigErrorInfo)")]
         private bool CopyConfigDefinitionsRecursive(
             ConfigDefinitionUpdates configDefinitionUpdates, XmlUtil xmlUtil, XmlUtilWriter utilWriter,
             bool locationPathApplies, LocationUpdates locationUpdates, SectionUpdates sectionUpdates,

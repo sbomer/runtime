@@ -46,6 +46,8 @@ namespace System.Configuration
         protected internal string AddElementName
         {
             get { return _addElement; }
+
+            [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 _addElement = value;
@@ -57,6 +59,8 @@ namespace System.Configuration
         protected internal string RemoveElementName
         {
             get { return _removeElement; }
+
+            [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -68,6 +72,8 @@ namespace System.Configuration
         protected internal string ClearElementName
         {
             get { return _clearElement; }
+
+            [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -501,6 +507,7 @@ namespace System.Configuration
             BaseAdd(element, throwIfExists, false);
         }
 
+        [RequiresUnreferencedCode("BaseAddInternal")]
         private void BaseAdd(ConfigurationElement element, bool throwIfExists, bool ignoreLocks)
         {
             bool flagAsReplaced = false;
@@ -609,6 +616,7 @@ namespace System.Configuration
             return -1;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
         private void BaseAddInternal(int index, ConfigurationElement element, bool flagAsReplaced, bool ignoreLocks)
         {
             // Allow the element to initialize itself after its
@@ -1029,6 +1037,7 @@ namespace System.Configuration
             _modified = true;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
         protected internal override bool SerializeElement(XmlWriter writer, bool serializeCollectionKey)
         {
             ConfigurationElementCollectionType type = CollectionType;

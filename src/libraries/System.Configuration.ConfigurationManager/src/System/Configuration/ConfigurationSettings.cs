@@ -19,6 +19,7 @@ namespace System.Configuration
         }
 
         [Obsolete("ConfigurationSettings.GetConfig has been deprecated. Use System.Configuration.ConfigurationManager.GetSection instead.")]
+        [RequiresUnreferencedCode("GetSection")]
         public static object GetConfig(string sectionName)
         {
             return ConfigurationManager.GetSection(sectionName);

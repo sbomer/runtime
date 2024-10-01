@@ -3,6 +3,7 @@
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("static ConfigurationProperty")]
     public sealed class ConnectionStringsSection : ConfigurationSection
     {
         private static readonly ConfigurationProperty s_propConnectionStrings =

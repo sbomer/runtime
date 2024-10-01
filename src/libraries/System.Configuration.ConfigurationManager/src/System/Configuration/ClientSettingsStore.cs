@@ -84,6 +84,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.RefreshSection(String)")]
         internal static IDictionary ReadSettings(string sectionName, bool isUserScoped)
         {
             Hashtable settings = new Hashtable();

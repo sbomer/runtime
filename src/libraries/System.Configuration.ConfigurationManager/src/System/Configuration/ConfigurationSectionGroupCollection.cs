@@ -86,6 +86,7 @@ namespace System.Configuration
             return Get(GetKey(index));
         }
 
+        [RequiresUnreferencedCode("BaseConfigurationRecord")]
         public ConfigurationSectionGroup Get(string name)
         {
             VerifyIsAttachedToConfigRecord();
@@ -126,6 +127,7 @@ namespace System.Configuration
         // definition, and the instance of ConfigurationSectionGroup will be detached from the collection.
         // However, the collection will still have a ConfigurationSectionGroup of that name in the collection,
         // only it will have the value of the immediate parent.
+        [RequiresUnreferencedCode("BaseConfigurationRecord")]
         public void Remove(string name)
         {
             VerifyIsAttachedToConfigRecord();

@@ -6,6 +6,7 @@ namespace System.Configuration
     /// <summary>
     /// ConfigurationSection class for sections that store client settings.
     /// </summary>
+    [RequiresUnreferencedCode("static field does ConfigurationProperty which is RUC")]
     public sealed class ClientSettingsSection : ConfigurationSection
     {
         private static readonly ConfigurationProperty s_propSettings = new ConfigurationProperty(null, typeof(SettingElementCollection), null, ConfigurationPropertyOptions.IsDefaultCollection);
