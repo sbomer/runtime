@@ -12,7 +12,9 @@ namespace System.Configuration
 
         protected ConfigurationValidatorAttribute() { }
 
-        public ConfigurationValidatorAttribute(Type validator)
+        public ConfigurationValidatorAttribute(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type validator)
         {
             if (validator == null) throw new ArgumentNullException(nameof(validator));
 
