@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(ConnectionStringSettings))]
@@ -10,7 +9,6 @@ namespace System.Configuration
     {
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection();
 
-        [RequiresUnreferencedCode("Base")]
         public ConnectionStringSettingsCollection()
             : base(StringComparer.OrdinalIgnoreCase)
         { }

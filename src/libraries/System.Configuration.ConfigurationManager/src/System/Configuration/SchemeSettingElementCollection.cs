@@ -15,7 +15,6 @@ namespace System.Configuration
         internal const string ClearItemsName = "clear";
         internal const string RemoveItemName = "remove";
 
-        [RequiresUnreferencedCode("Base")]
         public SchemeSettingElementCollection()
         {
             AddElementName = AddItemName;

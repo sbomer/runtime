@@ -8,7 +8,6 @@ using System.Xml;
 
 namespace System.Configuration
 {
-    // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
     [RequiresUnreferencedCode("Base type has RUC: https://github.com/dotnet/runtime/issues/107660")]
     public abstract class ConfigurationSection : ConfigurationElement
     {

@@ -137,6 +137,7 @@ namespace System.Configuration
             }
         }
 
+
         [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.EnsureConfigurationSystem()")]
         private static void PrepareConfigSystem()
         {

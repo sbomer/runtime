@@ -12,13 +12,8 @@ namespace System.Configuration
         public virtual string Name { get; set; }
         public virtual bool IsReadOnly { get; set; }
         public virtual object DefaultValue { get; set; }
-
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-        public virtual Type PropertyType
-        {
-            get;
-            set;
-        }
+        public virtual Type PropertyType { get; set; }
         public virtual SettingsSerializeAs SerializeAs { get; set; }
         public virtual SettingsProvider Provider { get; set; }
         public virtual SettingsAttributeDictionary Attributes { get; private set; }

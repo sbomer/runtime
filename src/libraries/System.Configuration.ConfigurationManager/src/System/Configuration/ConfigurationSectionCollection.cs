@@ -26,15 +26,9 @@ namespace System.Configuration
             }
         }
 
-        public ConfigurationSection this[string name]
-        {
-            get => Get(name);
-        }
+        public ConfigurationSection this[string name] => Get(name);
 
-        public ConfigurationSection this[int index]
-        {
-            get => Get(index);
-        }
+        public ConfigurationSection this[int index] => Get(index);
 
         // Remove the collection from configuration system, and remove all entries
         // in the base collection so that enumeration will return an empty collection.

@@ -22,7 +22,6 @@ namespace System.Configuration
     //      DeserializeSection(object context, XmlNode xmlNode)
     //      SerializeSection(ConfigurationElement parentSection, object context, string name)
     [RequiresUnreferencedCode("Overrides Equals with RUC")] // Equals calls Properties which would need RUC.
-    // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
     public abstract class ConfigurationElement
     {
         private const string LockAttributesKey = "lockAttributes";
@@ -1388,6 +1387,7 @@ namespace System.Configuration
                     intersectionCollection.Add(key); // add the local copy
             return intersectionCollection;
         }
+
 
         protected internal virtual void DeserializeElement(XmlReader reader, bool serializeCollectionKey)
         {

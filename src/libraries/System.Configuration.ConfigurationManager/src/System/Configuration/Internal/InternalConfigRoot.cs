@@ -272,7 +272,6 @@ namespace System.Configuration.Internal
 
         // Clear the result of a configSection evaluation at a particular point
         // in the hierarchy.
-        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.HlClearResultRecursive(String, Boolean)")]
         public void ClearResult(BaseConfigurationRecord configRecord, string configKey, bool forceEvaluation)
         {
             string[] parts = ConfigPathUtility.GetParts(configRecord.ConfigPath);

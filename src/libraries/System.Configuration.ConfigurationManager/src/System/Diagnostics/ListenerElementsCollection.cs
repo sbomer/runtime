@@ -23,7 +23,6 @@ namespace System.Diagnostics
 
         protected override object GetElementKey(ConfigurationElement element) => ((ListenerElement)element).Name;
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElement.GetRuntimeObject()")]
         public IEnumerable<TraceListener> GetRuntimeObject()
         {
             List<TraceListener> listeners = new();
@@ -75,7 +74,6 @@ namespace System.Diagnostics
     internal sealed class SharedListenerElementsCollection : ListenerElementsCollection
     {
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
-
         protected override ConfigurationElement CreateNewElement() => new ListenerElement(false);
         protected override string ElementName => "add";
     }

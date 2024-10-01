@@ -28,16 +28,10 @@ namespace System.Configuration
         }
 
         // Indexer via name
-        public ConfigurationSectionGroup this[string name]
-        {
-            get => Get(name);
-        }
+        public ConfigurationSectionGroup this[string name] => Get(name);
 
         // Indexer via integer index.
-        public ConfigurationSectionGroup this[int index]
-        {
-            get => Get(index);
-        }
+        public ConfigurationSectionGroup this[int index] => Get(index);
 
         // Remove the collection from configuration system, and remove all entries
         // in the base collection so that enumeration will return an empty collection.

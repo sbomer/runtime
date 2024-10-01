@@ -45,7 +45,6 @@ namespace System.Configuration
         protected internal string AddElementName
         {
             get { return _addElement; }
-
             set
             {
                 _addElement = value;
@@ -57,7 +56,6 @@ namespace System.Configuration
         protected internal string RemoveElementName
         {
             get { return _removeElement; }
-
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -69,7 +67,6 @@ namespace System.Configuration
         protected internal string ClearElementName
         {
             get { return _clearElement; }
-
             set
             {
                 if (BaseConfigurationRecord.IsReservedAttributeName(value))
@@ -248,6 +245,7 @@ namespace System.Configuration
             }
             return hHashCode;
         }
+
 
         protected internal override void Unmerge(ConfigurationElement sourceElement,
             ConfigurationElement parentElement,

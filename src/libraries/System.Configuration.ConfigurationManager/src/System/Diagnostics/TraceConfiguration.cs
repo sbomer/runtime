@@ -11,7 +11,7 @@ namespace System.Diagnostics
 
         /// <summary>
         /// Register the configuration system to apply settings from configuration files
-        /// to <seealso cref="TraceSource"/> and related classes.
+        /// to <seealso cref="System.Diagnostics.TraceSource"/> and related classes.
         /// </summary>
         [RequiresUnreferencedCode("TODO")]
         public static void Register()

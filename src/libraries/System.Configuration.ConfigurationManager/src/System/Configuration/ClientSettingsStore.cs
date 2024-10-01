@@ -277,7 +277,6 @@ namespace System.Configuration
                 Host.InitForConfiguration(ref locationSubPath, out configPath, out locationConfigPath, configRoot, null, null, desiredConfigPath);
             }
 
-            [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
             private static bool IsKnownConfigFile(string filename)
             {
                 return
