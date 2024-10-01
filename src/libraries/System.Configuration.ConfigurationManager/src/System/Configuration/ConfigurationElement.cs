@@ -1908,24 +1908,24 @@ namespace System.Configuration
                 switch (saveMode)
                 {
                     case ConfigurationSaveMode.Modified:
-                    {
-                        ConfigurationLockCollection tempLockList = new ConfigurationLockCollection(this,
-                            sourceLockList.LockType);
-                        foreach (string lockedAttributeName in sourceLockList)
-                            if (!parentLockList.Contains(lockedAttributeName) ||
-                                sourceLockList.IsValueModified(lockedAttributeName))
-                                tempLockList.Add(lockedAttributeName, ConfigurationValueFlags.Default);
-                        return tempLockList;
-                    }
+                        {
+                            ConfigurationLockCollection tempLockList = new ConfigurationLockCollection(this,
+                                sourceLockList.LockType);
+                            foreach (string lockedAttributeName in sourceLockList)
+                                if (!parentLockList.Contains(lockedAttributeName) ||
+                                    sourceLockList.IsValueModified(lockedAttributeName))
+                                    tempLockList.Add(lockedAttributeName, ConfigurationValueFlags.Default);
+                            return tempLockList;
+                        }
                     case ConfigurationSaveMode.Minimal:
-                    {
-                        ConfigurationLockCollection tempLockList = new ConfigurationLockCollection(this,
-                            sourceLockList.LockType);
-                        foreach (string lockedAttributeName in sourceLockList)
-                            if (!parentLockList.Contains(lockedAttributeName))
-                                tempLockList.Add(lockedAttributeName, ConfigurationValueFlags.Default);
-                        return tempLockList;
-                    }
+                        {
+                            ConfigurationLockCollection tempLockList = new ConfigurationLockCollection(this,
+                                sourceLockList.LockType);
+                            foreach (string lockedAttributeName in sourceLockList)
+                                if (!parentLockList.Contains(lockedAttributeName))
+                                    tempLockList.Add(lockedAttributeName, ConfigurationValueFlags.Default);
+                            return tempLockList;
+                        }
                 }
             }
             else
