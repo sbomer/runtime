@@ -300,6 +300,7 @@ namespace System.Configuration
 
         public ProtectedConfigurationProvider ProtectionProvider
         {
+            [RequiresUnreferencedCode("TODO")]
             get
             {
                 if (!_flags[FlagProtectionProviderDetermined] && (_configRecord != null))
@@ -598,6 +599,7 @@ namespace System.Configuration
         }
 
         // method to cause a section to be protected using the specified provider
+        [RequiresUnreferencedCode("TODO")]
         public void ProtectSection(string protectionProvider)
         {
             ProtectedConfigurationProvider protectedConfigurationProvider;
@@ -658,6 +660,7 @@ namespace System.Configuration
             return ancestor;
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public string GetRawXml()
         {
             VerifyDesigntime();

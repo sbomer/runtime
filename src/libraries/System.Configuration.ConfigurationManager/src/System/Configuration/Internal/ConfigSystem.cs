@@ -4,12 +4,13 @@
 namespace System.Configuration.Internal
 {
     // The runtime config system
+    [RequiresUnreferencedCode("TODO")]
     internal sealed class ConfigSystem : IConfigSystem
     {
         private ImplicitMachineConfigHost _configHost;
         private IInternalConfigRoot _configRoot;
 
-        // [RequiresUnreferencedCode("Calls InternalConfigRoot")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.Internal.InternalConfigRoot.InternalConfigRoot()")]
         void IConfigSystem.Init(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             Type typeConfigHost,

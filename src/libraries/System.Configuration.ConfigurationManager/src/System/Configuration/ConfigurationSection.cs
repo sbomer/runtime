@@ -8,9 +8,10 @@ using System.Xml;
 
 namespace System.Configuration
 {
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+    // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
     public abstract class ConfigurationSection : ConfigurationElement
     {
+        [RequiresUnreferencedCode("Base")]
         protected ConfigurationSection()
         {
             SectionInformation = new SectionInformation(this);
@@ -43,6 +44,7 @@ namespace System.Configuration
             DeserializeElement(reader, false);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.ValidateElement(ConfigurationElement, ConfigurationValidatorBase, Boolean)")]
         protected internal virtual string SerializeSection(ConfigurationElement parentElement, string name,
             ConfigurationSaveMode saveMode)
         {

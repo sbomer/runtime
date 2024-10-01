@@ -1,13 +1,16 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(ConnectionStringSettings))]
+    [RequiresUnreferencedCode("CreateNewElement overrides non-RUC")]
     public sealed class ConnectionStringSettingsCollection : ConfigurationElementCollection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection();
 
+        [RequiresUnreferencedCode("Base")]
         public ConnectionStringSettingsCollection()
             : base(StringComparer.OrdinalIgnoreCase)
         { }
@@ -61,6 +64,7 @@ namespace System.Configuration
             BaseRemove(name);
         }
 
+        // [RequiresUnreferencedCode("TODO")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new ConnectionStringSettings();

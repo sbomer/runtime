@@ -79,6 +79,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ClientConfigurationSystem.ClientConfigurationSystem()")]
         private static void EnsureConfigurationSystem()
         {
             // If a configuration system has not yet been set,
@@ -166,32 +167,38 @@ namespace System.Configuration
             s_configSystem.RefreshConfig(sectionName);
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public static Configuration OpenMachineConfiguration()
         {
             return OpenExeConfigurationImpl(null, true, ConfigurationUserLevel.None, null);
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public static Configuration OpenMappedMachineConfiguration(ConfigurationFileMap fileMap)
         {
             return OpenExeConfigurationImpl(fileMap, true, ConfigurationUserLevel.None, null);
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public static Configuration OpenExeConfiguration(ConfigurationUserLevel userLevel)
         {
             return OpenExeConfigurationImpl(null, false, userLevel, null);
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public static Configuration OpenExeConfiguration(string exePath)
         {
             return OpenExeConfigurationImpl(null, false, ConfigurationUserLevel.None, exePath);
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public static Configuration OpenMappedExeConfiguration(ExeConfigurationFileMap fileMap,
             ConfigurationUserLevel userLevel)
         {
             return OpenExeConfigurationImpl(fileMap, false, userLevel, null);
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public static Configuration OpenMappedExeConfiguration(ExeConfigurationFileMap fileMap,
             ConfigurationUserLevel userLevel, bool preLoad)
         {

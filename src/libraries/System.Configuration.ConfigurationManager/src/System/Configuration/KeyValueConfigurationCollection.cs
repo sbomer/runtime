@@ -1,13 +1,16 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(KeyValueConfigurationElement))]
+    [RequiresUnreferencedCode("Overrides CreateNewElement non-RUC with RUC")]
     public class KeyValueConfigurationCollection : ConfigurationElementCollection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection();
 
+        [RequiresUnreferencedCode("Base")]
         public KeyValueConfigurationCollection() :
             base(StringComparer.OrdinalIgnoreCase)
         {
@@ -43,6 +46,7 @@ namespace System.Configuration
             }
         }
 
+        // [RequiresUnreferencedCode("TODO")]
         public void Add(string key, string value)
         {
             KeyValueConfigurationElement element = new KeyValueConfigurationElement(key, value);
@@ -59,6 +63,7 @@ namespace System.Configuration
             BaseClear();
         }
 
+        // [RequiresUnreferencedCode("TODO")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new KeyValueConfigurationElement();

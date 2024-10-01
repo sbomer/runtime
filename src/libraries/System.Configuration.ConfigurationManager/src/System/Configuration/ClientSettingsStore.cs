@@ -169,6 +169,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.SettingElement.SettingElement()")]
         internal static void WriteSettings(string sectionName, bool isRoaming, IDictionary newSettings)
         {
             if (!ConfigurationManagerInternalFactory.Instance.SupportsUserConfig)

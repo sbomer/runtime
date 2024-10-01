@@ -16,6 +16,7 @@ namespace System.Configuration
             new ConfigurationProperty(CommonConfigurationStrings.Enabled, typeof(UriIdnScope),
                 EnabledDefaultValue, new UriIdnScopeTypeConverter(), null, ConfigurationPropertyOptions.None);
 
+        [RequiresUnreferencedCode("Base")]
         public IdnElement()
         {
             _properties.Add(_enabled);

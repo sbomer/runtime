@@ -164,12 +164,14 @@ namespace System.Configuration
 
         // Create a new instance of Configuration for the locationSubPath,
         // with the initialization parameters that were used to create this configuration.
+        [RequiresUnreferencedCode("Calls System.Configuration.Configuration.Configuration(String, Type, params Object[])")]
         internal Configuration OpenLocationConfiguration(string locationSubPath)
         {
             return new Configuration(locationSubPath, _typeConfigHost, _hostInitConfigurationParams);
         }
 
         // public methods
+        [RequiresUnreferencedCode("TODO")]
         public ConfigurationSection GetSection(string sectionName)
         {
             ConfigurationSection section = (ConfigurationSection)_configRecord.GetSection(sectionName);

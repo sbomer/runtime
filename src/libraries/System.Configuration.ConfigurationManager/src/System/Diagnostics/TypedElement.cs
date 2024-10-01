@@ -13,6 +13,7 @@ namespace System.Diagnostics
         protected object _runtimeObject;
         private readonly Type _baseType;
 
+        [RequiresUnreferencedCode("Base")]
         public TypedElement(Type baseType) : base()
         {
             _properties = new ConfigurationPropertyCollection();

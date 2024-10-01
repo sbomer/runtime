@@ -79,6 +79,7 @@ namespace System.Configuration
             return Get(GetKey(index));
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public ConfigurationSection Get(string name)
         {
             VerifyIsAttachedToConfigRecord();

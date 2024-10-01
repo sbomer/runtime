@@ -1,13 +1,16 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(ProviderSettings))]
+    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
     public sealed class ProviderSettingsCollection : ConfigurationElementCollection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection();
 
+        [RequiresUnreferencedCode("Base")]
         public ProviderSettingsCollection() :
             base(StringComparer.OrdinalIgnoreCase)
         { }
@@ -47,6 +50,7 @@ namespace System.Configuration
             BaseClear();
         }
 
+        // [RequiresUnreferencedCode("TODO")]
         protected override ConfigurationElement CreateNewElement()
         {
             return new ProviderSettings();

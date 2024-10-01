@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(DateTimeConfigurationElement))]
@@ -13,6 +14,8 @@ namespace System.Configuration
         public DateTime this[int index]
         {
             get { return ((DateTimeConfigurationElement)BaseGet(index)).Value; }
+
+            [RequiresUnreferencedCode("Calls System.Configuration.DateTimeConfigurationElement.DateTimeConfigurationElement(DateTime)")]
             set
             {
                 if (BaseGet(index) != null) BaseRemoveAt(index);
@@ -22,6 +25,7 @@ namespace System.Configuration
 
         public object[] AllKeys => BaseGetAllKeys();
 
+        [RequiresUnreferencedCode("Calls System.Configuration.DateTimeConfigurationElement.DateTimeConfigurationElement(DateTime)")]
         public void Add(DateTime dateTime)
         {
             BaseAdd(new DateTimeConfigurationElement(dateTime));

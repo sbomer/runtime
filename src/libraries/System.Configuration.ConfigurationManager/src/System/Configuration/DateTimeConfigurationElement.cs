@@ -14,8 +14,10 @@ namespace System.Configuration
 
         private bool _needsInit;
 
+        [RequiresUnreferencedCode("Base")]
         public DateTimeConfigurationElement() { }
 
+        [RequiresUnreferencedCode("Base")]
         public DateTimeConfigurationElement(DateTime value)
         {
             _needsInit = true;

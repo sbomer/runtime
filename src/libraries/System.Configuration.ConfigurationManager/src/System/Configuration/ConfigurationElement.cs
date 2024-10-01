@@ -21,7 +21,8 @@ namespace System.Configuration
     //      Reset(ConfigurationElement parentSection, object context)
     //      DeserializeSection(object context, XmlNode xmlNode)
     //      SerializeSection(ConfigurationElement parentSection, object context, string name)
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+    [RequiresUnreferencedCode("TODO")] // Equals calls Properties which would need RUC.
+    // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
     public abstract class ConfigurationElement
     {
         private const string LockAttributesKey = "lockAttributes";
@@ -169,6 +170,7 @@ namespace System.Configuration
 
         protected internal object this[string propertyName]
         {
+            // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
             get
             {
                 ConfigurationProperty prop = Properties[propertyName];
@@ -179,6 +181,7 @@ namespace System.Configuration
                 }
                 return this[prop];
             }
+            // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
             set
             {
                 Debug.Assert(Properties.Contains(propertyName), "Properties.Contains(propertyName)");
@@ -188,6 +191,7 @@ namespace System.Configuration
 
         protected internal virtual ConfigurationPropertyCollection Properties
         {
+            // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.PropertiesFromType(Type, out ConfigurationPropertyCollection)")]
             get
             {
                 ConfigurationPropertyCollection result;
@@ -255,6 +259,7 @@ namespace System.Configuration
             }
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         internal void MergeLocks(ConfigurationElement source)
         {
             if (source == null) return;
@@ -354,6 +359,7 @@ namespace System.Configuration
             }
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         internal void HandleLockedAttributes(ConfigurationElement source)
         {
             // if there are locked attributes on this collection element
@@ -451,6 +457,7 @@ namespace System.Configuration
             foreach (ConfigurationElement elem in Values.ConfigurationElements) elem.SetReadOnly();
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         internal void SetLocked()
         {
             _itemLockedFlag = ConfigurationValueFlags.Locked | ConfigurationValueFlags.XmlParentInherited;
@@ -538,6 +545,7 @@ namespace System.Configuration
             _lockedAllExceptElementsList?.RemoveInheritedLocks();
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         internal void ResetLockLists(ConfigurationElement parentElement)
         {
             _lockedAttributesList = null;
@@ -605,6 +613,7 @@ namespace System.Configuration
             }
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         protected internal virtual void Reset(ConfigurationElement parentElement)
         {
             Values.Clear();
@@ -710,7 +719,7 @@ namespace System.Configuration
             return hHashCode;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.CreatePropertyBagFromType(Type)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.CreatePropertyBagFromType(Type)")]
         private static bool PropertiesFromType(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
             Type type,
@@ -735,7 +744,7 @@ namespace System.Configuration
             return firstTimeInit;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.CreateConfigurationPropertyFromAttributes(PropertyInfo)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.CreateConfigurationPropertyFromAttributes(PropertyInfo)")]
         private static ConfigurationPropertyCollection CreatePropertyBagFromType(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
             Type type)
@@ -768,7 +777,7 @@ namespace System.Configuration
             return properties;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(PropertyInfo)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(PropertyInfo)")]
         private static ConfigurationProperty CreateConfigurationPropertyFromAttributes(PropertyInfo propertyInformation)
         {
             Debug.Assert(propertyInformation != null, "propertyInformation != null");
@@ -883,6 +892,7 @@ namespace System.Configuration
                 tw.WriteLine("{0}: {1}", pi.Name, pi.GetValue(this, null));
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         protected internal virtual void Unmerge(ConfigurationElement sourceElement,
             ConfigurationElement parentElement,
             ConfigurationSaveMode saveMode)
@@ -1047,6 +1057,7 @@ namespace System.Configuration
             return dataToWrite;
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         protected internal virtual bool SerializeElement(XmlWriter writer, bool serializeCollectionKey)
         {
             PreSerialize(writer);
@@ -1209,6 +1220,7 @@ namespace System.Configuration
             return sb.Length != 0;
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         internal void ReportInvalidLock(string attribToLockTrim, ConfigurationLockCollectionType lockedType,
             ConfigurationValue value, string collectionProperties)
         {
@@ -1283,6 +1295,7 @@ namespace System.Configuration
                 attribToLockTrim, sb));
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         private ConfigurationLockCollection ParseLockedAttributes(ConfigurationValue value,
             ConfigurationLockCollectionType lockType)
         {
@@ -1391,7 +1404,7 @@ namespace System.Configuration
             return intersectionCollection;
         }
 
-
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         protected internal virtual void DeserializeElement(XmlReader reader, bool serializeCollectionKey)
         {
             ConfigurationPropertyCollection props = Properties;
@@ -1717,6 +1730,7 @@ namespace System.Configuration
             PostDeserialize();
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ConvertFromString(String)")]
         private static object DeserializePropertyValue(ConfigurationProperty prop, XmlReader reader)
         {
             Debug.Assert(prop != null, "prop != null");
@@ -1821,6 +1835,7 @@ namespace System.Configuration
             }
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationElement.Properties")]
         private void EnsureRequiredProperties(bool ensureKeysOnly)
         {
             ConfigurationPropertyCollection props = Properties;

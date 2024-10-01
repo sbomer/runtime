@@ -27,8 +27,10 @@ namespace System.Configuration
         internal bool InternalAddToEnd;
         internal string InternalElementTagName = string.Empty;
 
+        [RequiresUnreferencedCode("Base")]
         protected ConfigurationElementCollection() { }
 
+        [RequiresUnreferencedCode("Base")]
         protected ConfigurationElementCollection(IComparer comparer)
         {
             if (comparer is null)

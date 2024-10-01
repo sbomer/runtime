@@ -5,10 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration.Internal
 {
+    [RequiresUnreferencedCode("TODO")]
     internal sealed class InternalConfigConfigurationFactory : IInternalConfigConfigurationFactory
     {
         private InternalConfigConfigurationFactory() { }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.Configuration.Configuration(String, Type, params Object[])")]
         Configuration IInternalConfigConfigurationFactory.Create(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             Type typeConfigHost,

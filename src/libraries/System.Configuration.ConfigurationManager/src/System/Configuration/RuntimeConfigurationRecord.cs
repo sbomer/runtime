@@ -120,6 +120,7 @@ namespace System.Configuration
             // Throw an exception if an attribute within a legacy section is one of our
             // reserved locking attributes. We do not want admins to think they can lock
             // an attribute or element within a legacy section.
+            [RequiresUnreferencedCode("uses ConfigurationElement")]
             private static void CheckForLockAttributes(string sectionName, XmlNode xmlNode)
             {
                 XmlAttributeCollection attributes = xmlNode.Attributes;
@@ -137,6 +138,7 @@ namespace System.Configuration
                     if (xmlNode.NodeType == XmlNodeType.Element) CheckForLockAttributes(sectionName, child);
             }
 
+            [RequiresUnreferencedCode("Calls System.Configuration.RuntimeConfigurationRecord.RuntimeConfigurationFactory.CheckForLockAttributes(String, XmlNode)")]
             internal object CreateSection(RuntimeConfigurationRecord configRecord,
                 FactoryRecord factoryRecord, SectionRecord sectionRecord, object parentConfig, ConfigXmlReader reader)
             {

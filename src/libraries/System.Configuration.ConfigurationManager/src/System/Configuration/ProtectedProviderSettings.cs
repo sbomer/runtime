@@ -14,6 +14,7 @@ namespace System.Configuration
 
         private readonly ConfigurationPropertyCollection _properties;
 
+        [RequiresUnreferencedCode("Base")]
         public ProtectedProviderSettings()
         {
             // Property initialization

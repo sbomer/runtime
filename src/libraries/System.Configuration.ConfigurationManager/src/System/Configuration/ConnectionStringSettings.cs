@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+
 namespace System.Configuration
 {
     public sealed class ConnectionStringSettings : ConfigurationElement
@@ -18,8 +19,10 @@ namespace System.Configuration
 
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection { s_propName, s_propConnectionString, s_propProviderName };
 
+        [RequiresUnreferencedCode("Base")]
         public ConnectionStringSettings() { }
 
+        [RequiresUnreferencedCode("TODO")]
         public ConnectionStringSettings(string name, string connectionString)
             : this()
         {

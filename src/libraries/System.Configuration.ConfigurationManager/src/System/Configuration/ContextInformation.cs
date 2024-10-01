@@ -47,6 +47,7 @@ namespace System.Configuration
         //
         // Note: Watch out for a situation where you request a section
         //       that will call you.
+        [RequiresUnreferencedCode("TODO")]
         public object GetSection(string sectionName)
         {
             return _configRecord.GetSection(sectionName);

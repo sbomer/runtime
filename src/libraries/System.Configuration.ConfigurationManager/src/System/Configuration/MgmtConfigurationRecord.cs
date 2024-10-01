@@ -954,6 +954,7 @@ namespace System.Configuration
         }
 
         // Update the config file with the changes in each ConfigurationSection
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.MonitorStream(String, String, String)")]
         internal void SaveAs(string filename, ConfigurationSaveMode saveMode, bool forceUpdateAll)
         {
             // Get the updates.
@@ -1526,6 +1527,7 @@ namespace System.Configuration
         }
 
         // Gather all the updates to the configuration section definitions.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.InitProtectedConfigurationSection()")]
         private void GetConfigDefinitionUpdates(
             bool requireUpdates, ConfigurationSaveMode saveMode, bool forceSaveAll,
             out ConfigDefinitionUpdates definitionUpdates, out ArrayList configSourceUpdates)
@@ -1746,6 +1748,7 @@ namespace System.Configuration
 
         // After the config file has been written out, update the section records
         // to reflect changes that were made in the config file.
+        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.MonitorStream(String, String, String)")]
         private void UpdateRecords()
         {
             if (_factoryRecords != null)

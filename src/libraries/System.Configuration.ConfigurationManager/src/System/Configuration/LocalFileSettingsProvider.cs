@@ -13,6 +13,7 @@ namespace System.Configuration
     /// <summary>
     /// This is a provider used to store configuration settings locally for client applications.
     /// </summary>
+    [RequiresUnreferencedCode("Overrides SetPropertyValues with RUC")]
     public class LocalFileSettingsProvider : SettingsProvider, IApplicationSettingsProvider
     {
         private string _appName = string.Empty;
@@ -146,6 +147,7 @@ namespace System.Configuration
         /// <summary>
         ///     Abstract SettingsProvider method
         /// </summary>
+        // [RequiresUnreferencedCode("TODO")]
         public override void SetPropertyValues(SettingsContext context, SettingsPropertyValueCollection values)
         {
             string sectionName = GetSectionName(context);

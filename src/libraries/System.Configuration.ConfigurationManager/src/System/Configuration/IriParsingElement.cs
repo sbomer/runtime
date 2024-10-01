@@ -13,6 +13,7 @@ namespace System.Configuration
             new ConfigurationProperty(CommonConfigurationStrings.Enabled, typeof(bool), EnabledDefaultValue,
                 ConfigurationPropertyOptions.None);
 
+        [RequiresUnreferencedCode("Base")]
         public IriParsingElement()
         {
             _properties.Add(_enabled);

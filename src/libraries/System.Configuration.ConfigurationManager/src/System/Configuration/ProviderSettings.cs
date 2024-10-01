@@ -23,12 +23,14 @@ namespace System.Configuration
 
         private NameValueCollection _propertyNameCollection;
 
+        [RequiresUnreferencedCode("Base")]
         public ProviderSettings()
         {
             _properties = new ConfigurationPropertyCollection { _propName, _propType };
             _propertyNameCollection = null;
         }
 
+        [RequiresUnreferencedCode("TODO")]
         public ProviderSettings(string name, string type) : this()
         {
             Name = name;

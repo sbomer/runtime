@@ -90,6 +90,7 @@ namespace System.Diagnostics
 
         private static readonly ConditionalWeakTable<TraceListener, string> s_initData = new();
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.TypedElement.TypedElement(Type)")]
         public ListenerElement(bool allowReferences) : base(typeof(TraceListener))
         {
             _allowReferences = allowReferences;

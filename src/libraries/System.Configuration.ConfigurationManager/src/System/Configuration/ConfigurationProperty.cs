@@ -18,6 +18,7 @@ namespace System.Configuration
         private volatile bool _isTypeInited;
         private ConfigurationPropertyOptions _options;
 
+        [RequiresUnreferencedCode("TODO")]
         public ConfigurationProperty(
             string name,
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -56,6 +57,7 @@ namespace System.Configuration
             : this(name, type, defaultValue, typeConverter, validator, options, null)
         { }
 
+        [RequiresUnreferencedCode("TODO")]
         public ConfigurationProperty(string name,
             Type type,
             object defaultValue,
@@ -209,7 +211,7 @@ namespace System.Configuration
 
         public TypeConverter Converter
         {
-            [RequiresUnreferencedCode("")]
+            [RequiresUnreferencedCode("TypeDescriptor")]
             get
             {
                 CreateConverter();
@@ -280,6 +282,7 @@ namespace System.Configuration
                 throw new ArgumentException(SR.Format(SR.Property_name_reserved, name));
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
         private void SetDefaultValue(object value)
         {
             // Validate the default value if any. This should make errors from invalid defaults easier to catch
@@ -298,6 +301,7 @@ namespace System.Configuration
             DefaultValue = value;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
         private void InitDefaultValueFromTypeInfo(
             ConfigurationPropertyAttribute configurationProperty,
             DefaultValueAttribute defaultValueAttribute)
@@ -338,6 +342,7 @@ namespace System.Configuration
             SetDefaultValue(defaultValue);
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
         internal object ConvertFromString(string value)
         {
             object result;
@@ -355,6 +360,7 @@ namespace System.Configuration
             return result;
         }
 
+        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
         internal string ConvertToString(object value)
         {
             try
@@ -389,7 +395,7 @@ namespace System.Configuration
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.ComponentModel.TypeDescriptor.GetConverter(Type)")]
+        [RequiresUnreferencedCode("TypeDescriptor.GetConverter")]
         private void CreateConverter()
         {
             if (_converter != null) return;

@@ -13,8 +13,10 @@ namespace System.Configuration
 
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection { s_propName, s_propValue };
 
+        [RequiresUnreferencedCode("Base")]
         internal NameValueConfigurationElement() { }
 
+        [RequiresUnreferencedCode("Base")]
         public NameValueConfigurationElement(string name, string value)
         {
             base[s_propName] = name;
