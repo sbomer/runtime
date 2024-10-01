@@ -12,6 +12,7 @@ namespace System.Configuration
 
         private string _rawXml = string.Empty;
 
+        [RequiresUnreferencedCode("Base")]
         public DefaultSection()
         {
             EnsureStaticPropertyBag();

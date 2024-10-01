@@ -105,6 +105,7 @@ namespace System.Configuration
         [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         [EditorBrowsable(EditorBrowsableState.Never)]
 #endif
+        [RequiresUnreferencedCode("GetType of unknown string")]
         protected ConfigurationErrorsException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {

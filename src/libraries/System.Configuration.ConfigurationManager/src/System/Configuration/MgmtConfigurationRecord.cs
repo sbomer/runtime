@@ -32,6 +32,7 @@ namespace System.Configuration
         private HybridDictionary _streamInfoUpdates;
 
         // don't allow instantiation except by Create
+        [RequiresUnreferencedCode("Base")]
         private MgmtConfigurationRecord() { }
 
         // The parent config record cast to this type
@@ -123,6 +124,7 @@ namespace System.Configuration
             }
         }
 
+        [RequiresUnreferencedCode("Access to RUC ctor of DefaultSection")]
         protected override object CreateSectionFactory(FactoryRecord factoryRecord)
         {
             // Get the type of the factory

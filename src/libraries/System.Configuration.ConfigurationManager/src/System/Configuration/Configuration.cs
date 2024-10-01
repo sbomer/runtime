@@ -125,7 +125,11 @@ namespace System.Configuration
             get => RootSectionGroup.Sections;
         }
 
-        public ConfigurationSectionGroupCollection SectionGroups => RootSectionGroup.SectionGroups;
+        public ConfigurationSectionGroupCollection SectionGroups
+        {
+            [RequiresUnreferencedCode("ConfigurationSectionGroup.SectionGroups")]
+            get => RootSectionGroup.SectionGroups;
+        }
 
         // Is the namespace declared in the file or not?
         //

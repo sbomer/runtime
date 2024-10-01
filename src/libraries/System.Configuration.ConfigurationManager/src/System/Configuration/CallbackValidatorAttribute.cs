@@ -10,6 +10,8 @@ namespace System.Configuration
     {
         private ValidatorCallback _callbackMethod;
         private string _callbackMethodName = string.Empty;
+
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
         private Type _type;
 
         public override ConfigurationValidatorBase ValidatorInstance
@@ -42,6 +44,7 @@ namespace System.Configuration
             }
         }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
         public Type Type
         {
             get { return _type; }

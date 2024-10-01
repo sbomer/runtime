@@ -4,6 +4,7 @@
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(NameValueConfigurationElement))]
+    [RequiresUnreferencedCode("Overrides a virtual with RUC code (creates NameValueConfigurationElement), but ConfigurationElementCollection.CreateNewElement is not annotated")]
     public sealed class NameValueConfigurationCollection : ConfigurationElementCollection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection();
