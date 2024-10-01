@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Configuration.Internal;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {

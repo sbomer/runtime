@@ -3,6 +3,7 @@
 
 using System.Collections.Specialized;
 using System.Configuration.Internal;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
