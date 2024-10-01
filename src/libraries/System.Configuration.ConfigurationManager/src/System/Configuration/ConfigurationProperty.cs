@@ -189,9 +189,9 @@ namespace System.Configuration
             }
         }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public Type Type
         {
-            [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             get;
             private set;
         }
