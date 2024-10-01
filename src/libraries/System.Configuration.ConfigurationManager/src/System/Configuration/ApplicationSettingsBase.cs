@@ -439,7 +439,6 @@ namespace System.Configuration
         /// Creates a SettingsProperty object using the metadata on the given property
         /// and returns it.
         /// </summary>
-        [RequiresUnreferencedCode("Calls System.ComponentModel.TypeDescriptor.GetConverter(Type)")]
         private SettingsProperty CreateSetting(PropertyInfo propertyInfo)
         {
             // Initialization method -
@@ -537,7 +536,6 @@ namespace System.Configuration
         /// Ensures this class is initialized. Initialization involves reflecting over properties and building
         /// a list of SettingsProperty's.
         /// </summary>
-        [RequiresUnreferencedCode("Calls System.Configuration.ApplicationSettingsBase.CreateSetting(PropertyInfo)")]
         private void EnsureInitialized()
         {
             // Initialization method -
