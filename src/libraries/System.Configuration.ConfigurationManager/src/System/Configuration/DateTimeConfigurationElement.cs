@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions)")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class DateTimeConfigurationElement : ConfigurationElement
     {
         private static readonly ConfigurationProperty s_propValue =

@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace System.Configuration.Internal
 {
     // The runtime config system
-    [RequiresUnreferencedCode("TODO")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class ConfigSystem : IConfigSystem
     {
         private ImplicitMachineConfigHost _configHost;

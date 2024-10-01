@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("static ConfigurationProperty")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public class KeyValueConfigurationElement : ConfigurationElement
     {
         private static readonly ConfigurationProperty s_propKey =

@@ -68,7 +68,7 @@ namespace System.Configuration
 
         public ConfigurationSectionCollection Sections
         {
-            [RequiresUnreferencedCode("ConfigurationSectionCollection")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 if (_configSections == null)
@@ -83,7 +83,7 @@ namespace System.Configuration
 
         public ConfigurationSectionGroupCollection SectionGroups
         {
-            [RequiresUnreferencedCode("ConfigurationSectionGroupCollection")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 if (_configSectionGroups == null)

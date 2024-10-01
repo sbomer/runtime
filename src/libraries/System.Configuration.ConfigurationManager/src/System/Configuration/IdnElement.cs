@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("ConfigurationPropertyAttribute on a property, can't otherwise be annotated")] // TODO: issue link
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class IdnElement : ConfigurationElement
     {
         internal const UriIdnScope EnabledDefaultValue = UriIdnScope.None;

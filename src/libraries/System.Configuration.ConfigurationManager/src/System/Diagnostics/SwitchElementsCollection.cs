@@ -10,7 +10,7 @@ using System.Xml;
 namespace System.Diagnostics
 {
     [ConfigurationCollection(typeof(SwitchElement))]
-    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class SwitchElementsCollection : ConfigurationElementCollection
     {
         public new SwitchElement this[string name] => (SwitchElement)BaseGet(name);
@@ -19,7 +19,7 @@ namespace System.Diagnostics
         protected override object GetElementKey(ConfigurationElement element) => ((SwitchElement)element).Name;
     }
 
-    [RequiresUnreferencedCode("static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions)")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class SwitchElement : ConfigurationElement
     {
         private static readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();

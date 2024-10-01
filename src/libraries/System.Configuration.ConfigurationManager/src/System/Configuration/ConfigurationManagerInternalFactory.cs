@@ -12,7 +12,7 @@ namespace System.Configuration
 
         internal static IConfigurationManagerInternal Instance
         {
-            [RequiresUnreferencedCode("Calls System.Configuration.Internal.ConfigurationManagerInternal.ConfigurationManagerInternal()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => s_instance ??= new ConfigurationManagerInternal();
         }
     }

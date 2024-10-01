@@ -18,7 +18,7 @@ namespace System.Configuration
         private volatile bool _isTypeInited;
         private ConfigurationPropertyOptions _options;
 
-        [RequiresUnreferencedCode("SetDefaultValue")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public ConfigurationProperty(
             string name,
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -40,17 +40,17 @@ namespace System.Configuration
             SetDefaultValue(defaultValue);
         }
 
-        [RequiresUnreferencedCode("Calls other RUC ctor")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public ConfigurationProperty(string name, Type type, object defaultValue)
             : this(name, type, defaultValue, ConfigurationPropertyOptions.None)
         { }
 
-        [RequiresUnreferencedCode("Calls other RUC ctor")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public ConfigurationProperty(string name, Type type, object defaultValue, ConfigurationPropertyOptions options)
             : this(name, type, defaultValue, null, null, options)
         { }
 
-        [RequiresUnreferencedCode("Calls other RUC ctor")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public ConfigurationProperty(string name,
             Type type,
             object defaultValue,
@@ -60,7 +60,7 @@ namespace System.Configuration
             : this(name, type, defaultValue, typeConverter, validator, options, null)
         { }
 
-        [RequiresUnreferencedCode("SetDefaultValue")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public ConfigurationProperty(string name,
             Type type,
             object defaultValue,
@@ -74,7 +74,7 @@ namespace System.Configuration
             SetDefaultValue(defaultValue);
         }
 
-        [RequiresUnreferencedCode("ConverterTypeName doesn't keep non-public ctors required by TypeUtil.CreateInstance")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal ConfigurationProperty(PropertyInfo info)
         {
             Debug.Assert(info != null, "info != null");
@@ -214,7 +214,7 @@ namespace System.Configuration
 
         public TypeConverter Converter
         {
-            [RequiresUnreferencedCode("TypeDescriptor")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 CreateConverter();
@@ -230,7 +230,7 @@ namespace System.Configuration
 
         internal string ClearElementName { get; }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ValidatePropertyName(String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private void ConstructorInit(
             string name,
             Type type,
@@ -277,7 +277,7 @@ namespace System.Configuration
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsReservedAttributeName(String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private static void ValidatePropertyName(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -287,7 +287,7 @@ namespace System.Configuration
                 throw new ArgumentException(SR.Format(SR.Property_name_reserved, name));
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private void SetDefaultValue(object value)
         {
             // Validate the default value if any. This should make errors from invalid defaults easier to catch
@@ -306,7 +306,7 @@ namespace System.Configuration
             DefaultValue = value;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private void InitDefaultValueFromTypeInfo(
             ConfigurationPropertyAttribute configurationProperty,
             DefaultValueAttribute defaultValueAttribute)
@@ -347,7 +347,7 @@ namespace System.Configuration
             SetDefaultValue(defaultValue);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal object ConvertFromString(string value)
         {
             object result;
@@ -365,7 +365,7 @@ namespace System.Configuration
             return result;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.Converter")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal string ConvertToString(object value)
         {
             try
@@ -400,7 +400,7 @@ namespace System.Configuration
             }
         }
 
-        [RequiresUnreferencedCode("TypeDescriptor.GetConverter")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private void CreateConverter()
         {
             if (_converter != null) return;

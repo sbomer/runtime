@@ -7,7 +7,7 @@ using System.Security;
 
 namespace System.Configuration.Internal
 {
-    [RequiresUnreferencedCode("Implements DecryptSection/EncryptSection with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class InternalConfigHost : IInternalConfigHost
     {
         private const FileAttributes InvalidAttributesForWrite = FileAttributes.ReadOnly | FileAttributes.Hidden;

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("ConfigurationProperty on a property")] // TODO
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class IriParsingElement : ConfigurationElement
     {
         internal const bool EnabledDefaultValue = false;
@@ -16,7 +16,7 @@ namespace System.Configuration
             new ConfigurationProperty(CommonConfigurationStrings.Enabled, typeof(bool), EnabledDefaultValue,
                 ConfigurationPropertyOptions.None);
 
-        [RequiresUnreferencedCode("Base")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public IriParsingElement()
         {
             _properties.Add(_enabled);

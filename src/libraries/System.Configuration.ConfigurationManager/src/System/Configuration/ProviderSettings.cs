@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("ConfigurationProperty on a property")] // TODO
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ProviderSettings : ConfigurationElement
     {
         private readonly ConfigurationPropertyCollection _properties;

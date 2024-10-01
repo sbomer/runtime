@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("ConfigurationProperty on a property")] // TODO
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public class ProtectedProviderSettings : ConfigurationElement
     {
         private readonly ConfigurationProperty _propProviders =

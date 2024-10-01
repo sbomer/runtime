@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     [ConfigurationCollection(typeof(SchemeSettingElement),
         CollectionType = ConfigurationElementCollectionType.AddRemoveClearMap,
         AddItemName = AddItemName,

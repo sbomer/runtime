@@ -15,7 +15,7 @@ namespace System.Diagnostics
         // Setting for Switch.switchSetting
         internal static SwitchElementsCollection SwitchSettings
         {
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -28,7 +28,7 @@ namespace System.Diagnostics
         {
             [ResourceExposure(ResourceScope.Machine)]
             [ResourceConsumption(ResourceScope.Machine)]
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -45,7 +45,7 @@ namespace System.Diagnostics
         // Setting for TraceInternal.AutoFlush
         internal static bool AutoFlush
         {
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -62,7 +62,7 @@ namespace System.Diagnostics
         // Setting for TraceInternal.UseGlobalLock
         internal static bool UseGlobalLock
         {
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -79,7 +79,7 @@ namespace System.Diagnostics
         // Setting for TraceInternal.IndentSize
         internal static int IndentSize
         {
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -95,7 +95,7 @@ namespace System.Diagnostics
 
         internal static ListenerElementsCollection SharedListeners
         {
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -106,7 +106,7 @@ namespace System.Diagnostics
 
         internal static SourceElementsCollection Sources
         {
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -117,7 +117,7 @@ namespace System.Diagnostics
 
         internal static SystemDiagnosticsSection SystemDiagnosticsSection
         {
-            [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Initialize()")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 Initialize();
@@ -125,7 +125,7 @@ namespace System.Diagnostics
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.PrivilegedConfigurationManager.GetSection(String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private static SystemDiagnosticsSection GetConfigSection()
         {
             return s_configSection ??= (SystemDiagnosticsSection)PrivilegedConfigurationManager.GetSection("system.diagnostics");
@@ -134,11 +134,11 @@ namespace System.Diagnostics
         internal static bool IsInitializing() => s_initState == InitState.Initializing;
         internal static bool IsInitialized() => s_initState == InitState.Initialized;
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal static bool CanInitialize() => (s_initState != InitState.Initializing) &&
             !ConfigurationManagerInternalFactory.Instance.SetConfigurationSystemInProgress;
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManagerInternalFactory.Instance")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal static void Initialize()
         {
             // Ported from https://referencesource.microsoft.com/#System/compmod/system/diagnostics/DiagnosticsConfiguration.cs,188
@@ -165,7 +165,7 @@ namespace System.Diagnostics
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.RefreshSection(String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal static void Refresh()
         {
             ConfigurationManager.RefreshSection("system.diagnostics");

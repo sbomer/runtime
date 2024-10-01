@@ -11,7 +11,7 @@ namespace System.Configuration
 {
     // Configuration host that intercepts calls to filename functions
     // to support SaveAs to an alternate file stream.
-    [RequiresUnreferencedCode("Overrides GetStreamVersions with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class UpdateConfigHost : DelegatingConfigHost
     {
         private HybridDictionary _streams; // oldStreamname -> StreamUpdate

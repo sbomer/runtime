@@ -9,11 +9,11 @@ namespace System.Configuration
     {
         internal static ConnectionStringSettingsCollection ConnectionStrings
         {
-            [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.ConnectionStrings")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => ConfigurationManager.ConnectionStrings;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationManager.GetSection(String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal static object GetSection(string sectionName)
         {
             return ConfigurationManager.GetSection(sectionName);

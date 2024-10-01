@@ -22,7 +22,7 @@ namespace System.Configuration
         private bool _isUserConfigInited;
         private IInternalConfigRecord _machineConfigRecord;
 
-        [RequiresUnreferencedCode("Calls System.Configuration.Internal.ConfigSystem.ConfigSystem()")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal ClientConfigurationSystem()
         {
             IConfigSystem configSystem = new ConfigSystem();

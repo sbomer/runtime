@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("static ConfigurationProperty, ConfigurationPropertyAttribute on property")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ConnectionStringsSection : ConfigurationSection
     {
         private static readonly ConfigurationProperty s_propConnectionStrings =

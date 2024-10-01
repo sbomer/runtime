@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(ConnectionStringSettings))]
-    [RequiresUnreferencedCode("CreateNewElement overrides non-RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ConnectionStringSettingsCollection : ConfigurationElementCollection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection();

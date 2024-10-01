@@ -17,7 +17,7 @@ namespace System.Configuration
         private static readonly Type s_stringType = typeof(string);
         private const string NullString = "None";
 
-        [RequiresUnreferencedCode("AppSettings")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public AppSettingsReader()
         {
             _map = System.Configuration.ConfigurationManager.AppSettings;

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("static ConfigurationProperty")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class SchemeSettingElement : ConfigurationElement
     {
         private static readonly ConfigurationProperty s_name = new ConfigurationProperty(CommonConfigurationStrings.SchemeName, typeof(string), null,

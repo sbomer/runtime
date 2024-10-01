@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Drawing.Configuration
 {
-    [RequiresUnreferencedCode("static field calls ConfigurationProperty")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class SystemDrawingSection : ConfigurationSection
     {
         private const string BitmapSuffixSectionName = "bitmapSuffix";

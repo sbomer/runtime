@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("TODO")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class RuntimeConfigurationRecord : BaseConfigurationRecord
     {
         private static readonly SimpleBitVector32 s_runtimeClassFlags = new SimpleBitVector32(
@@ -120,7 +120,7 @@ namespace System.Configuration
             // Throw an exception if an attribute within a legacy section is one of our
             // reserved locking attributes. We do not want admins to think they can lock
             // an attribute or element within a legacy section.
-            [RequiresUnreferencedCode("uses ConfigurationElement")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             private static void CheckForLockAttributes(string sectionName, XmlNode xmlNode)
             {
                 XmlAttributeCollection attributes = xmlNode.Attributes;
@@ -138,7 +138,7 @@ namespace System.Configuration
                     if (xmlNode.NodeType == XmlNodeType.Element) CheckForLockAttributes(sectionName, child);
             }
 
-            [RequiresUnreferencedCode("Calls System.Configuration.RuntimeConfigurationRecord.RuntimeConfigurationFactory.CheckForLockAttributes(String, XmlNode)")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             internal object CreateSection(RuntimeConfigurationRecord configRecord,
                 FactoryRecord factoryRecord, SectionRecord sectionRecord, object parentConfig, ConfigXmlReader reader)
             {

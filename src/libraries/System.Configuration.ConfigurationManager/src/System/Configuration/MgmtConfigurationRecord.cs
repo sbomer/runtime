@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Base type has RUC: https://github.com/dotnet/runtime/issues/107660")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class MgmtConfigurationRecord : BaseConfigurationRecord
     {
         private const int DefaultIndent = 4;

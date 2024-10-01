@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class SettingElementCollection : ConfigurationElementCollection
     {
         public override ConfigurationElementCollectionType CollectionType

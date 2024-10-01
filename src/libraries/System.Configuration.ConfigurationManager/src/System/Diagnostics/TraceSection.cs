@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Diagnostics
 {
-    [RequiresUnreferencedCode("static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions)")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class TraceSection : ConfigurationElement
     {
         private static readonly ConfigurationPropertyCollection s_properties = new();

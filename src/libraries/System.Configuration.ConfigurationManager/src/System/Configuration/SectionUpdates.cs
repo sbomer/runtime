@@ -28,7 +28,7 @@ namespace System.Configuration
         internal bool IsEmpty => (_groups.Count == 0) && (_sections.Count == 0);
 
         // Find the SectionUpdates for a configKey, and create it if it does not exist.
-        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.SplitConfigKey(String, out String, out String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private SectionUpdates FindSectionUpdates(string configKey, bool isGroup)
         {
             string group;
@@ -74,7 +74,7 @@ namespace System.Configuration
             IsNew = allSubgroupsAreNew && (_cMoved == _sections.Count);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.SectionUpdates.FindSectionUpdates(String, Boolean)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal void AddSection(Update update)
         {
             SectionUpdates sectionUpdates = FindSectionUpdates(update.ConfigKey, false);
@@ -85,7 +85,7 @@ namespace System.Configuration
             if (update.Moved) sectionUpdates._cMoved++;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.SectionUpdates.FindSectionUpdates(String, Boolean)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal void AddSectionGroup(Update update)
         {
             SectionUpdates sectionUpdates = FindSectionUpdates(update.ConfigKey, true);

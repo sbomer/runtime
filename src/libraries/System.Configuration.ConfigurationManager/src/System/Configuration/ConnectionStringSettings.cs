@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("static fields call RUC ConnfigurationProperty")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ConnectionStringSettings : ConfigurationElement
     {
         private static readonly ConfigurationProperty s_propName =

@@ -14,7 +14,7 @@ namespace System.Configuration
     /// <summary>
     /// This is a provider used to store configuration settings locally for client applications.
     /// </summary>
-    [RequiresUnreferencedCode("Overrides SetPropertyValues with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public class LocalFileSettingsProvider : SettingsProvider, IApplicationSettingsProvider
     {
         private string _appName = string.Empty;

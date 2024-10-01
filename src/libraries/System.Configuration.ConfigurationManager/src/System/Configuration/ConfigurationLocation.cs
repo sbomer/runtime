@@ -17,7 +17,7 @@ namespace System.Configuration
 
         public string Path { get; }
 
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public Configuration OpenConfiguration()
         {
             return _config.OpenLocationConfiguration(Path);

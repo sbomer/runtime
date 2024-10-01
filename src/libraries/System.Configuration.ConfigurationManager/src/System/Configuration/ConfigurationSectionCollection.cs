@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Overrides base NameObjectCollectionBase.GetEnumerator with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ConfigurationSectionCollection : NameObjectCollectionBase
     {
         private readonly ConfigurationSectionGroup _configSectionGroup;

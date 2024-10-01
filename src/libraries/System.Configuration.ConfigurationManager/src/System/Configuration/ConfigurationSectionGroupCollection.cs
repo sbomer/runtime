@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Overrides NameObjectCollectionBase.GetEnumerator with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ConfigurationSectionGroupCollection : NameObjectCollectionBase
     {
         private readonly ConfigurationSectionGroup _configSectionGroup;

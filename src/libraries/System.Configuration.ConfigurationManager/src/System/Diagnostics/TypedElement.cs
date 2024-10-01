@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Diagnostics
 {
-    [RequiresUnreferencedCode("static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions)")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal class TypedElement : ConfigurationElement
     {
         protected static readonly ConfigurationProperty s_propTypeName = new("type", typeof(string), string.Empty, ConfigurationPropertyOptions.IsRequired | ConfigurationPropertyOptions.IsTypeStringTransformationRequired);

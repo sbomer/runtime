@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Static fields call RUC ConfigurationProperty")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ProtectedConfigurationSection : ConfigurationSection
     {
         private const string EncryptedSectionTemplate = "<{0} {1}=\"{2}\"> {3} </{0}>";

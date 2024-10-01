@@ -28,7 +28,7 @@ namespace System.Configuration
         private Stack _sectionsStack;
         private Func<string, string> _typeStringTransformer;
 
-        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.Create(IInternalConfigRoot, IInternalConfigRecord, String, String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal Configuration(
             string locationSubPath,
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -85,13 +85,13 @@ namespace System.Configuration
 
         public AppSettingsSection AppSettings
         {
-            [RequiresUnreferencedCode("GetSection")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => (AppSettingsSection)GetSection("appSettings");
         }
 
         public ConnectionStringsSection ConnectionStrings
         {
-            [RequiresUnreferencedCode("GetSection")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => (ConnectionStringsSection)GetSection("connectionStrings");
         }
 
@@ -121,13 +121,13 @@ namespace System.Configuration
 
         public ConfigurationSectionCollection Sections
         {
-            [RequiresUnreferencedCode("ConfigurationSectionGroup.Sections")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => RootSectionGroup.Sections;
         }
 
         public ConfigurationSectionGroupCollection SectionGroups
         {
-            [RequiresUnreferencedCode("ConfigurationSectionGroup.SectionGroups")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => RootSectionGroup.SectionGroups;
         }
 
@@ -180,14 +180,14 @@ namespace System.Configuration
 
         // Create a new instance of Configuration for the locationSubPath,
         // with the initialization parameters that were used to create this configuration.
-        [RequiresUnreferencedCode("Calls System.Configuration.Configuration.Configuration(String, Type, params Object[])")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal Configuration OpenLocationConfiguration(string locationSubPath)
         {
             return new Configuration(locationSubPath, _typeConfigHost, _hostInitConfigurationParams);
         }
 
         // public methods
-        [RequiresUnreferencedCode("GetSection of BaseConfigurationRecord which is RUC")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public ConfigurationSection GetSection(string sectionName)
         {
             ConfigurationSection section = (ConfigurationSection)_configRecord.GetSection(sectionName);
@@ -202,37 +202,37 @@ namespace System.Configuration
             return sectionGroup;
         }
 
-        [RequiresUnreferencedCode("SaveAsImpl")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void Save()
         {
             SaveAsImpl(null, ConfigurationSaveMode.Modified, false);
         }
 
-        [RequiresUnreferencedCode("SaveAsImpl")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void Save(ConfigurationSaveMode saveMode)
         {
             SaveAsImpl(null, saveMode, false);
         }
 
-        [RequiresUnreferencedCode("SaveAsImpl")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void Save(ConfigurationSaveMode saveMode, bool forceSaveAll)
         {
             SaveAsImpl(null, saveMode, forceSaveAll);
         }
 
-        [RequiresUnreferencedCode("SaveAs")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void SaveAs(string filename)
         {
             SaveAs(filename, ConfigurationSaveMode.Modified, false);
         }
 
-        [RequiresUnreferencedCode("SaveAs")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void SaveAs(string filename, ConfigurationSaveMode saveMode)
         {
             SaveAs(filename, saveMode, false);
         }
 
-        [RequiresUnreferencedCode("SaveAsImpl")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void SaveAs(string filename, ConfigurationSaveMode saveMode, bool forceSaveAll)
         {
             if (string.IsNullOrEmpty(filename)) throw ExceptionUtil.ParameterNullOrEmpty(nameof(filename));
@@ -240,7 +240,7 @@ namespace System.Configuration
             SaveAsImpl(filename, saveMode, forceSaveAll);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.SaveAs(String, ConfigurationSaveMode, Boolean)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private void SaveAsImpl(string filename, ConfigurationSaveMode saveMode, bool forceSaveAll)
         {
             filename = string.IsNullOrEmpty(filename) ? null : Path.GetFullPath(filename);
@@ -250,7 +250,7 @@ namespace System.Configuration
         }
 
         // Force all sections and section groups to be instantiated.
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationSectionCollection.this[string]")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private static void ForceGroupsRecursive(ConfigurationSectionGroup group)
         {
             foreach (ConfigurationSection configSection in group.Sections)

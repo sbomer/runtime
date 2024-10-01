@@ -18,7 +18,7 @@ namespace System.Configuration
 {
     // This object represents the configuration for a request path, and is cached per-path.
     [DebuggerDisplay("ConfigPath = {ConfigPath}")]
-    [RequiresUnreferencedCode("Implements GetSection with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal abstract class BaseConfigurationRecord : IInternalConfigRecord
     {
 #if NET8_0_OR_GREATER

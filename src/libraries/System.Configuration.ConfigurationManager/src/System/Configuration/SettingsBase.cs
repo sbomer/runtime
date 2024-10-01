@@ -21,7 +21,7 @@ namespace System.Configuration
 
         public virtual object this[string propertyName]
         {
-            [RequiresUnreferencedCode("TODO")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 if (IsSynchronized)
@@ -52,7 +52,7 @@ namespace System.Configuration
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.SettingsPropertyValue.PropertyValue")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private object GetPropertyValueByName(string propertyName)
         {
             if (Properties == null || _propertyValues == null || Properties.Count == 0)

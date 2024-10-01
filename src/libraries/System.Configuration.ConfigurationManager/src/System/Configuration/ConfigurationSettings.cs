@@ -13,7 +13,7 @@ namespace System.Configuration
         [Obsolete("ConfigurationSettings.AppSettings has been deprecated. Use System.Configuration.ConfigurationManager.AppSettings instead.")]
         public static NameValueCollection AppSettings
         {
-            [RequiresUnreferencedCode("AppSettings")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 return ConfigurationManager.AppSettings;
@@ -21,7 +21,7 @@ namespace System.Configuration
         }
 
         [Obsolete("ConfigurationSettings.GetConfig has been deprecated. Use System.Configuration.ConfigurationManager.GetSection instead.")]
-        [RequiresUnreferencedCode("GetSection")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public static object GetConfig(string sectionName)
         {
             return ConfigurationManager.GetSection(sectionName);

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration.Internal
 {
-    [RequiresUnreferencedCode("Implements SupportsUserConfig with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class ConfigurationManagerInternal : IConfigurationManagerInternal
     {
         internal ConfigurationManagerInternal() { }

@@ -87,7 +87,7 @@ namespace System.Configuration
         {
             get { return _allowDefinition; }
 
-            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 VerifyIsEditable();
@@ -110,7 +110,7 @@ namespace System.Configuration
         {
             get { return _allowExeDefinition; }
 
-            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 VerifyIsEditable();
@@ -133,7 +133,7 @@ namespace System.Configuration
         {
             get { return _overrideModeDefault.OverrideMode; }
 
-            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 VerifyIsEditable();
@@ -161,7 +161,7 @@ namespace System.Configuration
         {
             get { return _flags[FlagAllowLocation]; }
 
-            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 VerifyIsEditable();
@@ -240,7 +240,7 @@ namespace System.Configuration
         {
             get { return _configSource ?? string.Empty; }
 
-            [RequiresUnreferencedCode("BaseConfigurationRecord")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 VerifyIsEditable();
@@ -309,13 +309,13 @@ namespace System.Configuration
 
         public bool IsProtected
         {
-            [RequiresUnreferencedCode("ProtectionProvider")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => ProtectionProvider != null;
         }
 
         public ProtectedConfigurationProvider ProtectionProvider
         {
-            [RequiresUnreferencedCode("GetProtectionProviderFromName")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 if (!_flags[FlagProtectionProviderDetermined] && (_configRecord != null))
@@ -334,7 +334,7 @@ namespace System.Configuration
         {
             get { return _flags[FlagRestartOnExternalChanges]; }
 
-            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 VerifyIsEditable();
@@ -357,7 +357,7 @@ namespace System.Configuration
         {
             get { return _flags[FlagRequirePermission]; }
 
-            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 VerifyIsEditable();
@@ -382,7 +382,7 @@ namespace System.Configuration
         {
             get { return _typeName; }
 
-            [RequiresUnreferencedCode("VerifyIsEditableFactory")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             set
             {
                 if (string.IsNullOrEmpty(value)) throw ExceptionUtil.PropertyNullOrEmpty(nameof(Type));
@@ -559,7 +559,7 @@ namespace System.Configuration
                 throw new InvalidOperationException(SR.Config_cannot_edit_locationattriubtes);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.BaseConfigurationRecord.IsImplicitSection(String)")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal void VerifyIsEditableFactory()
         {
             if ((_configRecord != null) && _configRecord.IsLocationConfig)
@@ -585,7 +585,7 @@ namespace System.Configuration
         }
 
         // Force the section declaration to be written out during Save.
-        [RequiresUnreferencedCode("ForceDeclaration")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void ForceDeclaration()
         {
             ForceDeclaration(true);
@@ -593,7 +593,7 @@ namespace System.Configuration
 
         // If force==false, it actually means don't declare it at
         // the current level.
-        [RequiresUnreferencedCode("BaseConfigurationRecord")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void ForceDeclaration(bool force)
         {
             VerifyIsEditable();
@@ -623,7 +623,7 @@ namespace System.Configuration
         }
 
         // method to cause a section to be protected using the specified provider
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void ProtectSection(string protectionProvider)
         {
             ProtectedConfigurationProvider protectedConfigurationProvider;
@@ -684,7 +684,7 @@ namespace System.Configuration
             return ancestor;
         }
 
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public string GetRawXml()
         {
             VerifyDesigntime();
@@ -693,7 +693,7 @@ namespace System.Configuration
             return RawXml ?? _configRecord?.GetRawXml(ConfigKey);
         }
 
-        [RequiresUnreferencedCode("MgmtConfigurationRecord.SetRawXml")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public void SetRawXml(string rawXml)
         {
             VerifyIsEditable();

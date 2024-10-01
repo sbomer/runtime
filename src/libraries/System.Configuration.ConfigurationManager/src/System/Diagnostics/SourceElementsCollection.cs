@@ -12,7 +12,7 @@ namespace System.Diagnostics
     [ConfigurationCollection(typeof(SourceElement),
         AddItemName = "source",
         CollectionType = ConfigurationElementCollectionType.BasicMap)]
-    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class SourceElementsCollection : ConfigurationElementCollection
     {
         public new SourceElement this[string name] => (SourceElement)BaseGet(name);
@@ -32,7 +32,7 @@ namespace System.Diagnostics
     }
 
 
-    [RequiresUnreferencedCode("static field Calls System.Diagnostics.ListenerElementsCollection.ListenerElementsCollection()")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class SourceElement : ConfigurationElement
     {
         private static readonly ConfigurationPropertyCollection _properties = new();

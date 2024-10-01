@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Diagnostics
 {
-    [RequiresUnreferencedCode("static field Calls System.Diagnostics.SharedListenerElementsCollection.SharedListenerElementsCollection()")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class SystemDiagnosticsSection : ConfigurationSection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new();

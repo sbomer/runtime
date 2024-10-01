@@ -33,7 +33,7 @@ namespace System.Configuration
         private ExeConfigurationFileMap _fileMap; // optional file map
         private bool _initComplete;
 
-        [RequiresUnreferencedCode("InternalConfigHost")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal ClientConfigurationHost()
         {
             Host = new InternalConfigHost();
@@ -425,7 +425,7 @@ namespace System.Configuration
             return level;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.Configuration.Configuration(String, Type, params Object[])")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         internal static Configuration OpenExeConfiguration(ConfigurationFileMap fileMap, bool isMachine,
             ConfigurationUserLevel userLevel, string exePath)
         {

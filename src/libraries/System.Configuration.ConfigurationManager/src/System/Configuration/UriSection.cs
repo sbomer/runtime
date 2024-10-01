@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("static ConfigurationProperty")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class UriSection : ConfigurationSection
     {
         private static readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();

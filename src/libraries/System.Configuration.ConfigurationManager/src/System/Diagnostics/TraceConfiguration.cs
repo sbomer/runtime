@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 
 namespace System.Diagnostics
@@ -13,7 +14,7 @@ namespace System.Diagnostics
         /// Register the configuration system to apply settings from configuration files
         /// to <seealso cref="System.Diagnostics.TraceSource"/> and related classes.
         /// </summary>
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         public static void Register()
         {
             if (!s_registered)
@@ -29,10 +30,10 @@ namespace System.Diagnostics
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.Refresh()")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private static void RefreshingConfiguration(object sender, EventArgs e) => DiagnosticsConfiguration.Refresh();
 
-        [RequiresUnreferencedCode("SourceElement.SwitchType has unknown annotations, doesn't satisfy CreateSwitch.")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private static void InitializingTraceSource(object sender, InitializingTraceSourceEventArgs e)
         {
             TraceSource traceSource = e.TraceSource;
@@ -154,7 +155,7 @@ namespace System.Diagnostics
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.ListenerElementsCollection.GetRuntimeObject()")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private static void ConfigureTraceSettings()
         {
             // Ported from https://referencesource.microsoft.com/#System/compmod/system/diagnostics/TraceInternal.cs,06360b4de5e221c2, https://referencesource.microsoft.com/#System/compmod/system/diagnostics/TraceInternal.cs,37
@@ -180,7 +181,7 @@ namespace System.Diagnostics
             }
         }
 
-        [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.SwitchSettings")]
+        [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
         private static void InitializingSwitch(object sender, InitializingSwitchEventArgs e)
         {
             Switch sw = e.Switch;

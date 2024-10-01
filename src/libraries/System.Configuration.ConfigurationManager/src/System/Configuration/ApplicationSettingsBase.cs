@@ -12,7 +12,7 @@ namespace System.Configuration
     /// <summary>
     /// Base settings class for client applications.
     /// </summary>
-    [RequiresUnreferencedCode("TODO")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public abstract class ApplicationSettingsBase : SettingsBase, INotifyPropertyChanged
     {
         private bool _explicitSerializeOnClass;

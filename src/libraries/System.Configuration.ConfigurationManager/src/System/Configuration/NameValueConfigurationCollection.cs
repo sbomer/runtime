@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(NameValueConfigurationElement))]
-    [RequiresUnreferencedCode("Overrides a virtual with RUC code (creates NameValueConfigurationElement), but ConfigurationElementCollection.CreateNewElement is not annotated")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     // Base isn't annotated... maybe it should be? Would like a way to say "No instances", but statics are fine...
     // Linker could detect: if all instance ctors are annotated, then no virtuals can be called.
     // SO in that case, virtuals should not produce warnings.

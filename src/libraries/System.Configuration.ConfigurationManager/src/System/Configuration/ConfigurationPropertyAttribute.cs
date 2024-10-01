@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace System.Configuration
 {
     [AttributeUsage(AttributeTargets.Property)]
-    [RequiresUnreferencedCode("Static initializer references ConfigurationElement which is RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class ConfigurationPropertyAttribute : Attribute
     {
         internal const string DefaultCollectionPropertyName = "";

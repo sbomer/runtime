@@ -14,7 +14,7 @@ namespace System.Configuration.Internal
     // The BaseConfigurationRecord hierarchy is protected with the
     // _hierarchyLock. Functions that assume that the lock as been
     // taken begin with the prefix "hl", for example, "hlFindConfigRecord".
-    [RequiresUnreferencedCode("implements GetConfigRecord with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class InternalConfigRoot : IInternalConfigRoot
     {
         private ReaderWriterLock _hierarchyLock;

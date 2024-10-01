@@ -9,7 +9,7 @@ namespace System.Configuration
     {
         public static ProtectedConfigurationProviderCollection Providers
         {
-            [RequiresUnreferencedCode("GetAllProviders")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 ProtectedConfigurationSection config =
@@ -26,7 +26,7 @@ namespace System.Configuration
 
         public static string DefaultProvider
         {
-            [RequiresUnreferencedCode("GetSection")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get
             {
                 ProtectedConfigurationSection config =

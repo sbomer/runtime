@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Configuration.Internal
 {
-    [RequiresUnreferencedCode("TODO")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class InternalConfigConfigurationFactory : IInternalConfigConfigurationFactory
     {
         private InternalConfigConfigurationFactory() { }

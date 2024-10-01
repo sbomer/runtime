@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Overrides GetRuntimeObject with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class AppSettingsSection : ConfigurationSection
     {
         private static volatile ConfigurationPropertyCollection s_properties;

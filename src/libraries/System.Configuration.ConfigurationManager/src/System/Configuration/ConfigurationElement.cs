@@ -21,7 +21,7 @@ namespace System.Configuration
     //      Reset(ConfigurationElement parentSection, object context)
     //      DeserializeSection(object context, XmlNode xmlNode)
     //      SerializeSection(ConfigurationElement parentSection, object context, string name)
-    [RequiresUnreferencedCode("Overrides Equals with RUC")] // Equals calls Properties which would need RUC.
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public abstract class ConfigurationElement
     {
         private const string LockAttributesKey = "lockAttributes";

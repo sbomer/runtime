@@ -90,7 +90,7 @@ namespace System.Configuration
 
         public TypeConverter Converter
         {
-            [RequiresUnreferencedCode("TypeDescriptor")]
+            [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
             get => Prop.Converter;
         }
 

@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("Base type has RUC: https://github.com/dotnet/runtime/issues/107660")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public sealed class IgnoreSection : ConfigurationSection
     {
         private static volatile ConfigurationPropertyCollection s_properties;

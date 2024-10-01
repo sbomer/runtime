@@ -13,7 +13,7 @@ using System.Xml;
 namespace System.Diagnostics
 {
     [ConfigurationCollection(typeof(ListenerElement))]
-    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal class ListenerElementsCollection : ConfigurationElementCollection
     {
         public new ListenerElement this[string name] => (ListenerElement)BaseGet(name);
@@ -71,7 +71,7 @@ namespace System.Diagnostics
     [ConfigurationCollection(typeof(ListenerElement),
         AddItemName = "add",
         CollectionType = ConfigurationElementCollectionType.BasicMap)]
-    [RequiresUnreferencedCode("Overrides CreateNewElement with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class SharedListenerElementsCollection : ListenerElementsCollection
     {
         public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
@@ -79,7 +79,7 @@ namespace System.Diagnostics
         protected override string ElementName => "add";
     }
 
-    [RequiresUnreferencedCode("Static field Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object, ConfigurationPropertyOptions), ConfigurationProperty on property")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     internal sealed class ListenerElement : TypedElement
     {
         private static readonly ConfigurationProperty s_propFilter = new("filter", typeof(FilterElement), null, ConfigurationPropertyOptions.None);

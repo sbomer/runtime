@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace System.Configuration
 {
     [ConfigurationCollection(typeof(KeyValueConfigurationElement))]
-    [RequiresUnreferencedCode("Overrides CreateNewElement non-RUC with RUC")]
+    [RequiresUnreferencedCode(ConfigurationManager.TrimWarning)]
     public class KeyValueConfigurationCollection : ConfigurationElementCollection
     {
         private static readonly ConfigurationPropertyCollection s_properties = new ConfigurationPropertyCollection();
