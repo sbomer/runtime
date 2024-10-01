@@ -55,8 +55,6 @@ namespace System.Configuration
             _isModified = true;
         }
 
-        // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2046",
-        //     Justification = "Base class has RequiresUnreferencedCode: https://github.com/dotnet/runtime/issues/108090")]
         protected internal override string SerializeSection(ConfigurationElement parentSection, string name,
             ConfigurationSaveMode saveMode)
         {
