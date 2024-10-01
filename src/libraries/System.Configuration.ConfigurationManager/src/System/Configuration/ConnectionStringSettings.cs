@@ -44,6 +44,8 @@ namespace System.Configuration
 
         protected internal override ConfigurationPropertyCollection Properties => s_properties;
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("name",
             Options = ConfigurationPropertyOptions.IsRequired | ConfigurationPropertyOptions.IsKey, DefaultValue = "")]
         public string Name
@@ -52,6 +54,8 @@ namespace System.Configuration
             set { base[s_propName] = value; }
         }
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("connectionString", Options = ConfigurationPropertyOptions.IsRequired, DefaultValue = "")]
         public string ConnectionString
         {
@@ -59,6 +63,8 @@ namespace System.Configuration
             set { base[s_propConnectionString] = value; }
         }
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("providerName", DefaultValue = "System.Data.SqlClient")]
         public string ProviderName
         {

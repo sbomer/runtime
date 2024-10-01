@@ -27,9 +27,13 @@ namespace System.Configuration
 
         protected internal override ConfigurationPropertyCollection Properties => s_properties;
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("name", IsKey = true, DefaultValue = "")]
         public string Name => (string)base[s_propName];
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("value", DefaultValue = "")]
         public string Value
         {

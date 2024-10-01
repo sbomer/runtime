@@ -12,6 +12,8 @@ namespace System.Drawing.Configuration
 
         static SystemDrawingSection() => s_properties.Add(s_bitmapSuffix);
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty(BitmapSuffixSectionName)]
         public string BitmapSuffix
         {

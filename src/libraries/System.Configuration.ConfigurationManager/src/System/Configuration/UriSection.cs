@@ -25,12 +25,18 @@ namespace System.Configuration
             _properties.Add(_schemeSettings);
         }
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty(CommonConfigurationStrings.Idn)]
         public IdnElement Idn => (IdnElement)this[_idn];
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty(CommonConfigurationStrings.IriParsing)]
         public IriParsingElement IriParsing => (IriParsingElement)this[_iriParsing];
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty(CommonConfigurationStrings.SchemeSettings)]
         public SchemeSettingElementCollection SchemeSettings => (SchemeSettingElementCollection)this[_schemeSettings];
 

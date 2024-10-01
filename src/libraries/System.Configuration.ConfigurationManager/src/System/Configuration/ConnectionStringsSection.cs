@@ -3,7 +3,7 @@
 
 namespace System.Configuration
 {
-    [RequiresUnreferencedCode("static ConfigurationProperty")]
+    [RequiresUnreferencedCode("static ConfigurationProperty, ConfigurationPropertyAttribute on property")]
     public sealed class ConnectionStringsSection : ConfigurationSection
     {
         private static readonly ConfigurationProperty s_propConnectionStrings =
@@ -14,6 +14,8 @@ namespace System.Configuration
 
         protected internal override ConfigurationPropertyCollection Properties => s_properties;
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("", Options = ConfigurationPropertyOptions.IsDefaultCollection)]
         public ConnectionStringSettingsCollection ConnectionStrings
             => (ConnectionStringSettingsCollection)base[s_propConnectionStrings];

@@ -27,9 +27,13 @@ namespace System.Configuration
         internal NameValueCollection InternalSettings
             => _keyValueCollection ??= new KeyValueInternalCollection(this);
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("", IsDefaultCollection = true)]
         public KeyValueConfigurationCollection Settings => (KeyValueConfigurationCollection)base[s_propAppSettings];
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("file", DefaultValue = "")]
         public string File
         {

@@ -14,7 +14,7 @@ namespace System.Diagnostics
         protected object _runtimeObject;
         private readonly Type _baseType;
 
-        [RequiresUnreferencedCode("Base")]
+        // [RequiresUnreferencedCode("Base")]
         public TypedElement(Type baseType) : base()
         {
             _properties = new ConfigurationPropertyCollection();
@@ -24,6 +24,8 @@ namespace System.Diagnostics
             _baseType = baseType;
         }
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("initializeData", DefaultValue = "")]
         public string InitData
         {
@@ -40,6 +42,8 @@ namespace System.Diagnostics
 
         protected internal override ConfigurationPropertyCollection Properties => _properties;
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("type", IsRequired = true, DefaultValue = "")]
         public virtual string TypeName
         {

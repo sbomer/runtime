@@ -34,9 +34,13 @@ namespace System.Configuration
 
         private ProtectedProviderSettings ProtectedProviders => (ProtectedProviderSettings)base[s_propProviders];
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("providers")]
         public ProviderSettingsCollection Providers => ProtectedProviders.Providers;
 
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCodeMessage",
+            Justification = "Reflection access to the ConfigurationPropertyAttribute instance is covered by RequiresUnreferencedCode on the class: https://github.com/dotnet/runtime/issues/108454")]
         [ConfigurationProperty("defaultProvider", DefaultValue = "RsaProtectedConfigurationProvider")]
         public string DefaultProvider
         {
