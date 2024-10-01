@@ -1939,6 +1939,7 @@ namespace System.Configuration
         }
 
         // Create a new config file.
+        [RequiresUnreferencedCode("Calls System.Configuration.MgmtConfigurationRecord.WriteNewConfigDeclarations(SectionUpdates, XmlUtilWriter, Int32, Int32, Boolean)")]
         private void CreateNewConfig(
             SectionUpdates declarationUpdates,
             ConfigDefinitionUpdates definitionUpdates,

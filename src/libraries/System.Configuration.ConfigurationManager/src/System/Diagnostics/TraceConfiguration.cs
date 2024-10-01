@@ -180,6 +180,7 @@ namespace System.Diagnostics
             }
         }
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.SwitchSettings")]
         private static void InitializingSwitch(object sender, InitializingSwitchEventArgs e)
         {
             Switch sw = e.Switch;

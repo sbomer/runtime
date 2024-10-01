@@ -83,6 +83,7 @@ namespace System.Configuration
 
         public ConfigurationSectionGroupCollection SectionGroups
         {
+            [RequiresUnreferencedCode("ConfigurationSectionGroupCollection")]
             get
             {
                 if (_configSectionGroups == null)

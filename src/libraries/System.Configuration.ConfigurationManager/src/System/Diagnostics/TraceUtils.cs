@@ -16,6 +16,7 @@ namespace System.Diagnostics
     {
         private const string SystemDiagnostics = "System.Diagnostics.";
 
+        [RequiresUnreferencedCode("Calls System.Diagnostics.DiagnosticsConfiguration.ConfigFilePath")]
         internal static object GetRuntimeObject(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             string className,

@@ -232,6 +232,7 @@ namespace System.Configuration
         /// <summary>
         ///     Recursively loads configuration section groups and sections belonging to a configuration object.
         /// </summary>
+        [RequiresUnreferencedCode("Calls System.Configuration.Configuration.Sections")]
         private static void PreloadConfiguration(Configuration configuration)
         {
             if (null == configuration) return;

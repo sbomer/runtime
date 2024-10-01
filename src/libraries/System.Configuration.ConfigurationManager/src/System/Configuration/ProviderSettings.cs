@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 
 namespace System.Configuration
 {
+    [RequiresUnreferencedCode("ConfigurationProperty on a property")] // TODO
     public sealed class ProviderSettings : ConfigurationElement
     {
         private readonly ConfigurationPropertyCollection _properties;
@@ -23,14 +24,14 @@ namespace System.Configuration
 
         private NameValueCollection _propertyNameCollection;
 
-        [RequiresUnreferencedCode("Base")]
+        // [RequiresUnreferencedCode("Base")]
         public ProviderSettings()
         {
             _properties = new ConfigurationPropertyCollection { _propName, _propType };
             _propertyNameCollection = null;
         }
 
-        [RequiresUnreferencedCode("TODO")]
+        // [RequiresUnreferencedCode("TODO")]
         public ProviderSettings(string name, string type) : this()
         {
             Name = name;
@@ -39,6 +40,7 @@ namespace System.Configuration
 
         protected internal override ConfigurationPropertyCollection Properties
         {
+            // [RequiresUnreferencedCode("Calls System.Configuration.ProviderSettings.UpdatePropertyCollection()")]
             get
             {
                 UpdatePropertyCollection();
@@ -81,6 +83,7 @@ namespace System.Configuration
             }
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProviderSettings.UpdatePropertyCollection()")]
         protected internal override void Unmerge(ConfigurationElement sourceElement,
             ConfigurationElement parentElement,
             ConfigurationSaveMode saveMode)
@@ -95,6 +98,7 @@ namespace System.Configuration
             UpdatePropertyCollection();
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProviderSettings.UpdatePropertyCollection()")]
         protected internal override void Reset(ConfigurationElement parentElement)
         {
             ProviderSettings parentProviders = parentElement as ProviderSettings;
@@ -103,7 +107,7 @@ namespace System.Configuration
             base.Reset(parentElement);
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ProviderSettings.SetProperty(String, String)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProviderSettings.SetProperty(String, String)")]
         internal bool UpdatePropertyCollection()
         {
             bool bIsModified = false;
@@ -147,6 +151,7 @@ namespace System.Configuration
             return bIsModified;
         }
 
+        // [RequiresUnreferencedCode("Calls System.Configuration.ProviderSettings.UpdatePropertyCollection()")]
         protected internal override bool IsModified()
         {
             return UpdatePropertyCollection() || base.IsModified();
@@ -164,7 +169,7 @@ namespace System.Configuration
             return null;
         }
 
-        [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object)")]
+        // [RequiresUnreferencedCode("Calls System.Configuration.ConfigurationProperty.ConfigurationProperty(String, Type, Object)")]
         private void SetProperty(string propName, string value)
         {
             ConfigurationProperty setPropName;
@@ -180,7 +185,7 @@ namespace System.Configuration
             base[setPropName] = value;
         }
 
-        [RequiresUnreferencedCode("ConfigurationProperty")]
+        // [RequiresUnreferencedCode("ConfigurationProperty")]
         protected override bool OnDeserializeUnrecognizedAttribute(string name, string value)
         {
             ConfigurationProperty propName = new ConfigurationProperty(name, typeof(string), value);
