@@ -124,7 +124,6 @@ namespace System.Configuration
         [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         internal static Type GetType(
             IInternalConfigHost host,
-            // TODO: does this actually need any annotations?
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             string typeString,
             bool throwOnError)
