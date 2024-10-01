@@ -1,12 +1,15 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+
 namespace System.Configuration.Internal
 {
+    [RequiresUnreferencedCode("Implements SupportsUserConfig with RUC")]
     internal sealed class ConfigurationManagerInternal : IConfigurationManagerInternal
     {
         internal ConfigurationManagerInternal() { }
 
+        // [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         bool IConfigurationManagerInternal.SupportsUserConfig => ConfigurationManager.SupportsUserConfig;
 
         bool IConfigurationManagerInternal.SetConfigurationSystemInProgress

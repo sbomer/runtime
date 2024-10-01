@@ -83,9 +83,17 @@ namespace System.Configuration
             _configRecord.ThrowIfInitErrors();
         }
 
-        public AppSettingsSection AppSettings => (AppSettingsSection)GetSection("appSettings");
+        public AppSettingsSection AppSettings
+        {
+            [RequiresUnreferencedCode("GetSection")]
+            get => (AppSettingsSection)GetSection("appSettings");
+        }
 
-        public ConnectionStringsSection ConnectionStrings => (ConnectionStringsSection)GetSection("connectionStrings");
+        public ConnectionStringsSection ConnectionStrings
+        {
+            [RequiresUnreferencedCode("GetSection")]
+            get => (ConnectionStringsSection)GetSection("connectionStrings");
+        }
 
         public string FilePath => _configRecord.ConfigurationFilePath;
 
@@ -171,7 +179,7 @@ namespace System.Configuration
         }
 
         // public methods
-        [RequiresUnreferencedCode("TODO")]
+        [RequiresUnreferencedCode("GetSection of BaseConfigurationRecord which is RUC")]
         public ConfigurationSection GetSection(string sectionName)
         {
             ConfigurationSection section = (ConfigurationSection)_configRecord.GetSection(sectionName);

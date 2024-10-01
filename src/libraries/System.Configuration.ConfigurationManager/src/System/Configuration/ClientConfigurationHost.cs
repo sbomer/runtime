@@ -32,6 +32,7 @@ namespace System.Configuration
         private ExeConfigurationFileMap _fileMap; // optional file map
         private bool _initComplete;
 
+        [RequiresUnreferencedCode("InternalConfigHost")]
         internal ClientConfigurationHost()
         {
             Host = new InternalConfigHost();
