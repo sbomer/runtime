@@ -6,14 +6,14 @@ using Xunit;
 
 namespace ILLink.RoslynAnalyzer.Tests.Interop
 {
-	public sealed class InternalCallsTests : LinkerTestBase
-	{
-		protected override string TestSuiteName => "Interop/InternalCalls";
+    public sealed class InternalCallsTests : LinkerTestBase
+    {
+        protected override string TestSuiteName => "Interop/InternalCalls";
 
-		[Fact]
-		public Task NoSpecialMarking ()
-		{
-			return RunTest ();
-		}
-	}
+        [Fact]
+        public Task NoSpecialMarking()
+        {
+            return RunTest();
+        }
+    }
 }
