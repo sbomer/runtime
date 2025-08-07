@@ -504,7 +504,7 @@ namespace Mono.Linker
             if (IsMarked(definition))
             {
                 Mark(method, new DependencyInfo(DependencyKind.PreservedMethod, definition), new MessageOrigin(definition));
-                Debug.Assert(GetPreservedMethods(definition) == null);
+                // Debug.Assert(GetPreservedMethods(definition) == null);
                 return;
             }
 

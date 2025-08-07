@@ -41,6 +41,24 @@ namespace Mono.Linker.Dataflow
             _cachedTypeToCompilerGeneratedMembers = new Dictionary<TypeDefinition, Dictionary<MethodDefinition, List<IMemberDefinition>>?>();
         }
 
+        private static bool Add(Dictionary<TypeDefinition, TypeArgumentInfo> generatedTypeToTypeArgs, TypeDefinition generatedType, TypeArgumentInfo typeInfo, bool tryAdd)
+        {
+            if (generatedType.GetDisplayName().Contains("maui.Repro"))
+            {
+                Debug.WriteLine("--- Type" + generatedType.GetDisplayName());
+                Debug.WriteLine("created by " + typeInfo.CreatingMethod.GetDisplayName());
+            }
+            if (tryAdd)
+            {
+                return generatedTypeToTypeArgs.TryAdd(generatedType, typeInfo);
+            }
+            else
+            {
+                generatedTypeToTypeArgs[generatedType] = typeInfo;
+                return true;
+            }
+        }
+
         static IEnumerable<TypeDefinition> GetCompilerGeneratedNestedTypes(TypeDefinition type)
         {
             foreach (var nestedType in type.NestedTypes)
@@ -115,6 +133,10 @@ namespace Mono.Linker.Dataflow
         /// </summary>
         TypeDefinition? GetCompilerGeneratedStateForType(TypeDefinition type)
         {
+            if (type.GetDisplayName().Contains("ReproProblem"))
+            {
+                Debug.WriteLine("HERE");
+            }
             // Look in the declaring type if this is a compiler-generated type (state machine or display class).
             // State machines can be emitted into display classes, so we may also need to go one more level up.
             // To avoid depending on implementation details, we go up until we see a non-compiler-generated type.
@@ -128,6 +150,8 @@ namespace Mono.Linker.Dataflow
             // Avoid repeat scans of the same type
             if (_cachedTypeToCompilerGeneratedMembers.ContainsKey(type))
                 return type;
+
+            Debug.WriteLine("Scanning owning type " + type.GetDisplayName());
 
             var callGraph = new CompilerGeneratedCallGraph();
             var userDefinedMethods = new HashSet<MethodDefinition>();
@@ -185,7 +209,7 @@ namespace Mono.Linker.Dataflow
                                     CompilerGeneratedNames.IsLambdaDisplayClass(generatedType.Name))
                                 {
                                     // fill in null for now, attribute providers will be filled in later
-                                    if (!generatedTypeToTypeArgs.TryAdd(generatedType, new TypeArgumentInfo(method, null)))
+                                    if (!Add(generatedTypeToTypeArgs, generatedType, new TypeArgumentInfo(method, null), true))
                                     {
                                         var alreadyAssociatedMethod = generatedTypeToTypeArgs[generatedType].CreatingMethod;
                                         AddWarning(new MessageOrigin(method), DiagnosticId.MethodsAreAssociatedWithUserMethod, method.GetDisplayName(), alreadyAssociatedMethod.GetDisplayName(), generatedType.GetDisplayName());
@@ -223,7 +247,7 @@ namespace Mono.Linker.Dataflow
                                     method.DeclaringType != generatedType &&
                                     CompilerGeneratedNames.IsLambdaDisplayClass(generatedType.Name))
                                 {
-                                    if (!generatedTypeToTypeArgs.TryAdd(generatedType, new TypeArgumentInfo(method, null)))
+                                    if (!Add(generatedTypeToTypeArgs, generatedType, new TypeArgumentInfo(method, null), true))
                                     {
                                         // It's expected that there may be multiple methods associated with the same static closure environment.
                                         // All of these methods will substitute the same type arguments into the closure environment
@@ -251,7 +275,7 @@ namespace Mono.Linker.Dataflow
                     }
                     // Already warned above if multiple methods map to the same type
                     // Fill in null for argument providers now, the real providers will be filled in later
-                    generatedTypeToTypeArgs[stateMachineType] = new TypeArgumentInfo(method, null);
+                    Add(generatedTypeToTypeArgs, stateMachineType, new TypeArgumentInfo(method, null), false);
                 }
             }
 
@@ -320,6 +344,8 @@ namespace Mono.Linker.Dataflow
                 }
             }
 
+            Debug.WriteLine("Filled out instantiating methods.");
+
             // Now that we have instantiating methods fully filled out, walk the generated types and fill in the attribute
             // providers
             foreach (var generatedType in generatedTypeToTypeArgs.Keys)
@@ -376,6 +402,11 @@ namespace Mono.Linker.Dataflow
                 Dictionary<TypeDefinition, TypeArgumentInfo> generatedTypeToTypeArgs,
                 LinkContext context)
             {
+                Debug.WriteLine("Mapping generated type params: " + generatedType.GetDisplayName());
+                if (new StackTrace().FrameCount > 100)
+                {
+                    Debug.WriteLine("Stack overflow");
+                }
                 Debug.Assert(CompilerGeneratedNames.IsStateMachineOrDisplayClass(generatedType.Name));
 
                 var typeInfo = generatedTypeToTypeArgs[generatedType];
@@ -435,7 +466,7 @@ namespace Mono.Linker.Dataflow
                         typeArgs[i] = userAttrs;
                     }
 
-                    generatedTypeToTypeArgs[generatedType] = typeInfo with { OriginalAttributes = typeArgs };
+                    Add(generatedTypeToTypeArgs, generatedType, typeInfo with { OriginalAttributes = typeArgs }, false);
                 }
             }
 

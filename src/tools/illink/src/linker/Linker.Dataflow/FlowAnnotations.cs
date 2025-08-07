@@ -468,6 +468,7 @@ namespace ILLink.Shared.TrimAnalysis
             {
                 return null;
             }
+            Debug.WriteLine("Get compiler-generated state for " + typeDef.GetDisplayName());
             var attrs = _context.CompilerGeneratedState.GetGeneratedTypeAttributes(typeDef);
             Debug.Assert(attrs is null || attrs.Count == typeDef.GenericParameters.Count);
             return attrs;
