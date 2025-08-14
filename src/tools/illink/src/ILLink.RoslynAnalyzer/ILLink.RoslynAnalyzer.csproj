@@ -19,6 +19,7 @@
          Debug configuration to get Debug asserts. -->
     <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>$(NoWarn);RS1035;RS1026</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

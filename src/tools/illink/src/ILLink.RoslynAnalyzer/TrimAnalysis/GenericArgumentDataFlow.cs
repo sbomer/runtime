@@ -67,40 +67,59 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 
         public static bool RequiresGenericArgumentDataFlow(INamedTypeSymbol type)
         {
+            System.Console.WriteLine("-- Type requires gen dataflow? " + type.ToDisplayString());
             while (type is { IsGenericType: true })
             {
+                System.Console.WriteLine("was generic");
                 if (RequiresGenericArgumentDataFlow(type.TypeParameters))
+                {
+                    System.Console.WriteLine("True 1");
                     return true;
+                }
 
                 foreach (var typeArgument in type.TypeArguments)
                 {
                     if (typeArgument is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType
                         && RequiresGenericArgumentDataFlow(namedTypeSymbol))
+                    {
+                        System.Console.WriteLine("True 2");
                         return true;
+                    }
                 }
 
+                System.Console.WriteLine("Looking at containing type");
                 type = type.ContainingType;
             }
 
+            System.Console.WriteLine("Return false");
             return false;
         }
 
         public static bool RequiresGenericArgumentDataFlow(IMethodSymbol method)
         {
+            System.Console.WriteLine("Requires gen dataflow? " + method.ToDisplayString());
             if (method.IsGenericMethod)
             {
                 if (RequiresGenericArgumentDataFlow(method.TypeParameters))
+                {
+                    System.Console.WriteLine("True 1");
                     return true;
+                }
 
                 foreach (var typeArgument in method.TypeArguments)
                 {
                     if (typeArgument is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType
                         && RequiresGenericArgumentDataFlow(namedTypeSymbol))
+                    {
+                        System.Console.WriteLine("True 2");
                         return true;
+                    }
                 }
             }
 
-            return RequiresGenericArgumentDataFlow(method.ContainingType);
+            var ret = RequiresGenericArgumentDataFlow(method.ContainingType);
+            System.Console.WriteLine("Ret: " + ret);
+            return ret;
         }
 
         public static bool RequiresGenericArgumentDataFlow(IFieldSymbol field)
@@ -115,8 +134,11 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 
         private static bool RequiresGenericArgumentDataFlow(ImmutableArray<ITypeParameterSymbol> typeParameters)
         {
+            System.Console.WriteLine("Requires for type params...");
             foreach (var typeParameter in typeParameters)
             {
+                System.Console.WriteLine("Parameter: " + typeParameter.ToDisplayString() + " owned by " + typeParameter.ContainingSymbol.ToDisplayString());
+                // OH... problem is the new constraint isn't detected.
                 var genericParameterValue = new GenericParameterValue(typeParameter);
                 if (genericParameterValue.DynamicallyAccessedMemberTypes != DynamicallyAccessedMemberTypes.None)
                     return true;

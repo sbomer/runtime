@@ -10,6 +10,16 @@ using Internal.TypeSystem;
 
 namespace ILLink.Shared.TrimAnalysis
 {
+//       Failed Mono.Linker.Tests.TestCases.All.DataFlow(t: "ApplyTypeAnnotations") [364 ms]
+//   Error Message:
+//    Method `Mono.Linker.Tests.Cases.DataFlow.ApplyTypeAnnotations.FromStringConstantWithGenericInnerInner.Method()' should have been kept
+//   Stack Trace:
+//      at Mono.Linker.Tests.TestCasesRunner.AssemblyChecker.Verify() in /home/svbomer/src/runtime/src/coreclr/tools/aot/ILCompiler.Trimming.Tests/TestCasesRunner/AssemblyChecker.cs:line 95
+//    at Mono.Linker.Tests.TestCasesRunner.ResultChecker.Check(TrimmedTestCaseResult testResult) in /home/svbomer/src/runtime/src/coreclr/tools/aot/ILCompiler.Trimming.Tests/TestCasesRunner/ResultChecker.cs:line 71
+//    at Mono.Linker.Tests.TestCases.All.Run(String testName) in /home/svbomer/src/runtime/src/coreclr/tools/aot/ILCompiler.Trimming.Tests/TestCases/TestSuites.cs:line 157
+//    at Mono.Linker.Tests.TestCases.All.DataFlow(String t) in /home/svbomer/src/runtime/src/coreclr/tools/aot/ILCompiler.Trimming.Tests/TestCases/TestSuites.cs:line 16
+//    at InvokeStub_All.DataFlow(Object, Span`1)
+//    at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
     internal partial struct RequireDynamicallyAccessedMembersAction
     {
         private readonly ReflectionMarker _reflectionMarker;

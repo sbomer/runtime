@@ -96,8 +96,8 @@ namespace ILLink.RoslynAnalyzer
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-            if (!Debugger.IsAttached)
-                context.EnableConcurrentExecution();
+            // if (!Debugger.IsAttached)
+            //     context.EnableConcurrentExecution();
 
             context.RegisterCompilationStartAction(context =>
             {

@@ -39,6 +39,7 @@ namespace ILLink.Shared.TrimAnalysis
             var diagnosticContext = new DiagnosticContext(_location, _reportDiagnostic);
             if (_reflectionAccessAnalyzer.TryResolveTypeNameAndMark(typeName, diagnosticContext, needsAssemblyName, out ITypeSymbol? foundType))
             {
+                // TODO: match ILLink/ILC??
                 if (foundType is INamedTypeSymbol namedType && namedType.IsGenericType)
                     GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(_typeNameResolver, _location, namedType, _reportDiagnostic);
 
