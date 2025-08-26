@@ -179,10 +179,11 @@ namespace System.Threading.Channels
         /// </remarks>
         public bool TryReserveCompletionIfCancelable() =>
             !CancellationToken.CanBeCanceled ||
+            Interlocked.Exchange(ref _completionReserved,
 #if NET9_0_OR_GREATER
-            !Interlocked.Exchange(ref _completionReserved, true);
+                true) == false;
 #else
-            Interlocked.Exchange(ref _completionReserved, 1) == 0;
+                1) == 0;
 #endif
 
         /// <summary>Signals to a registered continuation that the operation has now completed.</summary>

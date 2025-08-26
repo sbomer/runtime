@@ -66,7 +66,7 @@ namespace System.Xml
                 {
                     XmlAttribute newAttr = (XmlAttribute)(attr.CloneNode(true));
                     XmlUnspecifiedAttribute? unspecAttr = newAttr as XmlUnspecifiedAttribute;
-                    if (unspecAttr != null && !attr.Specified)
+                    if (unspecAttr != null && attr.Specified == false)
                     {
                         unspecAttr.SetSpecified(false);
                     }

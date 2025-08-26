@@ -47,7 +47,7 @@ namespace System.Xml
 
         internal void ConcurrencyCheck(XmlNodeChangedEventArgs args)
         {
-            if (!_atomized)
+            if (_atomized == false)
             {
                 XmlNameTable nameTable = _rootNode.Document.NameTable;
                 _localName = nameTable.Add(_localName!);

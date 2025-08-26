@@ -150,7 +150,7 @@ namespace System.Xml.Xsl.XsltOld
             Debug.Assert(attributeSet.Name != null);
             _attributeSetTable ??= new Hashtable();
 
-            if (!_attributeSetTable.ContainsKey(attributeSet.Name))
+            if (_attributeSetTable.ContainsKey(attributeSet.Name) == false)
             {
                 _attributeSetTable[attributeSet.Name] = attributeSet;
             }
@@ -173,7 +173,7 @@ namespace System.Xml.Xsl.XsltOld
 
             if (template.Name != null)
             {
-                if (!_templateNameTable.ContainsKey(template.Name))
+                if (_templateNameTable.ContainsKey(template.Name) == false)
                 {
                     _templateNameTable[template.Name] = template;
                 }

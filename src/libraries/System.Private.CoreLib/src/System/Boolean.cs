@@ -80,7 +80,7 @@ namespace System
         // Converts the boolean value of this instance to a String.
         public override string ToString()
         {
-            if (!m_value)
+            if (false == m_value)
             {
                 return FalseLiteral;
             }
@@ -155,7 +155,7 @@ namespace System
             {
                 return 0;
             }
-            else if (!m_value)
+            else if (m_value == false)
             {
                 return -1;
             }
@@ -168,7 +168,7 @@ namespace System
             {
                 return 0;
             }
-            else if (!m_value)
+            else if (m_value == false)
             {
                 return -1;
             }
