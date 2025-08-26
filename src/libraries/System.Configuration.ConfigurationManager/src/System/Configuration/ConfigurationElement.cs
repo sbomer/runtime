@@ -828,7 +828,7 @@ namespace System.Configuration
         {
             if (IsReadOnly()) throw new ConfigurationErrorsException(SR.Config_base_read_only);
 
-            if (!ignoreLocks &&
+            if ((ignoreLocks == false) &&
                 (((_lockedAllExceptAttributesList != null) && _lockedAllExceptAttributesList.HasParentElements &&
                 !_lockedAllExceptAttributesList.DefinedInParent(prop.Name)) ||
                 ((_lockedAttributesList != null) &&
@@ -1110,7 +1110,7 @@ namespace System.Configuration
                 }
             }
 
-            if (!serializeCollectionKey)
+            if (serializeCollectionKey == false)
             {
                 dataToWrite |= SerializeLockList(_lockedAttributesList, LockAttributesKey, writer);
                 dataToWrite |= SerializeLockList(_lockedAllExceptAttributesList, LockAllAttributesExceptKey, writer);
@@ -1876,7 +1876,7 @@ namespace System.Configuration
             ConfigurationLockCollection parentLockList,
             ConfigurationSaveMode saveMode)
         {
-            if (!sourceLockList.ExceptionList)
+            if (sourceLockList.ExceptionList == false)
             {
                 switch (saveMode)
                 {

@@ -258,7 +258,7 @@ namespace System.Data.ProviderBase
 
                 if (ADP.CompareInsensitiveInvariant(candidateCollectionName, collectionName))
                 {
-                    if (!SupportedByCurrentVersion(row))
+                    if (SupportedByCurrentVersion(row) == false)
                     {
                         versionFailure = true;
                     }
@@ -291,7 +291,7 @@ namespace System.Data.ProviderBase
 
             if (requestedCollectionRow == null)
             {
-                if (!versionFailure)
+                if (versionFailure == false)
                 {
                     throw ADP.UndefinedCollection(collectionName);
                 }
@@ -400,7 +400,7 @@ namespace System.Data.ProviderBase
             requestedCollectionRow = FindMetaDataCollectionRow(collectionName);
             exactCollectionName = (requestedCollectionRow[collectionNameColumn, DataRowVersion.Current] as string)!;
 
-            if (!ADP.IsEmptyArray(restrictions))
+            if (ADP.IsEmptyArray(restrictions) == false)
             {
 
                 for (int i = 0; i < restrictions.Length; i++)
@@ -429,7 +429,7 @@ namespace System.Data.ProviderBase
                         hiddenColumns = null;
                     }
                     // none of the datatable collections support restrictions
-                    if (!ADP.IsEmptyArray(restrictions))
+                    if (ADP.IsEmptyArray(restrictions) == false)
                     {
                         throw ADP.TooManyRestrictions(exactCollectionName);
                     }

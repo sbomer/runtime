@@ -3837,7 +3837,7 @@ namespace System.Net.Sockets
                 return;
             }
 
-            Debug.Assert(!_nonBlockingConnectInProgress);
+            Debug.Assert(_nonBlockingConnectInProgress == false);
 
             // Update the status: this socket was indeed connected at
             // some point in time update the perf counter as well.

@@ -997,7 +997,7 @@ namespace System.Threading.Tasks
                             TInt nFromInclusiveLocal;
                             TInt nToExclusiveLocal;
 
-                            if (!currentWorker.FindNewWork(out nFromInclusiveLocal, out nToExclusiveLocal) ||
+                            if (currentWorker.FindNewWork(out nFromInclusiveLocal, out nToExclusiveLocal) == false ||
                                 sharedPStateFlags.ShouldExitLoop(nFromInclusiveLocal))
                             {
                                 return; // no need to run

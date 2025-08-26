@@ -1314,7 +1314,7 @@ namespace System.Runtime.Serialization
                 bool isElementNameDifferent =
                     (xmlDataContract.TopLevelElementName != null && xmlDataContract.TopLevelElementName.Value != xmlDataContract.XmlName.Name) ||
                     (xmlDataContract.TopLevelElementNamespace != null && xmlDataContract.TopLevelElementNamespace.Value != xmlDataContract.XmlName.Namespace);
-                if (isElementNameDifferent || !xmlDataContract.IsTopLevelElementNullable)
+                if (isElementNameDifferent || xmlDataContract.IsTopLevelElementNullable == false)
                 {
                     CodeAttributeDeclaration xmlRootAttribute = new CodeAttributeDeclaration(GetClrTypeFullName(typeof(XmlRootAttribute)));
                     if (isElementNameDifferent)
@@ -1328,7 +1328,7 @@ namespace System.Runtime.Serialization
                             xmlRootAttribute.Arguments.Add(new CodeAttributeArgument("Namespace", new CodePrimitiveExpression(xmlDataContract.TopLevelElementNamespace.Value)));
                         }
                     }
-                    if (!xmlDataContract.IsTopLevelElementNullable)
+                    if (xmlDataContract.IsTopLevelElementNullable == false)
                         xmlRootAttribute.Arguments.Add(new CodeAttributeArgument("IsNullable", new CodePrimitiveExpression(false)));
                     type.CustomAttributes.Add(xmlRootAttribute);
                 }

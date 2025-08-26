@@ -121,7 +121,7 @@ namespace System.Text.Json
                 typeInfo = GetTypeInfoNoCaching(type);
             }
 
-            if (typeInfo is null && ensureNotNull is true)
+            if (typeInfo is null && ensureNotNull == true)
             {
                 ThrowHelper.ThrowNotSupportedException_NoMetadataForType(type, TypeInfoResolver);
             }
@@ -433,7 +433,7 @@ namespace System.Text.Json
                         }
                         else
                         {
-                            Debug.Assert(!weakRef.TryGetTarget(out _));
+                            Debug.Assert(weakRef.TryGetTarget(out _) is false);
                             weakRef.SetTarget(ctx);
                         }
                     }

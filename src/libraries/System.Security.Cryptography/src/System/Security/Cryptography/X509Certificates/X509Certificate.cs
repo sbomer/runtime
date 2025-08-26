@@ -606,7 +606,7 @@ namespace System.Security.Cryptography.X509Certificates
 
         public virtual string ToString(bool fVerbose)
         {
-            if (!fVerbose || Pal == null)
+            if (fVerbose == false || Pal == null)
                 return GetType().ToString();
 
             StringBuilder sb = new StringBuilder();

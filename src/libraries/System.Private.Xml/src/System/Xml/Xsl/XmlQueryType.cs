@@ -128,7 +128,7 @@ namespace System.Xml.Xsl
                     }
                 }
 
-                if (!match)
+                if (match == false)
                     return false;
             }
 
@@ -218,7 +218,7 @@ namespace System.Xml.Xsl
                     }
                 }
 
-                if (!match)
+                if (match == false)
                     return false;
             }
 

@@ -33,7 +33,7 @@ namespace System.IO.Packaging
         {
             get
             {
-                if (!_canRead)
+                if (_canRead == false)
                     return false;
                 return _baseStream.CanRead;
             }
@@ -43,7 +43,7 @@ namespace System.IO.Packaging
         {
             get
             {
-                if (!_canWrite)
+                if (_canWrite == false)
                     return false;
                 return _baseStream.CanWrite;
             }

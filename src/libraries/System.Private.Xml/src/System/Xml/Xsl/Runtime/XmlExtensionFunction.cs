@@ -218,7 +218,7 @@ namespace System.Xml.Xsl.Runtime
             if (methMatch.IsGenericMethodDefinition)
                 throw new XslTransformException(/*[XT_040]*/SR.XmlIl_GenericExtensionMethod, _namespaceUri, _name);
 
-            Debug.Assert(!methMatch.ContainsGenericParameters);
+            Debug.Assert(methMatch.ContainsGenericParameters == false);
 
             Bind(methMatch);
         }

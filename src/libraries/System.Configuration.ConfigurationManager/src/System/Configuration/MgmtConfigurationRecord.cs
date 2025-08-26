@@ -1213,7 +1213,7 @@ namespace System.Configuration
                     );
             }
 
-            if (!configSection.SectionInformation.OverrideModeDefaultSetting.IsDefaultForSection ||
+            if ((configSection.SectionInformation.OverrideModeDefaultSetting.IsDefaultForSection == false) ||
                 (saveMode == ConfigurationSaveMode.Full) ||
                 ((saveMode == ConfigurationSaveMode.Modified) &&
                 configSection.SectionInformation.OverrideModeDefaultModified))

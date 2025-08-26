@@ -136,7 +136,7 @@ namespace System.Configuration
                                 node);
             }
 
-            if (string.IsNullOrEmpty(attribute.Value) && !allowEmpty)
+            if (string.IsNullOrEmpty(attribute.Value) && allowEmpty == false)
             {
                 throw new ConfigurationErrorsException(
                                 SR.Format(SR.Config_base_required_attribute_empty, name),

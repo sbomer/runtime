@@ -436,7 +436,7 @@ namespace System.Security.Cryptography.X509Certificates
 
         public override string ToString(bool verbose)
         {
-            if (!verbose || Pal == null)
+            if (verbose == false || Pal == null)
                 return ToString();
 
             StringBuilder sb = new StringBuilder();

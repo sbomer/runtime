@@ -1121,7 +1121,7 @@ namespace System.Xml.Xsl.Xslt
         private void LoadGlobalVariableOrParameter(NsDecl? stylesheetNsList)
         {
             Debug.Assert(_curTemplate == null);
-            Debug.Assert(!_input.CanHaveApplyImports);
+            Debug.Assert(_input.CanHaveApplyImports == false);
             VarPar var = XslVarPar();
             // Preserving namespaces to parse content later
             var.Namespaces = MergeNamespaces(var.Namespaces, stylesheetNsList);
@@ -1259,7 +1259,7 @@ namespace System.Xml.Xsl.Xslt
 
             ReportNYI("xsl:function");
 
-            Debug.Assert(!input.CanHaveApplyImports);
+            Debug.Assert(input.CanHaveApplyImports == false);
 
             curFunction = new Object();
             LoadInstructions(InstructionFlags.AllowParam);

@@ -46,7 +46,7 @@ namespace System.Xml.Xsl.XsltOld
                     case BeginEvent:
                         Debug.Assert(frame.State == BeginEvent);
 
-                        if (!SendBeginEvent(processor, frame.Node!))
+                        if (SendBeginEvent(processor, frame.Node!) == false)
                         {
                             // This one wasn't output
                             break;
@@ -65,7 +65,7 @@ namespace System.Xml.Xsl.XsltOld
                             break;
                         }
 
-                        if (!SendTextEvent(processor, frame.Node))
+                        if (SendTextEvent(processor, frame.Node) == false)
                         {
                             // This one wasn't output
                             break;
@@ -96,7 +96,7 @@ namespace System.Xml.Xsl.XsltOld
                     case EndEvent:
                         Debug.Assert(frame.State == EndEvent);
 
-                        if (!SendEndEvent(processor, frame.Node!))
+                        if (SendEndEvent(processor, frame.Node!) == false)
                         {
                             // This one wasn't output
                             break;

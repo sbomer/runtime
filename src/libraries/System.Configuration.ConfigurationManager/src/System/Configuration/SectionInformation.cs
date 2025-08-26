@@ -571,7 +571,7 @@ namespace System.Configuration
         {
             VerifyIsEditable();
 
-            if (!force &&
+            if ((force == false) &&
                 _flags[FlagDeclarationRequired])
             {
                 // Since it is required, we can not remove it

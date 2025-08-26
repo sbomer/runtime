@@ -63,7 +63,7 @@ namespace System.Xml.Xsl.XsltOld
                             break;
                         }
 
-                        if (!processor.CopyBeginEvent(frame.Node!, _empty))
+                        if (processor.CopyBeginEvent(frame.Node!, _empty) == false)
                         {
                             // This event wasn't processed
                             break;

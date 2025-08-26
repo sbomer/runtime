@@ -28,7 +28,7 @@ namespace System.Xml.Xsl.XsltOld
             switch (frame.State)
             {
                 case Initialized:
-                    if (!processor.BeginEvent(XPathNodeType.Comment, string.Empty, string.Empty, string.Empty, false))
+                    if (processor.BeginEvent(XPathNodeType.Comment, string.Empty, string.Empty, string.Empty, false) == false)
                     {
                         // Come back later
                         break;
@@ -39,7 +39,7 @@ namespace System.Xml.Xsl.XsltOld
                     break;                              // Allow children to run
 
                 case ProcessingChildren:
-                    if (!processor.EndEvent(XPathNodeType.Comment))
+                    if (processor.EndEvent(XPathNodeType.Comment) == false)
                     {
                         break;
                     }

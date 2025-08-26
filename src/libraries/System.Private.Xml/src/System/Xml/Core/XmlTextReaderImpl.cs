@@ -368,7 +368,7 @@ namespace System.Xml
                 if (nt == null)
                 {
                     nt = new NameTable();
-                    Debug.Assert(!_nameTableFromSettings);
+                    Debug.Assert(_nameTableFromSettings == false);
                 }
                 else
                 {
@@ -9036,7 +9036,7 @@ namespace System.Xml
             else if (nt == null)
             {
                 nt = new NameTable();
-                Debug.Assert(!_nameTableFromSettings);
+                Debug.Assert(_nameTableFromSettings == false);
             }
             _nameTable = nt;
 

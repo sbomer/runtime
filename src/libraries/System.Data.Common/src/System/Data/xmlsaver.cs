@@ -145,7 +145,7 @@ namespace System.Data
                 bImplementsInullable = col.ImplementsINullable;
             }
 
-            if (!bImplementsInullable &&
+            if (bImplementsInullable == false &&
                  type != typeof(string) &&     // DO NOT REMOVE THIS CHECK
                  type != typeof(bool) &&
                  type != typeof(Type) &&
@@ -157,7 +157,7 @@ namespace System.Data
                 return;
             }
 
-            if ((!pd.ShouldSerializeValue(instance) || !ContainsDesignerSerializationVisibleAttribute(pd)) && !bIsSqlType)
+            if ((!pd.ShouldSerializeValue(instance) || !ContainsDesignerSerializationVisibleAttribute(pd)) && (bIsSqlType == false))
             {
                 return;
             }
