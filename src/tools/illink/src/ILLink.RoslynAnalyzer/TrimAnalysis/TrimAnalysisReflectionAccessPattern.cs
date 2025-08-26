@@ -47,17 +47,17 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
         {
             var location = Operation.Syntax.GetLocation();
             var typeNameResolver = new TypeNameResolver(context.Compilation);
-            var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(reportDiagnostic, typeNameResolver, typeHierarchyType: null);
+            var diagnosticContext = new DiagnosticContext(location, OwningSymbol, reportDiagnostic, context, FeatureContext);
+            var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(in diagnosticContext, typeNameResolver, typeHierarchyType: null);
             if (context.EnableTrimAnalyzer &&
                 !OwningSymbol.IsInRequiresUnreferencedCodeAttributeScope(out _) &&
                 !FeatureContext.IsEnabled(RequiresUnreferencedCodeAnalyzer.FullyQualifiedRequiresUnreferencedCodeAttribute))
             {
-                reflectionAccessAnalyzer.GetDiagnosticsForReflectionAccessToDAMOnMethod(location, ReferencedMethod);
+                reflectionAccessAnalyzer.GetDiagnosticsForReflectionAccessToDAMOnMethod(ReferencedMethod);
             }
 
-            DiagnosticContext diagnosticContext = new(location, reportDiagnostic);
             foreach (var requiresAnalyzer in context.EnabledRequiresAnalyzers)
-                requiresAnalyzer.CheckAndCreateRequiresDiagnostic(Operation, ReferencedMethod, OwningSymbol, context, FeatureContext, diagnosticContext);
+                requiresAnalyzer.CheckAndCreateRequiresDiagnostic(Operation, ReferencedMethod, OwningSymbol, diagnosticContext);
         }
     }
 }

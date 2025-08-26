@@ -45,24 +45,43 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 
         public void ReportDiagnostics(DataFlowAnalyzerContext context, Action<Diagnostic> reportDiagnostic)
         {
+            // Need to keep the EnableTrimAnalyzer check.
+            // Because we only added the inner IsEnabled check to the reflection-acccess path.
+            // But the generic warnings include DAM mismatch of type param, not just reflection access.
+            // Q: then should we also keep the IsInRequires check? Or does the DAM mismatch check that already?
+            // Same with feature check... indeed, that one isn't done broadly enough.
+            // Do we really want reflection diagnostics to show for all of the analyzers?
+            // Naot is lucky because it can assume trim analyzer enabled, and doesn't care about feature checks.
+            // Analyzer needs to do what:
+            // If we show reflection diags for all analyzers,
+            // - should we then _not_ show mismatch warning for all analyzers?
+            // correct.
+            // If only AOT analyzer is enabled?
+            // If only single-file analyzer is enabled? Should warn on reflection to RequiresAssemblyFiles?
+            // Probably _should_. Will be incomplete. But doesn't hurt.
+            // Why'd I turn those on? Because of parity with ILC. Let's not do that here.
+            // Could do it in a separate change if desired.
             if (context.EnableTrimAnalyzer &&
-                !OwningSymbol.IsInRequiresUnreferencedCodeAttributeScope(out _) &&
-                !FeatureContext.IsEnabled(RequiresUnreferencedCodeAnalyzer.FullyQualifiedRequiresUnreferencedCodeAttribute))
+                !OwningSymbol.IsInRequiresUnreferencedCodeAttributeScope(out _))
             {
                 var location = Operation.Syntax.GetLocation();
                 var typeNameResolver = new TypeNameResolver(context.Compilation);
+                var diagnosticContext = new DiagnosticContext(location, OwningSymbol, reportDiagnostic, context, FeatureContext);
+                var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(in diagnosticContext, typeNameResolver, typeHierarchyType: null);
+                var requireDynamicallyAccessedMembersAction = new RequireDynamicallyAccessedMembersAction(typeNameResolver, in diagnosticContext, reflectionAccessAnalyzer);
+                var genericArgumentDataFlow = new GenericArgumentDataFlow(requireDynamicallyAccessedMembersAction);
                 switch (GenericInstantiation)
                 {
                     case INamedTypeSymbol type:
-                        GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(typeNameResolver, location, type, reportDiagnostic);
+                        genericArgumentDataFlow.ProcessGenericArgumentDataFlow(type);
                         break;
 
                     case IMethodSymbol method:
-                        GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(typeNameResolver, location, method, reportDiagnostic);
+                        genericArgumentDataFlow.ProcessGenericArgumentDataFlow(method);
                         break;
 
                     case IFieldSymbol field:
-                        GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(typeNameResolver, location, field, reportDiagnostic);
+                        genericArgumentDataFlow.ProcessGenericArgumentDataFlow(field);
                         break;
                 }
             }

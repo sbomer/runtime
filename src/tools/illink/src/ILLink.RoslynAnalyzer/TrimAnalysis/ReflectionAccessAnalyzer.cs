@@ -14,24 +14,24 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 {
     readonly struct ReflectionAccessAnalyzer
     {
-        readonly Action<Diagnostic>? _reportDiagnostic;
+        readonly DiagnosticContext _diagnosticContext;
 
         readonly INamedTypeSymbol? _typeHierarchyType;
 
         readonly TypeNameResolver _typeNameResolver;
 
         public ReflectionAccessAnalyzer(
-            Action<Diagnostic>? reportDiagnostic,
+            in DiagnosticContext diagnosticContext,
             TypeNameResolver typeNameResolver,
             INamedTypeSymbol? typeHierarchyType)
         {
-            _reportDiagnostic = reportDiagnostic;
+            _diagnosticContext = diagnosticContext;
             _typeHierarchyType = typeHierarchyType;
             _typeNameResolver = typeNameResolver;
         }
 
 #pragma warning disable CA1822 // Mark members as static - the other partial implementations might need to be instance methods
-        internal void GetReflectionAccessDiagnostics(Location location, ITypeSymbol typeSymbol, DynamicallyAccessedMemberTypes requiredMemberTypes, bool declaredOnly = false)
+        internal void GetReflectionAccessDiagnostics(ITypeSymbol typeSymbol, DynamicallyAccessedMemberTypes requiredMemberTypes, bool declaredOnly = false)
         {
             typeSymbol = typeSymbol.OriginalDefinition;
             foreach (var member in typeSymbol.GetDynamicallyAccessedMembers(requiredMemberTypes, declaredOnly))
@@ -39,13 +39,13 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                 switch (member)
                 {
                     case IMethodSymbol method:
-                        GetReflectionAccessDiagnosticsForMethod(location, method);
+                        GetReflectionAccessDiagnosticsForMethod(method);
                         break;
                     case IFieldSymbol field:
-                        GetDiagnosticsForField(location, field);
+                        GetDiagnosticsForField(field);
                         break;
                     case IPropertySymbol property:
-                        GetReflectionAccessDiagnosticsForProperty(location, property);
+                        GetReflectionAccessDiagnosticsForProperty(property);
                         break;
                     /* Skip Type and InterfaceImplementation marking since doesnt seem relevant for diagnostic generation
                     case ITypeSymbol nestedType:
@@ -56,69 +56,90 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                         break;
                     */
                     case IEventSymbol @event:
-                        GetDiagnosticsForEvent(location, @event);
+                        GetDiagnosticsForEvent(@event);
                         break;
                 }
             }
         }
 
-        internal void GetReflectionAccessDiagnosticsForEventsOnTypeHierarchy(Location location, ITypeSymbol typeSymbol, string name, BindingFlags? bindingFlags)
+        internal void GetReflectionAccessDiagnosticsForEventsOnTypeHierarchy(ITypeSymbol typeSymbol, string name, BindingFlags? bindingFlags)
         {
             foreach (var @event in typeSymbol.GetEventsOnTypeHierarchy(e => e.Name == name, bindingFlags))
-                GetDiagnosticsForEvent(location, @event);
+                GetDiagnosticsForEvent(@event);
         }
 
-        internal void GetReflectionAccessDiagnosticsForFieldsOnTypeHierarchy(Location location, ITypeSymbol typeSymbol, string name, BindingFlags? bindingFlags)
+        internal void GetReflectionAccessDiagnosticsForFieldsOnTypeHierarchy(ITypeSymbol typeSymbol, string name, BindingFlags? bindingFlags)
         {
             foreach (var field in typeSymbol.GetFieldsOnTypeHierarchy(f => f.Name == name, bindingFlags))
-                GetDiagnosticsForField(location, field);
+                GetDiagnosticsForField(field);
         }
 
-        internal void GetReflectionAccessDiagnosticsForPropertiesOnTypeHierarchy(Location location, ITypeSymbol typeSymbol, string name, BindingFlags? bindingFlags)
+        internal void GetReflectionAccessDiagnosticsForPropertiesOnTypeHierarchy(ITypeSymbol typeSymbol, string name, BindingFlags? bindingFlags)
         {
             foreach (var prop in typeSymbol.GetPropertiesOnTypeHierarchy(p => p.Name == name, bindingFlags))
-                GetReflectionAccessDiagnosticsForProperty(location, prop);
+                GetReflectionAccessDiagnosticsForProperty(prop);
         }
 
-        internal void GetReflectionAccessDiagnosticsForConstructorsOnType(Location location, ITypeSymbol typeSymbol, BindingFlags? bindingFlags, int? parameterCount)
+        internal void GetReflectionAccessDiagnosticsForConstructorsOnType(ITypeSymbol typeSymbol, BindingFlags? bindingFlags, int? parameterCount)
         {
             foreach (var c in typeSymbol.GetConstructorsOnType(filter: parameterCount.HasValue ? c => c.Parameters.Length == parameterCount.Value : null, bindingFlags: bindingFlags))
-                GetReflectionAccessDiagnosticsForMethod(location, c);
+                GetReflectionAccessDiagnosticsForMethod(c);
         }
 
-        internal void GetReflectionAccessDiagnosticsForPublicParameterlessConstructor(Location location, ITypeSymbol typeSymbol)
+        internal void GetReflectionAccessDiagnosticsForPublicParameterlessConstructor(ITypeSymbol typeSymbol)
         {
             foreach (var c in typeSymbol.GetConstructorsOnType(filter: m => (m.DeclaredAccessibility == Accessibility.Public) && m.Parameters.Length == 0))
-                GetReflectionAccessDiagnosticsForMethod(location, c);
+                GetReflectionAccessDiagnosticsForMethod(c);
         }
 
-        private void ReportRequiresUnreferencedCodeDiagnostic(Location location, AttributeData requiresAttributeData, ISymbol member)
+        private void ReportRequiresUnreferencedCodeDiagnostic(AttributeData requiresAttributeData, ISymbol member)
         {
             var message = RequiresUnreferencedCodeUtils.GetMessageFromAttribute(requiresAttributeData);
             var url = RequiresAnalyzerBase.GetUrlFromAttribute(requiresAttributeData);
-            var diagnosticContext = new DiagnosticContext(location, _reportDiagnostic);
-            diagnosticContext.AddDiagnostic(DiagnosticId.RequiresUnreferencedCode, member.GetDisplayName(), message, url);
+            _diagnosticContext.AddDiagnostic(DiagnosticId.RequiresUnreferencedCode, member.GetDisplayName(), message, url);
         }
 
-        internal void GetReflectionAccessDiagnosticsForMethod(Location location, IMethodSymbol methodSymbol)
+        internal void GetReflectionAccessDiagnosticsForMethod(IMethodSymbol methodSymbol)
         {
+            if (methodSymbol.ToString().Contains("NewConstraintTestType"))
+                System.Diagnostics.Debug.WriteLine("H");
             if (_typeHierarchyType is not null)
             {
-                GetTypeHierarchyReflectionAccessDiagnostics(location, methodSymbol);
+                GetTypeHierarchyReflectionAccessDiagnostics(methodSymbol);
                 return;
             }
 
             if (methodSymbol.IsInRequiresUnreferencedCodeAttributeScope(out var requiresUnreferencedCodeAttributeData))
             {
-                ReportRequiresUnreferencedCodeDiagnostic(location, requiresUnreferencedCodeAttributeData, methodSymbol);
+                ReportRequiresUnreferencedCodeDiagnostic(requiresUnreferencedCodeAttributeData, methodSymbol);
             }
             else
+
+            // foreach (var requiresAnalyzer in _diagnosticContext.Context.EnabledRequiresAnalyzers)
+            // {
+            // if (_diagnosticContext.FeatureContext.IsEnabled(requiresAnalyzer.RequiresAttributeFullyQualifiedName))
+            //     continue;
+
+            // // TODO: ensure we check the suppression scope correctly here. Not just of the
+            // // methodSymbol that's being reflection-accessed, but of the context.
+            // // from _diagnosticContext I guess.
+            // if (_diagnosticContext.OwningSymbol.IsInRequiresScope(requiresAnalyzer.RequiresAttributeFullyQualifiedName, out _))
+            //     continue;
+
+            // if (methodSymbol.IsInRequiresScope(requiresAnalyzer.RequiresAttributeFullyQualifiedName, out var requiresAttributeData))
+            // {
+            //     requiresAnalyzer.CreateRequiresDiagnostic(methodSymbol, requiresAttributeData, in _diagnosticContext);
+            // }
+            // }
+
+            // Below is about accessing DAM annotated members, so only RUC is applicable as a suppression scope
+            // if (!methodSymbol.IsInRequiresUnreferencedCodeAttributeScope(out _))
             {
-                GetDiagnosticsForReflectionAccessToDAMOnMethod(location, methodSymbol);
+                GetDiagnosticsForReflectionAccessToDAMOnMethod(methodSymbol);
             }
         }
 
-        internal void GetTypeHierarchyReflectionAccessDiagnostics(Location location, ISymbol member)
+        internal void GetTypeHierarchyReflectionAccessDiagnostics(ISymbol member)
         {
             Debug.Assert(member is IMethodSymbol or IFieldSymbol);
 
@@ -142,11 +163,12 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                 return false;
             }
 
+            var location = _diagnosticContext.Location;
             var reportOnMember = IsDeclaredWithinType(member, _typeHierarchyType!);
             if (reportOnMember)
                 location = DynamicallyAccessedMembersAnalyzer.GetPrimaryLocation(member.Locations);
 
-            var diagnosticContext = new DiagnosticContext(location, _reportDiagnostic);
+            var diagnosticContext = new DiagnosticContext(location, _typeHierarchyType!, _diagnosticContext.ReportDiagnostic, _diagnosticContext.Context, _diagnosticContext.FeatureContext);
 
             if (member.IsInRequiresUnreferencedCodeAttributeScope(out AttributeData? requiresUnreferencedCodeAttribute))
             {
@@ -164,12 +186,11 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
             }
         }
 
-        internal void GetDiagnosticsForReflectionAccessToDAMOnMethod(Location location, IMethodSymbol methodSymbol)
+        internal void GetDiagnosticsForReflectionAccessToDAMOnMethod(IMethodSymbol methodSymbol)
         {
-            var diagnosticContext = new DiagnosticContext(location, _reportDiagnostic);
             if (methodSymbol.IsVirtual && FlowAnnotations.GetMethodReturnValueAnnotation(methodSymbol) != DynamicallyAccessedMemberTypes.None)
             {
-                diagnosticContext.AddDiagnostic(DiagnosticId.DynamicallyAccessedMembersMethodAccessedViaReflection, methodSymbol.GetDisplayName());
+                _diagnosticContext.AddDiagnostic(DiagnosticId.DynamicallyAccessedMembersMethodAccessedViaReflection, methodSymbol.GetDisplayName());
             }
             else
             {
@@ -177,52 +198,51 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                 {
                     if (FlowAnnotations.GetMethodParameterAnnotation(parameter) != DynamicallyAccessedMemberTypes.None)
                     {
-                        diagnosticContext.AddDiagnostic(DiagnosticId.DynamicallyAccessedMembersMethodAccessedViaReflection, methodSymbol.GetDisplayName());
+                        _diagnosticContext.AddDiagnostic(DiagnosticId.DynamicallyAccessedMembersMethodAccessedViaReflection, methodSymbol.GetDisplayName());
                         break;
                     }
                 }
             }
         }
 
-        internal void GetReflectionAccessDiagnosticsForProperty(Location location, IPropertySymbol propertySymbol)
+        internal void GetReflectionAccessDiagnosticsForProperty(IPropertySymbol propertySymbol)
         {
             if (propertySymbol.SetMethod is not null)
-                GetReflectionAccessDiagnosticsForMethod(location, propertySymbol.SetMethod);
+                GetReflectionAccessDiagnosticsForMethod(propertySymbol.SetMethod);
             if (propertySymbol.GetMethod is not null)
-                GetReflectionAccessDiagnosticsForMethod(location, propertySymbol.GetMethod);
+                GetReflectionAccessDiagnosticsForMethod(propertySymbol.GetMethod);
         }
 
-        private void GetDiagnosticsForEvent(Location location, IEventSymbol eventSymbol)
+        private void GetDiagnosticsForEvent(IEventSymbol eventSymbol)
         {
             if (eventSymbol.AddMethod is not null)
-                GetReflectionAccessDiagnosticsForMethod(location, eventSymbol.AddMethod);
+                GetReflectionAccessDiagnosticsForMethod(eventSymbol.AddMethod);
             if (eventSymbol.RemoveMethod is not null)
-                GetReflectionAccessDiagnosticsForMethod(location, eventSymbol.RemoveMethod);
+                GetReflectionAccessDiagnosticsForMethod(eventSymbol.RemoveMethod);
             if (eventSymbol.RaiseMethod is not null)
-                GetReflectionAccessDiagnosticsForMethod(location, eventSymbol.RaiseMethod);
+                GetReflectionAccessDiagnosticsForMethod(eventSymbol.RaiseMethod);
         }
 
-        private void GetDiagnosticsForField(Location location, IFieldSymbol fieldSymbol)
+        private void GetDiagnosticsForField(IFieldSymbol fieldSymbol)
         {
             if (_typeHierarchyType is not null)
             {
-                GetTypeHierarchyReflectionAccessDiagnostics(location, fieldSymbol);
+                GetTypeHierarchyReflectionAccessDiagnostics(fieldSymbol);
                 return;
             }
 
             if (fieldSymbol.TryGetRequiresUnreferencedCodeAttribute(out var requiresUnreferencedCodeAttributeData))
-                ReportRequiresUnreferencedCodeDiagnostic(location, requiresUnreferencedCodeAttributeData, fieldSymbol);
+                ReportRequiresUnreferencedCodeDiagnostic(requiresUnreferencedCodeAttributeData, fieldSymbol);
 
             if (FlowAnnotations.GetFieldAnnotation(fieldSymbol) != DynamicallyAccessedMemberTypes.None)
             {
-                var diagnosticContext = new DiagnosticContext(location, _reportDiagnostic);
-                diagnosticContext.AddDiagnostic(DiagnosticId.DynamicallyAccessedMembersFieldAccessedViaReflection, fieldSymbol.GetDisplayName());
+                _diagnosticContext.AddDiagnostic(DiagnosticId.DynamicallyAccessedMembersFieldAccessedViaReflection, fieldSymbol.GetDisplayName());
             }
         }
 
-        internal bool TryResolveTypeNameAndMark(string typeName, in DiagnosticContext diagnosticContext, bool needsAssemblyName, [NotNullWhen(true)] out ITypeSymbol? type)
+        internal bool TryResolveTypeNameAndMark(string typeName, bool needsAssemblyName, [NotNullWhen(true)] out ITypeSymbol? type)
         {
-            return _typeNameResolver.TryResolveTypeName(typeName, diagnosticContext, out type, needsAssemblyName);
+            return _typeNameResolver.TryResolveTypeName(typeName, _diagnosticContext, out type, needsAssemblyName);
         }
     }
 }

@@ -29,19 +29,18 @@ namespace ILLink.Shared.TrimAnalysis
 
         public HandleCallAction(
             TypeNameResolver typeNameResolver,
-            Location location,
+            in DiagnosticContext diagnosticContext,
             ISymbol owningSymbol,
             IOperation operation,
-            ValueSetLattice<SingleValue> multiValueLattice,
-            Action<Diagnostic>? reportDiagnostic)
+            ValueSetLattice<SingleValue> multiValueLattice)
         {
             _owningSymbol = owningSymbol;
             _operation = operation;
             _isNewObj = operation.Kind == OperationKind.ObjectCreation;
-            _diagnosticContext = new DiagnosticContext(location, reportDiagnostic);
+            _diagnosticContext = diagnosticContext;
             _annotations = FlowAnnotations.Instance;
-            _reflectionAccessAnalyzer = new(reportDiagnostic, typeNameResolver, typeHierarchyType: null);
-            _requireDynamicallyAccessedMembersAction = new(typeNameResolver, location, reportDiagnostic, _reflectionAccessAnalyzer);
+            _reflectionAccessAnalyzer = new(in _diagnosticContext, typeNameResolver, typeHierarchyType: null);
+            _requireDynamicallyAccessedMembersAction = new(typeNameResolver, in _diagnosticContext, _reflectionAccessAnalyzer);
             _multiValueLattice = multiValueLattice;
         }
 
@@ -285,25 +284,25 @@ namespace ILLink.Shared.TrimAnalysis
         }
 
         private partial void MarkStaticConstructor(TypeProxy type)
-            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForConstructorsOnType(_diagnosticContext.Location, type.Type, BindingFlags.Static, parameterCount: 0);
+            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForConstructorsOnType(type.Type, BindingFlags.Static, parameterCount: 0);
 
         private partial void MarkEventsOnTypeHierarchy(TypeProxy type, string name, BindingFlags? bindingFlags)
-            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForEventsOnTypeHierarchy(_diagnosticContext.Location, type.Type, name, bindingFlags);
+            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForEventsOnTypeHierarchy(type.Type, name, bindingFlags);
 
         private partial void MarkFieldsOnTypeHierarchy(TypeProxy type, string name, BindingFlags? bindingFlags)
-            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForFieldsOnTypeHierarchy(_diagnosticContext.Location, type.Type, name, bindingFlags);
+            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForFieldsOnTypeHierarchy(type.Type, name, bindingFlags);
 
         private partial void MarkPropertiesOnTypeHierarchy(TypeProxy type, string name, BindingFlags? bindingFlags)
-            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForPropertiesOnTypeHierarchy(_diagnosticContext.Location, type.Type, name, bindingFlags);
+            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForPropertiesOnTypeHierarchy(type.Type, name, bindingFlags);
 
         private partial void MarkPublicParameterlessConstructorOnType(TypeProxy type)
-            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForPublicParameterlessConstructor(_diagnosticContext.Location, type.Type);
+            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForPublicParameterlessConstructor(type.Type);
 
         private partial void MarkConstructorsOnType(TypeProxy type, BindingFlags? bindingFlags, int? parameterCount)
-            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForConstructorsOnType(_diagnosticContext.Location, type.Type, bindingFlags, parameterCount);
+            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForConstructorsOnType(type.Type, bindingFlags, parameterCount);
 
         private partial void MarkMethod(MethodProxy method)
-            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForMethod(_diagnosticContext.Location, method.Method);
+            => _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForMethod(method.Method);
 
         // TODO: Does the analyzer need to do something here?
         private partial void MarkType(TypeProxy type) { }
@@ -314,7 +313,7 @@ namespace ILLink.Shared.TrimAnalysis
             {
                 var property = (IPropertySymbol)method.Method.AssociatedSymbol!;
                 Debug.Assert(property != null);
-                _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForProperty(_diagnosticContext.Location, property!);
+                _reflectionAccessAnalyzer.GetReflectionAccessDiagnosticsForProperty(property!);
                 return true;
             }
 

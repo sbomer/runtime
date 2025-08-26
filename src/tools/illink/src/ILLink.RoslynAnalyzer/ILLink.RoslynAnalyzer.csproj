@@ -18,6 +18,7 @@
          optimize the analyzer even in Debug builds. Note: we still use the
          Debug configuration to get Debug asserts. -->
     <Optimize>true</Optimize>
+    <NoWarn>$(NoWarn);RS1035</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 

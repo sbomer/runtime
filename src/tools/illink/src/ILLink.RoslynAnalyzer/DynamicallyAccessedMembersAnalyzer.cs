@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using ILLink.RoslynAnalyzer.DataFlow;
 using ILLink.RoslynAnalyzer.TrimAnalysis;
 using ILLink.Shared;
 using ILLink.Shared.TrimAnalysis;
@@ -126,19 +127,26 @@ namespace ILLink.RoslynAnalyzer
                     // RUC on type doesn't silence DAM warnings about generic base/interface types.
                     // This knowledge lives in IsInRequiresUnreferencedCodeAttributeScope,
                     // which we still call for consistency here, but it is expected to return false.
+
+                    // TODO: move this inside?
                     if (type.IsInRequiresUnreferencedCodeAttributeScope(out _))
                         return;
 
                     var location = GetPrimaryLocation(type.Locations);
 
                     var typeNameResolver = new TypeNameResolver(context.Compilation);
+
+                    var diagnosticContext = new DiagnosticContext(location, type, context.ReportDiagnostic, dataFlowAnalyzerContext, FeatureContext.None);
+                    var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(in diagnosticContext, typeNameResolver, typeHierarchyType: null);
+                    var requireDynamicallyAccessedMembersAction = new RequireDynamicallyAccessedMembersAction(typeNameResolver, in diagnosticContext, reflectionAccessAnalyzer);
+                    var genericArgumentDataFlow = new GenericArgumentDataFlow(requireDynamicallyAccessedMembersAction);
                     if (type.BaseType is INamedTypeSymbol baseType)
-                        GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(typeNameResolver, location, baseType, context.ReportDiagnostic);
+                        genericArgumentDataFlow.ProcessGenericArgumentDataFlow(baseType);
 
                     foreach (var interfaceType in type.Interfaces)
-                        GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(typeNameResolver, location, interfaceType, context.ReportDiagnostic);
+                        genericArgumentDataFlow.ProcessGenericArgumentDataFlow(interfaceType);
 
-                    DynamicallyAccessedMembersTypeHierarchy.ApplyDynamicallyAccessedMembersToTypeHierarchy(typeNameResolver, location, type, context.ReportDiagnostic);
+                    DynamicallyAccessedMembersTypeHierarchy.ApplyDynamicallyAccessedMembersToTypeHierarchy(typeNameResolver, in diagnosticContext, type);
                 }, SymbolKind.NamedType);
                 context.RegisterSymbolAction(context =>
                 {

@@ -69,8 +69,9 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                             throw new NotImplementedException();
 
                         var typeNameResolver = new TypeNameResolver(context.Compilation);
-                        var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(reportDiagnostic, typeNameResolver, typeHierarchyType: null);
-                        var requireDynamicallyAccessedMembersAction = new RequireDynamicallyAccessedMembersAction(typeNameResolver, location, reportDiagnostic, reflectionAccessAnalyzer);
+                        var diagnosticContext = new DiagnosticContext(location, OwningSymbol, reportDiagnostic, context, FeatureContext);
+                        var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(in diagnosticContext, typeNameResolver, typeHierarchyType: null);
+                        var requireDynamicallyAccessedMembersAction = new RequireDynamicallyAccessedMembersAction(typeNameResolver, in diagnosticContext, reflectionAccessAnalyzer);
                         requireDynamicallyAccessedMembersAction.Invoke(sourceValue, targetWithDynamicallyAccessedMembers);
                     }
                 }

@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using ILLink.RoslynAnalyzer;
 using Microsoft.CodeAnalysis;
 
 namespace ILLink.Shared.TypeSystemProxy
@@ -9,10 +10,7 @@ namespace ILLink.Shared.TypeSystemProxy
     {
         public GenericParameterProxy(ITypeParameterSymbol typeParameterSymbol) => TypeParameterSymbol = typeParameterSymbol;
 
-        internal partial bool HasDefaultConstructorConstraint() =>
-            TypeParameterSymbol.HasConstructorConstraint |
-            TypeParameterSymbol.HasValueTypeConstraint |
-            TypeParameterSymbol.HasUnmanagedTypeConstraint;
+        internal partial bool HasDefaultConstructorConstraint() => TypeParameterSymbol.HasDefaultConstructorConstraint();
 
         internal partial bool HasEnumConstraint()
         {

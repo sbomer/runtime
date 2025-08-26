@@ -230,6 +230,11 @@ namespace ILLink.Shared.TrimAnalysis
             return DynamicallyAccessedMemberTypes.None;
         }
 
+        private static DynamicallyAccessedMemberTypes GetMemberTypesForConstraints(GenericParameter genericParameter)
+            => genericParameter.HasDefaultConstructorConstraint ?
+                DynamicallyAccessedMemberTypes.PublicParameterlessConstructor :
+                DynamicallyAccessedMemberTypes.None;
+
         TypeAnnotations BuildTypeAnnotations(TypeDefinition type)
         {
             // class, interface, struct can have annotations
@@ -308,6 +313,7 @@ namespace ILLink.Shared.TrimAnalysis
                         {
                             var genericParameter = method.GenericParameters[genericParameterIndex];
                             var annotation = GetMemberTypesForDynamicallyAccessedMembersAttribute(method, providerIfNotMember: genericParameter);
+                            annotation |= GetMemberTypesForConstraints(genericParameter);
                             if (annotation != DynamicallyAccessedMemberTypes.None)
                             {
                                 genericParameterAnnotations ??= new DynamicallyAccessedMemberTypes[method.GenericParameters.Count];
@@ -462,11 +468,12 @@ namespace ILLink.Shared.TrimAnalysis
             DynamicallyAccessedMemberTypes[]? typeGenericParameterAnnotations = null;
             if (type.HasGenericParameters)
             {
-                var attrs = GetGeneratedTypeAttributes(type) ?? type.GenericParameters;
+                var genericParameters = GetGeneratedTypeAttributes(type) ?? type.GenericParameters;
                 for (int genericParameterIndex = 0; genericParameterIndex < type.GenericParameters.Count; genericParameterIndex++)
                 {
-                    var provider = attrs[genericParameterIndex];
-                    var annotation = GetMemberTypesForDynamicallyAccessedMembersAttribute(type, providerIfNotMember: provider);
+                    var genericParameter = genericParameters[genericParameterIndex];
+                    var annotation = GetMemberTypesForDynamicallyAccessedMembersAttribute(type, providerIfNotMember: genericParameter);
+                    annotation |= GetMemberTypesForConstraints(genericParameter);
                     if (annotation != DynamicallyAccessedMemberTypes.None)
                     {
                         typeGenericParameterAnnotations ??= new DynamicallyAccessedMemberTypes[type.GenericParameters.Count];
@@ -805,11 +812,6 @@ namespace ILLink.Shared.TrimAnalysis
 
         internal partial MethodReturnValue GetMethodReturnValue(MethodProxy method, bool isNewObj)
             => GetMethodReturnValue(method, isNewObj, GetReturnParameterAnnotation(method.Method));
-
-#pragma warning disable CA1822 // Mark members as static - Should be an instance method for consistency
-        internal partial GenericParameterValue GetGenericParameterValue(GenericParameterProxy genericParameter, DynamicallyAccessedMemberTypes dynamicallyAccessedMemberTypes)
-            => new GenericParameterValue(genericParameter.GenericParameter, dynamicallyAccessedMemberTypes);
-#pragma warning restore CA1822 // Mark members as static
 
         internal partial GenericParameterValue GetGenericParameterValue(GenericParameterProxy genericParameter)
             => new GenericParameterValue(genericParameter.GenericParameter, GetGenericParameterAnnotation(genericParameter.GenericParameter));

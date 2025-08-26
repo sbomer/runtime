@@ -21,11 +21,6 @@ namespace ILLink.Shared.TrimAnalysis
             DynamicallyAccessedMemberTypes = dynamicallyAccessedMemberTypes;
         }
 
-        public GenericParameterValue(ITypeParameterSymbol typeParameterSymbol)
-            : this(typeParameterSymbol, typeParameterSymbol.GetDynamicallyAccessedMemberTypes())
-        {
-        }
-
         public override DynamicallyAccessedMemberTypes DynamicallyAccessedMemberTypes { get; }
 
         public override IEnumerable<string> GetDiagnosticArgumentsForAnnotationMismatch()

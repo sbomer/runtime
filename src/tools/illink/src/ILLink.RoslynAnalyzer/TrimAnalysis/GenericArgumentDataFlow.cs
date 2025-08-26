@@ -4,64 +4,65 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using ILLink.RoslynAnalyzer.DataFlow;
 using ILLink.Shared.DataFlow;
 using ILLink.Shared.TrimAnalysis;
+using ILLink.Shared.TypeSystemProxy;
 using Microsoft.CodeAnalysis;
 
 namespace ILLink.RoslynAnalyzer.TrimAnalysis
 {
-    internal static class GenericArgumentDataFlow
+    internal sealed class GenericArgumentDataFlow
     {
-        public static void ProcessGenericArgumentDataFlow(TypeNameResolver typeNameResolver, Location location, INamedTypeSymbol type, Action<Diagnostic>? reportDiagnostic)
+        readonly RequireDynamicallyAccessedMembersAction _requireDynamicallyAccessedMembersAction;
+
+        public GenericArgumentDataFlow(RequireDynamicallyAccessedMembersAction requireDynamicallyAccessedMembersAction)
+        {
+            _requireDynamicallyAccessedMembersAction = requireDynamicallyAccessedMembersAction;
+        }
+
+        public void ProcessGenericArgumentDataFlow(INamedTypeSymbol type)
         {
             while (type is { IsGenericType: true })
             {
-                ProcessGenericArgumentDataFlow(typeNameResolver, location, type.TypeArguments, type.TypeParameters, reportDiagnostic);
+                ProcessGenericArgumentDataFlow(type.TypeArguments, type.TypeParameters);
                 type = type.ContainingType;
             }
         }
 
-        public static void ProcessGenericArgumentDataFlow(TypeNameResolver typeNameResolver, Location location, IMethodSymbol method, Action<Diagnostic>? reportDiagnostic)
+        public void ProcessGenericArgumentDataFlow(IMethodSymbol method)
         {
-            ProcessGenericArgumentDataFlow(typeNameResolver, location, method.TypeArguments, method.TypeParameters, reportDiagnostic);
+            ProcessGenericArgumentDataFlow(method.TypeArguments, method.TypeParameters);
 
-            ProcessGenericArgumentDataFlow(typeNameResolver, location, method.ContainingType, reportDiagnostic);
+            ProcessGenericArgumentDataFlow(method.ContainingType);
         }
 
-        public static void ProcessGenericArgumentDataFlow(TypeNameResolver typeNameResolver, Location location, IFieldSymbol field, Action<Diagnostic>? reportDiagnostic)
+        public void ProcessGenericArgumentDataFlow(IFieldSymbol field)
         {
-            ProcessGenericArgumentDataFlow(typeNameResolver, location, field.ContainingType, reportDiagnostic);
+            ProcessGenericArgumentDataFlow(field.ContainingType);
         }
 
-        public static void ProcessGenericArgumentDataFlow(TypeNameResolver typeNameResolver, Location location, IPropertySymbol property, Action<Diagnostic> reportDiagnostic)
+        public void ProcessGenericArgumentDataFlow(IPropertySymbol property)
         {
-            ProcessGenericArgumentDataFlow(typeNameResolver, location, property.ContainingType, reportDiagnostic);
+            ProcessGenericArgumentDataFlow(property.ContainingType);
         }
 
-        private static void ProcessGenericArgumentDataFlow(
-            TypeNameResolver typeNameResolver,
-            Location location,
-            ImmutableArray<ITypeSymbol> typeArguments,
-            ImmutableArray<ITypeParameterSymbol> typeParameters,
-            Action<Diagnostic>? reportDiagnostic)
+        private void ProcessGenericArgumentDataFlow(ImmutableArray<ITypeSymbol> typeArguments, ImmutableArray<ITypeParameterSymbol> typeParameters)
         {
-            var diagnosticContext = new DiagnosticContext(location, reportDiagnostic);
             for (int i = 0; i < typeArguments.Length; i++)
             {
                 var typeArgument = typeArguments[i];
                 // Apply annotations to the generic argument
-                var genericParameterValue = new GenericParameterValue(typeParameters[i]);
+                var genericParameterValue = FlowAnnotations.Instance.GetGenericParameterValue(new GenericParameterProxy(typeParameters[i]));
                 if (genericParameterValue.DynamicallyAccessedMemberTypes != DynamicallyAccessedMemberTypes.None)
                 {
                     SingleValue genericArgumentValue = SingleValueExtensions.FromTypeSymbol(typeArgument)!;
-                    var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(reportDiagnostic, typeNameResolver, typeHierarchyType: null);
-                    var requireDynamicallyAccessedMembersAction = new RequireDynamicallyAccessedMembersAction(typeNameResolver, location, reportDiagnostic, reflectionAccessAnalyzer);
-                    requireDynamicallyAccessedMembersAction.Invoke(genericArgumentValue, genericParameterValue);
+                    _requireDynamicallyAccessedMembersAction.Invoke(genericArgumentValue, genericParameterValue);
                 }
 
                 // Recursively process generic argument data flow on the generic argument if it itself is generic
                 if (typeArgument is INamedTypeSymbol namedTypeArgument && namedTypeArgument.IsGenericType)
-                    ProcessGenericArgumentDataFlow(typeNameResolver, location, namedTypeArgument, reportDiagnostic);
+                    ProcessGenericArgumentDataFlow(namedTypeArgument);
             }
         }
 
@@ -117,7 +118,7 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
         {
             foreach (var typeParameter in typeParameters)
             {
-                var genericParameterValue = new GenericParameterValue(typeParameter);
+                var genericParameterValue = FlowAnnotations.Instance.GetGenericParameterValue(new GenericParameterProxy(typeParameter));
                 if (genericParameterValue.DynamicallyAccessedMemberTypes != DynamicallyAccessedMemberTypes.None)
                     return true;
             }

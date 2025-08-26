@@ -959,11 +959,6 @@ namespace ILLink.Shared.TrimAnalysis
         internal partial MethodReturnValue GetMethodReturnValue(MethodProxy method, bool isNewObj)
             => GetMethodReturnValue(method, isNewObj, GetReturnParameterAnnotation(method.Method));
 
-#pragma warning disable CA1822 // Other partial implementations are not in the ilc project
-        internal partial GenericParameterValue GetGenericParameterValue(GenericParameterProxy genericParameter, DynamicallyAccessedMemberTypes dynamicallyAccessedMemberTypes)
-#pragma warning restore CA1822 // Mark members as static
-            => new GenericParameterValue(genericParameter.GenericParameter, dynamicallyAccessedMemberTypes);
-
         internal partial GenericParameterValue GetGenericParameterValue(GenericParameterProxy genericParameter)
             => new GenericParameterValue(genericParameter.GenericParameter, GetGenericParameterAnnotation(genericParameter.GenericParameter));
 

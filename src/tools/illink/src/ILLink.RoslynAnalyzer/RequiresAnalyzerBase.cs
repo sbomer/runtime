@@ -47,9 +47,9 @@ namespace ILLink.RoslynAnalyzer
 
             context.RegisterCompilationStartAction(context =>
             {
-                var compilation = context.Compilation;
                 if (!IsAnalyzerEnabled(context.Options))
                     return;
+                var compilation = context.Compilation;
 
                 var incompatibleMembers = GetSpecialIncompatibleMembers(compilation);
                 context.RegisterSymbolAction(symbolAnalysisContext =>
@@ -73,57 +73,6 @@ namespace ILLink.RoslynAnalyzer
                     var typeSymbol = (INamedTypeSymbol)symbolAnalysisContext.Symbol;
                     CheckMatchingAttributesInInterfaces(symbolAnalysisContext, typeSymbol);
                 }, SymbolKind.NamedType);
-
-                context.RegisterSyntaxNodeAction(syntaxNodeAnalysisContext =>
-                {
-                    var model = syntaxNodeAnalysisContext.SemanticModel;
-                    if (syntaxNodeAnalysisContext.ContainingSymbol is not ISymbol containingSymbol || containingSymbol.IsInRequiresScope(RequiresAttributeName, out _))
-                        return;
-
-                    GenericNameSyntax genericNameSyntaxNode = (GenericNameSyntax)syntaxNodeAnalysisContext.Node;
-                    var typeParams = ImmutableArray<ITypeParameterSymbol>.Empty;
-                    var typeArgs = ImmutableArray<ITypeSymbol>.Empty;
-                    switch (model.GetSymbolInfo(genericNameSyntaxNode).Symbol)
-                    {
-                        case INamedTypeSymbol typeSymbol:
-                            typeParams = typeSymbol.TypeParameters;
-                            typeArgs = typeSymbol.TypeArguments;
-                            break;
-
-                        case IMethodSymbol methodSymbol:
-                            typeParams = methodSymbol.TypeParameters;
-                            typeArgs = methodSymbol.TypeArguments;
-                            break;
-
-                        default:
-                            return;
-                    }
-
-                    for (int i = 0; i < typeParams.Length; i++)
-                    {
-                        var typeParam = typeParams[i];
-                        var typeArg = typeArgs[i];
-                        if (!typeParam.HasConstructorConstraint ||
-                            typeArg is not INamedTypeSymbol { InstanceConstructors: { } typeArgCtors })
-                            continue;
-
-                        foreach (var instanceCtor in typeArgCtors)
-                        {
-                            if (instanceCtor.Arity > 0)
-                                continue;
-
-                            if (instanceCtor.DoesMemberRequire(RequiresAttributeName, out var requiresAttribute) &&
-                                VerifyAttributeArguments(requiresAttribute))
-                            {
-                                syntaxNodeAnalysisContext.ReportDiagnostic(Diagnostic.Create(RequiresDiagnosticRule,
-                                    syntaxNodeAnalysisContext.Node.GetLocation(),
-                                    instanceCtor.GetDisplayName(),
-                                    (string)requiresAttribute.ConstructorArguments[0].Value!,
-                                    GetUrlFromAttribute(requiresAttribute)));
-                            }
-                        }
-                    }
-                }, SyntaxKind.GenericName);
 
                 foreach (var extraSyntaxNodeAction in ExtraSyntaxNodeActions)
                     context.RegisterSyntaxNodeAction(extraSyntaxNodeAction.Action, extraSyntaxNodeAction.SyntaxKind);
@@ -249,7 +198,7 @@ namespace ILLink.RoslynAnalyzer
         /// <param name="operationContext">Analyzer operation context to be able to report the diagnostic.</param>
         /// <param name="member">Information about the member that generated the diagnostic.</param>
         /// <param name="requiresAttribute">Requires attribute data to print attribute arguments.</param>
-        private void CreateRequiresDiagnostic(ISymbol member, AttributeData requiresAttribute, in DiagnosticContext diagnosticContext)
+        internal void CreateRequiresDiagnostic(ISymbol member, AttributeData requiresAttribute, in DiagnosticContext diagnosticContext)
         {
             var message = GetMessageFromAttribute(requiresAttribute);
             var url = GetUrlFromAttribute(requiresAttribute);
@@ -364,17 +313,15 @@ namespace ILLink.RoslynAnalyzer
             IOperation operation,
             ISymbol member,
             ISymbol owningSymbol,
-            DataFlowAnalyzerContext context,
-            FeatureContext featureContext,
             in DiagnosticContext diagnosticContext)
         {
             // Warnings are not emitted if the featureContext says the feature is available.
-            if (featureContext.IsEnabled(RequiresAttributeFullyQualifiedName))
+            if (diagnosticContext.FeatureContext.IsEnabled(RequiresAttributeFullyQualifiedName))
                 return;
 
             ISymbol containingSymbol = operation.FindContainingSymbol(owningSymbol);
 
-            var incompatibleMembers = context.GetSpecialIncompatibleMembers(this);
+            var incompatibleMembers = diagnosticContext.Context.GetSpecialIncompatibleMembers(this);
             CheckAndCreateRequiresDiagnostic(
                 member,
                 containingSymbol,

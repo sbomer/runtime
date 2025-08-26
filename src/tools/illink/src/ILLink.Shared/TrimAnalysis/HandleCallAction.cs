@@ -1577,7 +1577,7 @@ namespace ILLink.Shared.TrimAnalysis
             bool hasRequirements = false;
             foreach (var genericParameter in genericParameters)
             {
-                if (GetGenericParameterEffectiveMemberTypes(genericParameter) != DynamicallyAccessedMemberTypes.None)
+                if (genericParameter.DynamicallyAccessedMemberTypes != DynamicallyAccessedMemberTypes.None)
                 {
                     hasRequirements = true;
                     break;
@@ -1620,26 +1620,12 @@ namespace ILLink.Shared.TrimAnalysis
                 {
                     if (array.TryGetValueByIndex(i, out MultiValue value))
                     {
-                        var targetValue = _annotations.GetGenericParameterValue(genericParameters[i].GenericParameter, GetGenericParameterEffectiveMemberTypes(genericParameters[i]));
+                        var targetValue = _annotations.GetGenericParameterValue(genericParameters[i].GenericParameter);
                         _requireDynamicallyAccessedMembersAction.Invoke(value, targetValue);
                     }
                 }
             }
             return true;
-
-            // Returns effective annotation of a generic parameter where it incorporates the constraint into the annotation.
-            // There are basically three cases where the constraint matters:
-            // - NeedsNew<SpecificType> - MarkStep will simply mark the default .ctor of SpecificType in this case, it has nothing to do with reflection
-            // - NeedsNew<TOuter> - this should be validated by the compiler/IL - TOuter must have matching constraints by definition, so nothing to validate
-            // - typeof(NeedsNew<>).MakeGenericType(typeOuter) - for this case we have to do it by hand as it's reflection. This is where this method helps.
-            static DynamicallyAccessedMemberTypes GetGenericParameterEffectiveMemberTypes(GenericParameterValue genericParameter)
-            {
-                DynamicallyAccessedMemberTypes result = genericParameter.DynamicallyAccessedMemberTypes;
-                if (genericParameter.GenericParameter.HasDefaultConstructorConstraint())
-                    result |= DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
-
-                return result;
-            }
         }
 
         private void ValidateGenericMethodInstantiation(

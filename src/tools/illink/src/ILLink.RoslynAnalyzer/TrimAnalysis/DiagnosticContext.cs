@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using ILLink.RoslynAnalyzer;
+using ILLink.RoslynAnalyzer.DataFlow;
 using Microsoft.CodeAnalysis;
 
 namespace ILLink.Shared.TrimAnalysis
@@ -14,12 +15,26 @@ namespace ILLink.Shared.TrimAnalysis
     {
         public readonly Location Location { get; }
 
-        private readonly Action<Diagnostic>? _reportDiagnostic;
+        public readonly ISymbol OwningSymbol { get;  }
 
-        public DiagnosticContext(Location location, Action<Diagnostic>? reportDiagnostic)
+        internal readonly Action<Diagnostic>? ReportDiagnostic { get; }
+
+        internal readonly DataFlowAnalyzerContext Context { get; }
+
+        internal readonly FeatureContext FeatureContext { get; }
+
+        public DiagnosticContext(
+            Location location,
+            ISymbol owningSymbol,
+            Action<Diagnostic>? reportDiagnostic,
+            DataFlowAnalyzerContext context,
+            FeatureContext featureContext)
         {
             Location = location;
-            _reportDiagnostic = reportDiagnostic;
+            OwningSymbol = owningSymbol;
+            ReportDiagnostic = reportDiagnostic;
+            Context = context;
+            FeatureContext = featureContext;
         }
 
         private Diagnostic CreateDiagnostic(DiagnosticId id, params string[] args)
@@ -29,18 +44,18 @@ namespace ILLink.Shared.TrimAnalysis
 
         public partial void AddDiagnostic(DiagnosticId id, params string[] args)
         {
-            if (_reportDiagnostic is null)
+            if (ReportDiagnostic is null)
                 return;
 
-            _reportDiagnostic(CreateDiagnostic(id, args));
+            ReportDiagnostic(CreateDiagnostic(id, args));
         }
 
         public partial void AddDiagnostic(DiagnosticId id, ValueWithDynamicallyAccessedMembers actualValue, ValueWithDynamicallyAccessedMembers expectedAnnotationsValue, params string[] args)
         {
-            if (_reportDiagnostic is null)
+            if (ReportDiagnostic is null)
                 return;
 
-            _reportDiagnostic(CreateDiagnostic(id, actualValue, expectedAnnotationsValue, args));
+            ReportDiagnostic(CreateDiagnostic(id, actualValue, expectedAnnotationsValue, args));
         }
 
         private Diagnostic CreateDiagnostic(DiagnosticId id, ValueWithDynamicallyAccessedMembers actualValue, ValueWithDynamicallyAccessedMembers expectedAnnotationsValue, params string[] args)

@@ -223,6 +223,16 @@ namespace ILLink.Shared.TrimAnalysis
             return typeAnnotation;
         }
 
+        public DynamicallyAccessedMemberTypes GetGenericParameterAnnotation(ITypeParameterSymbol genericParameter)
+        {
+            return genericParameter.GetDynamicallyAccessedMemberTypes() | GetMemberTypesForConstraints(genericParameter);
+        }
+
+        private static DynamicallyAccessedMemberTypes GetMemberTypesForConstraints(ITypeParameterSymbol genericParameter)
+            => genericParameter.HasDefaultConstructorConstraint() ?
+                DynamicallyAccessedMemberTypes.PublicParameterlessConstructor :
+                DynamicallyAccessedMemberTypes.None;
+
 #pragma warning disable CA1822 // Mark members as static - the other partial implementations might need to be instance methods
 
         // TODO: This is relatively expensive on the analyzer since it doesn't cache the annotation information
@@ -237,11 +247,8 @@ namespace ILLink.Shared.TrimAnalysis
         internal partial MethodReturnValue GetMethodReturnValue(MethodProxy method, bool isNewObj)
             => GetMethodReturnValue(method, isNewObj, GetMethodReturnValueAnnotation(method.Method));
 
-        internal partial GenericParameterValue GetGenericParameterValue(GenericParameterProxy genericParameter, DynamicallyAccessedMemberTypes dynamicallyAccessedMemberTypes)
-            => new GenericParameterValue(genericParameter.TypeParameterSymbol, dynamicallyAccessedMemberTypes);
-
         internal partial GenericParameterValue GetGenericParameterValue(GenericParameterProxy genericParameter)
-            => new GenericParameterValue(genericParameter.TypeParameterSymbol);
+            => new GenericParameterValue(genericParameter.TypeParameterSymbol, GetGenericParameterAnnotation(genericParameter.TypeParameterSymbol));
 
         internal partial MethodParameterValue GetMethodThisParameterValue(MethodProxy method, DynamicallyAccessedMemberTypes dynamicallyAccessedMemberTypes)
         {

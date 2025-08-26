@@ -78,12 +78,13 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
         public void ReportDiagnostics(DataFlowAnalyzerContext context, Action<Diagnostic> reportDiagnostic)
         {
             Location location = Operation.Syntax.GetLocation();
+            var diagnosticContext = new DiagnosticContext(location, OwningSymbol, reportDiagnostic, context, FeatureContext);
             if (context.EnableTrimAnalyzer &&
                 !OwningSymbol.IsInRequiresUnreferencedCodeAttributeScope(out _) &&
                 !FeatureContext.IsEnabled(RequiresUnreferencedCodeAnalyzer.FullyQualifiedRequiresUnreferencedCodeAttribute))
             {
                 var typeNameResolver = new TypeNameResolver(context.Compilation);
-                TrimAnalysisVisitor.HandleCall(typeNameResolver, Operation, OwningSymbol, CalledMethod, Instance, Arguments, location, reportDiagnostic, default, out var _);
+                TrimAnalysisVisitor.HandleCall(typeNameResolver, Operation, OwningSymbol, CalledMethod, Instance, Arguments, in diagnosticContext, default, out var _);
             }
             // For Requires, make the location the reference to the method, not the entire invocation.
             // The parameters are not part of the issue, and including them in the location can be misleading.
@@ -92,11 +93,13 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                 InvocationExpressionSyntax invocationSyntax => invocationSyntax.Expression.GetLocation(),
                 _ => location
             };
-            var diagnosticContext = new DiagnosticContext(location, reportDiagnostic);
+            diagnosticContext = new DiagnosticContext(location, OwningSymbol, reportDiagnostic, context, FeatureContext);
             foreach (var requiresAnalyzer in context.EnabledRequiresAnalyzers)
             {
                 if (!requiresAnalyzer.IsIntrinsicallyHandled(CalledMethod, Instance, Arguments))
-                    requiresAnalyzer.CheckAndCreateRequiresDiagnostic(Operation, CalledMethod, OwningSymbol, context, FeatureContext, in diagnosticContext);
+                    // TODO: should fold the "Check" part of "CheckAndCreate" into the diagnostic context?
+                    // Or maybe just remove OWningSymbol parameter since it's passed through DiagnosticContext?
+                    requiresAnalyzer.CheckAndCreateRequiresDiagnostic(Operation, CalledMethod, OwningSymbol, in diagnosticContext);
             }
         }
     }

@@ -2,11 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text;
-using ILLink.RoslynAnalyzer.DataFlow;
 using ILLink.Shared.DataFlow;
 using Microsoft.CodeAnalysis;
 
@@ -239,5 +236,10 @@ namespace ILLink.RoslynAnalyzer
 
             return false;
         }
+
+        public static bool HasDefaultConstructorConstraint(this ITypeParameterSymbol typeParameterSymbol) =>
+            typeParameterSymbol.HasConstructorConstraint |
+            typeParameterSymbol.HasValueTypeConstraint |
+            typeParameterSymbol.HasUnmanagedTypeConstraint;
     }
 }

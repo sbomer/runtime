@@ -47,9 +47,9 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 
         public void ReportDiagnostics(DataFlowAnalyzerContext context, Action<Diagnostic> reportDiagnostic)
         {
-            DiagnosticContext diagnosticContext = new(Operation.Syntax.GetLocation(), reportDiagnostic);
+            DiagnosticContext diagnosticContext = new(Operation.Syntax.GetLocation(), OwningSymbol, reportDiagnostic, context, FeatureContext);
             foreach (var requiresAnalyzer in context.EnabledRequiresAnalyzers)
-                requiresAnalyzer.CheckAndCreateRequiresDiagnostic(Operation, Property, OwningSymbol, context, FeatureContext, in diagnosticContext);
+                requiresAnalyzer.CheckAndCreateRequiresDiagnostic(Operation, Property, OwningSymbol, in diagnosticContext);
         }
     }
 }

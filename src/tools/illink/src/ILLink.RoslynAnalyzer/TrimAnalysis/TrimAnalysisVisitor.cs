@@ -45,6 +45,8 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
 
         readonly TypeNameResolver _typeNameResolver;
 
+        readonly DataFlowAnalyzerContext _context;
+
         public TrimAnalysisVisitor(
             Compilation compilation,
             LocalStateAndContextLattice<MultiValue, FeatureContext, ValueSetLattice<SingleValue>, FeatureContextLattice> lattice,
@@ -53,13 +55,14 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
             ImmutableDictionary<CaptureId, FlowCaptureKind> lValueFlowCaptures,
             TrimAnalysisPatternStore trimAnalysisPatterns,
             InterproceduralState<MultiValue, ValueSetLattice<SingleValue>> interproceduralState,
-            DataFlowAnalyzerContext dataFlowAnalyzerContext)
+            DataFlowAnalyzerContext context)
             : base(compilation, lattice, owningSymbol, methodCFG, lValueFlowCaptures, interproceduralState)
         {
             _multiValueLattice = lattice.LocalStateLattice.Lattice.ValueLattice;
             TrimAnalysisPatterns = trimAnalysisPatterns;
-            _featureChecksVisitor = new FeatureChecksVisitor(dataFlowAnalyzerContext);
+            _featureChecksVisitor = new FeatureChecksVisitor(context);
             _typeNameResolver = new TypeNameResolver(compilation);
+            _context = context;
         }
 
         public override FeatureChecksValue GetConditionValue(IOperation branchValueOperation, StateValue state)
@@ -343,8 +346,8 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
             //   but currently we return empty (since the .ctor is declared as returning void).
             //   Especially with DAM on type, this can lead to incorrectly analyzed code (as in unknown type which leads
             //   to noise). ILLink has the same problem currently: https://github.com/dotnet/linker/issues/1952
-
-            HandleCall(_typeNameResolver, operation, OwningSymbol, calledMethod, instance, arguments, Location.None, null, _multiValueLattice, out MultiValue methodReturnValue);
+            var diagnosticContext = new DiagnosticContext(Location.None, OwningSymbol, null, _context, featureContext);
+            HandleCall(_typeNameResolver,  operation, OwningSymbol, calledMethod, instance, arguments, in diagnosticContext, _multiValueLattice, out MultiValue methodReturnValue);
 
             // This will copy the values if necessary
             TrimAnalysisPatterns.Add(new TrimAnalysisMethodCallPattern(
@@ -378,12 +381,11 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
             IMethodSymbol calledMethod,
             MultiValue instance,
             ImmutableArray<MultiValue> arguments,
-            Location location,
-            Action<Diagnostic>? reportDiagnostic,
+            in DiagnosticContext diagnosticContext,
             ValueSetLattice<SingleValue> multiValueLattice,
             out MultiValue methodReturnValue)
         {
-            var handleCallAction = new HandleCallAction(typeNameResolver, location, owningSymbol, operation, multiValueLattice, reportDiagnostic);
+            var handleCallAction = new HandleCallAction(typeNameResolver, in diagnosticContext, owningSymbol, operation, multiValueLattice);
             MethodProxy method = new(calledMethod);
             var intrinsicId = Intrinsics.GetIntrinsicIdForMethod(method);
             if (!handleCallAction.Invoke(method, instance, arguments, intrinsicId, out methodReturnValue))

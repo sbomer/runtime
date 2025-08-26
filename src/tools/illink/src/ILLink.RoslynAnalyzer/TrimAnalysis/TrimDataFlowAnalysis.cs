@@ -48,6 +48,7 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                 new FeatureContextLattice(),
                 initialContext: FeatureContext.None)
         {
+            System.Diagnostics.Debug.WriteLine("Trim dataflow analysis ctor, enabled analyzers: " + dataFlowAnalyzerContext.EnabledRequiresAnalyzers.Count());
             TrimAnalysisPatterns = new TrimAnalysisPatternStore(lattice.LocalStateLattice.Lattice.ValueLattice, lattice.ContextLattice);
             _dataFlowAnalyzerContext = dataFlowAnalyzerContext;
         }
@@ -62,11 +63,14 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
             ControlFlowGraph methodCFG,
             ImmutableDictionary<CaptureId, FlowCaptureKind> lValueFlowCaptures,
             InterproceduralState<MultiValue, ValueSetLattice<SingleValue>> interproceduralState)
-         => new(Context.Compilation, lattice, owningSymbol, methodCFG, lValueFlowCaptures, TrimAnalysisPatterns, interproceduralState, _dataFlowAnalyzerContext);
+        {
+            System.Diagnostics.Debug.WriteLine("GetVisitor, enabled analyzers: " + _dataFlowAnalyzerContext.EnabledRequiresAnalyzers.Count());
+            return new(Context.Compilation, lattice, owningSymbol, methodCFG, lValueFlowCaptures, TrimAnalysisPatterns, interproceduralState, _dataFlowAnalyzerContext);
+        }
 
 #if DEBUG
 #pragma warning disable CA1805 // Do not initialize unnecessarily
-        // Set this to a method name to trace the analysis of the method.
+            // Set this to a method name to trace the analysis of the method.
         private readonly string? traceMethod = null;
 
         private bool trace = false;

@@ -20,7 +20,7 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
                 {
                     TypeKind.TypeParameter =>
                         new NullableValueWithDynamicallyAccessedMembers(new TypeProxy(type),
-                            new GenericParameterValue((ITypeParameterSymbol)underlyingType)),
+                            FlowAnnotations.Instance.GetGenericParameterValue(new GenericParameterProxy((ITypeParameterSymbol)underlyingType))),
                     // typeof(Nullable<>)
                     TypeKind.Error => new SystemTypeValue(new TypeProxy(type)),
                     TypeKind.Class or TypeKind.Enum or TypeKind.Interface or TypeKind.Struct =>
@@ -30,7 +30,7 @@ namespace ILLink.RoslynAnalyzer.TrimAnalysis
             }
             return type.Kind switch
             {
-                SymbolKind.TypeParameter => new GenericParameterValue((ITypeParameterSymbol)type),
+                SymbolKind.TypeParameter => FlowAnnotations.Instance.GetGenericParameterValue(new GenericParameterProxy((ITypeParameterSymbol)type)),
                 SymbolKind.NamedType => new SystemTypeValue(new TypeProxy(type)),
                 // If the symbol is an Array type, the BaseType is System.Array
                 SymbolKind.ArrayType => new SystemTypeValue(new TypeProxy(type.BaseType!)),

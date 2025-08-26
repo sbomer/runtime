@@ -14,16 +14,15 @@ namespace ILLink.RoslynAnalyzer
     {
         public static void ApplyDynamicallyAccessedMembersToTypeHierarchy(
             TypeNameResolver typeNameResolver,
-            Location typeLocation,
-            INamedTypeSymbol type,
-            Action<Diagnostic> reportDiagnostic)
+            in DiagnosticContext diagnosticContext,
+            INamedTypeSymbol type)
         {
             var annotation = FlowAnnotations.GetTypeAnnotation(type);
 
             // We need to apply annotations to this type, and its base/interface types (recursively)
             // But the annotations on base/interfaces may already be applied so we don't need to apply those
             // again (and should avoid doing so as it would produce extra warnings).
-            var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(reportDiagnostic, typeNameResolver, type);
+            var reflectionAccessAnalyzer = new ReflectionAccessAnalyzer(in diagnosticContext, typeNameResolver, type);
             if (type.BaseType is INamedTypeSymbol baseType)
             {
                 var baseAnnotation = FlowAnnotations.GetTypeAnnotation(baseType);
@@ -32,7 +31,7 @@ namespace ILLink.RoslynAnalyzer
                 // Apply any annotations that didn't exist on the base type to the base type.
                 // This may produce redundant warnings when the annotation is DAMT.All or DAMT.PublicConstructors and the base already has a
                 // subset of those annotations.
-                reflectionAccessAnalyzer.GetReflectionAccessDiagnostics(typeLocation, baseType, annotationToApplyToBase, declaredOnly: false);
+                reflectionAccessAnalyzer.GetReflectionAccessDiagnostics(baseType, annotationToApplyToBase, declaredOnly: false);
             }
 
             // Most of the DynamicallyAccessedMemberTypes don't select members on interfaces. We only need to apply
@@ -47,14 +46,14 @@ namespace ILLink.RoslynAnalyzer
 
                     // Apply All or Interfaces to the interface type.
                     // DAMT.All may produce redundant warnings from implementing types, when the interface type already had some annotations.
-                    reflectionAccessAnalyzer.GetReflectionAccessDiagnostics(typeLocation, iface, annotationToApplyToInterfaces, declaredOnly: false);
+                    reflectionAccessAnalyzer.GetReflectionAccessDiagnostics(iface, annotationToApplyToInterfaces, declaredOnly: false);
                 }
             }
 
             // The annotations this type inherited from its base types or interfaces should not produce
             // warnings on the respective base/interface members, since those are already covered by applying
             // the annotations to those types. So we only need to handle the members directly declared on this type.
-            reflectionAccessAnalyzer.GetReflectionAccessDiagnostics(typeLocation, type, annotation, declaredOnly: true);
+            reflectionAccessAnalyzer.GetReflectionAccessDiagnostics(type, annotation, declaredOnly: true);
         }
     }
 }
