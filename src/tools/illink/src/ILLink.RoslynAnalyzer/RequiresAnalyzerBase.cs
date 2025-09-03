@@ -175,6 +175,15 @@ namespace ILLink.RoslynAnalyzer
                 implicitCtor,
                 ImmutableArray<ISymbol>.Empty,
                 diagnosticContext);
+
+            var dataFlowAnalyzerContext = DataFlowAnalyzerContext.Create(context.Options, context.Compilation, DynamicallyAccessedMembersAnalyzers.RequiresAnalyzers);
+            var typeNameResolver = new TypeNameResolver(context.Compilation);
+            var genericArgumentDataFlow = new GenericArgumentDataFlow(dataFlowAnalyzercontext, FeatureContext.None, typeNameResolver, typeSymbol, typeSymbol.Locations[0], context.ReportDiagnostic);
+            if (type.BaseType is INamedTypeSymbol baseType)
+                genericArgumentDataFloow.ProcessGenericArgumentDataFlow(baseType);
+
+            foreach (var interfaceType in type.Interfaces)
+                genericArgumentDataFlow.ProcessGenericArgumentDataFlow(interfaceType);
         }
 
         [Flags]

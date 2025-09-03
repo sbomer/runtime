@@ -1377,7 +1377,6 @@ namespace Mono.Linker.Tests.Cases.RequiresCapability
                 public void InstanceMethodWithAttribute() { }
 
                 // NOTE: The enclosing RUC does not apply to nested types.
-                [ExpectedWarning("IL2091")]
                 public class ClassWithWarning : RequiresAll<T>
                 {
                     [ExpectedWarning("IL2091")]
@@ -1394,15 +1393,11 @@ namespace Mono.Linker.Tests.Cases.RequiresCapability
                 }
             }
 
-            // This warning should ideally be suppressed by the RUC on the type:
-            [UnexpectedWarning("IL2091", Tool.All, "https://github.com/dotnet/runtime/issues/108523")]
             [RequiresUnreferencedCode("--GenericClassWithWarningWithRequires--")]
             public class GenericClassWithWarningWithRequires<U> : RequiresAll<U>
             {
             }
 
-            // This warning should ideally be suppressed by the RUC on the type:
-            [UnexpectedWarning("IL2091", Tool.All, "https://github.com/dotnet/runtime/issues/108523")]
             [RequiresUnreferencedCode("--ClassWithWarningWithRequires--")]
             public class ClassWithWarningWithRequires : RequiresAll<T>
             {
@@ -1417,8 +1412,6 @@ namespace Mono.Linker.Tests.Cases.RequiresCapability
                 }
             }
 
-            [ExpectedWarning("IL2026", "ClassWithRequires()", "--ClassWithRequires--")]
-            [ExpectedWarning("IL2026", "ClassWithRequires()", "--ClassWithRequires--", Tool.Trimmer, "https://github.com/dotnet/runtime/issues/119290")]
             class ClassWithWarningOnGenericArgumentConstructor_NewAndAnnotation : RequiresNewAndConstructors<ClassWithRequires>
             {
                 [ExpectedWarning("IL2026", "--ClassWithRequires--")]
@@ -1428,7 +1421,6 @@ namespace Mono.Linker.Tests.Cases.RequiresCapability
                 }
             }
 
-            [UnexpectedWarning("IL2026", Tool.All, "https://github.com/dotnet/runtime/issues/108507")]
             [RequiresUnreferencedCode("--ClassWithWarningOnGenericArgumentConstructorWithRequires--")]
             class ClassWithWarningOnGenericArgumentConstructorWithRequires : RequiresNew<ClassWithRequires>
             {
