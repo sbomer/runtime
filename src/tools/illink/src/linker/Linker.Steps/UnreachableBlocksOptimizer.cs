@@ -39,22 +39,46 @@ namespace Mono.Linker.Steps
         /// <param name="method">The method to process</param>
         public void ProcessMethod(MethodDefinition method)
         {
+            bool isVector128Encode = method.Name == "Vector128Encode";
+            if (isVector128Encode)
+            {
+                _context.LogMessage($"[DEBUG] Starting UnreachableBlocksOptimizer.ProcessMethod for {method.GetDisplayName()}");
+            }
+
             if (!IsMethodSupported(method))
+            {
+                if (isVector128Encode)
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Method not supported, returning early");
                 return;
+            }
 
             if (_context.Annotations.GetAction(method.Module.Assembly) != AssemblyAction.Link)
+            {
+                if (isVector128Encode)
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Assembly action is not Link, returning early");
                 return;
+            }
 
             var reducer = new BodyReducer(method.Body, _context);
 
             try
             {
+                if (isVector128Encode)
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Starting temporary inlining phase");
+
                 //
                 // If no external dependency can be extracted into constant there won't be
                 // anything to optimize in the method
                 //
                 if (!reducer.ApplyTemporaryInlining(this))
+                {
+                    if (isVector128Encode)
+                        _context.LogMessage($"[DEBUG] Vector128Encode: No constants found for optimization, returning early");
                     return;
+                }
+
+                if (isVector128Encode)
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Temporary inlining completed, starting body rewriting");
 
                 //
                 // This is the main step which evaluates if any expression can
@@ -62,7 +86,18 @@ namespace Mono.Linker.Steps
                 // branch is removed.
                 //
                 if (reducer.RewriteBody())
+                {
                     _context.LogMessage($"Reduced '{reducer.InstructionsReplaced}' instructions in conditional branches for [{method.DeclaringType.Module.Assembly.Name}] method '{method.GetDisplayName()}'.");
+                    if (isVector128Encode)
+                        _context.LogMessage($"[DEBUG] Vector128Encode: Body rewriting completed with {reducer.InstructionsReplaced} instructions replaced");
+                }
+                else if (isVector128Encode)
+                {
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Body rewriting completed with no changes");
+                }
+
+                if (isVector128Encode)
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Starting call inlining phase");
 
                 //
                 // Note: The inliner cannot run before reducer rewrites body as it
@@ -70,12 +105,20 @@ namespace Mono.Linker.Steps
                 // done by inliner
                 //
                 var inliner = new CallInliner(method.Body, this);
-                inliner.RewriteBody();
+                bool inlinerResult = inliner.RewriteBody();
+
+                if (isVector128Encode)
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Call inlining completed, result: {inlinerResult}");
             }
             catch (Exception e)
             {
+                if (isVector128Encode)
+                    _context.LogMessage($"[DEBUG] Vector128Encode: Exception occurred during optimization: {e.Message}");
                 throw new InternalErrorException($"Could not process the body of method '{method.GetDisplayName()}'.", e);
             }
+
+            if (isVector128Encode)
+                _context.LogMessage($"[DEBUG] Vector128Encode: ProcessMethod completed successfully");
         }
 
         static bool IsMethodSupported(MethodDefinition method)
@@ -487,11 +530,20 @@ namespace Mono.Linker.Steps
 
             public bool RewriteBody()
             {
+                bool isVector128Encode = body.Method.Name == "Vector128Encode";
+                if (isVector128Encode)
+                {
+                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner.RewriteBody started");
+                    Debug.WriteLine("Here");
+                }
                 bool changed = false;
                 LinkerILProcessor processor = body.GetLinkerILProcessor();
 #pragma warning disable RS0030 // This optimizer is the reason for the banned API, so it needs to use the Cecil directly
                 Collection<Instruction> instrs = body.Instructions;
 #pragma warning restore RS0030
+
+                if (isVector128Encode)
+                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner processing {instrs.Count} instructions");
 
                 for (int i = 0; i < instrs.Count; ++i)
                 {
@@ -503,25 +555,53 @@ namespace Mono.Linker.Steps
                         case Code.Callvirt:
                             MethodDefinition? md = optimizer._context.TryResolve((MethodReference)instr.Operand);
                             if (md == null)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner could not resolve method at {i}: {instr.Operand}");
                                 continue;
+                            }
+
+                            if (isVector128Encode)
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner processing call at {i}: {md.GetDisplayName()}");
 
                             if (md.IsVirtual)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner skipping virtual method");
                                 continue;
+                            }
 
                             if (md.CallingConvention == MethodCallingConvention.VarArg)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner skipping VarArg method");
                                 break;
+                            }
 
                             if (md.NoInlining)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner skipping NoInlining method");
                                 break;
+                            }
 
                             var cpl = new CalleePayload(md, GetArgumentsOnStack(md, instrs, i));
                             MethodResult? call_result = optimizer.TryGetMethodCallResult(cpl);
                             if (call_result is not MethodResult result)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner no constant result for {md.GetDisplayName()}");
                                 break;
+                            }
+
+                            if (isVector128Encode)
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner found constant result for {md.GetDisplayName()}: {result.Instruction.OpCode}");
 
                             if (!result.IsSideEffectFree)
                             {
                                 optimizer._context.LogMessage($"Cannot inline constant result of '{md.GetDisplayName()}' call due to presence of side effects");
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner skipping due to side effects");
                                 break;
                             }
 
@@ -529,6 +609,8 @@ namespace Mono.Linker.Steps
                             {
                                 if (!md.HasMetadataParameters() && CanInlineInstanceCall(instrs, i))
                                 {
+                                    if (isVector128Encode)
+                                        optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner inlining instance call {md.GetDisplayName()}");
                                     processor.Replace(i - 1, Instruction.Create(OpCodes.Nop));
                                     processor.Replace(i, result.GetPrototype());
                                     changed = true;
@@ -540,12 +622,23 @@ namespace Mono.Linker.Steps
                             if (md.HasMetadataParameters())
                             {
                                 if (!IsCalledWithoutSideEffects(md, instrs, i))
+                                {
+                                    if (isVector128Encode)
+                                        optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner call has side effects, skipping");
                                     continue;
+                                }
+
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner inlining static call with parameters {md.GetDisplayName()}");
 
                                 for (int p = 1; p <= md.GetMetadataParametersCount(); ++p)
                                 {
                                     processor.Replace(i - p, Instruction.Create(OpCodes.Nop));
                                 }
+                            }
+                            else if (isVector128Encode)
+                            {
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInlining static call without parameters {md.GetDisplayName()}");
                             }
 
                             processor.Replace(i, result.GetPrototype());
@@ -557,6 +650,8 @@ namespace Mono.Linker.Steps
                             Instruction? value = optimizer.GetSizeOfResult(operand);
                             if (value != null)
                             {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner replaced sizeof({operand}) with {value.OpCode}");
                                 processor.Replace(i, value.GetPrototype());
                                 changed = true;
                             }
@@ -564,6 +659,9 @@ namespace Mono.Linker.Steps
                             continue;
                     }
                 }
+
+                if (isVector128Encode)
+                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: CallInliner.RewriteBody completed, changed: {changed}");
 
                 return changed;
             }
@@ -647,6 +745,16 @@ namespace Mono.Linker.Steps
 
                 Debug.Assert(mapping != null);
 
+                // Log instruction rewrites for Vector128Encode
+                if (Body.Method.Name == "Vector128Encode")
+                {
+                    var oldInstr = FoldedInstructions?[index] ?? Instructions[index];
+                    string targetInfo = "";
+                    if (newInstruction.Operand is Instruction targetInstr)
+                        targetInfo = $", target: IL_{targetInstr.Offset:X4}";
+                    context.LogMessage($"[DEBUG] Vector128Encode: Rewrite[{index}] {oldInstr.OpCode} -> {newInstruction.OpCode}{targetInfo}");
+                }
+
                 // Tracks mapping for replaced instructions for easier
                 // branch targets resolution later
                 mapping[Instructions[index]] = index;
@@ -656,13 +764,19 @@ namespace Mono.Linker.Steps
 
             void RewriteCondition(int index, Instruction instr, int operand)
             {
+                if (Body.Method.Name == "Vector128Encode")
+                    context.LogMessage($"[DEBUG] Vector128Encode: RewriteCondition at index {index}, opcode {instr.OpCode}, operand {operand}, target: {(instr.Operand as Instruction)?.Offset:X4}");
+
                 switch (instr.OpCode.Code)
                 {
                     case Code.Brfalse:
                     case Code.Brfalse_S:
                         if (operand == 0)
                         {
-                            Rewrite(index, Instruction.Create(OpCodes.Br, (Instruction)instr.Operand));
+                            var targetInstr = (Instruction)instr.Operand;
+                            if (Body.Method.Name == "Vector128Encode")
+                                context.LogMessage($"[DEBUG] Vector128Encode: RewriteCondition brfalse->br, old target: IL_{targetInstr.Offset:X4}, creating unconditional branch");
+                            Rewrite(index, Instruction.Create(OpCodes.Br, targetInstr));
                         }
                         else
                         {
@@ -674,7 +788,10 @@ namespace Mono.Linker.Steps
                     case Code.Brtrue_S:
                         if (operand != 0)
                         {
-                            Rewrite(index, Instruction.Create(OpCodes.Br, (Instruction)instr.Operand));
+                            var targetInstr = (Instruction)instr.Operand;
+                            if (Body.Method.Name == "Vector128Encode")
+                                context.LogMessage($"[DEBUG] Vector128Encode: RewriteCondition brtrue->br, old target: IL_{targetInstr.Offset:X4}, creating unconditional branch");
+                            Rewrite(index, Instruction.Create(OpCodes.Br, targetInstr));
                         }
                         else
                         {
@@ -833,28 +950,72 @@ namespace Mono.Linker.Steps
 
             void RewriteToNop(int index)
             {
+                if (Body.Method.Name == "Vector128Encode")
+                {
+                    var instr = FoldedInstructions?[index] ?? Instructions[index];
+                    context.LogMessage($"[DEBUG] Vector128Encode: RewriteToNop[{index}] {instr.OpCode}");
+                }
                 Rewrite(index, Instruction.Create(OpCodes.Nop));
             }
 
             public bool RewriteBody()
             {
+                bool isVector128Encode = Body.Method.Name == "Vector128Encode";
+                if (isVector128Encode)
+                {
+                    context.LogMessage($"[DEBUG] Vector128Encode: BodyReducer.RewriteBody started");
+                    Debug.WriteLine("Rewriting body!");
+                }
                 if (FoldedInstructions == null)
                     InitializeFoldedInstruction();
 
+                if (isVector128Encode)
+                    context.LogMessage($"[DEBUG] Vector128Encode: Starting RemoveConditions phase");
+
                 if (!RemoveConditions())
+                {
+                    if (isVector128Encode)
+                        context.LogMessage($"[DEBUG] Vector128Encode: RemoveConditions returned false, no changes made");
                     return false;
+                }
+
+                if (isVector128Encode)
+                    context.LogMessage($"[DEBUG] Vector128Encode: Starting reachability analysis");
 
                 BitArray reachableInstrs = GetReachableInstructionsMap(out var unreachableEH);
                 if (reachableInstrs == null)
+                {
+                    if (isVector128Encode)
+                        context.LogMessage($"[DEBUG] Vector128Encode: GetReachableInstructionsMap returned null, no changes made");
                     return false;
+                }
+
+                if (isVector128Encode)
+                {
+                    int reachableCount = 0;
+                    for (int i = 0; i < reachableInstrs.Count; i++)
+                        if (reachableInstrs[i]) reachableCount++;
+                    context.LogMessage($"[DEBUG] Vector128Encode: Reachability analysis complete, {reachableCount}/{reachableInstrs.Count} instructions reachable");
+                }
+
+                if (isVector128Encode)
+                    context.LogMessage($"[DEBUG] Vector128Encode: Starting body sweeping phase");
 
                 var bodySweeper = new BodySweeper(Body, reachableInstrs, unreachableEH, context);
                 bodySweeper.Initialize();
 
                 bodySweeper.Process(conditionInstrsToRemove, conditionInstrsToReplace, out var nopInstructions);
                 InstructionsReplaced = bodySweeper.InstructionsReplaced;
+
+                if (isVector128Encode)
+                    context.LogMessage($"[DEBUG] Vector128Encode: Body sweeping complete, {InstructionsReplaced} instructions replaced");
+
                 if (InstructionsReplaced == 0)
+                {
+                    if (isVector128Encode)
+                        context.LogMessage($"[DEBUG] Vector128Encode: No instructions replaced, returning false");
                     return false;
+                }
 
                 reachableInstrs = GetReachableInstructionsMap(out _);
                 if (reachableInstrs != null)
@@ -876,6 +1037,10 @@ namespace Mono.Linker.Steps
                 bool changed = false;
                 var instructions = Instructions;
                 Instruction? targetResult;
+                bool isVector128Encode = Body.Method.Name == "Vector128Encode";
+
+                if (isVector128Encode)
+                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: ApplyTemporaryInlining started with {instructions.Count} instructions");
 
                 for (int i = 0; i < instructions.Count; ++i)
                 {
@@ -887,19 +1052,41 @@ namespace Mono.Linker.Steps
                         case Code.Callvirt:
                             var md = context.TryResolve((MethodReference)instr.Operand);
                             if (md == null)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: Could not resolve method at instruction {i}: {instr.Operand}");
                                 break;
+                            }
+
+                            if (isVector128Encode)
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: Processing call at instruction {i}: {md.GetDisplayName()}");
 
                             // Not supported
                             if (md.IsVirtual || md.CallingConvention == MethodCallingConvention.VarArg)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: Call not supported (IsVirtual={md.IsVirtual}, VarArg={md.CallingConvention == MethodCallingConvention.VarArg})");
                                 break;
+                            }
 
                             Instruction[]? args = GetArgumentsOnStack(md, FoldedInstructions ?? instructions, i);
+                            if (isVector128Encode)
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: Found {args?.Length ?? 0} arguments on stack");
+
                             targetResult = args?.Length > 0 && md.IsStatic ? EvaluateIntrinsicCall(md, args) : null;
+                            if (isVector128Encode && targetResult != null)
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: EvaluateIntrinsicCall returned result: {targetResult.OpCode}");
 
                             targetResult ??= optimizer.TryGetMethodCallResult(new CalleePayload(md, args))?.Instruction;
+                            if (isVector128Encode && targetResult != null)
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: TryGetMethodCallResult returned result: {targetResult.OpCode}");
 
                             if (targetResult == null)
+                            {
+                                if (isVector128Encode)
+                                    optimizer._context.LogMessage($"[DEBUG] Vector128Encode: No constant result found for call {md.GetDisplayName()}");
                                 break;
+                            }
 
                             //
                             // Do simple arguments stack removal by replacing argument expressions with nops. For cases
@@ -912,6 +1099,9 @@ namespace Mono.Linker.Steps
 
                             if (depth != 0)
                                 RewriteToNop(i - 1, depth);
+
+                            if (isVector128Encode)
+                                optimizer._context.LogMessage($"[DEBUG] Vector128Encode: Inlining call {md.GetDisplayName()} at instruction {i} with result {targetResult.OpCode}");
 
                             Rewrite(i, targetResult);
                             changed = true;
@@ -1001,6 +1191,17 @@ namespace Mono.Linker.Steps
                     var instr = FoldedInstructions[i];
                     var opcode = instr.OpCode;
 
+                    // Log all branch instructions for Vector128Encode to track IL_0000 targets
+                    if (Body.Method.Name == "Vector128Encode" && (opcode.FlowControl == FlowControl.Cond_Branch || opcode.FlowControl == FlowControl.Branch))
+                    {
+                        var targetInstr = instr.Operand as Instruction;
+                        string targetOffset = targetInstr != null ? $"IL_{targetInstr.Offset:X4}" : "null";
+                        context.LogMessage($"[DEBUG] Vector128Encode: RemoveConditions[{i}] examining {opcode} -> {targetOffset}");
+
+                        if (targetInstr?.Offset == 0)
+                            context.LogMessage($"[DEBUG] Vector128Encode: *** FOUND IL_0000 TARGET *** at index {i}, instruction: {opcode}");
+                    }
+
                     if (opcode.FlowControl == FlowControl.Cond_Branch)
                     {
                         if (opcode.StackBehaviourPop == StackBehaviour.Pop1_pop1)
@@ -1018,10 +1219,17 @@ namespace Mono.Linker.Steps
 
                                 if (IsComparisonAlwaysTrue(opcode, lint, rint))
                                 {
+                                    if (Body.Method.Name == "Vector128Encode")
+                                    {
+                                        var targetInstr = (Instruction)instr.Operand;
+                                        context.LogMessage($"[DEBUG] Vector128Encode: Comparison always true ({lint} vs {rint}), converting to unconditional branch -> IL_{targetInstr.Offset:X4}");
+                                    }
                                     Rewrite(i, Instruction.Create(OpCodes.Br, (Instruction)instr.Operand));
                                 }
                                 else
                                 {
+                                    if (Body.Method.Name == "Vector128Encode")
+                                        context.LogMessage($"[DEBUG] Vector128Encode: Comparison always false ({lint} vs {rint}), removing branch");
                                     RewriteConditionToNop(i);
                                 }
 
@@ -1040,6 +1248,9 @@ namespace Mono.Linker.Steps
                                 {
                                     if (IsJumpTargetRange(i, i))
                                         continue;
+
+                                    if (Body.Method.Name == "Vector128Encode")
+                                        context.LogMessage($"[DEBUG] Vector128Encode: Found constant condition pattern at {i}, constant: {opint}, branch target: IL_{(instr.Operand as Instruction)?.Offset:X4}");
 
                                     RewriteToNop(i - 1);
                                     RewriteCondition(i, instr, opint);

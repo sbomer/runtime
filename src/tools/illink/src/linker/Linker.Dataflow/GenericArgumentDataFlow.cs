@@ -118,7 +118,7 @@ namespace Mono.Linker.Dataflow
 
             if (flowAnnotations.HasGenericParameterNewConstraint(type))
             {
-                return true;
+                return true; // This early return causes bad IL for some reason.
             }
 
             if (type is GenericInstanceType genericInstanceType)

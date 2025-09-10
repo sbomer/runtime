@@ -1,0 +1,10 @@
+-a "/home/svbomer/src/runtime/artifacts/obj/coreclr/System.Private.CoreLib/linux.x64.Checked/PreTrim/System.Private.CoreLib.dll" library
+-out "/home/svbomer/src/runtime/artifacts/obj/coreclr/System.Private.CoreLib/linux.x64.Checked/"
+--warnaserror-  --ignore-link-attributes true --skip-unresolved true --trim-mode skip
+--action skip
+--action link System.Private.CoreLib
+-b true
+-x "/home/svbomer/src/runtime/src/libraries/System.Private.CoreLib/src/ILLink/ILLink.Descriptors.LibraryBuild.xml"
+--link-attributes "/home/svbomer/src/runtime/src/libraries/System.Private.CoreLib/src/ILLink/ILLink.Suppressions.LibraryBuild.xml"
+--link-attributes "/home/svbomer/src/runtime/src/coreclr/System.Private.CoreLib/src/ILLink/ILLink.Suppressions.LibraryBuild.xml"
+--nowarn ;IL2008;IL2009;IL2121;IL2025;IL2035

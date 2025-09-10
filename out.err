@@ -1,0 +1,20 @@
+Process terminated.
+Assertion failed.
+Invalid IL or a bug in the scanner
+   at Mono.Linker.Dataflow.ReflectionMethodBodyScanner.WarnAboutInvalidILInMethod(MethodIL methodIl, Int32 ilOffset) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Dataflow/ReflectionMethodBodyScanner.cs:line 101
+   at Mono.Linker.Dataflow.MethodBodyScanner.Scan(MethodIL methodIL, InterproceduralState& interproceduralState) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Dataflow/MethodBodyScanner.cs:line 703
+   at Mono.Linker.Dataflow.ReflectionMethodBodyScanner.Scan(MethodIL methodIL, InterproceduralState& interproceduralState) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Dataflow/ReflectionMethodBodyScanner.cs:line 90
+   at Mono.Linker.Dataflow.MethodBodyScanner.InterproceduralScan(MethodIL startingMethodIL) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Dataflow/MethodBodyScanner.cs:line 268
+   at Mono.Linker.Dataflow.ReflectionMethodBodyScanner.InterproceduralScan(MethodIL methodIL) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Dataflow/ReflectionMethodBodyScanner.cs:line 81
+   at Mono.Linker.Steps.MarkStep.MarkReflectionLikeDependencies(MethodIL methodIL, Boolean requiresReflectionMethodBodyScanner, MessageOrigin origin) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Steps/MarkStep.cs:line 4132
+   at Mono.Linker.Steps.MarkStep.MarkMethodBody(MethodBody body, MessageOrigin origin) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Steps/MarkStep.cs:line 3799
+   at Mono.Linker.Steps.MarkStep.ProcessMethod(MethodDefinition method, DependencyInfo& reason) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Steps/MarkStep.cs:line 3442
+   at Mono.Linker.Steps.MarkStep.ProcessQueue() in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Steps/MarkStep.cs:line 529
+   at Mono.Linker.Steps.MarkStep.ProcessPrimaryQueue() in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Steps/MarkStep.cs:line 449
+   at Mono.Linker.Steps.MarkStep.Process() in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Steps/MarkStep.cs:line 382
+   at Mono.Linker.Steps.MarkStep.Process(LinkContext context) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker.Steps/MarkStep.cs:line 249
+   at Mono.Linker.Pipeline.ProcessStep(LinkContext context, IStep step) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker/Pipeline.cs:line 194
+   at Mono.Linker.Pipeline.Process(LinkContext context) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker/Pipeline.cs:line 182
+   at Mono.Linker.Driver.Run(ILogger customLogger) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker/Driver.cs:line 939
+   at Mono.Linker.Driver.Main(String[] args) in /home/svbomer/src/runtime/src/tools/illink/src/linker/Linker/Driver.cs:line 79
+./illink.sh: line 2: 2147756 Aborted                 (core dumped) /home/svbomer/src/runtime/.dotnet/dotnet ./artifacts/bin/Mono.Linker/Debug/net10.0/illink.dll @illink.rsp "$@"

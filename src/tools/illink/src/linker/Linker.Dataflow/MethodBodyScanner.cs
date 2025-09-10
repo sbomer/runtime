@@ -302,6 +302,7 @@ namespace Mono.Linker.Dataflow
         {
             MethodBody methodBody = methodIL.Body;
             MethodDefinition thisMethod = methodBody.Method;
+            // System.Console.Error.WriteLine("----------- scanning " + thisMethod.FullName);
 
             LocalVariableStore locals = new(methodIL.Variables.Count);
 
@@ -750,6 +751,8 @@ namespace Mono.Linker.Dataflow
                         NewKnownStack(knownStacks, ((Instruction)operation.Operand).Offset, currentStack);
                         break;
                 }
+
+                // Console.Error.WriteLine($"{currentStack?.Count}\t[after {operation}]");
             }
         }
 

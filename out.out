@@ -1,0 +1,703 @@
+ILLink: Assigning external custom attribute 'System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.UnconditionalSuppressMessageAttribute(String, String) { args: System.String ILLink, System.String IL2026 }' instance to 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Assigning external custom attribute 'System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.UnconditionalSuppressMessageAttribute(String, String) { args: System.String ILLink, System.String IL2026 }' instance to 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Assigning external custom attribute 'System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.UnconditionalSuppressMessageAttribute(String, String) { args: System.String ILLink, System.String IL2026 }' instance to 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Assigning external custom attribute 'System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.UnconditionalSuppressMessageAttribute(String, String) { args: System.String ILLink, System.String IL2026 }' instance to 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Assigning external custom attribute 'System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.UnconditionalSuppressMessageAttribute(String, String) { args: System.String ILLink, System.String IL2026 }' instance to 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Assigning external custom attribute 'System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.UnconditionalSuppressMessageAttribute(String, String) { args: System.String ILLink, System.String IL2026 }' instance to 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Assigning external custom attribute 'System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.UnconditionalSuppressMessageAttribute(String, String) { args: System.String ILLink, System.String IL2067 }' instance to 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Processing embedded 'ILLink.LinkAttributes.xml' from 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Processing embedded 'ILLink.LinkAttributes.xml' from 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Processing embedded trimming descriptor 'ILLink.Descriptors.xml' from 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+resource ILLink.Descriptors.xml in System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e(1103,8): System.Private.CoreLib: Duplicate preserve of 'System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn.FromManaged(String, Span<Byte>)'
+resource ILLink.Descriptors.xml in System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e(1104,8): System.Private.CoreLib: Duplicate preserve of 'System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn.ToUnmanaged()'
+resource ILLink.Descriptors.xml in System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e(1105,8): System.Private.CoreLib: Duplicate preserve of 'System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn.Free()'
+ILLink: Processing embedded substitution descriptor 'ILLink.Substitutions.xml' from 'System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Enum.InternalBoxEnum(RuntimeTypeHandle, Int64)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.InteropServices.Marshalling.ComVariant..cctor()'.
+ILLink: Reduced '12' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Diagnostics.Tracing.EventSource.DecodeObjects(Object[], Type[], EventSource.EventData*)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.String.GetNonRandomizedHashCode(ReadOnlySpan<Char>)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.String.GetNonRandomizedHashCodeOrdinalIgnoreCase(ReadOnlySpan<Char>)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int32.System.Numerics.IBinaryInteger<System.Int32>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, Int32&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int32.System.Numerics.IBinaryInteger<System.Int32>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, Int32&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IntPtr.System.Numerics.IBinaryInteger<nint>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, IntPtr&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IntPtr.System.Numerics.IBinaryInteger<nint>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, IntPtr&)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'Microsoft.Win32.SafeHandles.SafeFileHandle..cctor()'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt32.System.Numerics.IBinaryInteger<System.UInt32>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, UInt32&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt32.System.Numerics.IBinaryInteger<System.UInt32>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, UInt32&)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Array.GetUpperBound(Int32)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Array.GetLowerBound(Int32)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Array.BinarySearch(Array, Int32, Int32, Object, IComparer)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Array.IndexOf(Array, Object, Int32, Int32)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Array.LastIndexOf(Array, Object, Int32, Int32)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Array.Reverse(Array, Int32, Int32)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Array.Sort(Array, Array, Int32, Int32, IComparer)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UIntPtr.System.Numerics.IBinaryInteger<nuint>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, UIntPtr&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UIntPtr.System.Numerics.IBinaryInteger<nuint>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, UIntPtr&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Decimal.System.Numerics.IFloatingPoint<System.Decimal>.TryWriteSignificandBigEndian(Span<Byte>, Int32&)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Decimal.System.Numerics.IFloatingPoint<System.Decimal>.TryWriteSignificandLittleEndian(Span<Byte>, Int32&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt64.System.Numerics.IBinaryInteger<System.UInt64>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, UInt64&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt64.System.Numerics.IBinaryInteger<System.UInt64>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, UInt64&)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Environment.Is64BitOperatingSystem.get'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int64.System.Numerics.IBinaryInteger<System.Int64>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, Int64&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int64.System.Numerics.IBinaryInteger<System.Int64>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, Int64&)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.GC.AddMemoryPressure(Int64)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.GC.RemoveMemoryPressure(Int64)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Math.BigMul(UInt64, UInt64, UInt64&)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Math.BigMul(Int64, Int64, Int64&)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Math.Round(Double, MidpointRounding)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.MathF.Round(Single, MidpointRounding)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Char.System.Numerics.IBinaryInteger<System.Char>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, Char&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Char.System.Numerics.IBinaryInteger<System.Char>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, Char&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.RuntimeType.CreateInstanceImpl(BindingFlags, Binder, Object[], CultureInfo)'.
+ILLink: Reduced '12' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.DateTime(Int32, Int32, Int32, Int32, Int32, Int32, Int32, Calendar, DateTimeKind)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.DateTime(Int32, Int32, Int32, Int32, Int32, Int32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.DateTime(Int32, Int32, Int32, Int32, Int32, Int32, DateTimeKind)'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.DateTime(Int32, Int32, Int32, Int32, Int32, Int32, Calendar)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.DateTime(Int32, Int32, Int32, Int32, Int32, Int32, Int32, Calendar)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.ValidateLeapSecond(DateTime)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.FromFileTimeUtc(Int64)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.ToFileTimeUtc()'.
+ILLink: Reduced '16' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTime.TryCreate(Int32, Int32, Int32, Int32, Int32, Int32, Int32, DateTime&)'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTimeOffset.DateTimeOffset(Int32, Int32, Int32, Int32, Int32, Int32, TimeSpan)'.
+ILLink: Reduced '12' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DateTimeOffset.DateTimeOffset(Int32, Int32, Int32, Int32, Int32, Int32, Int32, Calendar, TimeSpan)'.
+ILLink: Reduced '15' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.Guid(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.TryParseExactD<TChar>(ReadOnlySpan<TChar>, Guid.GuidResult&)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.TryParseExactN<TChar>(ReadOnlySpan<TChar>, Guid.GuidResult&)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.ToByteArray()'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.TryWriteBytes(Span<Byte>)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.TryFormatCore<TChar>(Span<TChar>, Int32&, Int32)'.
+ILLink: Reduced '12' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.FormatGuidVector128Utf8(Guid, Boolean)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Guid.<TryParseExactD>g__TryCompatParsing|48_0<TChar>(ReadOnlySpan<TChar>, Guid.GuidResult&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int16.System.Numerics.IBinaryInteger<System.Int16>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, Int16&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int16.System.Numerics.IBinaryInteger<System.Int16>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, Int16&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt16.System.Numerics.IBinaryInteger<System.UInt16>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, UInt16&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt16.System.Numerics.IBinaryInteger<System.UInt16>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, UInt16&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int128.System.Numerics.IBinaryInteger<System.Int128>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, Int128&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Int128.System.Numerics.IBinaryInteger<System.Int128>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, Int128&)'.
+ILLink: Reduced '16' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.MemoryExtensions.IndexOfAnyInRange<T>(ReadOnlySpan<T>, T, T)'.
+ILLink: Reduced '16' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.MemoryExtensions.IndexOfAnyExceptInRange<T>(ReadOnlySpan<T>, T, T)'.
+ILLink: Reduced '16' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.MemoryExtensions.LastIndexOfAnyInRange<T>(ReadOnlySpan<T>, T, T)'.
+ILLink: Reduced '16' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.MemoryExtensions.LastIndexOfAnyExceptInRange<T>(ReadOnlySpan<T>, T, T)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsFreeBSDVersionAtLeast(Int32, Int32, Int32, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsAndroidVersionAtLeast(Int32, Int32, Int32, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsIOSVersionAtLeast(Int32, Int32, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsMacOSVersionAtLeast(Int32, Int32, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsMacCatalystVersionAtLeast(Int32, Int32, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsTvOSVersionAtLeast(Int32, Int32, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsWatchOSVersionAtLeast(Int32, Int32, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.OperatingSystem.IsWindowsVersionAtLeast(Int32, Int32, Int32, Int32)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.TimeZoneInfo.TryConvertIanaIdToWindowsId(String, Boolean, String&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.TimeZoneInfo.TryConvertWindowsIdToIanaId(String, String, Boolean, String&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt128.System.Numerics.IBinaryInteger<System.UInt128>.TryReadBigEndian(ReadOnlySpan<Byte>, Boolean, UInt128&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.UInt128.System.Numerics.IBinaryInteger<System.UInt128>.TryReadLittleEndian(ReadOnlySpan<Byte>, Boolean, UInt128&)'.
+ILLink: Reduced '34' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Resources.ResourceReader.AllocateStringForNameIndex(Int32, Int32&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.RoundUpToPowerOf2(UInt32)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.RoundUpToPowerOf2(UInt64)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.LeadingZeroCount(UInt32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.LeadingZeroCount(UInt64)'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.Log2(UInt32)'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.Log2(UInt64)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.PopCount(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.PopCount(UInt64)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.TrailingZeroCount(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.TrailingZeroCount(UInt64)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.Crc32C(UInt32, Byte)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.Crc32C(UInt32, UInt16)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.Crc32C(UInt32, UInt32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.BitOperations.Crc32C(UInt32, UInt64)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CharUnicodeInfo.GetNumericValueNoBoundsCheck(UInt32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CharUnicodeInfo.ToUpper(Char)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CharUnicodeInfo.ToUpper(UInt32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CharUnicodeInfo.ToLower(Char)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CharUnicodeInfo.ToLower(UInt32)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CharUnicodeInfo.GetCategoryCasingTableOffsetNoBoundsChecks(UInt32)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CharUnicodeInfo.GetNumericGraphemeTableOffsetNoBoundsChecks(UInt32)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.IsSortable(ReadOnlySpan<Char>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.InitSort(CultureInfo)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.CompareStringCore(ReadOnlySpan<Char>, ReadOnlySpan<Char>, CompareOptions)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.StartsWithCore(ReadOnlySpan<Char>, ReadOnlySpan<Char>, CompareOptions, Int32*)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.EndsWithCore(ReadOnlySpan<Char>, ReadOnlySpan<Char>, CompareOptions, Int32*)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.IndexOfCore(ReadOnlySpan<Char>, ReadOnlySpan<Char>, CompareOptions, Int32*, Boolean)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.CreateSortKeyCore(String, CompareOptions)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.GetSortKeyCore(ReadOnlySpan<Char>, Span<Byte>, CompareOptions)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.GetSortKeyLengthCore(ReadOnlySpan<Char>, CompareOptions)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.GetHashCodeOfStringCore(ReadOnlySpan<Char>, CompareOptions)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CompareInfo.Version.get'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.TextInfo.TextInfo(CultureData)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.TextInfo.ToUpperOrdinal(Char)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.TextInfo.ChangeCaseCore(Char*, Int32, Char*, Int32, Boolean)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureInfo.CultureTypes.get'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureInfo.GetCultureInfo(String, Boolean)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.IdnMapping.GetAscii(String, Int32, Int32)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.IdnMapping.GetUnicode(String, Int32, Int32)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.JapaneseCalendar.GetEraInfo()'.
+ILLink: Reduced '36' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64<T>.Equals(Vector64<Vector64<T>.T>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadDoubleBigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadHalfBigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt16BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt64BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt128BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadIntPtrBigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadSingleBigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt16BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt32BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt64BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt128BigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUIntPtrBigEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadDoubleBigEndian(ReadOnlySpan<Byte>, Double&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadHalfBigEndian(ReadOnlySpan<Byte>, Half&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt16BigEndian(ReadOnlySpan<Byte>, Int16&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt32BigEndian(ReadOnlySpan<Byte>, Int32&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt64BigEndian(ReadOnlySpan<Byte>, Int64&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt128BigEndian(ReadOnlySpan<Byte>, Int128&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadIntPtrBigEndian(ReadOnlySpan<Byte>, IntPtr&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadSingleBigEndian(ReadOnlySpan<Byte>, Single&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt16BigEndian(ReadOnlySpan<Byte>, UInt16&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt32BigEndian(ReadOnlySpan<Byte>, UInt32&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt64BigEndian(ReadOnlySpan<Byte>, UInt64&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt128BigEndian(ReadOnlySpan<Byte>, UInt128&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUIntPtrBigEndian(ReadOnlySpan<Byte>, UIntPtr&)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadDoubleLittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadHalfLittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt16LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadInt128LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadIntPtrLittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadSingleLittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUInt128LittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.ReadUIntPtrLittleEndian(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadDoubleLittleEndian(ReadOnlySpan<Byte>, Double&)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadHalfLittleEndian(ReadOnlySpan<Byte>, Half&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt16LittleEndian(ReadOnlySpan<Byte>, Int16&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt32LittleEndian(ReadOnlySpan<Byte>, Int32&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt64LittleEndian(ReadOnlySpan<Byte>, Int64&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadInt128LittleEndian(ReadOnlySpan<Byte>, Int128&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadIntPtrLittleEndian(ReadOnlySpan<Byte>, IntPtr&)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadSingleLittleEndian(ReadOnlySpan<Byte>, Single&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt16LittleEndian(ReadOnlySpan<Byte>, UInt16&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt32LittleEndian(ReadOnlySpan<Byte>, UInt32&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt64LittleEndian(ReadOnlySpan<Byte>, UInt64&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUInt128LittleEndian(ReadOnlySpan<Byte>, UInt128&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryReadUIntPtrLittleEndian(ReadOnlySpan<Byte>, UIntPtr&)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteDoubleBigEndian(Span<Byte>, Double)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteHalfBigEndian(Span<Byte>, Half)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt16BigEndian(Span<Byte>, Int16)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt32BigEndian(Span<Byte>, Int32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt64BigEndian(Span<Byte>, Int64)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt128BigEndian(Span<Byte>, Int128)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteIntPtrBigEndian(Span<Byte>, IntPtr)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteSingleBigEndian(Span<Byte>, Single)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt16BigEndian(Span<Byte>, UInt16)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt32BigEndian(Span<Byte>, UInt32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt64BigEndian(Span<Byte>, UInt64)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt128BigEndian(Span<Byte>, UInt128)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUIntPtrBigEndian(Span<Byte>, UIntPtr)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteDoubleBigEndian(Span<Byte>, Double)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteHalfBigEndian(Span<Byte>, Half)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt16BigEndian(Span<Byte>, Int16)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt32BigEndian(Span<Byte>, Int32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt64BigEndian(Span<Byte>, Int64)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt128BigEndian(Span<Byte>, Int128)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteIntPtrBigEndian(Span<Byte>, IntPtr)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteSingleBigEndian(Span<Byte>, Single)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt16BigEndian(Span<Byte>, UInt16)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt32BigEndian(Span<Byte>, UInt32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt64BigEndian(Span<Byte>, UInt64)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt128BigEndian(Span<Byte>, UInt128)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUIntPtrBigEndian(Span<Byte>, UIntPtr)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteDoubleLittleEndian(Span<Byte>, Double)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteHalfLittleEndian(Span<Byte>, Half)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt16LittleEndian(Span<Byte>, Int16)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(Span<Byte>, Int32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt64LittleEndian(Span<Byte>, Int64)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteInt128LittleEndian(Span<Byte>, Int128)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteIntPtrLittleEndian(Span<Byte>, IntPtr)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteSingleLittleEndian(Span<Byte>, Single)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt16LittleEndian(Span<Byte>, UInt16)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(Span<Byte>, UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt64LittleEndian(Span<Byte>, UInt64)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUInt128LittleEndian(Span<Byte>, UInt128)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.WriteUIntPtrLittleEndian(Span<Byte>, UIntPtr)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteDoubleLittleEndian(Span<Byte>, Double)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteHalfLittleEndian(Span<Byte>, Half)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt16LittleEndian(Span<Byte>, Int16)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt32LittleEndian(Span<Byte>, Int32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt64LittleEndian(Span<Byte>, Int64)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteInt128LittleEndian(Span<Byte>, Int128)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteIntPtrLittleEndian(Span<Byte>, IntPtr)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteSingleLittleEndian(Span<Byte>, Single)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt16LittleEndian(Span<Byte>, UInt16)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt32LittleEndian(Span<Byte>, UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt64LittleEndian(Span<Byte>, UInt64)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUInt128LittleEndian(Span<Byte>, UInt128)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Binary.BinaryPrimitives.TryWriteUIntPtrLittleEndian(Span<Byte>, UIntPtr)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Threading.ExecutionContext.CheckThreadPoolAndContextsAreDefault()'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Threading.Thread.ThrowIfNoThreadStart()'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Threading.Thread.ResetThreadPoolThread()'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Threading.Thread.ResetThreadPoolThreadSlow()'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Threading.Lock.TryEnterSlow(Int32, Lock.ThreadId)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Threading.Tasks.TaskToAsyncResult.Begin(Task, AsyncCallback, Object)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.ChangeCase<TFrom,TTo,TCasing>(TFrom*, TTo*, UIntPtr)'.
+ILLink: Reduced '31' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.GetIndexOfFirstNonAsciiByteInLane_AdvSimd(Vector128<Byte>, Vector128<Byte>)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.FirstCharInUInt32IsAscii(UInt32)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.GetIndexOfFirstNonAsciiByte_Vector(Byte*, UIntPtr)'.
+ILLink: Reduced '99' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.GetIndexOfFirstNonAsciiByte_Intrinsified(Byte*, UIntPtr)'.
+ILLink: Reduced '54' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.GetIndexOfFirstNonAsciiChar_Intrinsified(Char*, UIntPtr)'.
+ILLink: Reduced '46' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.NarrowFourUtf16CharsToAsciiAndWriteToBuffer(Byte&, UInt64)'.
+ILLink: Reduced '13' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.NarrowTwoUtf16CharsToAsciiAndWriteToBuffer(Byte&, UInt32)'.
+ILLink: Reduced '101' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.NarrowUtf16ToAscii(Char*, Byte*, UIntPtr)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.VectorContainsNonAsciiChar(Vector128<Byte>)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.VectorContainsNonAsciiChar(Vector128<UInt16>)'.
+ILLink: Reduced '19' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.AllCharsInVectorAreAscii<T>(Vector128<T>)'.
+ILLink: Reduced '12' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.ExtractAsciiVector(Vector128<UInt16>, Vector128<UInt16>)'.
+ILLink: Reduced '59' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.WidenAsciiToUtf16(Byte*, Char*, UIntPtr)'.
+ILLink: Reduced '48' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.WidenFourAsciiBytesToUtf16AndWriteToBuffer(Char&, UInt32)'.
+ILLink: Reduced '33' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Ascii.CountNumberOfLeadingAsciiBytesFromUInt32WithSomeNonAsciiData(UInt32)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.UnicodeEncoding.GetByteCount(Char*, Int32, EncoderNLS)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.UnicodeEncoding.GetBytes(Char*, Int32, Byte*, Int32, EncoderNLS)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.UnicodeEncoding.GetCharCount(Byte*, Int32, DecoderNLS)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.UnicodeEncoding.GetChars(Byte*, Int32, Char*, Int32, DecoderNLS)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.MemoryFailPoint.GetTopOfMemory()'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Loader.AssemblyLoadContext.ResolveSatelliteAssembly(AssemblyName)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector128.Create<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector128.UnpackLow(Vector128<Byte>, Vector128<Byte>)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector128.UnpackHigh(Vector128<Byte>, Vector128<Byte>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.CopySign<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Cos(Vector64<Double>)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Cos(Vector64<Single>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.DegreesToRadians(Vector64<Double>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.DegreesToRadians(Vector64<Single>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Exp(Vector64<Double>)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Exp(Vector64<Single>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Hypot(Vector64<Double>, Vector64<Double>)'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Hypot(Vector64<Single>, Vector64<Single>)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Lerp(Vector64<Double>, Vector64<Double>, Vector64<Double>)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Lerp(Vector64<Single>, Vector64<Single>, Vector64<Single>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Log(Vector64<Double>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Log(Vector64<Single>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Log2(Vector64<Double>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Log2(Vector64<Single>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Max<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MaxMagnitude<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MaxMagnitudeNumber<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MaxNative<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MaxNumber<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Min<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MinMagnitude<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MinMagnitudeNumber<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MinNative<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.MinNumber<T>(Vector64<T>, Vector64<T>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.RadiansToDegrees(Vector64<Double>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.RadiansToDegrees(Vector64<Single>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Sin(Vector64<Double>)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.Sin(Vector64<Single>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.SinCos(Vector64<Double>)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.Vector64.SinCos(Vector64<Single>)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.InteropServices.NFloat.System.Numerics.IFloatingPoint<System.Runtime.InteropServices.NFloat>.TryWriteExponentBigEndian(Span<Byte>, Int32&)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.InteropServices.NFloat.System.Numerics.IFloatingPoint<System.Runtime.InteropServices.NFloat>.TryWriteExponentLittleEndian(Span<Byte>, Int32&)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.InteropServices.NFloat.System.Numerics.IFloatingPoint<System.Runtime.InteropServices.NFloat>.TryWriteSignificandBigEndian(Span<Byte>, Int32&)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.InteropServices.NFloat.System.Numerics.IFloatingPoint<System.Runtime.InteropServices.NFloat>.TryWriteSignificandLittleEndian(Span<Byte>, Int32&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.InteropServices.SafeBuffer.Initialize(UInt64)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.InteropServices.Marshalling.ComVariant.CreateRaw<T>(VarEnum, T)'.
+ILLink: Reduced '55' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.CompilerServices.RuntimeHelpers.InitializeArray(Array, RuntimeFieldHandle)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.File.ReadAllBytes(String)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.File.ReadAllBytesAsync(String, CancellationToken)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.FileStreamOptions.UnixCreateMode.set'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Collections.BitArray.BitArray(SerializationInfo, StreamingContext)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Collections.BitArray.BitArray(Boolean[])'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Collections.BitArray.BitArray(Int32[])'.
+ILLink: Reduced '165' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Collections.BitArray.CopyTo(Array, Int32)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Collections.BitArray.ReverseIfBE(Int32)'.
+ILLink: Reduced '14' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'Internal.Runtime.InteropServices.ComponentActivator.OnDisabledGetFunctionPointerCall(IntPtr, IntPtr)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Ordinal.CompareStringIgnoreCaseNonAscii(Char&, Int32, Char&, Int32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Ordinal.IndexOfOrdinalIgnoreCase(ReadOnlySpan<Char>, ReadOnlySpan<Char>)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Ordinal.LastIndexOf(String, String, Int32, Int32, Boolean)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Ordinal.LastIndexOfOrdinalIgnoreCase(ReadOnlySpan<Char>, ReadOnlySpan<Char>)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Ordinal.ToUpperOrdinal(ReadOnlySpan<Char>, Span<Char>)'.
+ILLink: Reduced '40' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Marvin.ComputeHash32(Byte&, UInt32, UInt32, UInt32)'.
+ILLink: Reduced '17' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Marvin.ComputeHash32OrdinalIgnoreCase(Char&, Int32, UInt32, UInt32)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Normalization.IsNormalized(ReadOnlySpan<Char>, NormalizationForm)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Normalization.Normalize(String, NormalizationForm)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Normalization.TryNormalize(ReadOnlySpan<Char>, Span<Char>, Int32&, NormalizationForm)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Normalization.GetNormalizedLength(ReadOnlySpan<Char>, NormalizationForm)'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.Normalization.ValidateArguments(ReadOnlySpan<Char>, NormalizationForm, String)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Number.ParseEightDigitsUnrolled(Byte*)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'Interop.Sys.GetHostName()'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'Interop.Sys.GetAllMountPoints()'.
+ILLink: Reduced '25' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.DefaultBinder.BindToMethod(BindingFlags, MethodBase[], Object[]&, ParameterModifier[], CultureInfo, String[], Object&)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.HexConverter.IsHexChar(Int32)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.HexConverter.EncodeToUtf8(ReadOnlySpan<Byte>, Span<Byte>, HexConverter.Casing)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.HexConverter.EncodeToUtf16(ReadOnlySpan<Byte>, Span<Char>, HexConverter.Casing)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.HexConverter.TryDecodeFromUtf8(ReadOnlySpan<Byte>, Span<Byte>, Int32&)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.HexConverter.TryDecodeFromUtf16(ReadOnlySpan<Char>, Span<Byte>, Int32&)'.
+ILLink: Reduced '36' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.HexConverter.TryDecodeFrom_Vector128<TChar>(ReadOnlySpan<TChar>, Span<Byte>, Int32&)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Reflection.CustomAttribute.AddCustomAttributes(RuntimeType.ListBuilder`1&, RuntimeModule, Int32, RuntimeType, Boolean, RuntimeType.ListBuilder<Object>)'.
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.PathInternal.StringComparison.get'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.PathInternal.IsCaseSensitive.get'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.ProbabilisticMap.IsCharBitSet(UInt32&, Byte)'.
+ILLink: Reduced '13' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.ProbabilisticMap.ContainsMask16Chars(Vector128<Byte>, Vector128<Byte>, Char&)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.ProbabilisticMap.IsCharBitNotSet(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)'.
+ILLink: Cannot inline constant result of 'System.Globalization.GlobalizationMode.Settings.GetIcuLoadFailureMessage()' call due to presence of side effects
+ILLink: Reduced '55' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Numerics.Matrix4x4.Impl.Transpose(Matrix4x4.Impl&)'.
+ILLink: Reduced '17' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.VectorMath.Narrow<TVectorDouble,TVectorSingle>(TVectorDouble)'.
+ILLink: Reduced '20' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Runtime.Intrinsics.VectorMath.Widen<TVectorSingle,TVectorDouble>(TVectorSingle)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetCultureDataForRegion(String, Boolean)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetCultures(CultureTypes)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetCultureData(String, Boolean)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetLanguageDisplayNameCore(String)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.ThreeLetterWindowsLanguageName.get'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.LocalizedLanguageName.get'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GeoId.get'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.LocalizedCountryName.get'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.SCONSOLEFALLBACKNAME.get'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.ListSeparator.get'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.FirstDayOfWeek.get'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.LCID.get'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.IsReplacementCulture.get'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.TimeSeparator.get'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetNFIValues(NumberFormatInfo)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetLocaleInfoCore(CultureData.LocaleNumberData)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetLocaleInfoCoreUserOverride(CultureData.LocaleNumberData)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetLocaleInfoCoreUserOverride(CultureData.LocaleStringData)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetLocaleInfoCore(CultureData.LocaleStringData, String)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetLocaleInfoCore(String, CultureData.LocaleStringData, String)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CultureData.GetLocaleInfoCoreUserOverride(CultureData.LocaleGroupingData)'.
+ILLink: Reduced '1' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.IndexOfAnyAsciiSearcher.IsVectorizationSupported.get'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.IndexOfAnyAsciiSearcher.IndexOfAnyLookupCore<TUniqueLowNibble>(Vector128<Byte>, Vector128<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.AsciiByteSearchValues<TUniqueLowNibble>.AsciiByteSearchValues`1(ReadOnlySpan<Byte>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.AsciiCharSearchValues<TOptimizations,TUniqueLowNibble>.AsciiCharSearchValues`2(ReadOnlySpan<Char>)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.StringSearchValues.CreateForSingleValue(String, HashSet<String>, Boolean, Boolean, Boolean)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.StringSearchValues.<CreateSingleValuesThreeChars>g__CanUsePackedImpl|10_0<TValueLength,TCaseSensitivity>(Char)'.
+ILLink: Reduced '16' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Text.Base64Helper.EncodeTo<TBase64Encoder,T>(TBase64Encoder, ReadOnlySpan<Byte>, Span<T>, Int32&, Int32&, Boolean)'.
+ILLink: Reduced '16' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Text.Base64Helper.DecodeFrom<TBase64Decoder,T>(TBase64Decoder, ReadOnlySpan<T>, Span<Byte>, Int32&, Int32&, Boolean, Boolean)'.
+ILLink: Reduced '35' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Text.Base64Helper.Vector128Decode<TBase64Decoder,T>(TBase64Decoder, T*&, Byte*&, T*, Int32, Int32, T*, Byte*)'.
+ILLink: [DEBUG] Starting UnreachableBlocksOptimizer.ProcessMethod for System.Buffers.Text.Base64Helper.Vector128Encode<TBase64Encoder,T>(TBase64Encoder, Byte*&, T*&, Byte*, Int32, Int32, Byte*, T*)
+ILLink: [DEBUG] Vector128Encode: Starting temporary inlining phase
+ILLink: [DEBUG] Vector128Encode: ApplyTemporaryInlining started with 173 instructions
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 4: System.Runtime.Intrinsics.Vector128.Create(Int32, Int32, Int32, Int32)
+ILLink: [DEBUG] Vector128Encode: Found 4 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(Int32, Int32, Int32, Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 5: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 12: System.Buffers.Text.Base64Helper.IBase64Encoder<T>.Ssse3AdvSimdLutE3.get
+ILLink: [DEBUG] Vector128Encode: Call not supported (IsVirtual=True, VarArg=False)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 13: System.Runtime.Intrinsics.Vector128.Create(UInt32, UInt32, UInt32, UInt32)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(UInt32, UInt32, UInt32, UInt32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 14: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 17: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Found 1 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 18: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 21: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Found 1 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 22: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 25: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Found 1 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 26: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 29: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Found 1 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 30: System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 33: System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: Found 1 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 36: System.Runtime.Intrinsics.Vector128.Create(SByte)
+ILLink: [DEBUG] Vector128Encode: Found 1 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(SByte)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 39: System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: Found 1 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 50: System.Buffers.Text.Base64Helper.AssertRead<TVector>(Byte*, Byte*, Int32)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Buffers.Text.Base64Helper.AssertRead<TVector>(Byte*, Byte*, Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 52: System.Runtime.Intrinsics.Vector128.LoadUnsafe<T>(T&)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.LoadUnsafe<T>(T&)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 57: System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 61: System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 65: System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 66: System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 69: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 71: System.Runtime.Intrinsics.X86.Sse2.MultiplyHigh(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.X86.Sse2.MultiplyHigh(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 74: System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: TryGetMethodCallResult returned result: ldc.i4.0
+ILLink: [DEBUG] Vector128Encode: Inlining call System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported.get at instruction 74 with result ldc.i4.0
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 77: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 79: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 80: System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.UnzipOdd(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.UnzipOdd(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 82: System.Runtime.Intrinsics.Vector128.ShiftRightLogical(Vector128<UInt16>, Int32)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.ShiftRightLogical(Vector128<UInt16>, Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 85: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 87: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 88: System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.UnzipEven(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.UnzipEven(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 90: System.Runtime.Intrinsics.Vector128.ShiftRightLogical(Vector128<UInt16>, Int32)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.ShiftRightLogical(Vector128<UInt16>, Int32)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 92: System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.ZipLow(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.ZipLow(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 95: System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 98: System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 100: System.Runtime.Intrinsics.Vector128<T>.op_Multiply(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128<T>.op_Multiply(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 103: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 105: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 106: System.Runtime.Intrinsics.Vector128<T>.op_BitwiseOr(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128<T>.op_BitwiseOr(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 108: System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 111: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 113: System.Runtime.Intrinsics.X86.Sse2.SubtractSaturate(Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.X86.Sse2.SubtractSaturate(Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 116: System.Runtime.Intrinsics.Arm.AdvSimd.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: TryGetMethodCallResult returned result: ldc.i4.0
+ILLink: [DEBUG] Vector128Encode: Inlining call System.Runtime.Intrinsics.Arm.AdvSimd.IsSupported.get at instruction 116 with result ldc.i4.0
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 119: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 121: System.Runtime.Intrinsics.Arm.AdvSimd.SubtractSaturate(Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Arm.AdvSimd.SubtractSaturate(Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 124: System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 128: System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 130: System.Runtime.Intrinsics.Vector128.GreaterThan<T>(Vector128<T>, Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.GreaterThan<T>(Vector128<T>, Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 133: System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 135: System.Runtime.Intrinsics.Vector128<T>.op_Subtraction(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128<T>.op_Subtraction(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 140: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 142: System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 143: System.Runtime.Intrinsics.Vector128<T>.op_Addition(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Found 0 arguments on stack
+ILLink: [DEBUG] Vector128Encode: No constant result found for call System.Runtime.Intrinsics.Vector128<T>.op_Addition(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: Processing call at instruction 151: System.Buffers.Text.Base64Helper.IBase64Encoder<T>.StoreVector128ToDestination(Base64Helper.IBase64Encoder<T>.T*, Base64Helper.IBase64Encoder<T>.T*, Int32, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: Call not supported (IsVirtual=True, VarArg=False)
+ILLink: [DEBUG] Vector128Encode: Temporary inlining completed, starting body rewriting
+ILLink: [DEBUG] Vector128Encode: BodyReducer.RewriteBody started
+ILLink: [DEBUG] Vector128Encode: Starting RemoveConditions phase
+ILLink: [DEBUG] Vector128Encode: Starting reachability analysis
+ILLink: [DEBUG] Vector128Encode: Reachability analysis complete, 148/173 instructions reachable
+ILLink: [DEBUG] Vector128Encode: Starting body sweeping phase
+ILLink: [DEBUG] Vector128Encode: Body sweeping complete, 25 instructions replaced
+ILLink: Reduced '25' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Text.Base64Helper.Vector128Encode<TBase64Encoder,T>(TBase64Encoder, Byte*&, T*&, Byte*, Int32, Int32, Byte*, T*)'.
+ILLink: [DEBUG] Vector128Encode: Body rewriting completed with 25 instructions replaced
+ILLink: [DEBUG] Vector128Encode: Starting call inlining phase
+ILLink: [DEBUG] Vector128Encode: CallInliner.RewriteBody started
+ILLink: [DEBUG] Vector128Encode: CallInliner processing 148 instructions
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 4: System.Runtime.Intrinsics.Vector128.Create(Int32, Int32, Int32, Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(Int32, Int32, Int32, Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 5: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 12: System.Buffers.Text.Base64Helper.IBase64Encoder<T>.Ssse3AdvSimdLutE3.get
+ILLink: [DEBUG] Vector128Encode: CallInliner skipping virtual method
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 13: System.Runtime.Intrinsics.Vector128.Create(UInt32, UInt32, UInt32, UInt32)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(UInt32, UInt32, UInt32, UInt32)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 14: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 17: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 18: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 21: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 22: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 25: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 26: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 29: System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 30: System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 33: System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 36: System.Runtime.Intrinsics.Vector128.Create(SByte)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(SByte)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 39: System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.Create(Byte)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 50: System.Buffers.Text.Base64Helper.AssertRead<TVector>(Byte*, Byte*, Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Buffers.Text.Base64Helper.AssertRead<TVector>(Byte*, Byte*, Int32)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 52: System.Runtime.Intrinsics.Vector128.LoadUnsafe<T>(T&)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.LoadUnsafe<T>(T&)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 57: System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 61: System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 65: System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128<T>.op_BitwiseAnd(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 66: System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 69: System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsUInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 71: System.Runtime.Intrinsics.X86.Sse2.MultiplyHigh(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.X86.Sse2.MultiplyHigh(Vector128<UInt16>, Vector128<UInt16>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 74: System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner found constant result for System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported.get: ldc.i4.0
+ILLink: [DEBUG] Vector128Encode: CallInlining static call without parameters System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 76: System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 79: System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsInt16<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 81: System.Runtime.Intrinsics.Vector128<T>.op_Multiply(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128<T>.op_Multiply(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 84: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 86: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 87: System.Runtime.Intrinsics.Vector128<T>.op_BitwiseOr(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128<T>.op_BitwiseOr(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 89: System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.X86.Ssse3.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 92: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 94: System.Runtime.Intrinsics.X86.Sse2.SubtractSaturate(Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.X86.Sse2.SubtractSaturate(Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 97: System.Runtime.Intrinsics.Arm.AdvSimd.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner found constant result for System.Runtime.Intrinsics.Arm.AdvSimd.IsSupported.get: ldc.i4.0
+ILLink: [DEBUG] Vector128Encode: CallInlining static call without parameters System.Runtime.Intrinsics.Arm.AdvSimd.IsSupported.get
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 99: System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Buffers.Text.Base64Helper.ThrowUnreachableException()
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 103: System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 105: System.Runtime.Intrinsics.Vector128.GreaterThan<T>(Vector128<T>, Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.GreaterThan<T>(Vector128<T>, Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 108: System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsSByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 110: System.Runtime.Intrinsics.Vector128<T>.op_Subtraction(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128<T>.op_Subtraction(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 115: System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128.AsByte<T>(Vector128<T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 117: System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Buffers.Text.Base64Helper.SimdShuffle(Vector128<Byte>, Vector128<Byte>, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 118: System.Runtime.Intrinsics.Vector128<T>.op_Addition(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner no constant result for System.Runtime.Intrinsics.Vector128<T>.op_Addition(Vector128<Vector128<T>.T>, Vector128<Vector128<T>.T>)
+ILLink: [DEBUG] Vector128Encode: CallInliner processing call at 126: System.Buffers.Text.Base64Helper.IBase64Encoder<T>.StoreVector128ToDestination(Base64Helper.IBase64Encoder<T>.T*, Base64Helper.IBase64Encoder<T>.T*, Int32, Vector128<Byte>)
+ILLink: [DEBUG] Vector128Encode: CallInliner skipping virtual method
+ILLink: [DEBUG] Vector128Encode: CallInliner.RewriteBody completed, changed: True
+ILLink: [DEBUG] Vector128Encode: Call inlining completed, result: True
+ILLink: [DEBUG] Vector128Encode: ProcessMethod completed successfully
+ILLink: Reduced '14' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Buffers.Text.Base64Helper.ConstructResult(UInt32, UInt32, UInt32, UInt32)'.
+ILLink: Reduced '11' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Threading.ThreadPoolWorkQueue.Dispatch()'.
+ILLink: Reduced '14' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf16Utility.GetPointerToFirstInvalidChar(Char*, Int32, Int64&, Int32&)'.
+ILLink: Reduced '58' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.TranscodeToUtf8(Char*, Int32, Byte*, Int32, Char*&, Byte*&)'.
+ILLink: Reduced '18' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ExtractCharFromFirstThreeByteSequence(UInt32)'.
+ILLink: Reduced '13' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ExtractCharFromFirstTwoByteSequence(UInt32)'.
+ILLink: Reduced '34' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ExtractCharsFromFourByteSequence(UInt32)'.
+ILLink: Reduced '48' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ExtractFourUtf8BytesFromSurrogatePair(UInt32)'.
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ExtractTwoCharsPackedFromTwoAdjacentTwoByteSequences(UInt32)'.
+ILLink: Reduced '12' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ExtractTwoUtf8TwoByteSequencesFromTwoPackedUtf16Chars(UInt32)'.
+ILLink: Reduced '18' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ExtractUtf8TwoByteSequenceFromFirstUtf16Char(UInt32)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsFirstCharAscii(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsFirstCharAtLeastThreeUtf8Bytes(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsFirstCharSurrogate(UInt32)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsFirstCharTwoUtf8Bytes(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsSecondCharAscii(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsSecondCharAtLeastThreeUtf8Bytes(UInt32)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsSecondCharSurrogate(UInt32)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsSecondCharTwoUtf8Bytes(UInt32)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.IsWellFormedUtf16SurrogatePair(UInt32)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.ToLittleEndian(UInt32)'.
+ILLink: Reduced '5' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32BeginsWithOverlongUtf8TwoByteSequence(UInt32)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8FourByteMask(UInt32)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8ThreeByteMask(UInt32)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8TwoByteMask(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32EndsWithOverlongUtf8TwoByteSequence(UInt32)'.
+ILLink: Reduced '9' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32EndsWithUtf8TwoByteMask(UInt32)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32BeginsWithValidUtf8TwoByteSequenceLittleEndian(UInt32)'.
+ILLink: Reduced '3' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32EndsWithValidUtf8TwoByteSequenceLittleEndian(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32FirstByteIsAscii(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32FourthByteIsAscii(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32SecondByteIsAscii(UInt32)'.
+ILLink: Reduced '7' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.UInt32ThirdByteIsAscii(UInt32)'.
+ILLink: Reduced '77' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.WriteTwoUtf16CharsAsTwoUtf8ThreeByteSequences(Byte&, UInt32)'.
+ILLink: Reduced '39' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.WriteFirstUtf16CharAsUtf8ThreeByteSequence(Byte&, UInt32)'.
+ILLink: Reduced '58' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.TranscodeToUtf16(Byte*, Int32, Char*, Int32, Byte*&, Char*&)'.
+ILLink: Reduced '99' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.GetPointerToFirstInvalidByte(Byte*, Int32, Int32&, Int32&)'.
+ILLink: Reduced '13' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Text.Unicode.Utf8Utility.GetNonAsciiBytes(Vector128<Byte>, Vector128<Byte>)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.FileSystem.MoveDirectory(String, String)'.
+ILLink: Reduced '17' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.FileSystem.MoveDirectory(String, String, Boolean)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.Strategies.FileStreamHelpers.Lock(SafeFileHandle, Boolean, Int64, Int64)'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.IO.Strategies.FileStreamHelpers.Unlock(SafeFileHandle, Int64, Int64)'.
+ILLink: Reduced '8' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Diagnostics.Tracing.EventParameterInfo.GetTypeCodeExtended(Type)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Diagnostics.Tracing.Statics..cctor()'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Reflection.Metadata.TypeNameParser.Parse(ReadOnlySpan<Char>, Boolean, Nullable<TypeNameParseOptions>)'.
+ILLink: Reduced '6' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.GlobalizationMode.Settings.GetIcuLoadFailureMessage()'.
+ILLink: Reduced '4' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CalendarData.CalendarData(String, CalendarId, Boolean)'.
+ILLink: Cannot inline constant result of 'System.Globalization.CalendarData.SystemSupportsTaiwaneseCalendar()' call due to presence of side effects
+ILLink: Reduced '10' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CalendarData.InitializeEraNames(String, CalendarId)'.
+ILLink: Cannot inline constant result of 'System.Globalization.CalendarData.SystemSupportsTaiwaneseCalendar()' call due to presence of side effects
+ILLink: Reduced '2' instructions in conditional branches for [System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e] method 'System.Globalization.CalendarData.SystemSupportsTaiwaneseCalendar()'.
+ILLink: Cannot inline constant result of 'System.Globalization.CalendarData.IcuSystemSupportsTaiwaneseCalendar()' call due to presence of side effects
