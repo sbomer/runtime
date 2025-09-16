@@ -11,39 +11,50 @@ using MultiValue = ILLink.Shared.DataFlow.ValueSet<ILLink.Shared.DataFlow.Single
 
 namespace Mono.Linker.Dataflow
 {
-    internal static class GenericArgumentDataFlow
+    internal readonly struct GenericArgumentDataFlow
     {
-        public static void ProcessGenericArgumentDataFlow(in MessageOrigin origin, MarkStep markStep, LinkContext context, TypeReference type)
+        private readonly DiagnosticContext _diagnosticContext;
+        private readonly ReflectionMarker _reflectionMarker;
+        private readonly LinkContext _context;
+
+        public GenericArgumentDataFlow(in MessageOrigin origin, MarkStep markStep, LinkContext context)
         {
-            var diagnosticContext = new DiagnosticContext(origin, !context.Annotations.ShouldSuppressAnalysisWarningsForRequiresUnreferencedCode(origin.Provider, out _), context);
-            var reflectionMarker = new ReflectionMarker(context, markStep, enabled: true);
-            ProcessGenericArgumentDataFlow(in diagnosticContext, reflectionMarker, context, type);
+            _context = context;
+            _diagnosticContext = new DiagnosticContext(origin, !context.Annotations.ShouldSuppressAnalysisWarningsForRequiresUnreferencedCode(origin.Provider, out _), context);
+            _reflectionMarker = new ReflectionMarker(context, markStep, enabled: true);
         }
 
-        public static void ProcessGenericArgumentDataFlow(in DiagnosticContext diagnosticContext, ReflectionMarker reflectionMarker, LinkContext context, TypeReference type)
+        public GenericArgumentDataFlow(in DiagnosticContext diagnosticContext, ReflectionMarker reflectionMarker, LinkContext context)
         {
-            if (type is GenericInstanceType genericInstanceType && context.TryResolve(type) is TypeDefinition typeDefinition)
+            _diagnosticContext = diagnosticContext;
+            _reflectionMarker = reflectionMarker;
+            _context = context;
+        }
+
+        public void ProcessGenericArgumentDataFlow(TypeReference type)
+        {
+            if (type is GenericInstanceType genericInstanceType && _context.TryResolve(type) is TypeDefinition typeDefinition)
             {
-                ProcessGenericInstantiation(diagnosticContext, reflectionMarker, context, genericInstanceType, typeDefinition);
+                ProcessGenericInstantiation(genericInstanceType, typeDefinition);
             }
         }
 
-        public static void ProcessGenericArgumentDataFlow(in DiagnosticContext diagnosticContext, ReflectionMarker reflectionMarker, LinkContext context, MethodReference method)
+        public void ProcessGenericArgumentDataFlow(MethodReference method)
         {
-            if (method is GenericInstanceMethod genericInstanceMethod && context.TryResolve(method) is MethodDefinition methodDefinition)
+            if (method is GenericInstanceMethod genericInstanceMethod && _context.TryResolve(method) is MethodDefinition methodDefinition)
             {
-                ProcessGenericInstantiation(diagnosticContext, reflectionMarker, context, genericInstanceMethod, methodDefinition);
+                ProcessGenericInstantiation(genericInstanceMethod, methodDefinition);
             }
 
-            ProcessGenericArgumentDataFlow(diagnosticContext, reflectionMarker, context, method.DeclaringType);
+            ProcessGenericArgumentDataFlow(method.DeclaringType);
         }
 
-        public static void ProcessGenericArgumentDataFlow(in DiagnosticContext diagnosticContext, ReflectionMarker reflectionMarker, LinkContext context, FieldReference field)
+        public void ProcessGenericArgumentDataFlow(FieldReference field)
         {
-            ProcessGenericArgumentDataFlow(diagnosticContext, reflectionMarker, context, field.DeclaringType);
+            ProcessGenericArgumentDataFlow(field.DeclaringType);
         }
 
-        private static void ProcessGenericInstantiation(in DiagnosticContext diagnosticContext, ReflectionMarker reflectionMarker, LinkContext context, IGenericInstance genericInstance, IGenericParameterProvider genericParameterProvider)
+        private void ProcessGenericInstantiation(IGenericInstance genericInstance, IGenericParameterProvider genericParameterProvider)
         {
             var arguments = genericInstance.GenericArguments;
             var parameters = genericParameterProvider.GenericParameters;
@@ -53,28 +64,28 @@ namespace Mono.Linker.Dataflow
                 var genericArgument = arguments[i];
                 var genericParameter = parameters[i];
 
-                var parameterRequirements = context.Annotations.FlowAnnotations.GetGenericParameterAnnotation(genericParameter);
+                var parameterRequirements = _context.Annotations.FlowAnnotations.GetGenericParameterAnnotation(genericParameter);
 
                 if (genericParameter.HasDefaultConstructorConstraint)
                 {
-                    reflectionMarker.MarkTypeForDynamicallyAccessedMembers(diagnosticContext.Origin, genericArgument, DynamicallyAccessedMemberTypes.PublicParameterlessConstructor, DependencyKind.DefaultCtorForNewConstrainedGenericArgument);
+                    _reflectionMarker.MarkTypeForDynamicallyAccessedMembers(_diagnosticContext.Origin, genericArgument, DynamicallyAccessedMemberTypes.PublicParameterlessConstructor, DependencyKind.DefaultCtorForNewConstrainedGenericArgument);
                     // Avoid duplicate warnings for new() and DAMT.PublicParameterlessConstructor
                     parameterRequirements &= ~DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
                 }
 
-                var genericParameterValue = context.Annotations.FlowAnnotations.GetGenericParameterValue(genericParameter, parameterRequirements);
+                var genericParameterValue = _context.Annotations.FlowAnnotations.GetGenericParameterValue(genericParameter, parameterRequirements);
                 if (genericParameterValue.DynamicallyAccessedMemberTypes != DynamicallyAccessedMemberTypes.None)
                 {
-                    MultiValue genericArgumentValue = context.Annotations.FlowAnnotations.GetTypeValueFromGenericArgument(genericArgument);
+                    MultiValue genericArgumentValue = _context.Annotations.FlowAnnotations.GetTypeValueFromGenericArgument(genericArgument);
 
-                    var requireDynamicallyAccessedMembersAction = new RequireDynamicallyAccessedMembersAction(context, reflectionMarker, diagnosticContext);
+                    var requireDynamicallyAccessedMembersAction = new RequireDynamicallyAccessedMembersAction(_context, _reflectionMarker, _diagnosticContext);
                     requireDynamicallyAccessedMembersAction.Invoke(genericArgumentValue, genericParameterValue);
                 }
 
                 // Recursively process generic argument data flow on the generic argument if it itself is generic
                 if (genericArgument.IsGenericInstance)
                 {
-                    ProcessGenericArgumentDataFlow(diagnosticContext, reflectionMarker, context, genericArgument);
+                    ProcessGenericArgumentDataFlow(genericArgument);
                 }
             }
         }

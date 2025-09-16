@@ -30,7 +30,8 @@ namespace ILLink.Shared.TrimAnalysis
             {
                 if (GenericArgumentDataFlow.RequiresGenericArgumentDataFlow(_reflectionMarker.Context.Annotations.FlowAnnotations, foundType))
                 {
-                    GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(_diagnosticContext, _reflectionMarker, _reflectionMarker.Context, foundType);
+                    var genericArgumentDataFlow = new GenericArgumentDataFlow(in _diagnosticContext, _reflectionMarker, _reflectionMarker.Context);
+                    genericArgumentDataFlow.ProcessGenericArgumentDataFlow(foundType);
                 }
                 type = new(foundType, _resolver);
                 return true;

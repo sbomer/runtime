@@ -23,18 +23,19 @@ namespace Mono.Linker.Dataflow
             bool diagnosticsEnabled = !context.Annotations.ShouldSuppressAnalysisWarningsForRequiresUnreferencedCode(Origin.Provider, out _);
             var diagnosticContext = new DiagnosticContext(Origin, diagnosticsEnabled, context);
 
+            var genericArgumentDataFlow = new GenericArgumentDataFlow(in diagnosticContext, reflectionMarker, context);
             switch (MemberReference)
             {
                 case TypeReference typeReference:
-                    GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(in diagnosticContext, reflectionMarker, context, typeReference);
+                    genericArgumentDataFlow.ProcessGenericArgumentDataFlow(typeReference);
                     break;
 
                 case MethodReference methodReference:
-                    GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(in diagnosticContext, reflectionMarker, context, methodReference);
+                    genericArgumentDataFlow.ProcessGenericArgumentDataFlow(methodReference);
                     break;
 
                 case FieldReference fieldReference:
-                    GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(in diagnosticContext, reflectionMarker, context, fieldReference);
+                    genericArgumentDataFlow.ProcessGenericArgumentDataFlow(fieldReference);
                     break;
             }
         }

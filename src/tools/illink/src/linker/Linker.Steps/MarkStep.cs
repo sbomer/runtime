@@ -1999,11 +1999,12 @@ namespace Mono.Linker.Steps
                 // On a reflectable method, perform generic data flow for the return type and all the parameter types
                 // This is a compensation for the DI issue described in https://github.com/dotnet/runtime/issues/81358
                 var methodOrigin = new MessageOrigin(methodDefinition);
-                GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(in methodOrigin, this, Context, methodDefinition.ReturnType);
+                var genericArgumentDataFlow = new GenericArgumentDataFlow(in methodOrigin, this, Context);
+                genericArgumentDataFlow.ProcessGenericArgumentDataFlow(methodDefinition.ReturnType);
 
                 foreach (var parameter in methodDefinition.GetMetadataParameters())
                 {
-                    GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(in methodOrigin, this, Context, parameter.ParameterType);
+                    genericArgumentDataFlow.ProcessGenericArgumentDataFlow(parameter.ParameterType);
                 }
             }
         }
@@ -2030,7 +2031,8 @@ namespace Mono.Linker.Steps
                 // On a reflectable field, perform generic data flow for the field's type
                 // This is a compensation for the DI issue described in https://github.com/dotnet/runtime/issues/81358
                 var fieldOrigin = new MessageOrigin(fieldDefinition);
-                GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(in fieldOrigin, this, Context, fieldDefinition.FieldType);
+                var genericArgumentDataFlow = new GenericArgumentDataFlow(in fieldOrigin, this, Context);
+                genericArgumentDataFlow.ProcessGenericArgumentDataFlow(fieldDefinition.FieldType);
             }
         }
 
@@ -4070,7 +4072,8 @@ namespace Mono.Linker.Steps
             if (Annotations.IsMarked(iface))
                 return;
             Annotations.MarkProcessed(iface, reason ?? new DependencyInfo(DependencyKind.InterfaceImplementationOnType, origin.Provider));
-            GenericArgumentDataFlow.ProcessGenericArgumentDataFlow(in origin, this, Context, iface.InterfaceType);
+            var genericArgumentDataFlow = new GenericArgumentDataFlow(in origin, this, Context);
+            genericArgumentDataFlow.ProcessGenericArgumentDataFlow(iface.InterfaceType);
 
             // Blame the type that has the interfaceimpl, expecting the type itself to get marked for other reasons.
             MarkCustomAttributes(iface, new DependencyInfo(DependencyKind.CustomAttribute, iface), origin);
