@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using DependencyGraphCore;
 
 namespace DependencyLogViewer
 {

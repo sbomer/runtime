@@ -638,7 +638,38 @@ namespace ILCompiler
             if (sourceLinkFileName != null)
                 dumpers.Add(new SourceLinkWriter(sourceLinkFileName));
 
-            CompilationResults compilationResults = compilation.Compile(outputFilePath, ObjectDumper.Compose(dumpers));
+            // Write to a temporary file and rename on success to avoid leaving partial files on failure
+            string tempOutputFilePath = outputFilePath + ".tmp";
+            CompilationResults compilationResults = null;
+            try
+            {
+                compilationResults = compilation.Compile(tempOutputFilePath, ObjectDumper.Compose(dumpers));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Compilation failed with exception: {ex.GetType().Name}: {ex.Message}");
+                // Even if compilation fails, write the DGML for the partial codegen graph to help with diagnostics
+                if (dgmlLogFileName != null)
+                {
+                    Console.WriteLine($"Attempting to write partial DGML to: {dgmlLogFileName}");
+                    try
+                    {
+                        compilation.GetPartialCompilationResults().WriteDependencyLog(dgmlLogFileName);
+                        Console.WriteLine($"Successfully wrote partial DGML to: {dgmlLogFileName}");
+                    }
+                    catch (Exception dgmlEx)
+                    {
+                        Console.WriteLine($"Failed to write partial DGML: {dgmlEx.GetType().Name}: {dgmlEx.Message}");
+                        // Ignore DGML write failures to avoid masking the original compilation error
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No DGML log file name specified (dgmlLogFileName is null)");
+                }
+                throw; // Re-throw the original compilation exception
+            }
+
             string exportsFile = Get(_command.ExportsFile);
             if (exportsFile != null)
             {

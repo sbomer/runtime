@@ -229,6 +229,10 @@ namespace ILCompiler.DependencyAnalysisFramework
                     deferredPerPhaseDependencies = new List<DependencyNodeCore<DependencyContextType>>();
                     _deferredStaticDependencies.Add(dependencyPhase, deferredPerPhaseDependencies);
                 }
+                if (node.ToString() == "[MugenMvvm.Android]MugenMvvm.Android.Views.ResourceViewMappingDecorator.TryInvoke<BindingBuilderRequest`1<InlineObjectTuple>,__Canon>(BindingBuilderRequest`1<InlineObjectTuple>,IViewManager,IReadOnlyMetadataContext,CancellationToken)")
+                {
+                    System.Console.WriteLine("Adding method to deferred static dependencies");
+                }
                 deferredPerPhaseDependencies.Add(node);
             }
         }

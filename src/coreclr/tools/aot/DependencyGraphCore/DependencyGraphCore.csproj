@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(NetCoreAppToolCurrent)</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>DependencyGraphCore</AssemblyName>
+    <RootNamespace>DependencyGraphCore</RootNamespace>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Description>Shared dependency graph model and DGML parsing logic extracted from DependencyGraphViewer for cross-platform use.</Description>
+    <Authors>.NET Runtime</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>DGML;DependencyGraph;NativeAOT;Linker;Crossgen2</PackageTags>
+    <IncludeSymbols>false</IncludeSymbols>
+    <RepositoryUrl>https://github.com/dotnet/runtime</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- No Windows-specific packages; pure logic only -->
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Internals visible to future test/CLI projects can be added via AssemblyInfo if needed -->
+  </ItemGroup>
+  <Import Project="..\Directory.Build.props" Condition="Exists('..\Directory.Build.props')" />
+</Project>

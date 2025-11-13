@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(NetCoreAppToolCurrent)</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DependencyGraphCli</RootNamespace>
+    <AssemblyName>dependencygraph</AssemblyName>
+    <Description>Cross-platform command-line tool for inspecting NativeAOT / Crossgen2 / IL Linker DGML dependency graphs. Shares logic with DependencyGraphViewer via DependencyGraphCore.</Description>
+    <Authors>.NET Runtime</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/dotnet/runtime</RepositoryUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Shared graph + DGML parsing logic -->
+    <ProjectReference Include="..\DependencyGraphCore\DependencyGraphCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ImGui.NET" Version="1.90.5.1" />
+    <PackageReference Include="Silk.NET.Input" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.OpenGL" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Windowing" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.Windowing.Glfw" Version="2.20.0" />
+    <PackageReference Include="Silk.NET.GLFW" Version="2.20.0" />
+  </ItemGroup>
+
+  <!-- Optional: enable ETW support only on Windows if later extended -->
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="$(TraceEventVersion)" />
+  </ItemGroup>
+
+</Project>

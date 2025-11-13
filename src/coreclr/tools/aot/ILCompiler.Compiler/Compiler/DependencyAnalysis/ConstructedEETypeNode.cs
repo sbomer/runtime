@@ -12,6 +12,14 @@ namespace ILCompiler.DependencyAnalysis
     {
         public ConstructedEETypeNode(NodeFactory factory, TypeDesc type) : base(factory, type)
         {
+            if (type.ToString() == "[MugenMvvm]MugenMvvm.Components.ComponentDescriptor+Impl`3<MugenMvvm.Views.Interfaces.IViewManager,MugenMvvm.Api.Interfaces.IApiProviderComponent`1<MugenMvvm.Views.Interfaces.IViewManager>,MugenMvvm.Bindings.Api.BindingBuilderRequest`1<MugenMvvm.Common.InlineObjectTuple>>")
+            {
+                System.Console.WriteLine("Constructed type");
+            }
+            if (type.ToString() == "[MugenMvvm.Android]MugenMvvm.Android.Views.ResourceViewMappingDecorator")
+            {
+                System.Console.WriteLine("Constructed ResourceViewMappingDecorator");
+            }
             Debug.Assert(!type.IsCanonicalDefinitionType(CanonicalFormKind.Any));
             CheckCanGenerateConstructedEEType(factory, type);
         }

@@ -89,6 +89,10 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(!type.IsGenericParameter);
             Debug.Assert(!type.IsRuntimeDeterminedSubtype);
             _type = type;
+            if (_type.ToString() == "[MugenMvvm]MugenMvvm.Components.ComponentDescriptor+Impl`3<MugenMvvm.Views.Interfaces.IViewManager,MugenMvvm.Api.Interfaces.IApiProviderComponent`1<MugenMvvm.Views.Interfaces.IViewManager>,MugenMvvm.Bindings.Api.BindingBuilderRequest`1<MugenMvvm.Common.InlineObjectTuple>>")
+            {
+                System.Console.WriteLine("EETypeNode created");
+            }
             _writableDataNode = !_type.IsCanonicalSubtype(CanonicalFormKind.Any) ? new WritableDataNode(this) : null;
             _hasConditionalDependenciesFromMetadataManager = factory.MetadataManager.HasConditionalDependenciesDueToEETypePresence(type);
 

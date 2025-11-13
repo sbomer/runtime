@@ -92,6 +92,10 @@ namespace ILCompiler.DependencyAnalysisFramework
         {
             foreach (DependencyNodeCore<DependencyContextType> node in nodeList)
             {
+                if (node.ToString() == "[MugenMvvm]MugenMvvm.Components.ComponentDescriptor+Impl`3<MugenMvvm.Views.Interfaces.IViewManager,MugenMvvm.Api.Interfaces.IApiProviderComponent`1<MugenMvvm.Views.Interfaces.IViewManager>,MugenMvvm.Bindings.Api.BindingBuilderRequest`1<MugenMvvm.Common.InlineObjectTuple>>")
+                {
+                    System.Console.WriteLine("Visiting in log edges!");
+                }
                 if (node.Marked)
                 {
                     MarkData markData = (MarkData)node.GetMark();

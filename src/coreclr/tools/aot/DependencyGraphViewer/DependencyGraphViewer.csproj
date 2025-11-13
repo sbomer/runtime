@@ -12,5 +12,6 @@
       <Version>$(TraceEventVersion)</Version>
     </PackageReference>
     <Compile Remove="Tests/*.cs" />
+    <ProjectReference Include="..\DependencyGraphCore\DependencyGraphCore.csproj" />
   </ItemGroup>
 </Project>

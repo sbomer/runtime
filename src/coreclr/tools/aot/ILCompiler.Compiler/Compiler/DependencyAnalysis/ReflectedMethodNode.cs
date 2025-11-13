@@ -26,6 +26,14 @@ namespace ILCompiler.DependencyAnalysis
         {
             Debug.Assert(method.GetCanonMethodTarget(CanonicalFormKind.Specific) == method);
             _method = method;
+            if (_method.ToString() == "[MugenMvvm.Android]MugenMvvm.Android.Views.ResourceViewMappingDecorator.TryInvoke<BindingBuilderRequest`1<InlineObjectTuple>,__Canon>(BindingBuilderRequest`1<InlineObjectTuple>,IViewManager,IReadOnlyMetadataContext,CancellationToken)")
+            {
+                System.Console.WriteLine("Created ReflectedMethodNode");
+            }
+            if (_method.ToString() == "[MugenMvvm.Android]MugenMvvm.Android.Views.ResourceViewMappingDecorator.GetMappings(PooledReadOnlyList`1<IViewMapping>,IResourceView)")
+            {
+                System.Console.WriteLine("Created ReflectedMethodNode for GetMappings");
+            }
         }
 
         public MethodDesc Method => _method;

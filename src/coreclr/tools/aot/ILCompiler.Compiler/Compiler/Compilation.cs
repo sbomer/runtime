@@ -545,6 +545,11 @@ namespace ILCompiler
             return new CompilationResults(_dependencyGraph, _nodeFactory);
         }
 
+        CompilationResults ICompilation.GetPartialCompilationResults()
+        {
+            return new CompilationResults(_dependencyGraph, _nodeFactory);
+        }
+
         private sealed class ILCache : LockFreeReaderHashtable<MethodDesc, ILCache.MethodILData>
         {
             public ILProvider ILProvider { get; }
@@ -608,6 +613,7 @@ namespace ILCompiler
     public interface ICompilation
     {
         CompilationResults Compile(string outputFileName, ObjectDumper dumper);
+        CompilationResults GetPartialCompilationResults();
     }
 
     public class CompilationResults

@@ -27,6 +27,10 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(method.IsVirtual || (method.Signature.IsStatic && !method.OwningType.IsInterface));
 
             _method = method;
+            if (method.ToString() == "[MugenMvvm.Android]MugenMvvm.Android.Views.ResourceViewMappingDecorator.TryInvoke<BindingBuilderRequest`1<InlineObjectTuple>,__Canon>(BindingBuilderRequest`1<InlineObjectTuple>,IViewManager,IReadOnlyMetadataContext,CancellationToken)")
+            {
+                System.Console.WriteLine("Created GenericVirtualMethodImplNode");
+            }
         }
 
         public override bool HasConditionalStaticDependencies => false;

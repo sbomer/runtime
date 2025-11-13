@@ -35,6 +35,10 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(!method.IsGenericMethodDefinition && !method.OwningType.IsGenericDefinition);
             Debug.Assert(method.GetCanonMethodTarget(CanonicalFormKind.Specific) == method);
             _method = method;
+            if (ToString() == "[MugenMvvm.Android]MugenMvvm.Android.Views.ResourceViewMappingDecorator.TryInvoke<BindingBuilderRequest`1<InlineObjectTuple>,__Canon>(BindingBuilderRequest`1<InlineObjectTuple>,IViewManager,IReadOnlyMetadataContext,CancellationToken)")
+            {
+                System.Console.WriteLine("Created MethodCodeNode");
+            }
         }
 
         public void SetCode(ObjectData data)

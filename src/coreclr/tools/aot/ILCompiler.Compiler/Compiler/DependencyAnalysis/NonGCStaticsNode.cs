@@ -26,6 +26,10 @@ namespace ILCompiler.DependencyAnalysis
         {
             Debug.Assert(!type.IsCanonicalSubtype(CanonicalFormKind.Specific));
             Debug.Assert(!type.IsGenericDefinition);
+            if (type.ToString() == "[MugenMvvm]MugenMvvm.Components.ComponentDescriptor+Impl`3<MugenMvvm.Views.Interfaces.IViewManager,MugenMvvm.Api.Interfaces.IApiProviderComponent`1<MugenMvvm.Views.Interfaces.IViewManager>,MugenMvvm.Bindings.Api.BindingBuilderRequest`1<MugenMvvm.Common.InlineObjectTuple>>")
+            {
+                System.Console.WriteLine("NonGCStaticsNode created");
+            }
             _type = type;
             _preinitializationManager = preinitializationManager;
         }

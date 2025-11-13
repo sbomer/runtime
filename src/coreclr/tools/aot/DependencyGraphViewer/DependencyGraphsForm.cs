@@ -4,6 +4,7 @@
 using System;
 using System.Windows.Forms;
 using Microsoft.Diagnostics.Tracing.Session;
+using DependencyGraphCore;
 
 namespace DependencyLogViewer
 {
@@ -15,6 +16,8 @@ namespace DependencyLogViewer
         public DependencyGraphs(string? argPath)
         {
             InitializeComponent();
+            // Hook refresh callback into shared GraphCollection so core logic can notify UI.
+            GraphCollection.Singleton.RefreshAction = ForceRefresh;
             if (argPath != null)
             {
                 OpenFile(argPath);

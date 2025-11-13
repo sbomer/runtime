@@ -30,6 +30,15 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(method.IsVirtual);
             Debug.Assert(MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(method) == method);
 
+            if (method.ToString() == "[MugenMvvm]MugenMvvm.Api.ApiProviderDecoratorBase`1<System.__Canon>.TryInvoke<BindingBuilderRequest`1<InlineObjectTuple>,__Canon>(BindingBuilderRequest`1<InlineObjectTuple>,__Canon,IReadOnlyMetadataContext,CancellationToken)")
+            {
+                System.Console.WriteLine("GVMDependenciesNode");
+            }
+            if (method.ToString() == "[MugenMvvm]MugenMvvm.Api.Interfaces.IApiProviderComponent`1<System.__Canon>.TryInvoke<BindingBuilderRequest`1<InlineObjectTuple>,__Canon>(BindingBuilderRequest`1<InlineObjectTuple>,__Canon,IReadOnlyMetadataContext,CancellationToken)")
+            {
+                System.Console.WriteLine("GVMDependenciesNode interface");
+            }
+
             _method = method;
         }
 
@@ -208,6 +217,7 @@ namespace ILCompiler.DependencyAnalysis
                         .GetCanonMethodTarget(CanonicalFormKind.Specific);
                     if (instantiatedTargetMethod != _method)
                     {
+                        // create GVMImpl here.
                         dynamicDependencies.Add(new CombinedDependencyListEntry(
                             factory.GenericVirtualMethodImpl(instantiatedTargetMethod), null, "DerivedMethodInstantiation"));
 
