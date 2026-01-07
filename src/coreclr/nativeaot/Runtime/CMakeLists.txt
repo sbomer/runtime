@@ -182,6 +182,21 @@ else()
 
   include(${CLR_SRC_NATIVE_DIR}/external/llvm-libunwind.cmake)
 
+  # Build libunwind.cpp as a separate object library so we can localize its symbols
+  # to avoid conflicts with system libunwind or other libraries
+  add_library(libunwind_objects OBJECT ${CLR_SRC_NATIVE_DIR}/external/llvm-libunwind/src/libunwind.cpp)
+
+  # Localize all hidden symbols in libunwind.cpp.o to make them local (not just hidden)
+  # Use a custom target since OBJECT libraries don't support POST_BUILD commands
+  add_custom_target(libunwind_localize
+    COMMAND ${CMAKE_OBJCOPY} --localize-hidden $<TARGET_OBJECTS:libunwind_objects>
+    DEPENDS libunwind_objects
+    COMMENT "Localizing hidden symbols in libunwind.cpp.o"
+  )
+
+  # Remove libunwind.cpp from LLVM_LIBUNWIND_SOURCES since we build it separately
+  list(REMOVE_ITEM LLVM_LIBUNWIND_SOURCES ${CLR_SRC_NATIVE_DIR}/external/llvm-libunwind/src/libunwind.cpp)
+
   list(APPEND FULL_RUNTIME_SOURCES ${LLVM_LIBUNWIND_SOURCES})
   set(RUNTIME_SOURCES_ARCH_ASM ${LLVM_LIBUNWIND_ASM_SOURCES})
 
