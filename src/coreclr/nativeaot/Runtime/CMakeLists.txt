@@ -182,16 +182,87 @@ else()
 
   include(${CLR_SRC_NATIVE_DIR}/external/llvm-libunwind.cmake)
 
-  # Build libunwind.cpp as a separate object library so we can localize its symbols
-  # to avoid conflicts with system libunwind or other libraries
+  # Create a list of public libunwind API symbols to localize, to avoid conflicts
+  # with system libunwind or other libraries. We only localize the public API symbols,
+  # not internal helpers (like logDWARF) which are needed across translation units.
+  set(LIBUNWIND_LOCALIZE_SYMBOLS_FILE "${CMAKE_CURRENT_BINARY_DIR}/libunwind_localize_symbols.txt")
+  file(WRITE ${LIBUNWIND_LOCALIZE_SYMBOLS_FILE}
+"unw_init_local
+unw_get_reg
+unw_set_reg
+unw_get_fpreg
+unw_set_fpreg
+unw_get_save_loc
+unw_step
+unw_get_proc_info
+unw_resume
+unw_get_proc_name
+unw_is_fpreg
+unw_regname
+unw_is_signal_frame
+unw_get_data_rel_base
+unw_save_vfp_as_X
+unw_iterate_dwarf_unwind_cache
+unw_getcontext
+unw_local_addr_space
+__unw_init_local
+__unw_get_reg
+__unw_set_reg
+__unw_get_fpreg
+__unw_set_fpreg
+__unw_get_save_loc
+__unw_step
+__unw_step_stage2
+__unw_get_proc_info
+__unw_resume
+__unw_get_proc_name
+__unw_is_fpreg
+__unw_regname
+__unw_is_signal_frame
+__unw_get_data_rel_base
+__unw_save_vfp_as_X
+__unw_iterate_dwarf_unwind_cache
+__unw_getcontext
+__libunwind_Registers_arm64_jumpto
+__libunwind_Registers_x86_64_jumpto
+__libunwind_Registers_x86_jumpto
+_Unwind_Backtrace
+_Unwind_Complete
+_Unwind_DeleteException
+_Unwind_ForcedUnwind
+_Unwind_GetCFA
+_Unwind_GetDataRelBase
+_Unwind_GetGR
+_Unwind_GetIP
+_Unwind_GetIPInfo
+_Unwind_GetLanguageSpecificData
+_Unwind_GetRegionStart
+_Unwind_GetTextRelBase
+_Unwind_RaiseException
+_Unwind_Resume
+_Unwind_Resume_or_Rethrow
+_Unwind_SetGR
+_Unwind_SetIP
+_Unwind_VRS_Get
+_Unwind_VRS_Pop
+_Unwind_VRS_Set
+__unw_add_dynamic_fde
+__unw_remove_dynamic_fde
+__unw_add_dynamic_eh_frame_section
+__unw_remove_dynamic_eh_frame_section
+_ZN9libunwind17LocalAddressSpace17sThisAddressSpaceE
+")
+
+  # Build libunwind.cpp as a separate object library so we can localize its public API symbols
   add_library(libunwind_objects OBJECT ${CLR_SRC_NATIVE_DIR}/external/llvm-libunwind/src/libunwind.cpp)
 
-  # Localize all hidden symbols in libunwind.cpp.o to make them local (not just hidden)
-  # Use a custom target since OBJECT libraries don't support POST_BUILD commands
+  # Localize only the public API symbols to avoid conflicts with system libunwind.
+  # Unlike --localize-hidden, this preserves internal helpers (like logDWARF) that are
+  # needed across translation units within our static library.
   add_custom_target(libunwind_localize
-    COMMAND ${CMAKE_OBJCOPY} --localize-hidden $<TARGET_OBJECTS:libunwind_objects>
+    COMMAND ${CMAKE_OBJCOPY} --localize-symbols=${LIBUNWIND_LOCALIZE_SYMBOLS_FILE} $<TARGET_OBJECTS:libunwind_objects>
     DEPENDS libunwind_objects
-    COMMENT "Localizing hidden symbols in libunwind.cpp.o"
+    COMMENT "Localizing public API symbols in libunwind.cpp.o"
   )
 
   # Remove libunwind.cpp from LLVM_LIBUNWIND_SOURCES since we build it separately
