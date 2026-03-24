@@ -254,7 +254,8 @@ namespace Mono.Linker
                 CodeOptimizations.RemoveSubstitutions |
                 CodeOptimizations.RemoveDynamicDependencyAttribute |
                 CodeOptimizations.OptimizeTypeHierarchyAnnotations |
-                CodeOptimizations.SubstituteFeatureGuards;
+                CodeOptimizations.SubstituteFeatureGuards |
+                CodeOptimizations.FieldNullTrim;
 
             DisableEventSourceSpecialHandling = true;
 
@@ -1201,5 +1202,11 @@ namespace Mono.Linker
         /// Option to substitute properties annotated as FeatureGuard(typeof(RequiresUnreferencedCodeAttribute)) with false
         /// </summary>
         SubstituteFeatureGuards = 1 << 25,
+
+        /// <summary>
+        /// Option to remove fields that are only accessed in null-check and null-assignment patterns
+        /// (typically in Dispose/Close methods), allowing their types to be trimmed
+        /// </summary>
+        FieldNullTrim = 1 << 7,
     }
 }

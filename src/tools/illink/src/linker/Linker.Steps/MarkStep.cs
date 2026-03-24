@@ -75,6 +75,17 @@ namespace Mono.Linker.Steps
         // method body scanner.
         readonly Dictionary<MethodBody, bool> _compilerGeneratedMethodRequiresScanner;
 
+        // FieldNullTrim optimization: tracks fields whose marking is deferred because all
+        // references in Dispose/Close methods are null-check or null-assignment patterns.
+        // If the field is never marked from a non-null-pattern context by the time Complete()
+        // runs, the field (and its type) can be trimmed and the IL fixed up.
+        readonly Dictionary<FieldDefinition, List<(MethodBody Body, List<Instruction> Instructions)>> _deferredNullPatternFields = new();
+
+        // Per-method set of instructions to skip during the current method body's instruction
+        // iteration. Set before iterating instructions in MarkMethodBody for Dispose/Close methods
+        // when the FieldNullTrim optimization is enabled, cleared after iteration.
+        HashSet<Instruction>? _currentMethodDeferredInstructions;
+
         TypeMapHandler _typeMapHandler;
 
         MarkStepContext? _markContext;
@@ -298,6 +309,12 @@ namespace Mono.Linker.Steps
             {
                 Annotations.SetAction(body.Method, MethodAction.ConvertToThrow);
             }
+
+            // FieldNullTrim: fix up method bodies for fields that were never marked
+            // from a non-null-pattern context. These fields are dead — their only
+            // references were null-checks and null-assignments in Dispose/Close methods.
+            if (_deferredNullPatternFields.Count > 0)
+                FixupDeferredNullPatternBodies();
         }
 
         static bool TypeIsDynamicInterfaceCastableImplementation(TypeDefinition type)
@@ -1834,6 +1851,12 @@ namespace Mono.Linker.Steps
             if (!_fieldReasons.Contains(reason.Kind))
                 throw new ArgumentOutOfRangeException($"Internal error: unsupported field dependency {reason.Kind}");
 #endif
+
+            // FieldNullTrim: if this field was previously deferred (null-pattern only in Dispose),
+            // but is now being marked from a real reference, un-defer it and retroactively
+            // process the deferred instructions (guarded calls like Dispose()).
+            if (_deferredNullPatternFields.ContainsKey(field))
+                UndeferFieldNullPattern(field, origin);
 
             if (reason.Kind == DependencyKind.AlreadyMarked)
             {
@@ -3796,12 +3819,23 @@ namespace Mono.Linker.Steps
                 return;
             }
 
+            // FieldNullTrim: for Dispose/Close methods, pre-scan to identify fields
+            // where all references are null-check/null-assignment patterns.
+            if (Context.IsOptimizationEnabled(CodeOptimizations.FieldNullTrim, body.Method) &&
+                IsDisposeOrCloseMethod(body.Method))
+            {
+                _currentMethodDeferredInstructions = AnalyzeNullPatternFields(processedMethodBody);
+            }
+
             // Note: we mark the method body of every method here including compiler-generated methods,
             // whether they are accessed from the user method or via reflection.
             // But for compiler-generated methods we only do dataflow analysis if they're used through their
             // corresponding user method, so we will skip dataflow for compiler-generated methods which
             // are only accessed via reflection.
             bool requiresReflectionMethodBodyScanner = MarkAndCheckRequiresReflectionMethodBodyScanner(processedMethodBody, origin);
+
+            // Clear per-method deferred instruction set after body marking
+            _currentMethodDeferredInstructions = null;
 
             // Data-flow (reflection scanning) for compiler-generated methods will happen as part of the
             // data-flow scan of the user-defined method which uses this compiler-generated method.
@@ -3961,13 +3995,20 @@ namespace Mono.Linker.Steps
 
         protected virtual void MarkInstruction(Instruction instruction, MethodDefinition method, ref bool requiresReflectionMethodBodyScanner, ref MessageOrigin origin)
         {
+            // FieldNullTrim: skip marking for instructions that are part of a deferred
+            // null-pattern sequence. We still compute the reflection scanner flag.
+            bool isDeferred = _currentMethodDeferredInstructions?.Contains(instruction) == true;
+
             switch (instruction.OpCode.OperandType)
             {
                 case OperandType.InlineField:
                     requiresReflectionMethodBodyScanner |= InstructionRequiresReflectionMethodBodyScannerForFieldAccess(instruction);
 
-                    origin = new MessageOrigin(origin, instruction.Offset);
-                    MarkField((FieldReference)instruction.Operand, new DependencyInfo(DependencyKind.FieldAccess, method), origin);
+                    if (!isDeferred)
+                    {
+                        origin = new MessageOrigin(origin, instruction.Offset);
+                        MarkField((FieldReference)instruction.Operand, new DependencyInfo(DependencyKind.FieldAccess, method), origin);
+                    }
                     break;
 
                 case OperandType.InlineMethod:
@@ -3988,14 +4029,17 @@ namespace Mono.Linker.Steps
                     requiresReflectionMethodBodyScanner |=
                         ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForCallSite(Context, methodReference);
 
-                    origin = new MessageOrigin(origin, instruction.Offset);
-                    if (markForReflectionAccess)
+                    if (!isDeferred)
                     {
-                        MarkMethodVisibleToReflection(methodReference, new DependencyInfo(dependencyKind, method), origin);
-                    }
-                    else
-                    {
-                        MarkMethod(methodReference, new DependencyInfo(dependencyKind, method), origin);
+                        origin = new MessageOrigin(origin, instruction.Offset);
+                        if (markForReflectionAccess)
+                        {
+                            MarkMethodVisibleToReflection(methodReference, new DependencyInfo(dependencyKind, method), origin);
+                        }
+                        else
+                        {
+                            MarkMethod(methodReference, new DependencyInfo(dependencyKind, method), origin);
+                        }
                     }
                     break;
                 }
@@ -4155,5 +4199,303 @@ namespace Mono.Linker.Steps
             public CustomAttribute Attribute { get; private set; }
             public ICustomAttributeProvider Provider { get; private set; }
         }
+
+        #region FieldNullTrim
+
+        /// <summary>
+        /// Determines whether a method is a Dispose or Close method (explicitly implemented or named).
+        /// </summary>
+        static bool IsDisposeOrCloseMethod(MethodDefinition method)
+        {
+            if (method.IsStatic || !method.HasBody)
+                return false;
+
+            // Explicit IDisposable.Dispose implementation
+            if (method.HasOverrides)
+            {
+                foreach (var @override in method.Overrides)
+                {
+                    if (@override.Name == "Dispose" &&
+                        @override.DeclaringType.FullName == "System.IDisposable")
+                        return true;
+                }
+            }
+
+            // Named Dispose() or Close() with no parameters
+            if (!method.HasMetadataParameters() &&
+                method.Name is "Dispose" or "Close")
+                return true;
+
+            // Dispose(bool disposing) pattern
+            if (method.GetMetadataParametersCount() == 1 &&
+                method.Name == "Dispose" &&
+                method.GetInflatedParameterType(0).MetadataType == MetadataType.Boolean)
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Pre-scans a Dispose/Close method body to identify fields where ALL references
+        /// are null-check or null-assignment patterns, and returns the set of instructions
+        /// that should be deferred from marking.
+        /// </summary>
+        /// <returns>Set of instructions to defer, or null if no fields qualify.</returns>
+        HashSet<Instruction>? AnalyzeNullPatternFields(MethodIL methodIL)
+        {
+            var body = methodIL.Body;
+            var instructions = methodIL.Instructions;
+            if (instructions.Count == 0)
+                return null;
+
+            // Build a map: resolved FieldDefinition → list of instruction indices
+            // where that field is referenced.
+            var fieldInstructions = new Dictionary<FieldDefinition, List<int>>();
+            for (int i = 0; i < instructions.Count; i++)
+            {
+                var instr = instructions[i];
+                if (instr.OpCode.OperandType != OperandType.InlineField)
+                    continue;
+
+                var fieldRef = (FieldReference)instr.Operand;
+                var fieldDef = Context.Resolve(fieldRef);
+                if (fieldDef is null)
+                    continue;
+
+                if (!fieldInstructions.TryGetValue(fieldDef, out var list))
+                {
+                    list = new List<int>();
+                    fieldInstructions[fieldDef] = list;
+                }
+                list.Add(i);
+            }
+
+            if (fieldInstructions.Count == 0)
+                return null;
+
+            HashSet<Instruction>? deferredSet = null;
+
+            foreach (var (field, indices) in fieldInstructions)
+            {
+                // If the field is already marked (by another code path), no point deferring
+                if (Annotations.IsMarked(field))
+                    continue;
+
+                var candidateInstructions = new List<Instruction>();
+                bool allPatternsMatch = true;
+
+                foreach (int idx in indices)
+                {
+                    var instr = instructions[idx];
+                    switch (instr.OpCode.Code)
+                    {
+                        case Code.Stfld:
+                            // Pattern: ldarg.0; ldnull; stfld F
+                            if (!IsNullStorePattern(instructions, idx))
+                            {
+                                allPatternsMatch = false;
+                                break;
+                            }
+                            // Defer the ldarg.0, ldnull, and stfld instructions
+                            AddNullStoreInstructions(instructions, idx, candidateInstructions);
+                            break;
+
+                        case Code.Ldfld:
+                            // Pattern: ldarg.0; ldfld F; dup; brtrue L; pop; br done; L: <single-instr>; done:
+                            if (!IsNullConditionalPattern(instructions, idx, out var patternInstructions))
+                            {
+                                allPatternsMatch = false;
+                                break;
+                            }
+                            // Defer all instructions in the null-conditional pattern
+                            candidateInstructions.AddRange(patternInstructions);
+                            break;
+
+                        case Code.Ldflda:
+                        case Code.Ldsflda:
+                        case Code.Stsfld:
+                        case Code.Ldsfld:
+                            // Address-of or static field access disqualifies
+                            allPatternsMatch = false;
+                            break;
+
+                        default:
+                            allPatternsMatch = false;
+                            break;
+                    }
+
+                    if (!allPatternsMatch)
+                        break;
+                }
+
+                if (allPatternsMatch && candidateInstructions.Count > 0)
+                {
+                    deferredSet ??= new HashSet<Instruction>();
+                    foreach (var ci in candidateInstructions)
+                        deferredSet.Add(ci);
+
+                    // Record the deferred instructions for this field
+                    if (!_deferredNullPatternFields.TryGetValue(field, out var entries))
+                    {
+                        entries = new List<(MethodBody, List<Instruction>)>();
+                        _deferredNullPatternFields[field] = entries;
+                    }
+                    entries.Add((body, candidateInstructions));
+                }
+            }
+
+            return deferredSet;
+        }
+
+        /// <summary>
+        /// Checks if the instruction at idx is a null store pattern: ldarg.0; ldnull; stfld F
+        /// </summary>
+        static bool IsNullStorePattern(Collection<Instruction> instructions, int stfldIdx)
+        {
+            if (stfldIdx < 2)
+                return false;
+
+            var prev1 = instructions[stfldIdx - 1]; // should be ldnull
+            var prev2 = instructions[stfldIdx - 2]; // should be ldarg.0
+
+            return prev1.OpCode.Code == Code.Ldnull &&
+                   prev2.OpCode.Code == Code.Ldarg_0;
+        }
+
+        /// <summary>
+        /// Adds the null store sequence (ldarg.0, ldnull, stfld) to the candidate list.
+        /// </summary>
+        static void AddNullStoreInstructions(Collection<Instruction> instructions, int stfldIdx, List<Instruction> candidates)
+        {
+            candidates.Add(instructions[stfldIdx - 2]); // ldarg.0
+            candidates.Add(instructions[stfldIdx - 1]); // ldnull
+            candidates.Add(instructions[stfldIdx]);      // stfld
+        }
+
+        /// <summary>
+        /// Checks if the instruction at idx is a null-conditional pattern with dup:
+        ///   [ldarg.0;] ldfld F; dup; brtrue.s L; pop; br.s done; L: callvirt M; done: ...
+        /// Returns ALL instructions in the pattern (including ldarg.0 prefix, ldfld,
+        /// dup, brtrue, pop, br, and the guarded call) so they can all be replaced with nop.
+        /// </summary>
+        static bool IsNullConditionalPattern(Collection<Instruction> instructions, int ldfldIdx, out List<Instruction> patternInstructions)
+        {
+            patternInstructions = new List<Instruction>();
+
+            // Need at least: ldfld, dup, brtrue, pop, br, <guarded>
+            if (ldfldIdx + 4 >= instructions.Count)
+                return false;
+
+            var ldfld = instructions[ldfldIdx];
+            var dup = instructions[ldfldIdx + 1];
+            var brtrue = instructions[ldfldIdx + 2];
+            var pop = instructions[ldfldIdx + 3];
+            var br = instructions[ldfldIdx + 4];
+
+            if (dup.OpCode.Code != Code.Dup)
+                return false;
+
+            if (brtrue.OpCode.Code is not (Code.Brtrue or Code.Brtrue_S))
+                return false;
+
+            if (pop.OpCode.Code != Code.Pop)
+                return false;
+
+            if (br.OpCode.Code is not (Code.Br or Code.Br_S))
+                return false;
+
+            // The brtrue target should be the guarded instruction (the call)
+            var guardedTarget = (Instruction)brtrue.Operand;
+            // The br target should be the instruction after the guarded block (done label)
+            var doneTarget = (Instruction)br.Operand;
+
+            // V1: we only support a single-instruction guarded block
+            // The guarded instruction should be exactly the brtrue target
+            // and its next instruction should be the done target
+            if (guardedTarget.Next != doneTarget)
+                return false;
+
+            // The guarded instruction should be a callvirt (e.g., Dispose())
+            if (guardedTarget.OpCode.Code is not (Code.Callvirt or Code.Call))
+                return false;
+
+            // The called method should return void (for V1 simplicity)
+            var calledMethod = (MethodReference)guardedTarget.Operand;
+            if (calledMethod.ReturnType.MetadataType != MetadataType.Void)
+                return false;
+
+            // Include ldarg.0 before ldfld (loads 'this' for instance field access)
+            if (ldfldIdx > 0 && instructions[ldfldIdx - 1].OpCode.Code == Code.Ldarg_0)
+                patternInstructions.Add(instructions[ldfldIdx - 1]);
+
+            // Include all instructions in the null-conditional pattern
+            patternInstructions.Add(ldfld);     // ldfld F
+            patternInstructions.Add(dup);       // dup
+            patternInstructions.Add(brtrue);    // brtrue L
+            patternInstructions.Add(pop);       // pop
+            patternInstructions.Add(br);        // br done
+            patternInstructions.Add(guardedTarget); // callvirt/call M
+
+            return true;
+        }
+
+        /// <summary>
+        /// Handles un-deferral: when a field that was previously deferred gets marked from
+        /// a non-null-pattern context, retroactively process all deferred instructions.
+        /// </summary>
+        void UndeferFieldNullPattern(FieldDefinition field, in MessageOrigin origin)
+        {
+            if (!_deferredNullPatternFields.Remove(field, out var entries))
+                return;
+
+            // The field is being marked from a real reference. Process the deferred instructions
+            // that we previously skipped. We don't need to re-run MarkInstruction for them
+            // because the field will be fully marked by the caller. The guarded callvirt
+            // instructions are the ones that need marking.
+            foreach (var (body, instructions) in entries)
+            {
+                foreach (var instr in instructions)
+                {
+                    // Only process InlineMethod operands (the guarded calls like Dispose())
+                    // that we deferred. Field operands don't need re-processing since the
+                    // field is being marked now by the caller.
+                    if (instr.OpCode.OperandType == OperandType.InlineMethod)
+                    {
+                        var methodRef = (MethodReference)instr.Operand;
+                        var dependencyKind = instr.OpCode.Code switch
+                        {
+                            Code.Call => DependencyKind.DirectCall,
+                            Code.Callvirt => DependencyKind.VirtualCall,
+                            _ => DependencyKind.DirectCall
+                        };
+                        MarkMethod(methodRef, new DependencyInfo(dependencyKind, body.Method), origin);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fixes up method bodies for fields that remain deferred after marking completes.
+        /// Replaces all deferred instructions with NOPs to remove field/method metadata references.
+        /// </summary>
+        void FixupDeferredNullPatternBodies()
+        {
+            foreach (var (field, entries) in _deferredNullPatternFields)
+            {
+                foreach (var (body, instructions) in entries)
+                {
+                    LinkerILProcessor ilProcessor = body.GetLinkerILProcessor();
+
+                    foreach (var instr in instructions)
+                    {
+                        ilProcessor.Replace(instr, Instruction.Create(OpCodes.Nop));
+                    }
+
+                    Context.LogMessage($"FieldNullTrim: removed null-pattern references to '{field.FullName}' in '{body.Method.GetDisplayName()}'.");
+                }
+            }
+        }
+
+        #endregion
     }
 }

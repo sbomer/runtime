@@ -1325,6 +1325,9 @@ namespace Mono.Linker
                 case "substitutefeatureguards":
                     optimization = CodeOptimizations.SubstituteFeatureGuards;
                     return true;
+                case "fieldnulltrim":
+                    optimization = CodeOptimizations.FieldNullTrim;
+                    return true;
             }
 
             Context.LogError(null, DiagnosticId.InvalidOptimizationValue, text);
