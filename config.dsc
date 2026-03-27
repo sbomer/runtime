@@ -223,6 +223,30 @@ config({
                 r`src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj`,
                 r`src/libraries/Microsoft.Extensions.Hosting.WindowsServices/src/Microsoft.Extensions.Hosting.WindowsServices.csproj`,
                 r`src/libraries/Microsoft.Extensions.Hosting.Systemd/src/Microsoft.Extensions.Hosting.Systemd.csproj`,
+                r`src/libraries/Microsoft.Extensions.Http/src/Microsoft.Extensions.Http.csproj`,
+                // === Remaining addable projects (no System.Net.Http dependency) ===
+                r`src/libraries/System.Net.Http.WinHttpHandler/src/System.Net.Http.WinHttpHandler.csproj`,
+                r`src/libraries/System.Runtime.InteropServices.JavaScript/src/System.Runtime.InteropServices.JavaScript.csproj`,
+                // === System.Net.Http and dependents ===
+                r`src/libraries/System.Net.Http/src/System.Net.Http.csproj`,
+                r`src/libraries/System.Net.Http.Json/src/System.Net.Http.Json.csproj`,
+                r`src/libraries/System.Net.Requests/src/System.Net.Requests.csproj`,
+                r`src/libraries/System.Net.WebClient/src/System.Net.WebClient.csproj`,
+                r`src/libraries/System.Net.Mail/src/System.Net.Mail.csproj`,
+                r`src/libraries/System.Net.WebSockets.Client/src/System.Net.WebSockets.Client.csproj`,
+                r`src/libraries/System.Net.HttpListener/src/System.Net.HttpListener.csproj`,
+                // === System.Private.Xml chain (depends on System.Net.Http) ===
+                r`src/libraries/System.Private.Xml/src/System.Private.Xml.csproj`,
+                r`src/libraries/System.Private.Xml.Linq/src/System.Private.Xml.Linq.csproj`,
+                r`src/libraries/System.Xml.ReaderWriter/src/System.Xml.ReaderWriter.csproj`,
+                r`src/libraries/System.Xml.XDocument/src/System.Xml.XDocument.csproj`,
+                r`src/libraries/System.Xml.XmlSerializer/src/System.Xml.XmlSerializer.csproj`,
+                r`src/libraries/System.Xml.XPath/src/System.Xml.XPath.csproj`,
+                r`src/libraries/System.Xml.XPath.XDocument/src/System.Xml.XPath.XDocument.csproj`,
+                r`src/libraries/System.Data.Common/src/System.Data.Common.csproj`,
+                r`src/libraries/System.Private.DataContractSerialization/src/System.Private.DataContractSerialization.csproj`,
+                r`src/libraries/System.Runtime.Serialization.Json/src/System.Runtime.Serialization.Json.csproj`,
+                r`src/libraries/System.Runtime.Serialization.Xml/src/System.Runtime.Serialization.Xml.csproj`,
             ],
         }
     ]
