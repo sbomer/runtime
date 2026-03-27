@@ -172,13 +172,14 @@ config({
                 r`src/libraries/System.Composition/src/System.Composition.csproj`,
                 r`src/libraries/System.ComponentModel.Composition.Registration/src/System.ComponentModel.Composition.Registration.csproj`,
                 r`src/libraries/System.Data.Odbc/src/System.Data.Odbc.csproj`,
-                // BLOCKED: System.Diagnostics.EventLog, System.Diagnostics.PerformanceCounter
-                // — VersionLessThan('$(TargetFrameworkVersion)', '10.0') fails during graph
-                //   construction when TargetFrameworkVersion is empty (netstandard2.0 inner builds).
-                //   Also blocks: System.Configuration.ConfigurationManager, System.Runtime.Caching,
-                //   System.Data.OleDb, System.ServiceProcess.ServiceController,
-                //   Microsoft.Extensions.Logging.EventLog, Microsoft.Extensions.Hosting,
-                //   Microsoft.Extensions.Hosting.WindowsServices, System.DirectoryServices.AccountManagement
+                // Previously blocked by VersionLessThan crash — fixed by guarding with empty string check
+                r`src/libraries/System.Diagnostics.EventLog/src/System.Diagnostics.EventLog.csproj`,
+                r`src/libraries/System.Diagnostics.PerformanceCounter/src/System.Diagnostics.PerformanceCounter.csproj`,
+                r`src/libraries/System.Configuration.ConfigurationManager/src/System.Configuration.ConfigurationManager.csproj`,
+                r`src/libraries/System.Runtime.Caching/src/System.Runtime.Caching.csproj`,
+                r`src/libraries/System.Data.OleDb/src/System.Data.OleDb.csproj`,
+                r`src/libraries/System.ServiceProcess.ServiceController/src/System.ServiceProcess.ServiceController.csproj`,
+                r`src/libraries/System.DirectoryServices.AccountManagement/src/System.DirectoryServices.AccountManagement.csproj`,
                 r`src/libraries/System.DirectoryServices/src/System.DirectoryServices.csproj`,
                 r`src/libraries/System.DirectoryServices.Protocols/src/System.DirectoryServices.Protocols.csproj`,
                 r`src/libraries/System.Management/src/System.Management.csproj`,
@@ -217,8 +218,11 @@ config({
                 r`src/libraries/Microsoft.Extensions.Diagnostics.Abstractions/src/Microsoft.Extensions.Diagnostics.Abstractions.csproj`,
                 r`src/libraries/Microsoft.Extensions.Diagnostics/src/Microsoft.Extensions.Diagnostics.csproj`,
                 r`src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/Microsoft.Extensions.Hosting.Abstractions.csproj`,
-                // BLOCKED: Microsoft.Extensions.Hosting.Systemd
-                // — transitively depends on Microsoft.Extensions.Hosting → Logging.EventLog → EventLog (VersionLessThan crash)
+                // Previously blocked by VersionLessThan crash (transitive via EventLog)
+                r`src/libraries/Microsoft.Extensions.Logging.EventLog/src/Microsoft.Extensions.Logging.EventLog.csproj`,
+                r`src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj`,
+                r`src/libraries/Microsoft.Extensions.Hosting.WindowsServices/src/Microsoft.Extensions.Hosting.WindowsServices.csproj`,
+                r`src/libraries/Microsoft.Extensions.Hosting.Systemd/src/Microsoft.Extensions.Hosting.Systemd.csproj`,
             ],
         }
     ]
