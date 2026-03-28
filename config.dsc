@@ -3,15 +3,8 @@ config({
         // =========================================================================
         // Ninja resolver: native C libraries (System.Native, System.Globalization.Native, etc.)
         //
-        // Prerequisites: CMake must have been run first to generate build.ninja:
-        //   export __CMakeBinDir=$PWD/artifacts/obj/native/linux-x64-Debug/bin
-        //   cmake --no-warn-unused-cli -G Ninja \
-        //     -DCMAKE_BUILD_TYPE=Debug \
-        //     -DCMAKE_INSTALL_PREFIX=$__CMakeBinDir \
-        //     -DFEATURE_DISTRO_AGNOSTIC_SSL=1 \
-        //     -DCMAKE_STATIC_LIB_LINK=0 \
-        //     -S src/native/libs \
-        //     -B artifacts/obj/native/linux-x64-Debug
+        // build-bxl.sh runs CMake to generate build.ninja before invoking bxl.
+        // The generated build.ninja is idempotent (content-stable across reruns).
         // =========================================================================
         {
             kind: "Ninja",
