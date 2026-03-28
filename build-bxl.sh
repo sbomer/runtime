@@ -11,28 +11,25 @@ if [[ ! -x "$BXL" ]]; then
     exit 1
 fi
 
-# Restore NuGet packages outside BuildXL (idempotent after first run).
-# OOB libraries have NuGet PackageReferences for downlevel TFMs.
-# Skip if already done — dotnet restore takes ~18s even when up-to-date.
-# Pass --restore to force re-running (e.g., after adding new PackageReferences).
 # Parse our own flags and separate them from bxl pass-through args.
-FORCE_RESTORE=false
 BXL_ARGS=()
 for arg in "$@"; do
     case "$arg" in
-        --restore) FORCE_RESTORE=true ;;
         *) BXL_ARGS+=("$arg") ;;
     esac
 done
 
-RESTORE_STAMP="$SCRIPT_DIR/artifacts/obj/.bxl-restore-done"
-if [[ ! -f "$RESTORE_STAMP" ]] || $FORCE_RESTORE; then
-    echo "=== Restoring NuGet packages ==="
-    "$SCRIPT_DIR/build.sh" --restore --subset libs.oob
-    touch "$RESTORE_STAMP"
-else
-    echo "=== NuGet packages already restored (pass --restore to force) ==="
-fi
+# Phase 1: NuGet restore via BuildXL.
+# Runs dotnet restore as a cached pip. BuildXL tracks all source file reads
+# (csproj, props, targets, NuGet.config, global.json) so the pip only
+# re-executes when inputs actually change. Cache hit: ~0s vs ~18s.
+echo "=== Phase 1: NuGet restore ==="
+export DOTNET_HOST_PATH="$HOME/.dotnet/dotnet"
+"$BXL" \
+    /c:"$SCRIPT_DIR/config.restore.dsc" \
+    /EnableLinuxEBPFSandbox- \
+    /server- \
+    /cacheGraph-
 
 # Generate Ninja build files for native C libraries via CMake.
 # CMake probes the system (compiler, headers, libraries) and generates build.ninja
@@ -54,8 +51,8 @@ else
     echo "=== Native build files already generated ==="
 fi
 
-echo "=== Running BuildXL ==="
-export DOTNET_HOST_PATH="$HOME/.dotnet/dotnet"
+# Phase 2: Build (MSBuild + Ninja resolvers).
+echo "=== Phase 2: Build ==="
 exec "$BXL" \
     /c:"$SCRIPT_DIR/config.dsc" \
     /EnableLinuxEBPFSandbox- \
