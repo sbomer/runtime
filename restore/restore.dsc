@@ -32,10 +32,9 @@ const bash : Transformer.ToolDefinition = {
 export const restore = Transformer.execute({
     tool: bash,
     arguments: [
+        Cmd.argument(Artifact.input(f`restore-tests-wrapper.sh`)),
         Cmd.argument(Artifact.input(f`../build.sh`)),
-        Cmd.rawArgument("--restore"),
-        Cmd.rawArgument("--subset"),
-        Cmd.rawArgument("libs.oob"),
+        Cmd.argument(Artifact.input(f`restore-tests.sh`)),
     ],
     workingDirectory: repoRoot,
     outputs: [
@@ -45,6 +44,12 @@ export const restore = Transformer.execute({
     // Allow undeclared source reads — dotnet restore reads many csproj/props/targets files
     // across the repo tree. BuildXL will dynamically track these for caching.
     allowUndeclaredSourceReads: true,
+    // Allow safe source rewrites — restore writes project.assets.json and other files
+    // that may already exist on disk from previous restore runs (manual or cached under
+    // a different pip fingerprint). Without this, changing restore arguments (e.g., adding
+    // libs.tests subset) creates a new pip fingerprint, and pre-existing outputs from the
+    // old pip are treated as DFA violations.
+    sourceRewritePolicy: "safeSourceRewritesAreAllowed",
     unsafe: {
         // Environment variables not included in pip fingerprint
         passThroughEnvironmentVariables: ["HOME", "USER", "LANG", "PATH", "TERM"],

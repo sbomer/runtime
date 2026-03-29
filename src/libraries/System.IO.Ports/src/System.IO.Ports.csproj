@@ -147,7 +147,7 @@ System.IO.Ports.SerialPort</PackageDescription>
     <Compile Include="$(CommonPath)System\Threading\Tasks\TaskToAsyncResult.cs" Link="Common\System\Threading\Tasks\TaskToAsyncResult.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true' and '$(SkipNativePackaging)' != 'true'">
     <!-- Just reference the runtime packages but don't build them in order to avoid unintentional Build/Pack invocations. -->
     <ProjectReference Include="..\pkg\runtime.native.$(MSBuildProjectName).proj" BuildReference="false" />
     <!-- Make the runtime specific packages non transitive so that they aren't flowing into other projects. -->
