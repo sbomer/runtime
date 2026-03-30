@@ -1,4 +1,22 @@
 config({
+    // Qualifier configuration for cross-resolver imports.
+    // DScript test runner pips import MSBuild build outputs via the "RuntimeLibs" module.
+    // The qualifier must include the MSBuild global properties so that GetProjectOutputsAsync
+    // can match project nodes. Keys MUST match the MSBuild resolver's globalProperties
+    // exactly (same values) — the graph builder merges qualifier + globalProperties and
+    // rejects conflicts. Extra keys not in globalProperties get added as MSBuild global
+    // properties during graph construction, which changes project evaluation.
+    // TargetFramework is intentionally omitted — it would force single-TFM evaluation.
+    qualifiers: {
+        defaultQualifier: {
+            Configuration: "Debug",
+            SkipAsnXmlGeneration: "true",
+            NetFrameworkMinimum: "netstandard2.0",
+            NetFrameworkCurrent: "net10.0",
+            UseLocalTargetingRuntimePack: "false",
+            SkipNativePackaging: "true",
+        },
+    },
     resolvers: [
         // =========================================================================
         // Ninja resolver: native C libraries (System.Native, System.Globalization.Native, etc.)
@@ -495,6 +513,16 @@ config({
                 r`src/libraries/System.Speech/tests/System.Speech.Tests.csproj`,
                 r`src/libraries/System.Windows.Extensions/tests/System.Windows.Extensions.Tests.csproj`,
             ],
-        }
+        },
+        // DScript resolver for test execution pips.
+        // Sdk.Transformers must be explicitly included because the Ninja resolver
+        // disables BuildXL's in-box SDK resolver (FrontEndHostController.cs line 1326-1332).
+        {
+            kind: "DScript",
+            modules: [
+                f`sdk/Sdk.Transformers/package.config.dsc`,
+                f`testing/module.config.dsc`,
+            ],
+        },
     ]
 });
