@@ -11,25 +11,35 @@ if [[ ! -x "$BXL" ]]; then
     exit 1
 fi
 
-# Parse our own flags and separate them from bxl pass-through args.
-BXL_ARGS=()
+# Extra bxl args can be passed via:
+#   1. Command-line args: ./build-bxl.sh /flag1 /flag2
+#   2. Environment variable: BXL_EXTRA_ARGS="/flag1 /flag2" ./build-bxl.sh
+# These args are passed to Phase 2 only. Phase 1 (restore) always uses ptrace sandbox.
+EXTRA_ARGS=()
 for arg in "$@"; do
-    case "$arg" in
-        *) BXL_ARGS+=("$arg") ;;
-    esac
+    EXTRA_ARGS+=("$arg")
 done
+# Also pick up from env var (space-separated)
+if [[ -n "${BXL_EXTRA_ARGS:-}" ]]; then
+    read -ra _env_args <<< "$BXL_EXTRA_ARGS"
+    EXTRA_ARGS+=("${_env_args[@]}")
+fi
 
 # Phase 1: NuGet restore via BuildXL.
 # Runs dotnet restore as a cached pip. BuildXL tracks all source file reads
 # (csproj, props, targets, NuGet.config, global.json) so the pip only
 # re-executes when inputs actually change. Cache hit: ~0s vs ~18s.
+# Always uses ptrace sandbox — eBPF incremental path encoding corrupts
+# temp file paths, causing false DFA violations on the hundreds of
+# uuid.tmp files NuGet creates.
 echo "=== Phase 1: NuGet restore ==="
 export DOTNET_HOST_PATH="$HOME/.dotnet/dotnet"
 "$BXL" \
     /c:"$SCRIPT_DIR/config.restore.dsc" \
-    /EnableLinuxEBPFSandbox- \
+    /interactive+ \
     /server- \
-    /cacheGraph-
+    /cacheGraph- \
+    /enableLinuxEBPFSandbox-
 
 # Generate Ninja build files for native C libraries via CMake.
 # CMake probes the system (compiler, headers, libraries) and generates build.ninja
@@ -55,5 +65,5 @@ fi
 echo "=== Phase 2: Build ==="
 exec "$BXL" \
     /c:"$SCRIPT_DIR/config.dsc" \
-    /EnableLinuxEBPFSandbox- \
-    "${BXL_ARGS[@]+"${BXL_ARGS[@]}"}"
+    /interactive+ \
+    "${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"}"
