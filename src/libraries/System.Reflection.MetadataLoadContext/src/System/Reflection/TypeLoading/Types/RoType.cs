@@ -244,7 +244,7 @@ namespace System.Reflection.TypeLoading
 
         private volatile RoType[]? _lazyInterfaces;
 
-        public sealed override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw new NotSupportedException(SR.NotSupported_InterfaceMapping);
+        public sealed override InterfaceMapping GetInterfaceMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type interfaceType) => throw new NotSupportedException(SR.NotSupported_InterfaceMapping);
 
         // Assignability
         public sealed override bool IsAssignableFrom(TypeInfo? typeInfo) => IsAssignableFrom((Type?)typeInfo);
