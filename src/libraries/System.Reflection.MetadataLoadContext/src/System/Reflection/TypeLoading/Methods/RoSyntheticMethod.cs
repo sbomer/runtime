@@ -10,6 +10,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all RoMethod objects created by a MetadataLoadContext that appear on arrays.
     /// </summary>
+    [RequiresUnreferencedCode("Members might be removed")]
     internal sealed partial class RoSyntheticMethod : RoMethod
     {
         private readonly RoType _declaringType;
@@ -39,7 +40,6 @@ namespace System.Reflection.TypeLoading
         protected sealed override CallingConventions ComputeCallingConvention() => CallingConventions.Standard | CallingConventions.HasThis;
         protected sealed override MethodImplAttributes ComputeMethodImplementationFlags() => MethodImplAttributes.IL;
 
-        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override MethodSig<RoParameter> ComputeMethodSig()
         {
             int parameterCount = _parameterTypes.Length;
@@ -55,7 +55,6 @@ namespace System.Reflection.TypeLoading
         [RequiresUnreferencedCode("Trimming may change method bodies. For example it can change some instructions, remove branches or local variables.")]
         public sealed override MethodBody? GetMethodBody() => null;
 
-        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override MethodSig<string> ComputeMethodSigStrings()
         {
             int parameterCount = _parameterTypes.Length;
