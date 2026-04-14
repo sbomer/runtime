@@ -30,6 +30,7 @@ namespace System.Reflection.TypeLoading.Ecma
         public IEnumerable<CustomAttributeData> ComputeTrueCustomAttributes() => MethodDefinition.GetCustomAttributes().ToTrueCustomAttributes(_module);
 
         public int ComputeGenericParameterCount() => MethodDefinition.GetGenericParameters().Count;
+        [RequiresUnreferencedCode("Types might be removed")]
         public RoType[] ComputeGenericArgumentsOrParameters()
         {
             GenericParameterHandleCollection gphs = MethodDefinition.GetGenericParameters();

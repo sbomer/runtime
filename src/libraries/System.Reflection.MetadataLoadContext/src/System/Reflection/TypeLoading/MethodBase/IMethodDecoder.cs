@@ -22,6 +22,9 @@ namespace System.Reflection.TypeLoading
         int MetadataToken { get; }
 
         int ComputeGenericParameterCount();
+        // RUC is on the interface method because EcmaMethodDecoder is a struct and
+        // type-level RUC is not supported on structs (https://github.com/dotnet/runtime/issues/90115).
+        [RequiresUnreferencedCode("Types might be removed")]
         RoType[] ComputeGenericArgumentsOrParameters();
 
         [RequiresUnreferencedCode("Members might be removed")]
