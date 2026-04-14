@@ -87,6 +87,7 @@ namespace System.Reflection.TypeLoading.Ecma
         public sealed override bool IsGenericTypeDefinition => GetGenericParameterCount() != 0;
 
         internal sealed override int GetGenericParameterCount() => GetGenericTypeParametersNoCopy().Length;
+        [RequiresUnreferencedCode("Types might be removed")]
         internal sealed override RoType[] GetGenericTypeParametersNoCopy() => _lazyGenericParameters ??= ComputeGenericTypeParameters();
         [RequiresUnreferencedCode("Types might be removed")]
         private RoType[] ComputeGenericTypeParameters()

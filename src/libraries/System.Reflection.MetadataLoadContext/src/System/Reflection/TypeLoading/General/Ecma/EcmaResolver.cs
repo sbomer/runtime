@@ -51,6 +51,7 @@ namespace System.Reflection.TypeLoading.Ecma
         private static readonly Func<EntityHandle, EcmaModule, RoDefinitionType> s_resolveTypeRef =
             (h, m) => ComputeTypeRefResolution((TypeReferenceHandle)h, m);
 
+        [RequiresUnreferencedCode("Types might be removed")]
         private static RoDefinitionType ComputeTypeRefResolution(TypeReferenceHandle handle, EcmaModule module)
         {
             MetadataReader reader = module.Reader;

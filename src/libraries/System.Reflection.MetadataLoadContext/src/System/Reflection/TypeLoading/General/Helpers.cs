@@ -285,6 +285,7 @@ namespace System.Reflection.TypeLoading
             return true;
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoType? LoadTypeFromAssemblyQualifiedName(string name, RoAssembly defaultAssembly, bool ignoreCase, bool throwOnError)
         {
             if (!name.TypeNameContainsTypeParserMetacharacters())
