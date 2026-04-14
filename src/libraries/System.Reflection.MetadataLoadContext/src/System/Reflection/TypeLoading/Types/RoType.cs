@@ -11,6 +11,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all Type and TypeInfo objects created by a MetadataLoadContext.
     /// </summary>
+    [RequiresUnreferencedCode("Types might be removed")]
     internal abstract partial class RoType : LeveledTypeInfo
     {
         private const TypeAttributes TypeAttributesSentinel = (TypeAttributes)(-1);
