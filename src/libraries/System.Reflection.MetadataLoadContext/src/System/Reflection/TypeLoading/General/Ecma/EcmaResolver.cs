@@ -33,11 +33,32 @@ namespace System.Reflection.TypeLoading.Ecma
             Debug.Assert(!handle.IsNil);
             Debug.Assert(module != null);
 
-            return module.TypeDefTable.GetOrAdd(handle, module, s_resolveTypeDef);
+            return module.TypeDefTable.GetOrAdd(handle, module, ResolverDelegates.ResolveTypeDef);
         }
 
-        private static readonly Func<EntityHandle, EcmaModule, EcmaDefinitionType> s_resolveTypeDef =
-            (h, m) => new EcmaDefinitionType((TypeDefinitionHandle)h, m);
+        [RequiresUnreferencedCode("Types might be removed")]
+        private static class ResolverDelegates
+        {
+            public static readonly Func<EntityHandle, EcmaModule, EcmaDefinitionType> ResolveTypeDef =
+                (h, m) => new EcmaDefinitionType((TypeDefinitionHandle)h, m);
+
+            public static readonly Func<EntityHandle, EcmaModule, RoDefinitionType> ResolveTypeRef =
+                (h, m) => ComputeTypeRefResolution((TypeReferenceHandle)h, m);
+
+            public static readonly Func<EntityHandle, EcmaModule, EcmaGenericParameterType> ResolveGenericParam =
+                (EntityHandle h, EcmaModule module) =>
+                {
+                    MetadataReader reader = module.Reader;
+                    GenericParameterHandle gph = (GenericParameterHandle)h;
+                    GenericParameter gp = gph.GetGenericParameter(reader);
+                    return gp.Parent.Kind switch
+                    {
+                        HandleKind.TypeDefinition => new EcmaGenericTypeParameterType(gph, module),
+                        HandleKind.MethodDefinition => new EcmaGenericMethodParameterType(gph, module),
+                        _ => throw new BadImageFormatException(),
+                    };
+                };
+        }
 
         [RequiresUnreferencedCode("Types might be removed")]
         public static RoDefinitionType ResolveTypeRef(this TypeReferenceHandle handle, EcmaModule module)
@@ -45,11 +66,8 @@ namespace System.Reflection.TypeLoading.Ecma
             Debug.Assert(!handle.IsNil);
             Debug.Assert(module != null);
 
-            return module.TypeRefTable.GetOrAdd(handle, module, s_resolveTypeRef);
+            return module.TypeRefTable.GetOrAdd(handle, module, ResolverDelegates.ResolveTypeRef);
         }
-
-        private static readonly Func<EntityHandle, EcmaModule, RoDefinitionType> s_resolveTypeRef =
-            (h, m) => ComputeTypeRefResolution((TypeReferenceHandle)h, m);
 
         [RequiresUnreferencedCode("Types might be removed")]
         private static RoDefinitionType ComputeTypeRefResolution(TypeReferenceHandle handle, EcmaModule module)
@@ -134,22 +152,8 @@ namespace System.Reflection.TypeLoading.Ecma
             Debug.Assert(!handle.IsNil);
             Debug.Assert(module != null);
 
-            return module.GenericParamTable.GetOrAdd(handle, module, s_resolveGenericParam);
+            return module.GenericParamTable.GetOrAdd(handle, module, ResolverDelegates.ResolveGenericParam);
         }
-
-        private static readonly Func<EntityHandle, EcmaModule, EcmaGenericParameterType> s_resolveGenericParam =
-            (EntityHandle h, EcmaModule module) =>
-            {
-                MetadataReader reader = module.Reader;
-                GenericParameterHandle gph = (GenericParameterHandle)h;
-                GenericParameter gp = gph.GetGenericParameter(reader);
-                return gp.Parent.Kind switch
-                {
-                    HandleKind.TypeDefinition => new EcmaGenericTypeParameterType(gph, module),
-                    HandleKind.MethodDefinition => new EcmaGenericMethodParameterType(gph, module),
-                    _ => throw new BadImageFormatException(), // Not a legal token type to be found in a GenericParameter.Parent record.
-                };
-            };
 
         public static RoAssembly ResolveAssembly(this AssemblyReferenceHandle handle, EcmaModule module)
         {
