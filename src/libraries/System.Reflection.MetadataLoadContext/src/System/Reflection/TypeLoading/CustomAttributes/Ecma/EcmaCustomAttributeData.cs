@@ -3,11 +3,13 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Metadata;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
+    [RequiresUnreferencedCode("Members might be removed")]
     internal sealed class EcmaCustomAttributeData : RoCustomAttributeData
     {
         private readonly CustomAttributeHandle _handle;
