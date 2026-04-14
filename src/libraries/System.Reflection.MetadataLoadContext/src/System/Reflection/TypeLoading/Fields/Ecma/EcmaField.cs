@@ -37,6 +37,7 @@ namespace System.Reflection.TypeLoading.Ecma
         protected sealed override IEnumerable<CustomAttributeData> GetTrueCustomAttributes() => FieldDefinition.GetCustomAttributes().ToTrueCustomAttributes(_module);
 
         protected sealed override int GetExplicitFieldOffset() => FieldDefinition.GetOffset();
+        [RequiresUnreferencedCode("Types might be removed")]
         protected sealed override MarshalAsAttribute ComputeMarshalAsAttribute() => FieldDefinition.GetMarshallingDescriptor().ToMarshalAsAttribute(_module);
 
         public sealed override int MetadataToken => _handle.GetToken();
