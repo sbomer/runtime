@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
@@ -68,6 +69,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         public MethodImplAttributes ComputeMethodImplementationFlags() => MethodDefinition.ImplAttributes;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public MethodSig<RoParameter> SpecializeMethodSig(IRoMethodBase roMethodBase)
         {
             MetadataReader reader = Reader;

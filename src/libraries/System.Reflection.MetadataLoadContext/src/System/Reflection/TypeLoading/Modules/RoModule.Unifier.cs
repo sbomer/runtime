@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -10,6 +11,7 @@ namespace System.Reflection.TypeLoading
         //
         // SzArrays
         //
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoArrayType GetUniqueArrayType(RoType elementType)
         {
             // Modified types do not support Equals\GetHashCode.
@@ -23,6 +25,7 @@ namespace System.Reflection.TypeLoading
         //
         // MdArrays
         //
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoArrayType GetUniqueArrayType(RoType elementType, int rank)
         {
             // Modified types do not support Equals\GetHashCode.
@@ -37,6 +40,7 @@ namespace System.Reflection.TypeLoading
         //
         // ByRefs
         //
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoByRefType GetUniqueByRefType(RoType elementType)
         {
             // Modified types do not support Equals\GetHashCode.
@@ -50,6 +54,7 @@ namespace System.Reflection.TypeLoading
         //
         // Pointers
         //
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoPointerType GetUniquePointerType(RoType elementType)
         {
             return elementType is RoModifiedType ?
@@ -61,6 +66,7 @@ namespace System.Reflection.TypeLoading
         //
         // Constructed Generic Types
         //
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoConstructedGenericType GetUniqueConstructedGenericType(RoDefinitionType genericTypeDefinition, RoType[] genericTypeArguments)
         {
             return _constructedGenericTypeDict.GetOrAdd(new RoConstructedGenericType.Key(genericTypeDefinition, genericTypeArguments), s_constructedGenericTypeFactory);

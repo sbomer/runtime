@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -14,6 +15,7 @@ namespace System.Reflection.TypeLoading
         private readonly byte[] _name;
         internal Exception? Exception { get; }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoExceptionType(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, Exception? exception)
             : base()
         {
@@ -43,6 +45,7 @@ namespace System.Reflection.TypeLoading
         internal sealed override IEnumerable<RoType> GetNestedTypesCore(NameFilter? filter) => throw null!;
         internal sealed override RoDefinitionType GetNestedTypeCore(ReadOnlySpan<byte> utf8Name) => throw null!;
         internal sealed override IEnumerable<ConstructorInfo> SpecializeConstructors(NameFilter? filter, RoInstantiationProviderType declaringType) => throw null!;
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<MethodInfo> SpecializeMethods(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType) => throw null!;
         internal sealed override IEnumerable<EventInfo> SpecializeEvents(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType) => throw null!;
         internal sealed override IEnumerable<FieldInfo> SpecializeFields(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType) => throw null!;

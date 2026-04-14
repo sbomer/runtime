@@ -18,6 +18,7 @@ namespace System.Reflection.TypeLoading.Ecma
         /// Converts ECMA-encoded custom attributes into a freshly allocated CustomAttributeData object suitable for direct return
         /// from the CustomAttributes api.
         /// </summary>
+        [RequiresUnreferencedCode("Members might be removed")]
         public static IEnumerable<CustomAttributeData> ToTrueCustomAttributes(this CustomAttributeHandleCollection handles, EcmaModule module)
         {
             foreach (CustomAttributeHandle handle in handles)
@@ -34,6 +35,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return !handles.FindCustomAttributeByName(ns, name, module).IsNil;
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public static CustomAttributeData? TryFindCustomAttribute(this CustomAttributeHandleCollection handles, ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, EcmaModule module)
         {
             CustomAttributeHandle handle = handles.FindCustomAttributeByName(ns, name, module);

@@ -47,6 +47,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         public sealed override IEnumerable<CustomAttributeData> CustomAttributes => ModuleDefinition.GetCustomAttributes().ToTrueCustomAttributes(this);
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal MethodInfo? ComputeEntryPoint(bool fileRefEntryPointAllowed)
         {
             PEHeaders peHeaders = PEReader.PEHeaders;

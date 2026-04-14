@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
@@ -15,6 +16,7 @@ namespace System.Reflection.TypeLoading.Ecma
         private readonly EcmaModule _module;
         private readonly TypeDefinitionHandle _handle;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal EcmaDefinitionType(TypeDefinitionHandle handle, EcmaModule module)
             : base()
         {

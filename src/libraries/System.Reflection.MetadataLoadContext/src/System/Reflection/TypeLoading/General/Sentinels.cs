@@ -11,6 +11,8 @@ namespace System.Reflection.TypeLoading
     //
     internal static class Sentinels
     {
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
+            Justification = "Sentinel instances are never used for reflection.")]
         public static readonly RoType RoType = new SentinelType();
         public static readonly RoMethod RoMethod = new SentinelMethod();
 

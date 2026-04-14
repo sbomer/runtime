@@ -27,6 +27,7 @@ namespace System.Reflection
             _unmodifiedType = unmodifiedType;
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoModifiedType Create(RoType unmodifiedType)
         {
             RoModifiedType modifiedType;

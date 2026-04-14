@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
@@ -75,6 +76,7 @@ namespace System.Reflection.TypeLoading.Ecma
             throw new BadImageFormatException();
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public static bool TryFindRawDefaultValueFromCustomAttributes(this CustomAttributeHandleCollection handles, EcmaModule module, out object? rawDefaultValue)
         {
             rawDefaultValue = default;

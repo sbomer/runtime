@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Reflection.Metadata;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
@@ -10,6 +11,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// </summary>
     internal sealed class EcmaGenericTypeParameterType : EcmaGenericParameterType
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         internal EcmaGenericTypeParameterType(GenericParameterHandle handle, EcmaModule module)
             : base(handle, module)
         {

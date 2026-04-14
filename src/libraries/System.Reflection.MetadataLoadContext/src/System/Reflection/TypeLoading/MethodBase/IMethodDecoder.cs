@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace System.Reflection.TypeLoading
@@ -26,6 +27,7 @@ namespace System.Reflection.TypeLoading
         IEnumerable<CustomAttributeData> ComputeTrueCustomAttributes();
         DllImportAttribute ComputeDllImportAttribute();
 
+        [RequiresUnreferencedCode("Members might be removed")]
         MethodSig<RoParameter> SpecializeMethodSig(IRoMethodBase member);
         MethodBody? SpecializeMethodBody(IRoMethodBase owner);
         MethodSig<string> SpecializeMethodSigStrings(in TypeContext typeContext);

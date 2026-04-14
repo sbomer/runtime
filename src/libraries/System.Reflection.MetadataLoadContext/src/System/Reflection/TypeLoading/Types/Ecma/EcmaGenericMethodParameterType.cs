@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
@@ -11,6 +12,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// </summary>
     internal sealed class EcmaGenericMethodParameterType : EcmaGenericParameterType
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         internal EcmaGenericMethodParameterType(GenericParameterHandle handle, EcmaModule module)
             : base(handle, module)
         {
@@ -24,6 +26,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         public sealed override MethodBase DeclaringMethod => GetRoDeclaringMethod();
         private RoMethod GetRoDeclaringMethod() => _lazyDeclaringMethod ??= ComputeDeclaringMethod();
+        [RequiresUnreferencedCode("Types might be removed")]
         private RoMethod ComputeDeclaringMethod() => ((MethodDefinitionHandle)(GenericParameter.Parent)).ResolveMethod<RoMethod>(GetEcmaModule(), default);
         private volatile RoMethod? _lazyDeclaringMethod;
 
