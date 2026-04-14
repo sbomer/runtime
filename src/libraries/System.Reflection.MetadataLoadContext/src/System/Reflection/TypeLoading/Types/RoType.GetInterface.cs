@@ -11,7 +11,6 @@ namespace System.Reflection.TypeLoading
     internal partial class RoType
     {
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
-        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
         public sealed override Type? GetInterface(string name, bool ignoreCase)
         {
             ArgumentNullException.ThrowIfNull(name);

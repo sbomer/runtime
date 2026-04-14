@@ -14,7 +14,6 @@ namespace System.Reflection.TypeLoading
         /// Helper for creating a CustomAttributeNamedArgument.
         /// </summary>
         public static CustomAttributeNamedArgument ToCustomAttributeNamedArgument(
-            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             this RoType attributeType, string name, Type? argumentType, object? value)
         {
             MemberInfo[] members = attributeType.GetMember(name, MemberTypes.Field | MemberTypes.Property, BindingFlags.Public | BindingFlags.Instance);

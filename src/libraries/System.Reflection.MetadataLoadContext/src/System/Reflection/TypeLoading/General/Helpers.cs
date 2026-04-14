@@ -277,7 +277,6 @@ namespace System.Reflection.TypeLoading
             return true;
         }
 
-        [RequiresUnreferencedCode("Types might be removed by trimming. If the type name is a string literal, consider using Type.GetType instead.")]
         public static RoType? LoadTypeFromAssemblyQualifiedName(string name, RoAssembly defaultAssembly, bool ignoreCase, bool throwOnError)
         {
             if (!name.TypeNameContainsTypeParserMetacharacters())
