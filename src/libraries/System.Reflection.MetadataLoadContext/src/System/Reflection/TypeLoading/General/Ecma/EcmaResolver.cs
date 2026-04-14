@@ -26,6 +26,7 @@ namespace System.Reflection.TypeLoading.Ecma
             };
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public static EcmaDefinitionType ResolveTypeDef(this TypeDefinitionHandle handle, EcmaModule module)
         {
             Debug.Assert(!handle.IsNil);
@@ -191,6 +192,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 return (T)(object)(new RoDefinitionMethod<EcmaMethodDecoder>(declaringType, declaringType, decoder));
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         private static RoInstantiationProviderType ResolveAndSpecializeType(this TypeDefinitionHandle handle, EcmaModule module, in TypeContext typeContext)
         {
             RoDefinitionType declaringType = handle.ResolveTypeDef(module);

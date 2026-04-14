@@ -64,6 +64,7 @@ namespace System.Reflection.TypeLoading
         public sealed override bool ContainsGenericParameters => GetRoDeclaringType().ContainsGenericParameters;
 
         public sealed override ParameterInfo[] GetParameters() => GetParametersNoCopy().CloneArray<ParameterInfo>();
+        [RequiresUnreferencedCode("Members might be removed")]
         internal RoParameter[] GetParametersNoCopy() => MethodSig.Parameters;
 
         private MethodSig<RoParameter> MethodSig => field ??= ComputeMethodSig();

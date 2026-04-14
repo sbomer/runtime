@@ -26,6 +26,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         public string ComputeName() => MethodDefinition.Name.GetString(Reader);
         public int MetadataToken => _handle.GetToken();
+        [RequiresUnreferencedCode("Members might be removed")]
         public IEnumerable<CustomAttributeData> ComputeTrueCustomAttributes() => MethodDefinition.GetCustomAttributes().ToTrueCustomAttributes(_module);
 
         public int ComputeGenericParameterCount() => MethodDefinition.GetGenericParameters().Count;

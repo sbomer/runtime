@@ -25,6 +25,7 @@ namespace System.Reflection.TypeLoading.Ecma
         protected sealed override RoType ComputeDeclaringType() => GetRoDeclaringMethod().GetRoDeclaringType();
 
         public sealed override MethodBase DeclaringMethod => GetRoDeclaringMethod();
+        [RequiresUnreferencedCode("Members might be removed")]
         private RoMethod GetRoDeclaringMethod() => _lazyDeclaringMethod ??= ComputeDeclaringMethod();
         [RequiresUnreferencedCode("Types might be removed")]
         private RoMethod ComputeDeclaringMethod() => ((MethodDefinitionHandle)(GenericParameter.Parent)).ResolveMethod<RoMethod>(GetEcmaModule(), default);

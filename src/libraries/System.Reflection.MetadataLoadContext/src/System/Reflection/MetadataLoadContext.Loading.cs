@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Reflection.TypeLoading;
 using System.Reflection.TypeLoading.Ecma;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection
 {
@@ -17,6 +18,7 @@ namespace System.Reflection
         // Null entries do *not* appear here.
         private readonly ConcurrentDictionary<RoAssemblyName, RoAssembly> _loadedAssemblies = new ConcurrentDictionary<RoAssemblyName, RoAssembly>();
 
+        [RequiresUnreferencedCode("Members might be removed")]
         private RoAssembly LoadFromStreamCore(Stream peStream)
         {
             PEReader peReader = new PEReader(peStream);

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -13,6 +14,7 @@ namespace System.Reflection.TypeLoading
         private readonly Type _parameterType;
         private RoModifiedType? _modifiedType;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         protected RoMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType)
             : base(roMethodBase.MethodBase, position)
         {
