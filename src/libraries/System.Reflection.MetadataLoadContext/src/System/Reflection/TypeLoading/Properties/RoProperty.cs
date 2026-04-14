@@ -11,6 +11,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all PropertyInfo objects created by a MetadataLoadContext.
     /// </summary>
+    [RequiresUnreferencedCode("Members might be removed")]
     internal abstract partial class RoProperty : LeveledPropertyInfo
     {
         private readonly RoInstantiationProviderType _declaringType;
@@ -97,9 +98,7 @@ namespace System.Reflection.TypeLoading
         private RoMethod? GetRoGetMethod() => object.ReferenceEquals(_lazyGetter, Sentinels.RoMethod) ? (_lazyGetter = ComputeGetterMethod()?.FilterInheritedAccessor()) : _lazyGetter;
         private RoMethod? GetRoSetMethod() => object.ReferenceEquals(_lazySetter, Sentinels.RoMethod) ? (_lazySetter = ComputeSetterMethod()?.FilterInheritedAccessor()) : _lazySetter;
 
-        [RequiresUnreferencedCode("Members might be removed")]
         protected abstract RoMethod? ComputeGetterMethod();
-        [RequiresUnreferencedCode("Members might be removed")]
         protected abstract RoMethod? ComputeSetterMethod();
 
         private volatile RoMethod? _lazyGetter = Sentinels.RoMethod;

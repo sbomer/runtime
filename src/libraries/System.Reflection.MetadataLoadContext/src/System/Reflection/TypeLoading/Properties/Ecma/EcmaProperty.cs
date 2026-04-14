@@ -96,9 +96,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return sb.ToString();
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override RoMethod? ComputeGetterMethod() => PropertyDefinition.GetAccessors().Getter.ToMethodOrNull(GetRoDeclaringType(), ReflectedType);
-        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override RoMethod? ComputeSetterMethod() => PropertyDefinition.GetAccessors().Setter.ToMethodOrNull(GetRoDeclaringType(), ReflectedType);
 
         private MetadataReader Reader => _module.Reader;
