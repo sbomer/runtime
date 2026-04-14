@@ -116,6 +116,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return new ReadOnlySpan<byte>(br.CurrentPointer, br.Length);
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public static RoMethod? ToMethodOrNull(this MethodDefinitionHandle handle, RoInstantiationProviderType declaringType, Type reflectedType)
         {
             if (handle.IsNil)

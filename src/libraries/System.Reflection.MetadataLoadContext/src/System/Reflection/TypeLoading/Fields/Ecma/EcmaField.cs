@@ -33,6 +33,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         internal sealed override RoModule GetRoModule() => _module;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override IEnumerable<CustomAttributeData> GetTrueCustomAttributes() => FieldDefinition.GetCustomAttributes().ToTrueCustomAttributes(_module);
 
         protected sealed override int GetExplicitFieldOffset() => FieldDefinition.GetOffset();

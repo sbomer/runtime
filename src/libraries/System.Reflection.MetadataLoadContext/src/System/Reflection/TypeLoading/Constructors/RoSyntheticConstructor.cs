@@ -36,6 +36,7 @@ namespace System.Reflection.TypeLoading
         protected sealed override CallingConventions ComputeCallingConvention() => CallingConventions.Standard | CallingConventions.HasThis;
         protected sealed override MethodImplAttributes ComputeMethodImplementationFlags() => MethodImplAttributes.IL;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override MethodSig<RoParameter> ComputeMethodSig()
         {
             int parameterCount = _parameterTypes.Length;

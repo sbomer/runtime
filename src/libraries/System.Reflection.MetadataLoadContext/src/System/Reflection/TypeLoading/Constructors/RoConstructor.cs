@@ -67,6 +67,7 @@ namespace System.Reflection.TypeLoading
         internal RoParameter[] GetParametersNoCopy() => MethodSig.Parameters;
 
         private MethodSig<RoParameter> MethodSig => field ??= ComputeMethodSig();
+        [RequiresUnreferencedCode("Members might be removed")]
         protected abstract MethodSig<RoParameter> ComputeMethodSig();
 
         public sealed override string ToString() => Loader.GetDisposedString() ?? this.ToString(ComputeMethodSigStrings());

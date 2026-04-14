@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 
@@ -11,6 +12,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all Assembly objects created by a MetadataLoadContext and get its metadata from a PEReader.
     /// </summary>
+    [RequiresUnreferencedCode("Types might be removed")]
     internal sealed partial class EcmaAssembly : RoAssembly
     {
         private readonly string _location;

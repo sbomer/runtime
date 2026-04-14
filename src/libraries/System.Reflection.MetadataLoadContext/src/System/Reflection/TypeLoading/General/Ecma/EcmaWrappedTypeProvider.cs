@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
