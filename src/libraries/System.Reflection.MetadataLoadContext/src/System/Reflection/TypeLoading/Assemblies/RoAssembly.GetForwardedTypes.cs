@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -11,6 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal abstract partial class RoAssembly
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         public sealed override Type[] GetForwardedTypes()
         {
             List<Type> types = new List<Type>();

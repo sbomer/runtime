@@ -33,7 +33,7 @@ namespace System.Reflection.TypeLoading
                 {
                     // The expensive work goes in here.
 
-                    Type attributeType = ctor.DeclaringType!;
+                    RoType attributeType = (RoType)ctor.DeclaringType!;
                     DllImportAttribute dia = _decoder.ComputeDllImportAttribute();
 
                     CustomAttributeTypedArgument[] cats = { new CustomAttributeTypedArgument(ct[CoreType.String]!, dia.Value) };

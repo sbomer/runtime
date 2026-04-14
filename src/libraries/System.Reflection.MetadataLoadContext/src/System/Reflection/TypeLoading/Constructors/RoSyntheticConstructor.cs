@@ -49,6 +49,7 @@ namespace System.Reflection.TypeLoading
             return sig;
         }
 
+        [RequiresUnreferencedCode("Trimming may change method bodies. For example it can change some instructions, remove branches or local variables.")]
         public sealed override MethodBody? GetMethodBody() => null;
 
         protected sealed override MethodSig<string> ComputeMethodSigStrings()

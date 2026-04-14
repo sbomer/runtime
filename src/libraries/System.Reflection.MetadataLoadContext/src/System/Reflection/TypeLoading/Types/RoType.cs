@@ -188,10 +188,12 @@ namespace System.Reflection.TypeLoading
         //
         internal abstract RoType? ComputeBaseTypeWithoutDesktopQuirk();
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
         public sealed override Type[] GetInterfaces() => GetInterfacesNoCopy().CloneArray<Type>();
 
         public sealed override IEnumerable<Type> ImplementedInterfaces
         {
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
             get
             {
                 foreach (Type ifc in GetInterfacesNoCopy())
@@ -241,7 +243,7 @@ namespace System.Reflection.TypeLoading
 
         private RoType[]? _lazyInterfaces;
 
-        public sealed override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw new NotSupportedException(SR.NotSupported_InterfaceMapping);
+        public sealed override InterfaceMapping GetInterfaceMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type interfaceType) => throw new NotSupportedException(SR.NotSupported_InterfaceMapping);
 
         // Assignability
         public sealed override bool IsAssignableFrom(TypeInfo? typeInfo) => IsAssignableFrom((Type?)typeInfo);
@@ -285,6 +287,10 @@ namespace System.Reflection.TypeLoading
         public abstract override Guid GUID { get; }
         public abstract override StructLayoutAttribute? StructLayoutAttribute { get; }
 
+        [DynamicallyAccessedMembers(
+            DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicMethods |
+            DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.PublicProperties |
+            DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicNestedTypes)]
         public sealed override MemberInfo[] GetDefaultMembers()
         {
             string? defaultMemberName = GetDefaultMemberName();
@@ -369,6 +375,11 @@ namespace System.Reflection.TypeLoading
         public sealed override object[] GetCustomAttributes(bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
         public sealed override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
         public sealed override bool IsDefined(Type attributeType, bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
+        [DynamicallyAccessedMembers(
+            DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields |
+            DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods |
+            DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties |
+            DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         public sealed override object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, ParameterModifier[]? modifiers, CultureInfo? culture, string[]? namedParameters) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyInvoke);
 
         // Low level support for the BindingFlag-driven enumerator apis. These return members declared (not inherited) on the current
@@ -381,6 +392,7 @@ namespace System.Reflection.TypeLoading
         internal abstract IEnumerable<RoType> GetNestedTypesCore(NameFilter? filter);
 
         // Backdoor for RoModule to invoke GetMethodImpl();
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
         internal MethodInfo? InternalGetMethodImpl(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers)
         {
             return GetMethodImpl(name, bindingAttr, binder, callConvention, types, modifiers);

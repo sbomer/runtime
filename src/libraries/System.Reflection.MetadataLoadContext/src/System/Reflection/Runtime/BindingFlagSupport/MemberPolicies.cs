@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.TypeLoading;
 using RuntimeTypeInfo = System.Reflection.TypeLoading.RoType;
 
@@ -20,7 +21,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Returns all of the directly declared members on the given TypeInfo.
         //
-        public abstract IEnumerable<M> GetDeclaredMembers(TypeInfo typeInfo);
+        public abstract IEnumerable<M> GetDeclaredMembers([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TypeInfo typeInfo);
 
         //
         // Returns all of the directly declared members on the given TypeInfo whose name matches filter. If filter is null,

@@ -67,9 +67,13 @@ namespace System.Reflection.TypeLoading
         public sealed override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
         public sealed override bool IsDefined(Type attributeType, bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
 
+        [RequiresUnreferencedCode("Fields might be removed")]
         public abstract override FieldInfo? GetField(string name, BindingFlags bindingAttr);
+        [RequiresUnreferencedCode("Fields might be removed")]
         public abstract override FieldInfo[] GetFields(BindingFlags bindingFlags);
+        [RequiresUnreferencedCode("Methods might be removed")]
         public abstract override MethodInfo[] GetMethods(BindingFlags bindingFlags);
+        [RequiresUnreferencedCode("Methods might be removed")]
         protected abstract override MethodInfo? GetMethodImpl(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers);
 
 #if NET
@@ -79,17 +83,25 @@ namespace System.Reflection.TypeLoading
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context) => throw new NotSupportedException();
         public abstract override void GetPEKind(out PortableExecutableKinds peKind, out ImageFileMachine machine);
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public abstract override Type[] GetTypes();
         internal abstract IEnumerable<RoType>? GetDefinedRoTypes();
         public abstract override bool IsResource();
 
+        [RequiresUnreferencedCode("Trimming changes metadata tokens")]
         public sealed override FieldInfo ResolveField(int metadataToken, Type[]? genericTypeArguments, Type[]? genericMethodArguments) => throw new NotSupportedException(SR.NotSupported_ResolvingTokens);
+        [RequiresUnreferencedCode("Trimming changes metadata tokens")]
         public sealed override MemberInfo ResolveMember(int metadataToken, Type[]? genericTypeArguments, Type[]? genericMethodArguments) => throw new NotSupportedException(SR.NotSupported_ResolvingTokens);
+        [RequiresUnreferencedCode("Trimming changes metadata tokens")]
         public sealed override MethodBase ResolveMethod(int metadataToken, Type[]? genericTypeArguments, Type[]? genericMethodArguments) => throw new NotSupportedException(SR.NotSupported_ResolvingTokens);
+        [RequiresUnreferencedCode("Trimming changes metadata tokens")]
         public sealed override byte[] ResolveSignature(int metadataToken) => throw new NotSupportedException(SR.NotSupported_ResolvingTokens);
+        [RequiresUnreferencedCode("Trimming changes metadata tokens")]
         public sealed override string ResolveString(int metadataToken) => throw new NotSupportedException(SR.NotSupported_ResolvingTokens);
+        [RequiresUnreferencedCode("Trimming changes metadata tokens")]
         public sealed override Type ResolveType(int metadataToken, Type[]? genericTypeArguments, Type[]? genericMethodArguments) => throw new NotSupportedException(SR.NotSupported_ResolvingTokens);
 
+        [RequiresUnreferencedCode("Types might be removed by trimming. If the type name is a string literal, consider using Type.GetType instead.")]
         public sealed override Type? GetType(string className, bool throwOnError, bool ignoreCase)
         {
             //

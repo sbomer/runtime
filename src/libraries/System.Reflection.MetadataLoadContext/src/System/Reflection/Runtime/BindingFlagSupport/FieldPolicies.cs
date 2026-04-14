@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using RuntimeTypeInfo = System.Reflection.TypeLoading.RoType;
 
 namespace System.Reflection.Runtime.BindingFlagSupport
@@ -11,7 +12,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// </summary>
     internal sealed class FieldPolicies : MemberPolicies<FieldInfo>
     {
-        public sealed override IEnumerable<FieldInfo> GetDeclaredMembers(TypeInfo typeInfo)
+        public sealed override IEnumerable<FieldInfo> GetDeclaredMembers([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TypeInfo typeInfo)
         {
             return typeInfo.DeclaredFields;
         }

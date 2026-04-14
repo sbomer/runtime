@@ -96,6 +96,7 @@ namespace System.Reflection.TypeLoading
         }
 
 #pragma warning disable CS8995 // Nullable type is null-checked and will throw if null.
+        [RequiresUnreferencedCode("Types and members the loaded module depends on might be removed")]
         public sealed override Module LoadModule(string moduleName, byte[]? rawModule, byte[]? rawSymbolStore)
 #pragma warning restore CS8995
         {
