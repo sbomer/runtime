@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Reflection.TypeLoading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection
 {
@@ -10,6 +11,7 @@ namespace System.Reflection
     /// </summary>
     internal sealed partial class RoModifiedStandaloneType : RoModifiedType
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         public RoModifiedStandaloneType(RoType delegatingType) : base(delegatingType) { }
     }
 }

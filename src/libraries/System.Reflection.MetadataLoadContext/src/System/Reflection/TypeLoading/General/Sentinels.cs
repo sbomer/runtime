@@ -16,6 +16,7 @@ namespace System.Reflection.TypeLoading
 
         private sealed class SentinelType : RoStubType
         {
+            [RequiresUnreferencedCode("Types might be removed")]
             internal SentinelType() : base() { }
         }
 

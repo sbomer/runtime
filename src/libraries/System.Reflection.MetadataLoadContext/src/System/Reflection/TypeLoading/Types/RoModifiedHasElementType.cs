@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Reflection.TypeLoading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection
 {
@@ -13,6 +14,7 @@ namespace System.Reflection
     {
         private readonly RoModifiedType? _elementModifiedType;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public RoModifiedHasElementType(RoType unmodifiedType) : base(unmodifiedType)
         {
             Debug.Assert(unmodifiedType.HasElementType);

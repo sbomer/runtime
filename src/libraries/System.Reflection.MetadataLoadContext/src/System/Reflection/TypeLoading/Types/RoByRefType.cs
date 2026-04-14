@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -11,6 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class RoByRefType : RoHasElementType
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoByRefType(RoType elementType)
             : base(elementType)
         {

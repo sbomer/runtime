@@ -13,6 +13,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal abstract partial class RoDefinitionType : RoInstantiationProviderType
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         protected RoDefinitionType()
             : base()
         {

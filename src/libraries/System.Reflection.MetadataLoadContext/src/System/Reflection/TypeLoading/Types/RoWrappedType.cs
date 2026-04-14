@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -11,6 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal abstract class RoWrappedType : RoStubType
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoWrappedType(RoType unmodifiedType)
         {
             Debug.Assert(unmodifiedType != null);

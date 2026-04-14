@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Reflection.TypeLoading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection
 {
@@ -13,6 +14,7 @@ namespace System.Reflection
     {
         private readonly RoModifiedType[] _argumentTypes;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public RoModifiedGenericType(RoConstructedGenericType genericType) : base(genericType)
         {
             Debug.Assert(genericType.IsGenericType);

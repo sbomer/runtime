@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -14,6 +15,7 @@ namespace System.Reflection.TypeLoading
         private readonly bool _multiDim;
         private readonly int _rank;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoArrayType(RoType elementType, bool multiDim, int rank)
             : base(elementType)
         {

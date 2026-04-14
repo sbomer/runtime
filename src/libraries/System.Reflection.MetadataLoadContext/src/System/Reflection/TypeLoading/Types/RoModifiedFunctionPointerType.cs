@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection.TypeLoading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection
 {
@@ -18,6 +19,7 @@ namespace System.Reflection
         private readonly RoModifiedType[] _parameterTypes;
         private readonly RoModifiedType _returnType;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public RoModifiedFunctionPointerType(RoFunctionPointerType functionPointerType) : base(functionPointerType)
         {
             Debug.Assert(functionPointerType.IsFunctionPointer);

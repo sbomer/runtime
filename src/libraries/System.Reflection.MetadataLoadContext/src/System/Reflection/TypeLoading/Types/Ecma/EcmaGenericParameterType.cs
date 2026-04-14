@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 
 namespace System.Reflection.TypeLoading.Ecma
@@ -14,6 +15,7 @@ namespace System.Reflection.TypeLoading.Ecma
     {
         private readonly EcmaModule _ecmaModule;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal EcmaGenericParameterType(GenericParameterHandle handle, EcmaModule module)
             : base()
         {

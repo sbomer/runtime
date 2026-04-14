@@ -17,6 +17,7 @@ namespace System.Reflection.TypeLoading
         private readonly RoDefinitionType _genericTypeDefinition;
         private readonly RoType[] _genericTypeArguments;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoConstructedGenericType(RoDefinitionType genericTypeDefinition, RoType[] genericTypeArguments)
             : base()
         {
