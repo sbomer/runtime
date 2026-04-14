@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Reflection.TypeLoading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.Runtime.BindingFlagSupport
 {
@@ -20,6 +21,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Candidates must pass this screen before we involve the binder.
         //
+        [RequiresUnreferencedCode("Members might be removed")]
         public static bool QualifiesBasedOnParameterCount(this MethodBase methodBase, BindingFlags bindingFlags, CallingConventions callConv, Type[] argumentTypes)
         {
             Debug.Assert(methodBase != null);

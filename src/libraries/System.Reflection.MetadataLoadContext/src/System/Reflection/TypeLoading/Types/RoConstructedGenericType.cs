@@ -137,10 +137,15 @@ namespace System.Reflection.TypeLoading
         public sealed override Type[] GetGenericParameterConstraints() => throw new InvalidOperationException(SR.Arg_NotGenericParameter);
 
         // Low level support for the BindingFlag-driven enumerator apis.
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<ConstructorInfo> GetConstructorsCore(NameFilter? filter) => _genericTypeDefinition.SpecializeConstructors(filter, this);
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<MethodInfo> GetMethodsCore(NameFilter? filter, Type reflectedType) => _genericTypeDefinition.SpecializeMethods(filter, reflectedType, this);
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<EventInfo> GetEventsCore(NameFilter? filter, Type reflectedType) => _genericTypeDefinition.SpecializeEvents(filter, reflectedType, this);
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<FieldInfo> GetFieldsCore(NameFilter? filter, Type reflectedType) => _genericTypeDefinition.SpecializeFields(filter, reflectedType, this);
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<PropertyInfo> GetPropertiesCore(NameFilter? filter, Type reflectedType) => _genericTypeDefinition.SpecializeProperties(filter, reflectedType, this);
         internal sealed override IEnumerable<RoType> GetNestedTypesCore(NameFilter? filter) => _genericTypeDefinition.GetNestedTypesCore(filter);
 

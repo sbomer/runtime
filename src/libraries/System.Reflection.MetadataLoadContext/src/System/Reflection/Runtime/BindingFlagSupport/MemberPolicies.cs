@@ -77,6 +77,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Helper method for determining whether two methods are signature-compatible.
         //
+        [RequiresUnreferencedCode("Members might be removed")]
         protected static bool AreNamesAndSignaturesEqual(MethodInfo method1, MethodInfo method2)
         {
             if (method1.Name != method2.Name)
