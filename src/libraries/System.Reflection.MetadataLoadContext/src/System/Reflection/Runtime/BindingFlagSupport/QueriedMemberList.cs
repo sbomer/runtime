@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Runtime.TypeInfos;
 using System.Runtime.CompilerServices;
 using Internal.Reflection.Core.Execution;
@@ -105,6 +106,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Filter by name and visibility from the ReflectedType.
         //
+        [RequiresUnreferencedCode("Members might be removed")]
         public static QueriedMemberList<M> Create(RuntimeTypeInfo type, string? filter, bool ignoreCase, bool immediateTypeOnly)
         {
             RuntimeTypeInfo reflectedType = type;
