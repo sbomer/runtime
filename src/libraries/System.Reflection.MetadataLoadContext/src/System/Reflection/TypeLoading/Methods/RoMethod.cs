@@ -65,6 +65,7 @@ namespace System.Reflection.TypeLoading
         private volatile MethodImplAttributes _lazyMethodImplAttributes = MethodImplAttributesSentinel;
 
         public sealed override MethodImplAttributes GetMethodImplementationFlags() => MethodImplementationFlags;
+        [RequiresUnreferencedCode("Trimming may change method bodies. For example it can change some instructions, remove branches or local variables.")]
         public abstract override MethodBody? GetMethodBody();
 
         public sealed override bool ContainsGenericParameters
