@@ -41,7 +41,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 if (_lazyNamedArguments == null)
                     LoadArguments();
 
-                return _lazyNamedArguments!.ToApiForm(AttributeType);
+                return _lazyNamedArguments!.ToApiForm((RoType)AttributeType);
             }
         }
 
@@ -72,7 +72,7 @@ namespace System.Reflection.TypeLoading.Ecma
                     MemberReference mr = ((MemberReferenceHandle)ctorHandle).GetMemberReference(Reader);
                     MethodSignature<RoType> sig = mr.DecodeMethodSignature(_module, typeContext);
                     Type[] parameterTypes = sig.ParameterTypes.ToArray();
-                    Type declaringType = mr.Parent.ResolveTypeDefRefOrSpec(_module, typeContext);
+                    RoType declaringType = mr.Parent.ResolveTypeDefRefOrSpec(_module, typeContext);
                     const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.ExactBinding;
                     ConstructorInfo? ci = declaringType.GetConstructor(bf, null, parameterTypes, null);
                     if (ci == null)

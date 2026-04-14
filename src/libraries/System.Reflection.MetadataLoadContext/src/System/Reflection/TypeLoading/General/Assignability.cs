@@ -33,7 +33,8 @@ namespace System.Reflection.TypeLoading
                 // generic type parameters. The .NET Native framework keeps the two separate. For the purpose of IsAssignableFrom(),
                 // it makes sense to unify the two for the sake of backward compat. We'll just make the transform here so that the rest of code
                 // doesn't need to know about this quirk.
-                fromTypeInfo = fromTypeInfo.GetGenericTypeDefinition().MakeGenericType(fromTypeInfo.GetGenericTypeParameters());
+                RoDefinitionType roDefinition = (RoDefinitionType)fromTypeInfo;
+                fromTypeInfo = roDefinition.GetUniqueConstructedGenericType(roDefinition.GetGenericTypeParametersNoCopy());
             }
 
             if (fromTypeInfo.CanCastTo(toTypeInfo, coreTypes))

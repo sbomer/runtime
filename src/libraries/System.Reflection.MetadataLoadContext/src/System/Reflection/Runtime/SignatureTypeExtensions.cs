@@ -210,11 +210,22 @@ namespace System.Reflection
             }
         }
 
-        private static Type? TryMakeGenericType(this Type type, Type[] instantiation)
+        private static RoConstructedGenericType? TryMakeGenericType(this Type type, Type[] instantiation)
         {
             try
             {
-                return type.MakeGenericType(instantiation);
+                if (type is RoDefinitionType roDefinition)
+                {
+                    RoType[] roInstantiation = new RoType[instantiation.Length];
+                    for (int i = 0; i < instantiation.Length; i++)
+                    {
+                        if (instantiation[i] is not RoType roType)
+                            return null;
+                        roInstantiation[i] = roType;
+                    }
+                    return roDefinition.GetUniqueConstructedGenericType(roInstantiation);
+                }
+                return null;
             }
             catch
             {

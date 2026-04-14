@@ -35,13 +35,13 @@ namespace System.Reflection
         private ConstructorInfo? TryGetConstructor(CoreType attributeCoreType, params CoreType[] parameterCoreTypes)
         {
             int count = parameterCoreTypes.Length;
-            Type? attributeType = TryGetCoreType(attributeCoreType);
-            if (attributeType == null)
+            RoType? attributeType = TryGetCoreType(attributeCoreType);
+            if (attributeType is null)
                 return null;
             Type?[] parameterTypes = new Type[count];
             for (int i = 0; i < count; i++)
             {
-                if ((parameterTypes[i] = TryGetCoreType(parameterCoreTypes[i])) == null)
+                if ((parameterTypes[i] = TryGetCoreType(parameterCoreTypes[i])) is null)
                     return null;
             }
 

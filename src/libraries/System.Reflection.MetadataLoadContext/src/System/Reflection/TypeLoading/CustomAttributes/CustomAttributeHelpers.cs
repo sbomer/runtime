@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace System.Reflection.TypeLoading
@@ -12,7 +13,9 @@ namespace System.Reflection.TypeLoading
         /// <summary>
         /// Helper for creating a CustomAttributeNamedArgument.
         /// </summary>
-        public static CustomAttributeNamedArgument ToCustomAttributeNamedArgument(this Type attributeType, string name, Type? argumentType, object? value)
+        public static CustomAttributeNamedArgument ToCustomAttributeNamedArgument(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+            this RoType attributeType, string name, Type? argumentType, object? value)
         {
             MemberInfo[] members = attributeType.GetMember(name, MemberTypes.Field | MemberTypes.Property, BindingFlags.Public | BindingFlags.Instance);
             if (members.Length == 0)
@@ -107,7 +110,7 @@ namespace System.Reflection.TypeLoading
 
                     MarshalAsAttribute ma = marshalAsAttributeComputer();
 
-                    Type attributeType = ci.DeclaringType!;
+                    RoType attributeType = (RoType)ci.DeclaringType!;
 
                     CustomAttributeTypedArgument[] cats = { new CustomAttributeTypedArgument(ct[CoreType.UnmanagedType]!, (int)(ma.Value)) };
                     List<CustomAttributeNamedArgument> cans = new List<CustomAttributeNamedArgument>();
