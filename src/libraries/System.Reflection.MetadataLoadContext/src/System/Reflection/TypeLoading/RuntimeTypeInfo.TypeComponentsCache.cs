@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Runtime.BindingFlagSupport;
 using System.Threading;
 using RuntimeTypeInfo = System.Reflection.TypeLoading.RoType;
@@ -21,6 +22,7 @@ namespace System.Reflection.TypeLoading
 
         private sealed class TypeComponentsCache
         {
+            [RequiresUnreferencedCode("Members might be removed")]
             public TypeComponentsCache(RuntimeTypeInfo type)
             {
                 _type = type;
@@ -59,6 +61,7 @@ namespace System.Reflection.TypeLoading
             //  BindingFlags == Public | NonPublic | Instance | Static | FlattenHierarchy  (immediateTypeOnly == false)
             //                  Public | NonPublic | Instance | Static | DeclaredOnly      (immediateTypeOnly == true)
             //
+            [RequiresUnreferencedCode("Members might be removed")]
             public QueriedMemberList<M> GetQueriedMembers<M>(bool immediateTypeOnly) where M : MemberInfo
             {
                 int index = MemberPolicies<M>.MemberTypeIndex;
@@ -81,6 +84,7 @@ namespace System.Reflection.TypeLoading
                 return list;
             }
 
+            [RequiresUnreferencedCode("Members might be removed")]
             private static object[] CreatePerNameQueryCaches(RuntimeTypeInfo type, bool ignoreCase, bool immediateTypeOnly)
             {
                 object[] perNameCaches = new object[MemberTypeIndex.Count];
@@ -123,6 +127,7 @@ namespace System.Reflection.TypeLoading
             //
             // In addition, if "ignoreCase" was passed to the constructor, BindingFlags.IgnoreCase is also in effect.
             //
+            [RequiresUnreferencedCode("Members might be removed")]
             private sealed class PerNameQueryCache<M> : ConcurrentUnifier<string, QueriedMemberList<M>> where M : MemberInfo
             {
                 public PerNameQueryCache(RuntimeTypeInfo type, bool ignoreCase, bool immediateTypeOnly)
