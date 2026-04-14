@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.TypeLoading;
 
 //
@@ -57,6 +58,7 @@ namespace System.Reflection.TypeLoading
 {
     internal static class DefaultBinderThunks
     {
+        [RequiresUnreferencedCode("Members might be removed")]
         internal static ParameterInfo[] GetParametersNoCopy(this MethodBase m)
         {
             if (m is RoMethod roMethod)

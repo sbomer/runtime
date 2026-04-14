@@ -68,6 +68,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<PropertyInfo> SpecializeProperties(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;

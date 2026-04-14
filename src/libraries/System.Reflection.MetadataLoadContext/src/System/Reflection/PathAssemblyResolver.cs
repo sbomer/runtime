@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace System.Reflection
@@ -20,6 +21,7 @@ namespace System.Reflection
     /// - If more than one assembly matches, the assembly with the highest Version is returned.
     /// - CultureName is ignored.
     /// </remarks>
+    [RequiresUnreferencedCode("Types might be removed")]
     public class PathAssemblyResolver : MetadataAssemblyResolver
     {
         private readonly Dictionary<string, List<string>> _fileToPaths = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);

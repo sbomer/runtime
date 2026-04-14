@@ -37,6 +37,7 @@ namespace System.Reflection.TypeLoading
         internal sealed override RoType[] GetGenericTypeParametersNoCopy() => throw null!;
         internal sealed override bool IsCustomAttributeDefined(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => throw null!;
         internal sealed override CustomAttributeData TryFindCustomAttribute(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => throw null!;
+        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override IEnumerable<CustomAttributeData> GetTrueCustomAttributes() => throw null!;
         protected sealed override void GetPackSizeAndSize(out int packSize, out int size) => throw null!;
         protected internal sealed override RoType ComputeEnumUnderlyingType() => throw null!;
@@ -44,11 +45,15 @@ namespace System.Reflection.TypeLoading
         internal sealed override IEnumerable<RoType> SpecializeInterfaces(RoType[] instantiation) => throw null!;
         internal sealed override IEnumerable<RoType> GetNestedTypesCore(NameFilter? filter) => throw null!;
         internal sealed override RoDefinitionType GetNestedTypeCore(ReadOnlySpan<byte> utf8Name) => throw null!;
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<ConstructorInfo> SpecializeConstructors(NameFilter? filter, RoInstantiationProviderType declaringType) => throw null!;
         [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<MethodInfo> SpecializeMethods(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType) => throw null!;
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<EventInfo> SpecializeEvents(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType) => throw null!;
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<FieldInfo> SpecializeFields(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType) => throw null!;
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<PropertyInfo> SpecializeProperties(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType) => throw null!;
     }
 }
