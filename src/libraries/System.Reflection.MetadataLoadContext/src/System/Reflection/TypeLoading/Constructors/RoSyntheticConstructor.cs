@@ -17,6 +17,7 @@ namespace System.Reflection.TypeLoading
         private readonly int _uniquifier;  // Since all array methods have the same "MetadataToken", this serves as a distinguisher so they don't all compare Equal
         private readonly RoType[] _parameterTypes;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         internal RoSyntheticConstructor(RoType declaringType, int uniquifier, params RoType[] parameterTypes)
             : base()
         {

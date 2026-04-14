@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.TypeLoading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection
 {
@@ -84,6 +85,7 @@ namespace System.Reflection
         // Seriously, ugh - the default binder for Reflection has a dependency on checking types for equality with System.Object - for that
         // one reason, we have to instance it per MetadataLoadContext.
         //
+        [RequiresUnreferencedCode("Members might be removed")]
         internal Binder GetDefaultBinder() => _lazyDefaultBinder ??= new DefaultBinder(this);
         private volatile Binder? _lazyDefaultBinder;
     }
