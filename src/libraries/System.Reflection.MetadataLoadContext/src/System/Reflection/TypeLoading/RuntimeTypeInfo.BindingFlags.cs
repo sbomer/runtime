@@ -190,7 +190,7 @@ namespace System.Reflection.TypeLoading
 
         private QueryResult<M> Query<M>(string? optionalName, BindingFlags bindingAttr, Func<M, bool>? optionalPredicate) where M : MemberInfo
         {
-            MemberPolicies<M> policies = MemberPolicies<M>.Default;
+            MemberPolicies<M> policies = MemberPolicies<M>.DefaultHolder.Value;
             bindingAttr = policies.ModifyBindingFlags(bindingAttr);
             bool immediateTypeOnly = NeedToSearchImmediateTypeOnly(bindingAttr);
             bool ignoreCase = (bindingAttr & BindingFlags.IgnoreCase) != 0;

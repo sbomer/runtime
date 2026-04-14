@@ -191,32 +191,26 @@ namespace System.Reflection.Runtime.BindingFlagSupport
             if (t.Equals(typeof(FieldInfo)))
             {
                 MemberTypeIndex = BindingFlagSupport.MemberTypeIndex.Field;
-                Default = (MemberPolicies<M>)(object)(new FieldPolicies());
             }
             else if (t.Equals(typeof(MethodInfo)))
             {
                 MemberTypeIndex = BindingFlagSupport.MemberTypeIndex.Method;
-                Default = (MemberPolicies<M>)(object)(new MethodPolicies());
             }
             else if (t.Equals(typeof(ConstructorInfo)))
             {
                 MemberTypeIndex = BindingFlagSupport.MemberTypeIndex.Constructor;
-                Default = (MemberPolicies<M>)(object)(new ConstructorPolicies());
             }
             else if (t.Equals(typeof(PropertyInfo)))
             {
                 MemberTypeIndex = BindingFlagSupport.MemberTypeIndex.Property;
-                Default = (MemberPolicies<M>)(object)(new PropertyPolicies());
             }
             else if (t.Equals(typeof(EventInfo)))
             {
                 MemberTypeIndex = BindingFlagSupport.MemberTypeIndex.Event;
-                Default = (MemberPolicies<M>)(object)(new EventPolicies());
             }
             else if (t.Equals(typeof(Type)))
             {
                 MemberTypeIndex = BindingFlagSupport.MemberTypeIndex.NestedType;
-                Default = (MemberPolicies<M>)(object)(new NestedTypePolicies());
             }
             else
             {
@@ -225,10 +219,32 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         }
 #pragma warning restore CA1810
 
-        //
-        // This is a singleton class one for each MemberInfo category: Return the appropriate one.
-        //
-        public static readonly MemberPolicies<M> Default = null!;
+        [RequiresUnreferencedCode("Members might be removed")]
+        internal static class DefaultHolder
+        {
+            //
+            // This is a singleton class one for each MemberInfo category: Return the appropriate one.
+            //
+            public static readonly MemberPolicies<M> Value = CreateDefault();
+
+            private static MemberPolicies<M> CreateDefault()
+            {
+                Type t = typeof(M);
+                if (t.Equals(typeof(FieldInfo)))
+                    return (MemberPolicies<M>)(object)(new FieldPolicies());
+                if (t.Equals(typeof(MethodInfo)))
+                    return (MemberPolicies<M>)(object)(new MethodPolicies());
+                if (t.Equals(typeof(ConstructorInfo)))
+                    return (MemberPolicies<M>)(object)(new ConstructorPolicies());
+                if (t.Equals(typeof(PropertyInfo)))
+                    return (MemberPolicies<M>)(object)(new PropertyPolicies());
+                if (t.Equals(typeof(EventInfo)))
+                    return (MemberPolicies<M>)(object)(new EventPolicies());
+                if (t.Equals(typeof(Type)))
+                    return (MemberPolicies<M>)(object)(new NestedTypePolicies());
+                throw new InvalidOperationException();
+            }
+        }
 
         //
         // This returns a fixed value from 0 to MemberIndex.Count-1 with each possible type of M

@@ -109,7 +109,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         {
             RuntimeTypeInfo reflectedType = type;
 
-            MemberPolicies<M> policies = MemberPolicies<M>.Default;
+            MemberPolicies<M> policies = MemberPolicies<M>.DefaultHolder.Value;
 
             NameFilter? nameFilter;
             if (filter == null)

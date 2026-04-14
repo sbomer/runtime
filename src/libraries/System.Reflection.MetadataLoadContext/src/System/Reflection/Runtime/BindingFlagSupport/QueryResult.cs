@@ -114,7 +114,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
                         if (match.DeclaringType!.Equals(challenger.DeclaringType))
                             throw ThrowHelper.GetAmbiguousMatchException(match);
 
-                        MemberPolicies<M> policies = MemberPolicies<M>.Default;
+                        MemberPolicies<M> policies = MemberPolicies<M>.DefaultHolder.Value;
                         if (!policies.OkToIgnoreAmbiguity(match, challenger))
                             throw ThrowHelper.GetAmbiguousMatchException(match);
                     }
