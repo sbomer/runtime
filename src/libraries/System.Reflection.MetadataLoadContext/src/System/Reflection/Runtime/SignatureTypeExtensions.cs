@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.TypeLoading;
 
 namespace System.Reflection
@@ -102,12 +103,14 @@ namespace System.Reflection
         /// the method we're looking for, we return null rather than let the TypeLoadException bubble up. The DefaultBinder will catch
         /// the null and continue its search for a better candidate.
         /// </summary>
+        [RequiresUnreferencedCode("Types might be removed")]
         internal static Type? TryResolveAgainstGenericMethod(this Type signatureType, MethodInfo genericMethod)
         {
             Debug.Assert(signatureType.IsSignatureType());
             return signatureType.TryResolve(genericMethod.GetGenericArguments());
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         private static Type? TryResolve(this Type signatureType, Type[] genericMethodParameters)
         {
             Debug.Assert(signatureType.IsSignatureType());
@@ -210,6 +213,7 @@ namespace System.Reflection
             }
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         private static Type? TryMakeGenericType(this Type type, Type[] instantiation)
         {
             try
