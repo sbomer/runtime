@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace System.Reflection.TypeLoading
 {
     /// <summary>
@@ -10,6 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal abstract partial class RoInstantiationProviderType : RoType
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         protected RoInstantiationProviderType()
             : base()
         {

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 
 namespace System.Reflection.TypeLoading.Ecma
@@ -29,6 +30,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<MethodInfo> SpecializeMethods(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;

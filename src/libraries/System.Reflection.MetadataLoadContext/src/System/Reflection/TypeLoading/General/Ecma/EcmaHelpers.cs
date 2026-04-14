@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 
 namespace System.Reflection.TypeLoading.Ecma
@@ -123,6 +124,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return handle.ToMethod(declaringType, reflectedType);
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public static RoMethod ToMethod(this MethodDefinitionHandle handle, RoInstantiationProviderType declaringType, Type reflectedType)
         {
             return new RoDefinitionMethod<EcmaMethodDecoder>(declaringType, reflectedType, new EcmaMethodDecoder(handle, (EcmaModule)(declaringType.Module)));

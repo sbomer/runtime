@@ -15,6 +15,7 @@ namespace System.Reflection.TypeLoading
     {
         private readonly RoType _elementType;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         protected RoHasElementType(RoType elementType)
             : base()
         {

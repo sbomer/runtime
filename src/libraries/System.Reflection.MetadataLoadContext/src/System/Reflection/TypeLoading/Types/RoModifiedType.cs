@@ -21,6 +21,7 @@ namespace System.Reflection
         private Type[]? _optionalModifiers;
         private readonly RoType _unmodifiedType;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         protected RoModifiedType(RoType unmodifiedType)
         {
             _unmodifiedType = unmodifiedType;

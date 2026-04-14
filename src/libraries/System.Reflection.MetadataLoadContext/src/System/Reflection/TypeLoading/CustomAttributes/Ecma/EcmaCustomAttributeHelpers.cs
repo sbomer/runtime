@@ -26,6 +26,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public static CustomAttributeData ToCustomAttributeData(this CustomAttributeHandle handle, EcmaModule module) => new EcmaCustomAttributeData(handle, module);
 
         public static bool IsCustomAttributeDefined(this CustomAttributeHandleCollection handles, ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, EcmaModule module)

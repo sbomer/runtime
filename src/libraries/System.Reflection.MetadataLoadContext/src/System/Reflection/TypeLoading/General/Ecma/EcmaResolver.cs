@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 
 namespace System.Reflection.TypeLoading.Ecma
@@ -177,6 +178,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 return m.Loader.ResolveToAssemblyOrExceptionAssembly(roAssemblyName);
             };
 
+        [RequiresUnreferencedCode("Members might be removed")]
         public static T ResolveMethod<T>(this MethodDefinitionHandle handle, EcmaModule module, in TypeContext typeContext) where T : MethodBase
         {
             MetadataReader reader = module.Reader;

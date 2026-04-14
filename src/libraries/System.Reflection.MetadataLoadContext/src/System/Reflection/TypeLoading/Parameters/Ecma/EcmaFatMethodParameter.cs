@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 
@@ -17,6 +18,7 @@ namespace System.Reflection.TypeLoading.Ecma
         private readonly EcmaModule _module;
         private readonly ParameterHandle _handle;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         internal EcmaFatMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType, ParameterHandle handle)
             : base(roMethodBase, position, parameterType)
         {

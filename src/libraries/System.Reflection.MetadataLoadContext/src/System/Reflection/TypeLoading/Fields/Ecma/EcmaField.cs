@@ -17,6 +17,7 @@ namespace System.Reflection.TypeLoading.Ecma
         private readonly EcmaModule _module;
         private readonly FieldDefinitionHandle _handle;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         internal EcmaField(RoInstantiationProviderType declaringType, FieldDefinitionHandle handle, Type reflectedType)
             : base(declaringType, reflectedType)
         {
