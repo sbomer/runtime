@@ -9,12 +9,12 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all RoParameter's returned by MethodBase.GetParameters().
     /// </summary>
+    [RequiresUnreferencedCode("Types might be removed")]
     internal abstract class RoMethodParameter : RoParameter
     {
         private readonly Type _parameterType;
         private RoModifiedType? _modifiedType;
 
-        [RequiresUnreferencedCode("Members might be removed")]
         protected RoMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType)
             : base(roMethodBase.MethodBase, position)
         {

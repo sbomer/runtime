@@ -183,6 +183,7 @@ namespace System.Reflection.TypeLoading.Ecma
         //
         // https://github.com/dotnet/runtime/blob/b908ecf514f32c7ba7d59ecc28fa3fdd64a10a1a/src/coreclr/vm/mlinfo.cpp#L469
         //
+        [RequiresUnreferencedCode("Types might be removed")]
         public static MarshalAsAttribute ToMarshalAsAttribute(this BlobHandle blobHandle, EcmaModule module)
         {
             MetadataReader reader = module.Reader;
