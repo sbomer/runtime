@@ -154,7 +154,7 @@ namespace System.Reflection.TypeLoading
 
         // Inheritance
         public sealed override Type? BaseType => GetRoBaseType();
-        internal RoType? GetRoBaseType() => object.ReferenceEquals(_lazyBaseType, Sentinels.RoType) ? (_lazyBaseType = ComputeBaseType()) : _lazyBaseType;
+        internal RoType? GetRoBaseType() => object.ReferenceEquals(_lazyBaseType, Sentinels.SentinelHolder.RoType) ? (_lazyBaseType = ComputeBaseType()) : _lazyBaseType;
         private RoType? ComputeBaseType()
         {
             RoType? baseType = ComputeBaseTypeWithoutDesktopQuirk();
@@ -168,7 +168,7 @@ namespace System.Reflection.TypeLoading
             }
             return baseType;
         }
-        private volatile RoType? _lazyBaseType = Sentinels.RoType;
+        private volatile RoType? _lazyBaseType = Sentinels.SentinelHolder.RoType;
 
         //
         // This internal method implements BaseType without the following .NET Framework quirk:
