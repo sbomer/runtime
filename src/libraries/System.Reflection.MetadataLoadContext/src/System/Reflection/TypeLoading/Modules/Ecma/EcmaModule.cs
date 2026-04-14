@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 
@@ -109,12 +110,17 @@ namespace System.Reflection.TypeLoading.Ecma
         //
         // Search for members on <Module> type.
         //
+        [RequiresUnreferencedCode("Fields might be removed")]
         public sealed override FieldInfo? GetField(string name, BindingFlags bindingAttr) => GetModuleType().GetField(name, bindingAttr);
+        [RequiresUnreferencedCode("Fields might be removed")]
         public sealed override FieldInfo[] GetFields(BindingFlags bindingFlags) => GetModuleType().GetFields(bindingFlags);
+        [RequiresUnreferencedCode("Methods might be removed")]
         public sealed override MethodInfo[] GetMethods(BindingFlags bindingFlags) => GetModuleType().GetMethods(bindingFlags);
+        [RequiresUnreferencedCode("Methods might be removed")]
         protected sealed override MethodInfo? GetMethodImpl(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers) => GetModuleType().InternalGetMethodImpl(name, bindingAttr, binder, callConvention, types, modifiers);
         private EcmaDefinitionType GetModuleType() => ModuleTypeToken.ToTypeDefinitionHandle().ResolveTypeDef(this);
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public sealed override Type[] GetTypes()
         {
             // Note: we don't expect this process to generate any loader exceptions so no need to implement the ReflectionTypeLoadException

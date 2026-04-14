@@ -39,6 +39,7 @@ namespace System.Reflection.TypeLoading
 
         protected sealed override MethodSig<RoParameter> ComputeMethodSig() => _genericMethodDefinition.SpecializeMethodSig(this);
 
+        [RequiresUnreferencedCode("Trimming may change method bodies. For example it can change some instructions, remove branches or local variables.")]
         public sealed override MethodBody? GetMethodBody() => _genericMethodDefinition.SpecializeMethodBody(this);
 
         protected sealed override RoType[] ComputeGenericArgumentsOrParameters() => _genericMethodArguments;
