@@ -124,7 +124,9 @@ namespace System.Reflection.TypeLoading
         /// If a type is not contained or forwarded from the assembly, this method returns null (does not throw.)
         /// This supports the "throwOnError: false" behavior of Assembly.GetType(string, bool).
         /// </summary>
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoDefinitionType? GetTypeCore(string ns, string name, bool ignoreCase, out Exception? e) => GetTypeCore(ns.ToUtf8(), name.ToUtf8(), ignoreCase, out e);
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoDefinitionType? GetTypeCore(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, bool ignoreCase, out Exception? e)
         {
             RoDefinitionType? result = GetRoManifestModule().GetTypeCore(ns, name, ignoreCase, out e);

@@ -52,6 +52,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         protected sealed override TypeAttributes ComputeAttributeFlags() => TypeDefinition.Attributes;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal sealed override RoType? SpecializeBaseType(RoType[] instantiation)
         {
             EntityHandle baseTypeHandle = TypeDefinition.BaseType;
@@ -60,6 +61,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return baseTypeHandle.ResolveTypeDefRefOrSpec(GetEcmaModule(), instantiation.ToTypeContext());
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal sealed override IEnumerable<RoType> SpecializeInterfaces(RoType[] instantiation)
         {
             MetadataReader reader = Reader;
@@ -86,6 +88,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         internal sealed override int GetGenericParameterCount() => GetGenericTypeParametersNoCopy().Length;
         internal sealed override RoType[] GetGenericTypeParametersNoCopy() => _lazyGenericParameters ??= ComputeGenericTypeParameters();
+        [RequiresUnreferencedCode("Types might be removed")]
         private RoType[] ComputeGenericTypeParameters()
         {
             EcmaModule module = GetEcmaModule();

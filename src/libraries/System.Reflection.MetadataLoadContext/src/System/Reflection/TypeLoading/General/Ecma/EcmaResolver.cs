@@ -39,6 +39,7 @@ namespace System.Reflection.TypeLoading.Ecma
         private static readonly Func<EntityHandle, EcmaModule, EcmaDefinitionType> s_resolveTypeDef =
             (h, m) => new EcmaDefinitionType((TypeDefinitionHandle)h, m);
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoDefinitionType ResolveTypeRef(this TypeReferenceHandle handle, EcmaModule module)
         {
             Debug.Assert(!handle.IsNil);
