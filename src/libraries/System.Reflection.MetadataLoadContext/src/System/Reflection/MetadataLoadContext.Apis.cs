@@ -104,6 +104,7 @@ namespace System.Reflection
         /// <param name="coreAssemblyName">
         /// The name of the assembly that contains the core types such as System.Object. Typically, this would be "mscorlib".
         /// </param>
+        [RequiresUnreferencedCode("Types might be removed")]
         public MetadataLoadContext(MetadataAssemblyResolver resolver, string? coreAssemblyName = null)
         {
             ArgumentNullException.ThrowIfNull(resolver);
