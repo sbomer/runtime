@@ -10,14 +10,22 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class CoreTypes
     {
-        private readonly RoType?[] _coreTypes;
+        private readonly AnnotatedRoType[] _coreTypes;
         private readonly Exception?[] _exceptions;
+
+        internal readonly struct AnnotatedRoType
+        {
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            public readonly RoType? Type;
+
+            public AnnotatedRoType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] RoType? type) => Type = type;
+        }
 
         [RequiresUnreferencedCode("Types might be removed")]
         internal CoreTypes(MetadataLoadContext loader, string? coreAssemblyName)
         {
             int numCoreTypes = (int)CoreType.NumCoreTypes;
-            RoType?[] coreTypes = new RoType[numCoreTypes];
+            AnnotatedRoType[] coreTypes = new AnnotatedRoType[numCoreTypes];
             Exception?[] exceptions = new Exception[numCoreTypes];
             RoAssembly? coreAssembly = loader.TryGetCoreAssembly(coreAssemblyName, out Exception? e);
             if (coreAssembly == null)
@@ -31,7 +39,7 @@ namespace System.Reflection.TypeLoading
                 {
                     ((CoreType)i).GetFullName(out ReadOnlySpan<byte> ns, out ReadOnlySpan<byte> name);
                     RoType? type = coreAssembly.GetTypeCore(ns, name, ignoreCase: false, out e);
-                    coreTypes[i] = type;
+                    coreTypes[i] = new AnnotatedRoType(type);
                     if (type == null)
                     {
                         exceptions[i] = e;
@@ -45,8 +53,11 @@ namespace System.Reflection.TypeLoading
         /// <summary>
         /// Returns null if the specific core type did not exist or could not be loaded. Call GetException(coreType) to get detailed info.
         /// </summary>
-        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-        public RoType? this[CoreType coreType] => _coreTypes[(int)coreType];
+        public RoType? this[CoreType coreType]
+        {
+            [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            get => _coreTypes[(int)coreType].Type;
+        }
         public Exception? GetException(CoreType coreType) => _exceptions[(int)coreType];
     }
 }
