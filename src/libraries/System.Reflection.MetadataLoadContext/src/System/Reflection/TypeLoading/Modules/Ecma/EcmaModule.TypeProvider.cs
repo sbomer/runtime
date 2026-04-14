@@ -36,8 +36,6 @@ namespace System.Reflection.TypeLoading.Ecma
         public RoType GetGenericTypeParameter(TypeContext genericContext, int index) => genericContext.GetGenericTypeArgumentOrNull(index) ?? throw new BadImageFormatException(SR.Format(SR.GenericTypeParamIndexOutOfRange, index));
         public RoType GetGenericMethodParameter(TypeContext genericContext, int index) => genericContext.GetGenericMethodArgumentOrNull(index) ?? throw new BadImageFormatException(SR.Format(SR.GenericMethodParamIndexOutOfRange, index));
 
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
-            Justification = "MetadataLoadContext operates on metadata read from disk, not runtime types.")]
         public RoType GetFunctionPointerType(MethodSignature<RoType> signature) => new RoFunctionPointerType(this, signature);
         public RoType GetModifiedType(RoType modifier, RoType unmodifiedType, bool isRequired)
         {
