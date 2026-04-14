@@ -31,6 +31,7 @@ namespace System.Reflection.TypeLoading.Ecma
         internal sealed override RoModule GetRoModule() => _module;
         internal EcmaModule GetEcmaModule() => _module;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         protected sealed override RoType? ComputeDeclaringType()
         {
             if (!TypeDefinition.IsNested)
@@ -76,6 +77,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override bool IsCustomAttributeDefined(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => TypeDefinition.GetCustomAttributes().IsCustomAttributeDefined(ns, name, GetEcmaModule());
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override CustomAttributeData? TryFindCustomAttribute(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => TypeDefinition.GetCustomAttributes().TryFindCustomAttribute(ns, name, GetEcmaModule());
 
         public sealed override int MetadataToken => _handle.GetToken();

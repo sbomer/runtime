@@ -20,6 +20,7 @@ namespace System.Reflection.TypeLoading.Ecma
         public sealed override bool IsGenericTypeParameter => true;
         public sealed override bool IsGenericMethodParameter => false;
 
+        [RequiresUnreferencedCode("Types might be removed")]
         protected sealed override RoType? ComputeDeclaringType()
         {
             TypeDefinitionHandle declaringTypeHandle = (TypeDefinitionHandle)(GenericParameter.Parent);
