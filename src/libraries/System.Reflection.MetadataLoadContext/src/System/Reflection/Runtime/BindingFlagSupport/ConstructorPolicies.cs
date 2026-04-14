@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.TypeLoading;
 using RuntimeTypeInfo = System.Reflection.TypeLoading.RoType;
 
 namespace System.Reflection.Runtime.BindingFlagSupport
@@ -13,7 +14,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// </summary>
     internal sealed class ConstructorPolicies : MemberPolicies<ConstructorInfo>
     {
-        public sealed override IEnumerable<ConstructorInfo> GetDeclaredMembers([DynamicallyAccessedMembers(DeclaredMemberTypes)] TypeInfo typeInfo)
+        public sealed override IEnumerable<ConstructorInfo> GetDeclaredMembers([DynamicallyAccessedMembers(Helpers.DeclaredMemberTypes)] TypeInfo typeInfo)
         {
             return typeInfo.DeclaredConstructors;
         }

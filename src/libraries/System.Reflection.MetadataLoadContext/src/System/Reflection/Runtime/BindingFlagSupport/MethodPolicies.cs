@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.TypeLoading;
 using RuntimeTypeInfo = System.Reflection.TypeLoading.RoType;
 
 namespace System.Reflection.Runtime.BindingFlagSupport
@@ -12,7 +13,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// </summary>
     internal sealed class MethodPolicies : MemberPolicies<MethodInfo>
     {
-        public sealed override IEnumerable<MethodInfo> GetDeclaredMembers([DynamicallyAccessedMembers(DeclaredMemberTypes)] TypeInfo typeInfo)
+        public sealed override IEnumerable<MethodInfo> GetDeclaredMembers([DynamicallyAccessedMembers(Helpers.DeclaredMemberTypes)] TypeInfo typeInfo)
         {
             return typeInfo.DeclaredMethods;
         }

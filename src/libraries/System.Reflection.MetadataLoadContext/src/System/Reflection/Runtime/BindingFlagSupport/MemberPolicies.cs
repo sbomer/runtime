@@ -16,20 +16,12 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// </summary>
     internal abstract class MemberPolicies<M> where M : MemberInfo
     {
-        internal const DynamicallyAccessedMemberTypes DeclaredMemberTypes =
-            DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors |
-            DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents |
-            DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields |
-            DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods |
-            DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties |
-            DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes;
-
         // Subclasses for specific MemberInfo types must override these:
 
         //
         // Returns all of the directly declared members on the given TypeInfo.
         //
-        public abstract IEnumerable<M> GetDeclaredMembers([DynamicallyAccessedMembers(DeclaredMemberTypes)] TypeInfo typeInfo);
+        public abstract IEnumerable<M> GetDeclaredMembers([DynamicallyAccessedMembers(Helpers.DeclaredMemberTypes)] TypeInfo typeInfo);
 
         //
         // Returns all of the directly declared members on the given TypeInfo whose name matches filter. If filter is null,

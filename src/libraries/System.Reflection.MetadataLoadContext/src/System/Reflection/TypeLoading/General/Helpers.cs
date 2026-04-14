@@ -12,6 +12,14 @@ namespace System.Reflection.TypeLoading
 {
     internal static class Helpers
     {
+        internal const DynamicallyAccessedMemberTypes DeclaredMemberTypes =
+            DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors |
+            DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents |
+            DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields |
+            DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods |
+            DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties |
+            DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes;
+
         private static readonly SearchValues<char> s_charsToEscape = SearchValues.Create("\\[]+*&,");
 
         [return: NotNullIfNotNull(nameof(original))]
