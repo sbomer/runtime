@@ -30,6 +30,7 @@ namespace System.Reflection.TypeLoading
 
         [RequiresUnreferencedCode("Members might be removed")]
         MethodSig<RoParameter> SpecializeMethodSig(IRoMethodBase member);
+        [RequiresUnreferencedCode("Types might be removed")]
         MethodBody? SpecializeMethodBody(IRoMethodBase owner);
         MethodSig<string> SpecializeMethodSigStrings(in TypeContext typeContext);
     }

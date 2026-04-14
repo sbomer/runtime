@@ -127,6 +127,7 @@ namespace System.Reflection.TypeLoading
         /// If a type is not contained or forwarded from the module, this method returns null (does not throw.)
         /// This supports the "throwOnError: false" behavior of Module.GetType(string, bool).
         /// </summary>
+        [RequiresUnreferencedCode("Types might be removed")]
         internal RoDefinitionType? GetTypeCore(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, bool ignoreCase, out Exception? e)
         {
             if (ignoreCase)

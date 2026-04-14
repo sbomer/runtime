@@ -12,6 +12,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// </summary>
     internal static class EcmaResolver
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoType ResolveTypeDefRefOrSpec(this EntityHandle handle, EcmaModule module, in TypeContext typeContext)
         {
             Debug.Assert(!handle.IsNil);
@@ -125,6 +126,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return handle.GetTypeSpecification(module.Reader).DecodeSignature(module, typeContext);
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public static EcmaGenericParameterType ResolveGenericParameter(this GenericParameterHandle handle, EcmaModule module)
         {
             Debug.Assert(!handle.IsNil);

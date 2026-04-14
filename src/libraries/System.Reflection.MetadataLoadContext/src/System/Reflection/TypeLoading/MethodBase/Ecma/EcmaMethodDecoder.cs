@@ -109,6 +109,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return results;
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         public MethodBody? SpecializeMethodBody(IRoMethodBase owner)
         {
             int rva = MethodDefinition.RelativeVirtualAddress;

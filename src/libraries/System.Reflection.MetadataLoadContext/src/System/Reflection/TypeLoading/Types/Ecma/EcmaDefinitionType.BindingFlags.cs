@@ -79,6 +79,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal sealed override IEnumerable<RoType> GetNestedTypesCore(NameFilter? filter)
         {
             MetadataReader reader = Reader;
@@ -90,6 +91,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        [RequiresUnreferencedCode("Types might be removed")]
         internal sealed override RoDefinitionType? GetNestedTypeCore(ReadOnlySpan<byte> utf8Name)
         {
             RoDefinitionType? match = null;
