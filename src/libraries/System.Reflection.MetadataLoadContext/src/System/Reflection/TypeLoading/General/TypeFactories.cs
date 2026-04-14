@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace System.Reflection.TypeLoading
 {
     //
@@ -8,10 +10,15 @@ namespace System.Reflection.TypeLoading
     //
     internal static class TypeFactories
     {
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoArrayType GetUniqueArrayType(this RoType elementType) => elementType.GetRoModule().GetUniqueArrayType(elementType);
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoArrayType GetUniqueArrayType(this RoType elementType, int rank) => elementType.GetRoModule().GetUniqueArrayType(elementType, rank);
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoByRefType GetUniqueByRefType(this RoType elementType) => elementType.GetRoModule().GetUniqueByRefType(elementType);
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoPointerType GetUniquePointerType(this RoType elementType) => elementType.GetRoModule().GetUniquePointerType(elementType);
+        [RequiresUnreferencedCode("Types might be removed")]
         public static RoConstructedGenericType GetUniqueConstructedGenericType(this RoDefinitionType genericTypeDefinition, RoType[] genericTypeArguments) => genericTypeDefinition.GetRoModule().GetUniqueConstructedGenericType(genericTypeDefinition, genericTypeArguments);
     }
 }
