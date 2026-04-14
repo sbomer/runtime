@@ -67,6 +67,7 @@ namespace System.Reflection
         /// if the core assembly name wasn't supplied, the core assembly could not be loaded for some reason or if the specified
         /// type does not exist in the core assembly.
         /// </summary>
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         internal RoType? TryGetCoreType(CoreType coreType)
         {
             CoreTypes coreTypes = GetAllFoundCoreTypes();

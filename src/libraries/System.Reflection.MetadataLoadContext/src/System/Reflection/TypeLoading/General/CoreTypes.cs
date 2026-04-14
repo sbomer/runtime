@@ -45,6 +45,7 @@ namespace System.Reflection.TypeLoading
         /// <summary>
         /// Returns null if the specific core type did not exist or could not be loaded. Call GetException(coreType) to get detailed info.
         /// </summary>
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
         public RoType? this[CoreType coreType] => _coreTypes[(int)coreType];
         public Exception? GetException(CoreType coreType) => _exceptions[(int)coreType];
     }
