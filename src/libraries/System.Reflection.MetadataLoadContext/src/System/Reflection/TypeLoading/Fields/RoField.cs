@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
@@ -11,6 +12,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all FieldInfo objects created by a MetadataLoadContext.
     /// </summary>
+    [RequiresUnreferencedCode("Members might be removed")]
     internal abstract partial class RoField : LeveledFieldInfo
     {
         private readonly RoInstantiationProviderType _declaringType;

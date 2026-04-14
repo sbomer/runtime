@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace System.Reflection.TypeLoading
@@ -10,6 +11,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all RoParameter's returned by MethodBase.GetParameters() that have an entry in the Param table.
     /// </summary>
+    [RequiresUnreferencedCode("Members might be removed")]
     internal abstract class RoFatMethodParameter : RoMethodParameter
     {
         protected RoFatMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType)
