@@ -13,6 +13,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// Base class for all RoParameter's returned by MethodBase.GetParameters() that have an entry in the Param table
     /// and get their metadata from a PEReader.
     /// </summary>
+    [RequiresUnreferencedCode("Members might be removed")]
     internal sealed class EcmaFatMethodParameter : RoFatMethodParameter
     {
         private readonly EcmaModule _module;
