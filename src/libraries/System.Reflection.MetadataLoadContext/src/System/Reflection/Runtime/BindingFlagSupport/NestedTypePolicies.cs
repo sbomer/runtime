@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using RuntimeTypeInfo = System.Reflection.TypeLoading.RoType;
 
 namespace System.Reflection.Runtime.BindingFlagSupport
@@ -18,7 +19,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// </summary>
     internal sealed class NestedTypePolicies : MemberPolicies<Type>
     {
-        public sealed override IEnumerable<Type> GetDeclaredMembers(TypeInfo typeInfo)
+        public sealed override IEnumerable<Type> GetDeclaredMembers([DynamicallyAccessedMembers(DeclaredMemberTypes)] TypeInfo typeInfo)
         {
             return typeInfo.DeclaredNestedTypes;
         }
