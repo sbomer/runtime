@@ -188,10 +188,12 @@ namespace System.Reflection.TypeLoading
         //
         internal abstract RoType? ComputeBaseTypeWithoutDesktopQuirk();
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
         public sealed override Type[] GetInterfaces() => GetInterfacesNoCopy().CloneArray<Type>();
 
         public sealed override IEnumerable<Type> ImplementedInterfaces
         {
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
             get
             {
                 foreach (Type ifc in GetInterfacesNoCopy())
@@ -285,6 +287,10 @@ namespace System.Reflection.TypeLoading
         public abstract override Guid GUID { get; }
         public abstract override StructLayoutAttribute? StructLayoutAttribute { get; }
 
+        [DynamicallyAccessedMembers(
+            DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicEvents |
+            DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicMethods |
+            DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.PublicProperties)]
         public sealed override MemberInfo[] GetDefaultMembers()
         {
             string? defaultMemberName = GetDefaultMemberName();
@@ -369,6 +375,11 @@ namespace System.Reflection.TypeLoading
         public sealed override object[] GetCustomAttributes(bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
         public sealed override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
         public sealed override bool IsDefined(Type attributeType, bool inherit) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyCA);
+        [DynamicallyAccessedMembers(
+            DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors |
+            DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods |
+            DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields |
+            DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
         public sealed override object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, ParameterModifier[]? modifiers, CultureInfo? culture, string[]? namedParameters) => throw new InvalidOperationException(SR.Arg_ReflectionOnlyInvoke);
 
         // Low level support for the BindingFlag-driven enumerator apis. These return members declared (not inherited) on the current
