@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.TypeLoading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection
 {
@@ -124,6 +125,7 @@ namespace System.Reflection
         /// assembly with the same name was already loaded into the MetadataLoadContext, the prior assembly will be returned. If the
         /// two assemblies do not have the same Mvid, this method throws a FileLoadException.
         /// </summary>
+        [RequiresUnreferencedCode("Members might be removed")]
         public Assembly LoadFromAssemblyPath(string assemblyPath)
         {
             ArgumentNullException.ThrowIfNull(assemblyPath);
@@ -138,6 +140,7 @@ namespace System.Reflection
         /// assembly with the same name was already loaded into the MetadataLoadContext, the prior assembly will be returned. If the
         /// two assemblies do not have the same Mvid, this method throws a FileLoadException.
         /// </summary>
+        [RequiresUnreferencedCode("Members might be removed")]
         public Assembly LoadFromByteArray(byte[] assembly)
         {
             ArgumentNullException.ThrowIfNull(assembly);
@@ -155,6 +158,7 @@ namespace System.Reflection
         /// The MetadataLoadContext takes ownership of the Stream passed into this method. The original owner must not mutate its position, dispose the Stream or
         /// assume that its position will stay unchanged.
         /// </summary>
+        [RequiresUnreferencedCode("Members might be removed")]
         public Assembly LoadFromStream(Stream assembly)
         {
             ArgumentNullException.ThrowIfNull(assembly);

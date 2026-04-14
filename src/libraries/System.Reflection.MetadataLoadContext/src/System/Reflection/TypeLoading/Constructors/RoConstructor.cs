@@ -10,6 +10,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all ConstructorInfo objects created by a MetadataLoadContext.
     /// </summary>
+    [RequiresUnreferencedCode("Members might be removed")]
     internal abstract partial class RoConstructor : LeveledConstructorInfo, IRoMethodBase
     {
         protected RoConstructor() { }

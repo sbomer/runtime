@@ -11,6 +11,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// RoTypes that return true for IsGenericParameter and get its metadata from a PEReader.
     /// </summary>
+    [RequiresUnreferencedCode("Types might be removed")]
     internal abstract class EcmaGenericParameterType : RoGenericParameterType
     {
         private readonly EcmaModule _ecmaModule;
@@ -33,6 +34,7 @@ namespace System.Reflection.TypeLoading.Ecma
         public sealed override GenericParameterAttributes GenericParameterAttributes => GenericParameter.Attributes;
 
         public sealed override IEnumerable<CustomAttributeData> CustomAttributes => GenericParameter.GetCustomAttributes().ToTrueCustomAttributes(GetEcmaModule());
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override bool IsCustomAttributeDefined(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => GenericParameter.GetCustomAttributes().IsCustomAttributeDefined(ns, name, GetEcmaModule());
         internal sealed override CustomAttributeData? TryFindCustomAttribute(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => GenericParameter.GetCustomAttributes().TryFindCustomAttribute(ns, name, GetEcmaModule());
 

@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
@@ -12,6 +13,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class RoThinMethodParameter : RoMethodParameter
     {
+        [RequiresUnreferencedCode("Members might be removed")]
         internal RoThinMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType)
             : base(roMethodBase, position, parameterType)
         {

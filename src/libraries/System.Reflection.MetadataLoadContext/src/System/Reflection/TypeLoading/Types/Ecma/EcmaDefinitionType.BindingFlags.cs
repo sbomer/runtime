@@ -16,6 +16,7 @@ namespace System.Reflection.TypeLoading.Ecma
         //
         // - All GetConstructor() apis act as if BindingFlags.DeclaredOnly were specified. So the ReflectedType will always be the declaring type and so is not passed to this method.
         //
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<ConstructorInfo> SpecializeConstructors(NameFilter? filter, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;
@@ -45,6 +46,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<EventInfo> SpecializeEvents(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;
@@ -55,6 +57,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         internal sealed override IEnumerable<FieldInfo> SpecializeFields(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;

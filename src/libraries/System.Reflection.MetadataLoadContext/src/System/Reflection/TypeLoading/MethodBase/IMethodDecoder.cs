@@ -24,6 +24,7 @@ namespace System.Reflection.TypeLoading
         int ComputeGenericParameterCount();
         RoType[] ComputeGenericArgumentsOrParameters();
 
+        [RequiresUnreferencedCode("Members might be removed")]
         IEnumerable<CustomAttributeData> ComputeTrueCustomAttributes();
         DllImportAttribute ComputeDllImportAttribute();
 

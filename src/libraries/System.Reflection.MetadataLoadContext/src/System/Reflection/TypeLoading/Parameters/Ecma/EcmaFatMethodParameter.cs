@@ -37,6 +37,7 @@ namespace System.Reflection.TypeLoading.Ecma
         protected sealed override string? ComputeName() => Parameter.Name.GetStringOrNull(Reader);
         protected sealed override ParameterAttributes ComputeAttributes() => Parameter.Attributes;
 
+        [RequiresUnreferencedCode("Members might be removed")]
         protected sealed override IEnumerable<CustomAttributeData> GetTrueCustomAttributes() => Parameter.GetCustomAttributes().ToTrueCustomAttributes(GetEcmaModule());
 
         public sealed override bool HasDefaultValue => TryGetRawDefaultValue(out _);

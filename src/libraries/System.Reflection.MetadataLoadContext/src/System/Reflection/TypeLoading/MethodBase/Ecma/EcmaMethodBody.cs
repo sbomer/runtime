@@ -6,9 +6,11 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
+    [RequiresUnreferencedCode("Types might be removed")]
     internal sealed class EcmaMethodBody : RoMethodBody
     {
         private readonly IRoMethodBase _roMethodBase;

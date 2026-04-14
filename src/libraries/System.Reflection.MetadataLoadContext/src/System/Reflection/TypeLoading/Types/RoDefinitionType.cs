@@ -77,6 +77,7 @@ namespace System.Reflection.TypeLoading
             }
         }
 
+        [RequiresUnreferencedCode("Members might be removed")]
         protected abstract IEnumerable<CustomAttributeData> GetTrueCustomAttributes();
 
         public sealed override Type GetGenericTypeDefinition() => IsGenericTypeDefinition ? this : throw new InvalidOperationException(SR.InvalidOperation_NotGenericType);
@@ -241,11 +242,15 @@ namespace System.Reflection.TypeLoading
         internal sealed override IEnumerable<PropertyInfo> GetPropertiesCore(NameFilter? filter, Type reflectedType) => SpecializeProperties(filter, reflectedType, this);
 
         // Like CoreGetDeclared but allows specifying an alternate declaringType (which must be a generic instantiation of the true declaring type)
+        [RequiresUnreferencedCode("Members might be removed")]
         internal abstract IEnumerable<ConstructorInfo> SpecializeConstructors(NameFilter? filter, RoInstantiationProviderType declaringType);
         [RequiresUnreferencedCode("Members might be removed")]
         internal abstract IEnumerable<MethodInfo> SpecializeMethods(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
+        [RequiresUnreferencedCode("Members might be removed")]
         internal abstract IEnumerable<EventInfo> SpecializeEvents(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
+        [RequiresUnreferencedCode("Members might be removed")]
         internal abstract IEnumerable<FieldInfo> SpecializeFields(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
+        [RequiresUnreferencedCode("Members might be removed")]
         internal abstract IEnumerable<PropertyInfo> SpecializeProperties(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
 
         // Helpers for the typeref-resolution/name lookup logic.
