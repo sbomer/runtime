@@ -16,7 +16,6 @@ namespace System.Reflection.TypeLoading.Ecma
     {
         private readonly EcmaModule _ecmaModule;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal EcmaGenericParameterType(GenericParameterHandle handle, EcmaModule module)
             : base()
         {
@@ -34,7 +33,6 @@ namespace System.Reflection.TypeLoading.Ecma
         public sealed override GenericParameterAttributes GenericParameterAttributes => GenericParameter.Attributes;
 
         public sealed override IEnumerable<CustomAttributeData> CustomAttributes => GenericParameter.GetCustomAttributes().ToTrueCustomAttributes(GetEcmaModule());
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override bool IsCustomAttributeDefined(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => GenericParameter.GetCustomAttributes().IsCustomAttributeDefined(ns, name, GetEcmaModule());
         internal sealed override CustomAttributeData? TryFindCustomAttribute(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => GenericParameter.GetCustomAttributes().TryFindCustomAttribute(ns, name, GetEcmaModule());
 

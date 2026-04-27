@@ -19,7 +19,6 @@ namespace System.Reflection.TypeLoading.Ecma
         private readonly EcmaModule _module;
         private readonly EventDefinitionHandle _handle;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal EcmaEvent(RoInstantiationProviderType declaringType, EventDefinitionHandle handle, Type reflectedType)
             : base(declaringType, reflectedType)
         {

@@ -59,17 +59,14 @@ namespace System.Reflection.TypeLoading
         private volatile MethodImplAttributes _lazyMethodImplAttributes = MethodImplAttributesSentinel;
 
         public sealed override MethodImplAttributes GetMethodImplementationFlags() => MethodImplementationFlags;
-        [RequiresUnreferencedCode("Trimming may change method bodies. For example it can change some instructions, remove branches or local variables.")]
         public abstract override MethodBody? GetMethodBody();
 
         public sealed override bool ContainsGenericParameters => GetRoDeclaringType().ContainsGenericParameters;
 
         public sealed override ParameterInfo[] GetParameters() => GetParametersNoCopy().CloneArray<ParameterInfo>();
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoParameter[] GetParametersNoCopy() => MethodSig.Parameters;
 
         private MethodSig<RoParameter> MethodSig => field ??= ComputeMethodSig();
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected abstract MethodSig<RoParameter> ComputeMethodSig();
 
         public sealed override string ToString() => Loader.GetDisposedString() ?? this.ToString(ComputeMethodSigStrings());

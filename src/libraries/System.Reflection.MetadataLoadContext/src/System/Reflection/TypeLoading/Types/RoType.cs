@@ -325,7 +325,6 @@ namespace System.Reflection.TypeLoading
 
         public sealed override Type MakeByRefType() => this.GetUniqueByRefType();
         public sealed override Type MakePointerType() => this.GetUniquePointerType();
-        [RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
         public abstract override Type MakeGenericType(params Type[] typeArguments);
 
         // Enum methods

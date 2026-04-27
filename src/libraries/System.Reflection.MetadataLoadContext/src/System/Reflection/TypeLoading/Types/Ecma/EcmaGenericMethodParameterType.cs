@@ -13,7 +13,6 @@ namespace System.Reflection.TypeLoading.Ecma
     [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EcmaGenericMethodParameterType : EcmaGenericParameterType
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal EcmaGenericMethodParameterType(GenericParameterHandle handle, EcmaModule module)
             : base(handle, module)
         {
@@ -26,9 +25,7 @@ namespace System.Reflection.TypeLoading.Ecma
         protected sealed override RoType ComputeDeclaringType() => GetRoDeclaringMethod().GetRoDeclaringType();
 
         public sealed override MethodBase DeclaringMethod => GetRoDeclaringMethod();
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private RoMethod GetRoDeclaringMethod() => _lazyDeclaringMethod ??= ComputeDeclaringMethod();
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private RoMethod ComputeDeclaringMethod() => ((MethodDefinitionHandle)(GenericParameter.Parent)).ResolveMethod<RoMethod>(GetEcmaModule(), default);
         private volatile RoMethod? _lazyDeclaringMethod;
 

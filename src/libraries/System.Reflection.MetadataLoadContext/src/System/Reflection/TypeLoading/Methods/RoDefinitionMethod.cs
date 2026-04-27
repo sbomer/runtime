@@ -72,7 +72,6 @@ namespace System.Reflection.TypeLoading
         protected sealed override CallingConventions ComputeCallingConvention() => _decoder.ComputeCallingConvention();
         protected sealed override MethodImplAttributes ComputeMethodImplementationFlags() => _decoder.ComputeMethodImplementationFlags();
         protected sealed override MethodSig<RoParameter> ComputeMethodSig() => _decoder.SpecializeMethodSig(this);
-        [RequiresUnreferencedCode("Trimming may change method bodies. For example it can change some instructions, remove branches or local variables.")]
         public sealed override MethodBody? GetMethodBody() => _decoder.SpecializeMethodBody(this);
         protected sealed override MethodSig<string> ComputeMethodSigStrings() => _decoder.SpecializeMethodSigStrings(TypeContext);
 
@@ -99,7 +98,6 @@ namespace System.Reflection.TypeLoading
         public sealed override bool IsGenericMethodDefinition => GetGenericTypeParametersNoCopy().Length != 0;
         public sealed override MethodInfo GetGenericMethodDefinition() => IsGenericMethodDefinition ? this : throw new InvalidOperationException(); // Very uninformative but compatible exception
 
-        [RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
         public sealed override MethodInfo MakeGenericMethod(params Type[] typeArguments)
         {
             ArgumentNullException.ThrowIfNull(typeArguments);

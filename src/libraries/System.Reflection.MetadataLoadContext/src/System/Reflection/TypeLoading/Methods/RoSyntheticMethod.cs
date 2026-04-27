@@ -52,7 +52,6 @@ namespace System.Reflection.TypeLoading
             return sig;
         }
 
-        [RequiresUnreferencedCode("Trimming may change method bodies. For example it can change some instructions, remove branches or local variables.")]
         public sealed override MethodBody? GetMethodBody() => null;
 
         protected sealed override MethodSig<string> ComputeMethodSigStrings()
@@ -86,7 +85,6 @@ namespace System.Reflection.TypeLoading
         public sealed override bool IsGenericMethodDefinition => false;
         public sealed override bool IsConstructedGenericMethod => false;
         public sealed override MethodInfo GetGenericMethodDefinition() => throw new InvalidOperationException();
-        [RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
         public sealed override MethodInfo MakeGenericMethod(params Type[] typeArguments) => throw new InvalidOperationException(SR.Format(SR.Arg_NotGenericMethodDefinition, this));
         protected sealed override RoType[] ComputeGenericArgumentsOrParameters() => Array.Empty<RoType>();
         internal sealed override RoType[] GetGenericTypeArgumentsNoCopy() => Array.Empty<RoType>();

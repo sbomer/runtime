@@ -14,7 +14,6 @@ namespace System.Reflection.TypeLoading
     [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal abstract partial class RoDefinitionType : RoInstantiationProviderType
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected RoDefinitionType()
             : base()
         {
@@ -78,7 +77,6 @@ namespace System.Reflection.TypeLoading
             }
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected abstract IEnumerable<CustomAttributeData> GetTrueCustomAttributes();
 
         public sealed override Type GetGenericTypeDefinition() => IsGenericTypeDefinition ? this : throw new InvalidOperationException(SR.InvalidOperation_NotGenericType);
@@ -89,7 +87,6 @@ namespace System.Reflection.TypeLoading
         internal sealed override IEnumerable<RoType> ComputeDirectlyImplementedInterfaces() => SpecializeInterfaces(Instantiation);
         internal abstract IEnumerable<RoType> SpecializeInterfaces(RoType[] instantiation);
 
-        [RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
         public sealed override Type MakeGenericType(params Type[] typeArguments)
         {
             ArgumentNullException.ThrowIfNull(typeArguments);
@@ -236,27 +233,17 @@ namespace System.Reflection.TypeLoading
         public sealed override MethodBase DeclaringMethod => throw new InvalidOperationException(SR.Arg_NotGenericParameter);
         public sealed override Type GetFunctionPointerReturnType() => throw new InvalidOperationException(SR.InvalidOperation_NotFunctionPointer);
         public sealed override Type[] GetFunctionPointerParameterTypes() => throw new InvalidOperationException(SR.InvalidOperation_NotFunctionPointer);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<ConstructorInfo> GetConstructorsCore(NameFilter? filter) => SpecializeConstructors(filter, this);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<MethodInfo> GetMethodsCore(NameFilter? filter, Type reflectedType) => SpecializeMethods(filter, reflectedType, this);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<EventInfo> GetEventsCore(NameFilter? filter, Type reflectedType) => SpecializeEvents(filter, reflectedType, this);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<FieldInfo> GetFieldsCore(NameFilter? filter, Type reflectedType) => SpecializeFields(filter, reflectedType, this);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<PropertyInfo> GetPropertiesCore(NameFilter? filter, Type reflectedType) => SpecializeProperties(filter, reflectedType, this);
 
         // Like CoreGetDeclared but allows specifying an alternate declaringType (which must be a generic instantiation of the true declaring type)
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal abstract IEnumerable<ConstructorInfo> SpecializeConstructors(NameFilter? filter, RoInstantiationProviderType declaringType);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal abstract IEnumerable<MethodInfo> SpecializeMethods(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal abstract IEnumerable<EventInfo> SpecializeEvents(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal abstract IEnumerable<FieldInfo> SpecializeFields(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal abstract IEnumerable<PropertyInfo> SpecializeProperties(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType);
 
         // Helpers for the typeref-resolution/name lookup logic.
