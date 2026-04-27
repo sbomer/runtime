@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class RoPointerType : RoHasElementType
     {
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoPointerType(RoType elementType)
             : base((RoType)elementType.UnderlyingSystemType)
         {

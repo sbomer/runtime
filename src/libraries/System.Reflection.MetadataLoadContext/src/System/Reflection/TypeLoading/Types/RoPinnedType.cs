@@ -11,7 +11,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class RoPinnedType : RoWrappedType
     {
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoPinnedType(RoType unmodifiedType)
             : base(unmodifiedType)
         {

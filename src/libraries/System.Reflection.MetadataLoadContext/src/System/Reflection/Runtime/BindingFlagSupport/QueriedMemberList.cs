@@ -7,6 +7,7 @@ using System.Reflection.Runtime.TypeInfos;
 using System.Runtime.CompilerServices;
 using Internal.Reflection.Core.Execution;
 using RuntimeTypeInfo = System.Reflection.TypeLoading.RoType;
+using System.Reflection.TypeLoading;
 
 namespace System.Reflection.Runtime.BindingFlagSupport
 {
@@ -106,7 +107,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Filter by name and visibility from the ReflectedType.
         //
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static QueriedMemberList<M> Create(RuntimeTypeInfo type, string? filter, bool ignoreCase, bool immediateTypeOnly)
         {
             RuntimeTypeInfo reflectedType = type;

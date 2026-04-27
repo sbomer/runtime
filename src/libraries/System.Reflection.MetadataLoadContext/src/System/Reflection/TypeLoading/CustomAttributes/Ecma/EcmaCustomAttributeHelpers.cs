@@ -18,7 +18,7 @@ namespace System.Reflection.TypeLoading.Ecma
         /// Converts ECMA-encoded custom attributes into a freshly allocated CustomAttributeData object suitable for direct return
         /// from the CustomAttributes api.
         /// </summary>
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static IEnumerable<CustomAttributeData> ToTrueCustomAttributes(this CustomAttributeHandleCollection handles, EcmaModule module)
         {
             foreach (CustomAttributeHandle handle in handles)
@@ -27,7 +27,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static CustomAttributeData ToCustomAttributeData(this CustomAttributeHandle handle, EcmaModule module) => new EcmaCustomAttributeData(handle, module);
 
         public static bool IsCustomAttributeDefined(this CustomAttributeHandleCollection handles, ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, EcmaModule module)
@@ -35,7 +35,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return !handles.FindCustomAttributeByName(ns, name, module).IsNil;
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static CustomAttributeData? TryFindCustomAttribute(this CustomAttributeHandleCollection handles, ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, EcmaModule module)
         {
             CustomAttributeHandle handle = handles.FindCustomAttributeByName(ns, name, module);
@@ -183,7 +183,7 @@ namespace System.Reflection.TypeLoading.Ecma
         //
         // https://github.com/dotnet/runtime/blob/b908ecf514f32c7ba7d59ecc28fa3fdd64a10a1a/src/coreclr/vm/mlinfo.cpp#L469
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static MarshalAsAttribute ToMarshalAsAttribute(this BlobHandle blobHandle, EcmaModule module)
         {
             MetadataReader reader = module.Reader;

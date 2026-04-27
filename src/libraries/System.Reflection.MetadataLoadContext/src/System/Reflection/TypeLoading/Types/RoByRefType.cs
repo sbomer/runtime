@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class RoByRefType : RoHasElementType
     {
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoByRefType(RoType elementType)
             : base(elementType)
         {

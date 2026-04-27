@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace System.Reflection.TypeLoading.Ecma
 {
     // This type provider is used to parse local variable signatures (which can have the PINNED constraint.)
-    [RequiresUnreferencedCode("Types might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EcmaPinnedTypeProvider : EcmaWrappedTypeProvider
     {
         internal EcmaPinnedTypeProvider(EcmaModule module)

@@ -13,7 +13,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class RoThinMethodParameter : RoMethodParameter
     {
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoThinMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType)
             : base(roMethodBase, position, parameterType)
         {

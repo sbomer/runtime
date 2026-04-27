@@ -9,7 +9,7 @@ namespace System.Reflection.TypeLoading
 {
     internal static class Assignability
     {
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static bool IsAssignableFrom(Type toTypeInfo, Type fromTypeInfo, CoreTypes coreTypes)
         {
             if (toTypeInfo == null)
@@ -54,7 +54,7 @@ namespace System.Reflection.TypeLoading
             return false;
         }
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static bool CanCastTo(this Type fromTypeInfo, Type toTypeInfo, CoreTypes coreTypes)
         {
             if (fromTypeInfo.Equals(toTypeInfo))
@@ -182,7 +182,7 @@ namespace System.Reflection.TypeLoading
         // Check a base type or implemented interface type for equivalence (taking into account variance for generic instantiations.)
         // Does not check ancestors recursively.
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static bool MatchesWithVariance(this Type fromTypeInfo, Type toTypeInfo, CoreTypes coreTypes)
         {
             Debug.Assert(!(fromTypeInfo.IsArray || fromTypeInfo.IsByRef || fromTypeInfo.IsPointer || fromTypeInfo.IsGenericParameter));
@@ -241,7 +241,7 @@ namespace System.Reflection.TypeLoading
         //
         // For .NET Framework compat, A& and A* follow the same rules.
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static bool IsElementTypeCompatibleWith(this Type fromTypeInfo, Type toTypeInfo, CoreTypes coreTypes)
         {
             if (fromTypeInfo.IsGcReferenceTypeAndCastableTo(toTypeInfo, coreTypes))
@@ -280,7 +280,7 @@ namespace System.Reflection.TypeLoading
         //
         // IEnumerable<D> can cast to IEnumerable<B> if D can cast to B and if there's no possibility that D is a value type.
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static bool IsGcReferenceTypeAndCastableTo(this Type fromTypeInfo, Type toTypeInfo, CoreTypes coreTypes)
         {
             if (fromTypeInfo.Equals(toTypeInfo))
@@ -336,7 +336,7 @@ namespace System.Reflection.TypeLoading
         // T[] casts to IList<T>. This could be handled by the normal ancestor-walking code
         // but for one complication: T[] also casts to IList<U> if T[] casts to U[].
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static bool CanCastArrayToInterface(this Type fromTypeInfo, Type toTypeInfo, CoreTypes coreTypes)
         {
             Debug.Assert(fromTypeInfo.IsArray);

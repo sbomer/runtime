@@ -17,7 +17,7 @@ namespace System.Reflection.TypeLoading.Ecma
         private readonly EcmaModule _module;
         private readonly FieldDefinitionHandle _handle;
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal EcmaField(RoInstantiationProviderType declaringType, FieldDefinitionHandle handle, Type reflectedType)
             : base(declaringType, reflectedType)
         {
@@ -33,11 +33,11 @@ namespace System.Reflection.TypeLoading.Ecma
 
         internal sealed override RoModule GetRoModule() => _module;
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected sealed override IEnumerable<CustomAttributeData> GetTrueCustomAttributes() => FieldDefinition.GetCustomAttributes().ToTrueCustomAttributes(_module);
 
         protected sealed override int GetExplicitFieldOffset() => FieldDefinition.GetOffset();
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected sealed override MarshalAsAttribute ComputeMarshalAsAttribute() => FieldDefinition.GetMarshallingDescriptor().ToMarshalAsAttribute(_module);
 
         public sealed override int MetadataToken => _handle.GetToken();

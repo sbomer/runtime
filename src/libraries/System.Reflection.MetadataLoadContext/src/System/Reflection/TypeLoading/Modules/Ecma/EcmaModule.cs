@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all Module objects created by a MetadataLoadContext and get its metadata from a PEReader.
     /// </summary>
-    [RequiresUnreferencedCode("Types might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed partial class EcmaModule : RoModule
     {
         private const int ModuleTypeToken = 0x02000001;
@@ -48,7 +48,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         public sealed override IEnumerable<CustomAttributeData> CustomAttributes => ModuleDefinition.GetCustomAttributes().ToTrueCustomAttributes(this);
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal MethodInfo? ComputeEntryPoint(bool fileRefEntryPointAllowed)
         {
             PEHeaders peHeaders = PEReader.PEHeaders;

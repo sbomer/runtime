@@ -24,16 +24,16 @@ namespace System.Reflection.TypeLoading
         int ComputeGenericParameterCount();
         // RUC is on the interface method because EcmaMethodDecoder is a struct and
         // type-level RUC is not supported on structs (https://github.com/dotnet/runtime/issues/90115).
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         RoType[] ComputeGenericArgumentsOrParameters();
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         IEnumerable<CustomAttributeData> ComputeTrueCustomAttributes();
         DllImportAttribute ComputeDllImportAttribute();
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         MethodSig<RoParameter> SpecializeMethodSig(IRoMethodBase member);
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         MethodBody? SpecializeMethodBody(IRoMethodBase owner);
         MethodSig<string> SpecializeMethodSigStrings(in TypeContext typeContext);
     }

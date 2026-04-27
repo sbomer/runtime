@@ -21,13 +21,13 @@ namespace System.Reflection
         private Type[]? _optionalModifiers;
         private readonly RoType _unmodifiedType;
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected RoModifiedType(RoType unmodifiedType)
         {
             _unmodifiedType = unmodifiedType;
         }
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static RoModifiedType Create(RoType unmodifiedType)
         {
             RoModifiedType modifiedType;

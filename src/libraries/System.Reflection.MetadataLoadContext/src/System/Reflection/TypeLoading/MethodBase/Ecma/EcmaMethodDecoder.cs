@@ -26,11 +26,11 @@ namespace System.Reflection.TypeLoading.Ecma
 
         public string ComputeName() => MethodDefinition.Name.GetString(Reader);
         public int MetadataToken => _handle.GetToken();
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public IEnumerable<CustomAttributeData> ComputeTrueCustomAttributes() => MethodDefinition.GetCustomAttributes().ToTrueCustomAttributes(_module);
 
         public int ComputeGenericParameterCount() => MethodDefinition.GetGenericParameters().Count;
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public RoType[] ComputeGenericArgumentsOrParameters()
         {
             GenericParameterHandleCollection gphs = MethodDefinition.GetGenericParameters();
@@ -71,7 +71,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         public MethodImplAttributes ComputeMethodImplementationFlags() => MethodDefinition.ImplAttributes;
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public MethodSig<RoParameter> SpecializeMethodSig(IRoMethodBase roMethodBase)
         {
             MetadataReader reader = Reader;
@@ -110,7 +110,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return results;
         }
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public MethodBody? SpecializeMethodBody(IRoMethodBase owner)
         {
             int rva = MethodDefinition.RelativeVirtualAddress;

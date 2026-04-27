@@ -14,7 +14,7 @@ namespace System.Reflection
     {
         private readonly RoModifiedType? _elementModifiedType;
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public RoModifiedHasElementType(RoType unmodifiedType) : base(unmodifiedType)
         {
             Debug.Assert(unmodifiedType.HasElementType);

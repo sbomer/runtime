@@ -64,7 +64,7 @@ namespace System.Reflection.TypeLoading
             return types.ToArray();
         }
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static void AddPublicNestedTypes(Type type, List<Type> types)
         {
             foreach (Type nestedType in type.GetNestedTypes(BindingFlags.Public))

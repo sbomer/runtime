@@ -10,7 +10,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all ConstructorInfo objects created by a MetadataLoadContext.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal abstract partial class RoConstructor : LeveledConstructorInfo, IRoMethodBase
     {
         protected RoConstructor() { }
@@ -65,11 +65,11 @@ namespace System.Reflection.TypeLoading
         public sealed override bool ContainsGenericParameters => GetRoDeclaringType().ContainsGenericParameters;
 
         public sealed override ParameterInfo[] GetParameters() => GetParametersNoCopy().CloneArray<ParameterInfo>();
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoParameter[] GetParametersNoCopy() => MethodSig.Parameters;
 
         private MethodSig<RoParameter> MethodSig => field ??= ComputeMethodSig();
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected abstract MethodSig<RoParameter> ComputeMethodSig();
 
         public sealed override string ToString() => Loader.GetDisposedString() ?? this.ToString(ComputeMethodSigStrings());

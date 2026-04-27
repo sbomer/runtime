@@ -20,6 +20,8 @@ namespace System.Reflection.TypeLoading
             DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties |
             DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes;
 
+        internal const string TrimmingRequiresUnreferencedCodeMessage = "MetadataLoadContext is not trim compatible because it uses reflection to inspect assemblies.";
+
         private static readonly SearchValues<char> s_charsToEscape = SearchValues.Create("\\[]+*&,");
 
         [return: NotNullIfNotNull(nameof(original))]
@@ -285,7 +287,7 @@ namespace System.Reflection.TypeLoading
             return true;
         }
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static RoType? LoadTypeFromAssemblyQualifiedName(string name, RoAssembly defaultAssembly, bool ignoreCase, bool throwOnError)
         {
             if (!name.TypeNameContainsTypeParserMetacharacters())

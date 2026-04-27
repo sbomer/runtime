@@ -16,7 +16,7 @@ namespace System.Reflection.TypeLoading.Ecma
         //
         // - All GetConstructor() apis act as if BindingFlags.DeclaredOnly were specified. So the ReflectedType will always be the declaring type and so is not passed to this method.
         //
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<ConstructorInfo> SpecializeConstructors(NameFilter? filter, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;
@@ -31,7 +31,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<MethodInfo> SpecializeMethods(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;
@@ -46,7 +46,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<EventInfo> SpecializeEvents(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;
@@ -57,7 +57,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<FieldInfo> SpecializeFields(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;
@@ -68,7 +68,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<PropertyInfo> SpecializeProperties(NameFilter? filter, Type reflectedType, RoInstantiationProviderType declaringType)
         {
             MetadataReader reader = Reader;
@@ -79,7 +79,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<RoType> GetNestedTypesCore(NameFilter? filter)
         {
             MetadataReader reader = Reader;
@@ -91,7 +91,7 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal sealed override RoDefinitionType? GetNestedTypeCore(ReadOnlySpan<byte> utf8Name)
         {
             RoDefinitionType? match = null;

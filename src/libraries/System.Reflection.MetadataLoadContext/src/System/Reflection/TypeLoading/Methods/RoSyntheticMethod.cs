@@ -10,7 +10,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all RoMethod objects created by a MetadataLoadContext that appear on arrays.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed partial class RoSyntheticMethod : RoMethod
     {
         private readonly RoType _declaringType;

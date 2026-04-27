@@ -9,7 +9,7 @@ using CultureInfo = System.Globalization.CultureInfo;
 
 namespace System
 {
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed partial class DefaultBinder : Binder
     {
         private readonly MetadataLoadContext _loader;
@@ -273,7 +273,7 @@ namespace System
 
         // Return any exact bindings that may exist. (This method is not defined on the
         // Binder and is used by RuntimeType.)
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static MethodBase? ExactBinding(MethodBase[] match, Type[] types)
         {
             ArgumentNullException.ThrowIfNull(match);
@@ -498,7 +498,7 @@ namespace System
             }
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static int FindMostSpecificMethod(MethodBase m1, int[] paramOrder1, Type? paramArrayType1,
                                                   MethodBase m2, int[] paramOrder2, Type? paramArrayType2,
                                                   Type[] types, object[]? args)
@@ -559,7 +559,7 @@ namespace System
             return 0;
         }
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public static bool CompareMethodSig(MethodBase m1, MethodBase m2)
         {
             ParameterInfo[] params1 = m1.GetParametersNoCopy();

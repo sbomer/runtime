@@ -11,7 +11,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all PropertyInfo objects created by a MetadataLoadContext.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal abstract partial class RoProperty : LeveledPropertyInfo
     {
         private readonly RoInstantiationProviderType _declaringType;

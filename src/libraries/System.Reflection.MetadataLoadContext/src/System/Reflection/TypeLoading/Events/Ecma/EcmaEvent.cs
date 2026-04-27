@@ -13,13 +13,13 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all EventInfo objects created by a MetadataLoadContext and get its metadata from a PEReader.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EcmaEvent : RoEvent
     {
         private readonly EcmaModule _module;
         private readonly EventDefinitionHandle _handle;
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal EcmaEvent(RoInstantiationProviderType declaringType, EventDefinitionHandle handle, Type reflectedType)
             : base(declaringType, reflectedType)
         {

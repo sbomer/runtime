@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all FieldInfo objects created by a MetadataLoadContext.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal abstract partial class RoField : LeveledFieldInfo
     {
         private readonly RoInstantiationProviderType _declaringType;

@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all PropertyInfo objects created by a MetadataLoadContext and get its metadata from a PEReader.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EcmaProperty : RoProperty
     {
         private readonly EcmaModule _module;

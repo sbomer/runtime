@@ -9,7 +9,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all RoParameter's returned by MethodBase.GetParameters().
     /// </summary>
-    [RequiresUnreferencedCode("Types might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal abstract class RoMethodParameter : RoParameter
     {
         private readonly Type _parameterType;

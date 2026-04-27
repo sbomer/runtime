@@ -83,7 +83,7 @@ namespace System.Reflection.TypeLoading
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context) => throw new NotSupportedException();
         public abstract override void GetPEKind(out PortableExecutableKinds peKind, out ImageFileMachine machine);
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public abstract override Type[] GetTypes();
         internal abstract IEnumerable<RoType>? GetDefinedRoTypes();
         public abstract override bool IsResource();
@@ -127,7 +127,7 @@ namespace System.Reflection.TypeLoading
         /// If a type is not contained or forwarded from the module, this method returns null (does not throw.)
         /// This supports the "throwOnError: false" behavior of Module.GetType(string, bool).
         /// </summary>
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoDefinitionType? GetTypeCore(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, bool ignoreCase, out Exception? e)
         {
             if (ignoreCase)

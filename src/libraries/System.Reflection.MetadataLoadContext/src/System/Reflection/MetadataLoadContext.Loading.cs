@@ -18,7 +18,7 @@ namespace System.Reflection
         // Null entries do *not* appear here.
         private readonly ConcurrentDictionary<RoAssemblyName, RoAssembly> _loadedAssemblies = new ConcurrentDictionary<RoAssemblyName, RoAssembly>();
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private RoAssembly LoadFromStreamCore(Stream peStream)
         {
             PEReader peReader = new PEReader(peStream);

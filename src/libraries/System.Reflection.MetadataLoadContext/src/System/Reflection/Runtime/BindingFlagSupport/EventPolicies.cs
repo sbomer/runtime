@@ -11,7 +11,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// <summary>
     /// Policies for events.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EventPolicies : MemberPolicies<EventInfo>
     {
         public sealed override IEnumerable<EventInfo> GetDeclaredMembers([DynamicallyAccessedMembers(Helpers.DeclaredMemberTypes)] TypeInfo typeInfo)

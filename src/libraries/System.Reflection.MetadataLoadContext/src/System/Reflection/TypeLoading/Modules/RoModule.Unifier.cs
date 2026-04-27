@@ -8,7 +8,7 @@ namespace System.Reflection.TypeLoading
 {
     internal abstract partial class RoModule
     {
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private static class TypeFactoryDelegates
         {
             public static readonly Func<RoType, RoArrayType> SzArray = (e) => new RoArrayType(e, multiDim: false, rank: 1);
@@ -21,7 +21,7 @@ namespace System.Reflection.TypeLoading
         //
         // SzArrays
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoArrayType GetUniqueArrayType(RoType elementType)
         {
             // Modified types do not support Equals\GetHashCode.
@@ -34,7 +34,7 @@ namespace System.Reflection.TypeLoading
         //
         // MdArrays
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoArrayType GetUniqueArrayType(RoType elementType, int rank)
         {
             // Modified types do not support Equals\GetHashCode.
@@ -48,7 +48,7 @@ namespace System.Reflection.TypeLoading
         //
         // ByRefs
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoByRefType GetUniqueByRefType(RoType elementType)
         {
             // Modified types do not support Equals\GetHashCode.
@@ -61,7 +61,7 @@ namespace System.Reflection.TypeLoading
         //
         // Pointers
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoPointerType GetUniquePointerType(RoType elementType)
         {
             return elementType is RoModifiedType ?
@@ -73,7 +73,7 @@ namespace System.Reflection.TypeLoading
         //
         // Constructed Generic Types
         //
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal RoConstructedGenericType GetUniqueConstructedGenericType(RoDefinitionType genericTypeDefinition, RoType[] genericTypeArguments)
         {
             return _constructedGenericTypeDict.GetOrAdd(new RoConstructedGenericType.Key(genericTypeDefinition, genericTypeArguments), TypeFactoryDelegates.ConstructedGenericType);

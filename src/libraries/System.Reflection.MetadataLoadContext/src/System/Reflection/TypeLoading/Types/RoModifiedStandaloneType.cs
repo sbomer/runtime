@@ -11,7 +11,7 @@ namespace System.Reflection
     /// </summary>
     internal sealed partial class RoModifiedStandaloneType : RoModifiedType
     {
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         public RoModifiedStandaloneType(RoType delegatingType) : base(delegatingType) { }
     }
 }

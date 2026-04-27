@@ -11,7 +11,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// </summary>
     internal sealed class EcmaGenericTypeParameterType : EcmaGenericParameterType
     {
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal EcmaGenericTypeParameterType(GenericParameterHandle handle, EcmaModule module)
             : base(handle, module)
         {
@@ -20,7 +20,7 @@ namespace System.Reflection.TypeLoading.Ecma
         public sealed override bool IsGenericTypeParameter => true;
         public sealed override bool IsGenericMethodParameter => false;
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected sealed override RoType? ComputeDeclaringType()
         {
             TypeDefinitionHandle declaringTypeHandle = (TypeDefinitionHandle)(GenericParameter.Parent);

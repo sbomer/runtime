@@ -9,7 +9,7 @@ using System.Reflection.Metadata;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EcmaCustomAttributeData : RoCustomAttributeData
     {
         private readonly CustomAttributeHandle _handle;

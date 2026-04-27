@@ -13,13 +13,13 @@ namespace System.Reflection.TypeLoading.Ecma
     /// Base class for all RoParameter's returned by MethodBase.GetParameters() that have an entry in the Param table
     /// and get their metadata from a PEReader.
     /// </summary>
-    [RequiresUnreferencedCode("Members might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EcmaFatMethodParameter : RoFatMethodParameter
     {
         private readonly EcmaModule _module;
         private readonly ParameterHandle _handle;
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal EcmaFatMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType, ParameterHandle handle)
             : base(roMethodBase, position, parameterType)
         {
@@ -38,7 +38,7 @@ namespace System.Reflection.TypeLoading.Ecma
         protected sealed override string? ComputeName() => Parameter.Name.GetStringOrNull(Reader);
         protected sealed override ParameterAttributes ComputeAttributes() => Parameter.Attributes;
 
-        [RequiresUnreferencedCode("Members might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         protected sealed override IEnumerable<CustomAttributeData> GetTrueCustomAttributes() => Parameter.GetCustomAttributes().ToTrueCustomAttributes(GetEcmaModule());
 
         public sealed override bool HasDefaultValue => TryGetRawDefaultValue(out _);

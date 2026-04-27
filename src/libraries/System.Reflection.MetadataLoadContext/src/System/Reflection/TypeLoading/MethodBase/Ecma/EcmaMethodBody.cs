@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
-    [RequiresUnreferencedCode("Types might be removed")]
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal sealed class EcmaMethodBody : RoMethodBody
     {
         private readonly IRoMethodBase _roMethodBase;

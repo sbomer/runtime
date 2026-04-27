@@ -13,7 +13,7 @@ namespace System.Reflection.TypeLoading
     {
         public static readonly RoMethod RoMethod = new SentinelMethod();
 
-        [RequiresUnreferencedCode("Types might be removed")]
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal static class SentinelHolder
         {
             public static readonly RoType RoType = new SentinelType();
@@ -21,7 +21,7 @@ namespace System.Reflection.TypeLoading
 
         private sealed class SentinelType : RoStubType
         {
-            [RequiresUnreferencedCode("Types might be removed")]
+            [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
             internal SentinelType() : base() { }
         }
 
