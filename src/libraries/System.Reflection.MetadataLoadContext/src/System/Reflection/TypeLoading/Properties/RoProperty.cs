@@ -95,14 +95,14 @@ namespace System.Reflection.TypeLoading
         public sealed override MethodInfo? GetGetMethod(bool nonPublic) => GetRoGetMethod()?.FilterAccessor(nonPublic);
         public sealed override MethodInfo? GetSetMethod(bool nonPublic) => GetRoSetMethod()?.FilterAccessor(nonPublic);
 
-        private RoMethod? GetRoGetMethod() => object.ReferenceEquals(_lazyGetter, Sentinels.RoMethod) ? (_lazyGetter = ComputeGetterMethod()?.FilterInheritedAccessor()) : _lazyGetter;
-        private RoMethod? GetRoSetMethod() => object.ReferenceEquals(_lazySetter, Sentinels.RoMethod) ? (_lazySetter = ComputeSetterMethod()?.FilterInheritedAccessor()) : _lazySetter;
+        private RoMethod? GetRoGetMethod() => object.ReferenceEquals(_lazyGetter, Sentinels.SentinelHolder.RoMethod) ? (_lazyGetter = ComputeGetterMethod()?.FilterInheritedAccessor()) : _lazyGetter;
+        private RoMethod? GetRoSetMethod() => object.ReferenceEquals(_lazySetter, Sentinels.SentinelHolder.RoMethod) ? (_lazySetter = ComputeSetterMethod()?.FilterInheritedAccessor()) : _lazySetter;
 
         protected abstract RoMethod? ComputeGetterMethod();
         protected abstract RoMethod? ComputeSetterMethod();
 
-        private volatile RoMethod? _lazyGetter = Sentinels.RoMethod;
-        private volatile RoMethod? _lazySetter = Sentinels.RoMethod;
+        private volatile RoMethod? _lazyGetter = Sentinels.SentinelHolder.RoMethod;
+        private volatile RoMethod? _lazySetter = Sentinels.SentinelHolder.RoMethod;
 
         public sealed override bool CanRead => GetMethod != null;
         public sealed override bool CanWrite => SetMethod != null;

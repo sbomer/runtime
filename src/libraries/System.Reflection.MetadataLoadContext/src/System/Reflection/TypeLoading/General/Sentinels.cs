@@ -11,12 +11,11 @@ namespace System.Reflection.TypeLoading
     //
     internal static class Sentinels
     {
-        public static readonly RoMethod RoMethod = new SentinelMethod();
-
         [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         internal static class SentinelHolder
         {
             public static readonly RoType RoType = new SentinelType();
+            public static readonly RoMethod RoMethod = new SentinelMethod();
         }
 
         private sealed class SentinelType : RoStubType
@@ -30,6 +29,7 @@ namespace System.Reflection.TypeLoading
             internal SentinelAssembly() : base() { }
         }
 
+        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
         private sealed class SentinelMethod : RoMethod
         {
             internal SentinelMethod() : base(SentinelHolder.RoType) { }

@@ -3,12 +3,14 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Reflection.TypeLoading
 {
     /// <summary>
     /// Base class for all EventInfo objects created by a MetadataLoadContext.
     /// </summary>
+    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
     internal abstract partial class RoEvent : LeveledEventInfo
     {
         private readonly RoInstantiationProviderType _declaringType;
@@ -52,9 +54,9 @@ namespace System.Reflection.TypeLoading
         public sealed override Type EventHandlerType => field ??= ComputeEventHandlerType();
         protected abstract Type ComputeEventHandlerType();
 
-        private RoMethod? GetRoAddMethod() => (_lazyAdder == Sentinels.RoMethod) ? (_lazyAdder = ComputeEventAddMethod()?.FilterInheritedAccessor()) : _lazyAdder;
-        private RoMethod? GetRoRemoveMethod() => (_lazyRemover == Sentinels.RoMethod) ? (_lazyRemover = ComputeEventRemoveMethod()?.FilterInheritedAccessor()) : _lazyRemover;
-        private RoMethod? GetRoRaiseMethod() => (_lazyRaiser == Sentinels.RoMethod) ? (_lazyRaiser = ComputeEventRaiseMethod()?.FilterInheritedAccessor()) : _lazyRaiser;
+        private RoMethod? GetRoAddMethod() => (_lazyAdder == Sentinels.SentinelHolder.RoMethod) ? (_lazyAdder = ComputeEventAddMethod()?.FilterInheritedAccessor()) : _lazyAdder;
+        private RoMethod? GetRoRemoveMethod() => (_lazyRemover == Sentinels.SentinelHolder.RoMethod) ? (_lazyRemover = ComputeEventRemoveMethod()?.FilterInheritedAccessor()) : _lazyRemover;
+        private RoMethod? GetRoRaiseMethod() => (_lazyRaiser == Sentinels.SentinelHolder.RoMethod) ? (_lazyRaiser = ComputeEventRaiseMethod()?.FilterInheritedAccessor()) : _lazyRaiser;
 
         public sealed override MethodInfo? GetAddMethod(bool nonPublic) => GetRoAddMethod()?.FilterAccessor(nonPublic);
         public sealed override MethodInfo? GetRemoveMethod(bool nonPublic) => GetRoRemoveMethod()?.FilterAccessor(nonPublic);
@@ -64,9 +66,9 @@ namespace System.Reflection.TypeLoading
         protected abstract RoMethod? ComputeEventRemoveMethod();
         protected abstract RoMethod? ComputeEventRaiseMethod();
 
-        private volatile RoMethod? _lazyAdder = Sentinels.RoMethod;
-        private volatile RoMethod? _lazyRemover = Sentinels.RoMethod;
-        private volatile RoMethod? _lazyRaiser = Sentinels.RoMethod;
+        private volatile RoMethod? _lazyAdder = Sentinels.SentinelHolder.RoMethod;
+        private volatile RoMethod? _lazyRemover = Sentinels.SentinelHolder.RoMethod;
+        private volatile RoMethod? _lazyRaiser = Sentinels.SentinelHolder.RoMethod;
 
         public abstract override MethodInfo[] GetOtherMethods(bool nonPublic);
 
