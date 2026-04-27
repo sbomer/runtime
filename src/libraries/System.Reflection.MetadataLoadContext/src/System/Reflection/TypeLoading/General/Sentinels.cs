@@ -32,7 +32,7 @@ namespace System.Reflection.TypeLoading
 
         private sealed class SentinelMethod : RoMethod
         {
-            internal SentinelMethod() : base(Sentinels.RoType) { }
+            internal SentinelMethod() : base(SentinelHolder.RoType) { }
             internal sealed override RoType GetRoDeclaringType() => throw null!;
             internal sealed override RoModule GetRoModule() => throw null!;
             public sealed override int MetadataToken => throw null!;
