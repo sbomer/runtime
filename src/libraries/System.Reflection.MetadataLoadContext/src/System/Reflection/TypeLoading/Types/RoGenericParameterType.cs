@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal abstract partial class RoGenericParameterType : RoType
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         protected RoGenericParameterType()
             : base()
         {

@@ -10,7 +10,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all EventInfo objects created by a MetadataLoadContext.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal abstract partial class RoEvent : LeveledEventInfo
     {
         private readonly RoInstantiationProviderType _declaringType;

@@ -77,7 +77,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Helper method for determining whether two methods are signature-compatible.
         //
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         protected static bool AreNamesAndSignaturesEqual(MethodInfo method1, MethodInfo method2)
         {
             if (method1.Name != method2.Name)
@@ -219,7 +219,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         }
 #pragma warning restore CA1810
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal static class DefaultHolder
         {
             //

@@ -9,7 +9,7 @@ using CultureInfo = System.Globalization.CultureInfo;
 
 namespace System
 {
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed partial class DefaultBinder : Binder
     {
         private readonly MetadataLoadContext _loader;

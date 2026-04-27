@@ -15,7 +15,7 @@ namespace System.Reflection.TypeLoading
     {
         private readonly RoType _elementType;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         protected RoHasElementType(RoType elementType)
             : base()
         {

@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal abstract partial class RoInstantiationProviderType : RoType
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         protected RoInstantiationProviderType()
             : base()
         {

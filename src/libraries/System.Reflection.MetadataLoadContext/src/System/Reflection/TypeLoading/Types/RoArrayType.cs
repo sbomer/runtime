@@ -15,7 +15,7 @@ namespace System.Reflection.TypeLoading
         private readonly bool _multiDim;
         private readonly int _rank;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal RoArrayType(RoType elementType, bool multiDim, int rank)
             : base(elementType)
         {
@@ -38,7 +38,7 @@ namespace System.Reflection.TypeLoading
 
         internal sealed override RoType? ComputeBaseTypeWithoutDesktopQuirk() => Loader.GetCoreType(CoreType.Array);
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<RoType> ComputeDirectlyImplementedInterfaces()
         {
             if (_multiDim)
@@ -73,7 +73,7 @@ namespace System.Reflection.TypeLoading
         protected sealed override TypeAttributes ComputeAttributeFlags() => TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Serializable;
 #pragma warning restore SYSLIB0050
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<ConstructorInfo> GetConstructorsCore(NameFilter? filter)
         {
             if (filter == null || filter.Matches(ConstructorInfo.ConstructorName))
@@ -153,7 +153,7 @@ namespace System.Reflection.TypeLoading
             }
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<MethodInfo> GetMethodsCore(NameFilter? filter, Type reflectedType)
         {
             int rank = _rank;

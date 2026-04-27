@@ -11,7 +11,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base type for all RoTypes that return true for IsTypeDefinition.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal abstract partial class RoDefinitionType : RoInstantiationProviderType
     {
         protected RoDefinitionType()

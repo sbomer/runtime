@@ -10,7 +10,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Class for all RoConstructor objects created by a MetadataLoadContext that has a MethodDef token associated with it.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed class RoDefinitionConstructor<TMethodDecoder> : RoConstructor where TMethodDecoder : IMethodDecoder
     {
         private readonly RoInstantiationProviderType _declaringType;

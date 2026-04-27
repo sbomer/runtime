@@ -76,7 +76,7 @@ namespace System.Reflection.TypeLoading.Ecma
             throw new BadImageFormatException();
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static bool TryFindRawDefaultValueFromCustomAttributes(this CustomAttributeHandleCollection handles, EcmaModule module, out object? rawDefaultValue)
         {
             rawDefaultValue = default;

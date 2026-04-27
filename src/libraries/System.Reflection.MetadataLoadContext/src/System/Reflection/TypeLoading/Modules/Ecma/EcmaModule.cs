@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all Module objects created by a MetadataLoadContext and get its metadata from a PEReader.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed partial class EcmaModule : RoModule
     {
         private const int ModuleTypeToken = 0x02000001;

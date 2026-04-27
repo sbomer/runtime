@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// </summary>
     internal static class EcmaResolver
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static RoType ResolveTypeDefRefOrSpec(this EntityHandle handle, EcmaModule module, in TypeContext typeContext)
         {
             Debug.Assert(!handle.IsNil);
@@ -27,7 +27,7 @@ namespace System.Reflection.TypeLoading.Ecma
             };
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static EcmaDefinitionType ResolveTypeDef(this TypeDefinitionHandle handle, EcmaModule module)
         {
             Debug.Assert(!handle.IsNil);
@@ -36,7 +36,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return module.TypeDefTable.GetOrAdd(handle, module, ResolverDelegates.ResolveTypeDef);
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         private static class ResolverDelegates
         {
             public static readonly Func<EntityHandle, EcmaModule, EcmaDefinitionType> ResolveTypeDef =
@@ -60,7 +60,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 };
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static RoDefinitionType ResolveTypeRef(this TypeReferenceHandle handle, EcmaModule module)
         {
             Debug.Assert(!handle.IsNil);
@@ -69,7 +69,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return module.TypeRefTable.GetOrAdd(handle, module, ResolverDelegates.ResolveTypeRef);
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         private static RoDefinitionType ComputeTypeRefResolution(TypeReferenceHandle handle, EcmaModule module)
         {
             MetadataReader reader = module.Reader;
@@ -146,7 +146,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return handle.GetTypeSpecification(module.Reader).DecodeSignature(module, typeContext);
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static EcmaGenericParameterType ResolveGenericParameter(this GenericParameterHandle handle, EcmaModule module)
         {
             Debug.Assert(!handle.IsNil);
@@ -187,7 +187,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 return m.Loader.ResolveToAssemblyOrExceptionAssembly(roAssemblyName);
             };
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static T ResolveMethod<T>(this MethodDefinitionHandle handle, EcmaModule module, in TypeContext typeContext) where T : MethodBase
         {
             MetadataReader reader = module.Reader;
@@ -200,7 +200,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 return (T)(object)(new RoDefinitionMethod<EcmaMethodDecoder>(declaringType, declaringType, decoder));
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         private static RoInstantiationProviderType ResolveAndSpecializeType(this TypeDefinitionHandle handle, EcmaModule module, in TypeContext typeContext)
         {
             RoDefinitionType declaringType = handle.ResolveTypeDef(module);

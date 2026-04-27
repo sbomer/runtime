@@ -11,7 +11,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// RoTypes that return true for IsGenericParameter and get its metadata from a PEReader.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal abstract class EcmaGenericParameterType : RoGenericParameterType
     {
         private readonly EcmaModule _ecmaModule;

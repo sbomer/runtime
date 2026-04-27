@@ -13,7 +13,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed class RoThinMethodParameter : RoMethodParameter
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal RoThinMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType)
             : base(roMethodBase, position, parameterType)
         {

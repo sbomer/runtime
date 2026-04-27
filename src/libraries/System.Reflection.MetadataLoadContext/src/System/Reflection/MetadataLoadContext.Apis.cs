@@ -104,7 +104,7 @@ namespace System.Reflection
         /// <param name="coreAssemblyName">
         /// The name of the assembly that contains the core types such as System.Object. Typically, this would be "mscorlib".
         /// </param>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public MetadataLoadContext(MetadataAssemblyResolver resolver, string? coreAssemblyName = null)
         {
             ArgumentNullException.ThrowIfNull(resolver);
@@ -126,7 +126,7 @@ namespace System.Reflection
         /// assembly with the same name was already loaded into the MetadataLoadContext, the prior assembly will be returned. If the
         /// two assemblies do not have the same Mvid, this method throws a FileLoadException.
         /// </summary>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public Assembly LoadFromAssemblyPath(string assemblyPath)
         {
             ArgumentNullException.ThrowIfNull(assemblyPath);
@@ -141,7 +141,7 @@ namespace System.Reflection
         /// assembly with the same name was already loaded into the MetadataLoadContext, the prior assembly will be returned. If the
         /// two assemblies do not have the same Mvid, this method throws a FileLoadException.
         /// </summary>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public Assembly LoadFromByteArray(byte[] assembly)
         {
             ArgumentNullException.ThrowIfNull(assembly);
@@ -159,7 +159,7 @@ namespace System.Reflection
         /// The MetadataLoadContext takes ownership of the Stream passed into this method. The original owner must not mutate its position, dispose the Stream or
         /// assume that its position will stay unchanged.
         /// </summary>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public Assembly LoadFromStream(Stream assembly)
         {
             ArgumentNullException.ThrowIfNull(assembly);

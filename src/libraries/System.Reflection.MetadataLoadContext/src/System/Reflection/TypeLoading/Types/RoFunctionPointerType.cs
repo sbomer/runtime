@@ -27,7 +27,7 @@ namespace System.Reflection.TypeLoading
 
         private string GetToString() => _toString ??= ComputeToString();
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal RoFunctionPointerType(EcmaModule module, MethodSignature<RoType> signature)
         {
             Debug.Assert(module != null);

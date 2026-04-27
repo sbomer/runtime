@@ -103,14 +103,14 @@ namespace System.Reflection
         /// the method we're looking for, we return null rather than let the TypeLoadException bubble up. The DefaultBinder will catch
         /// the null and continue its search for a better candidate.
         /// </summary>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal static Type? TryResolveAgainstGenericMethod(this Type signatureType, MethodInfo genericMethod)
         {
             Debug.Assert(signatureType.IsSignatureType());
             return signatureType.TryResolve(genericMethod.GetGenericArguments());
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         private static Type? TryResolve(this Type signatureType, Type[] genericMethodParameters)
         {
             Debug.Assert(signatureType.IsSignatureType());
@@ -213,7 +213,7 @@ namespace System.Reflection
             }
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         private static Type? TryMakeGenericType(this Type type, Type[] instantiation)
         {
             try

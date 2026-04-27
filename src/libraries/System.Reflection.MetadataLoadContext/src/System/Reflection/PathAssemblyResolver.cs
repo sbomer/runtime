@@ -22,7 +22,7 @@ namespace System.Reflection
     /// - If more than one assembly matches, the assembly with the highest Version is returned.
     /// - CultureName is ignored.
     /// </remarks>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     public class PathAssemblyResolver : MetadataAssemblyResolver
     {
         private readonly Dictionary<string, List<string>> _fileToPaths = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);

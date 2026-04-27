@@ -9,7 +9,7 @@ using System.Reflection.Metadata;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed class EcmaCustomAttributeData : RoCustomAttributeData
     {
         private readonly CustomAttributeHandle _handle;

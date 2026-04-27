@@ -21,7 +21,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Candidates must pass this screen before we involve the binder.
         //
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static bool QualifiesBasedOnParameterCount(this MethodBase methodBase, BindingFlags bindingFlags, CallingConventions callConv, Type[] argumentTypes)
         {
             Debug.Assert(methodBase != null);

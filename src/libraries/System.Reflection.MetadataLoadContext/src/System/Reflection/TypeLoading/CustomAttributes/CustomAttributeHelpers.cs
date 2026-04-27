@@ -86,7 +86,7 @@ namespace System.Reflection.TypeLoading
         /// Convert MarshalAsAttribute data into CustomAttributeData form. Returns null if the core assembly cannot be loaded or if the necessary
         /// types aren't in the core assembly.
         /// </summary>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static CustomAttributeData? TryComputeMarshalAsCustomAttributeData(Func<MarshalAsAttribute> marshalAsAttributeComputer, MetadataLoadContext loader)
         {
             // Make sure all the necessary framework types exist in this MetadataLoadContext's core assembly. If one doesn't, skip.

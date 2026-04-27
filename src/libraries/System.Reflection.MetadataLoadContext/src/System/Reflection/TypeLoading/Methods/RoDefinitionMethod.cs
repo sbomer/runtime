@@ -28,7 +28,7 @@ namespace System.Reflection.TypeLoading
     /// Class for all RoMethod objects created by a MetadataLoadContext that has a MethodDef token associated with it
     /// and for which IsConstructedGenericMethod returns false.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed partial class RoDefinitionMethod<TMethodDecoder> : RoDefinitionMethod where TMethodDecoder : IMethodDecoder
     {
         private readonly RoInstantiationProviderType _declaringType;

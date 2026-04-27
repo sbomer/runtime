@@ -10,7 +10,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// RoTypes that return true for IsGenericMethodParameter and get its metadata from a PEReader.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed class EcmaGenericMethodParameterType : EcmaGenericParameterType
     {
         internal EcmaGenericMethodParameterType(GenericParameterHandle handle, EcmaModule module)

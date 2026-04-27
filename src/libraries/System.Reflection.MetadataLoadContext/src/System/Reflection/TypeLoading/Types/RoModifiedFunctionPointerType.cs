@@ -19,7 +19,7 @@ namespace System.Reflection
         private readonly RoModifiedType[] _parameterTypes;
         private readonly RoModifiedType _returnType;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public RoModifiedFunctionPointerType(RoFunctionPointerType functionPointerType) : base(functionPointerType)
         {
             Debug.Assert(functionPointerType.IsFunctionPointer);

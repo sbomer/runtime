@@ -94,7 +94,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         /// <summary>
         /// Returns a single member, null or throws AmbiguousMatchException, for the Type.Get*(string name,...) family of apis.
         /// </summary>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public M? Disambiguate()
         {
             if (_queriedMembers == null)

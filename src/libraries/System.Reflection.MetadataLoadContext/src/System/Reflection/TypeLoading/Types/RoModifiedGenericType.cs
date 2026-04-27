@@ -14,7 +14,7 @@ namespace System.Reflection
     {
         private readonly RoModifiedType[] _argumentTypes;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public RoModifiedGenericType(RoConstructedGenericType genericType) : base(genericType)
         {
             Debug.Assert(genericType.IsGenericType);

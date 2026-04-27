@@ -58,7 +58,7 @@ namespace System.Reflection.TypeLoading
 {
     internal static class DefaultBinderThunks
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal static ParameterInfo[] GetParametersNoCopy(this MethodBase m)
         {
             if (m is RoMethod roMethod)

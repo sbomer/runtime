@@ -22,7 +22,7 @@ namespace System.Reflection.TypeLoading
 
         private sealed class TypeComponentsCache
         {
-            [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+            [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
             public TypeComponentsCache(RuntimeTypeInfo type)
             {
                 _type = type;
@@ -61,7 +61,7 @@ namespace System.Reflection.TypeLoading
             //  BindingFlags == Public | NonPublic | Instance | Static | FlattenHierarchy  (immediateTypeOnly == false)
             //                  Public | NonPublic | Instance | Static | DeclaredOnly      (immediateTypeOnly == true)
             //
-            [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+            [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
             public QueriedMemberList<M> GetQueriedMembers<M>(bool immediateTypeOnly) where M : MemberInfo
             {
                 int index = MemberPolicies<M>.MemberTypeIndex;
@@ -84,7 +84,7 @@ namespace System.Reflection.TypeLoading
                 return list;
             }
 
-            [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+            [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
             private static object[] CreatePerNameQueryCaches(RuntimeTypeInfo type, bool ignoreCase, bool immediateTypeOnly)
             {
                 object[] perNameCaches = new object[MemberTypeIndex.Count];
@@ -127,7 +127,7 @@ namespace System.Reflection.TypeLoading
             //
             // In addition, if "ignoreCase" was passed to the constructor, BindingFlags.IgnoreCase is also in effect.
             //
-            [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+            [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
             private sealed class PerNameQueryCache<M> : ConcurrentUnifier<string, QueriedMemberList<M>> where M : MemberInfo
             {
                 public PerNameQueryCache(RuntimeTypeInfo type, bool ignoreCase, bool immediateTypeOnly)

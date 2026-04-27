@@ -10,7 +10,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all ConstructorInfo objects created by a MetadataLoadContext.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal abstract partial class RoConstructor : LeveledConstructorInfo, IRoMethodBase
     {
         protected RoConstructor() { }

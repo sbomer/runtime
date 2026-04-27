@@ -116,7 +116,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return new ReadOnlySpan<byte>(br.CurrentPointer, br.Length);
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static RoMethod? ToMethodOrNull(this MethodDefinitionHandle handle, RoInstantiationProviderType declaringType, Type reflectedType)
         {
             if (handle.IsNil)
@@ -125,7 +125,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return handle.ToMethod(declaringType, reflectedType);
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static RoMethod ToMethod(this MethodDefinitionHandle handle, RoInstantiationProviderType declaringType, Type reflectedType)
         {
             return new RoDefinitionMethod<EcmaMethodDecoder>(declaringType, reflectedType, new EcmaMethodDecoder(handle, (EcmaModule)(declaringType.Module)));

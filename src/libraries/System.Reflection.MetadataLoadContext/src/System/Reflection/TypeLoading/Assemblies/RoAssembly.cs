@@ -64,7 +64,7 @@ namespace System.Reflection.TypeLoading
         public sealed override Type[] GetTypes() => IsSingleModule ? ManifestModule.GetTypes() : base.GetTypes();
         public sealed override IEnumerable<TypeInfo> DefinedTypes
         {
-            [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+            [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
             get => GetDefinedRoTypes()!;
         }
 
@@ -91,7 +91,7 @@ namespace System.Reflection.TypeLoading
 
         public sealed override IEnumerable<Type> ExportedTypes
         {
-            [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+            [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
             get
             {
                 foreach (RoType type in GetDefinedRoTypes()!)
@@ -124,9 +124,9 @@ namespace System.Reflection.TypeLoading
         /// If a type is not contained or forwarded from the assembly, this method returns null (does not throw.)
         /// This supports the "throwOnError: false" behavior of Assembly.GetType(string, bool).
         /// </summary>
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal RoDefinitionType? GetTypeCore(string ns, string name, bool ignoreCase, out Exception? e) => GetTypeCore(ns.ToUtf8(), name.ToUtf8(), ignoreCase, out e);
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal RoDefinitionType? GetTypeCore(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, bool ignoreCase, out Exception? e)
         {
             RoDefinitionType? result = GetRoManifestModule().GetTypeCore(ns, name, ignoreCase, out e);

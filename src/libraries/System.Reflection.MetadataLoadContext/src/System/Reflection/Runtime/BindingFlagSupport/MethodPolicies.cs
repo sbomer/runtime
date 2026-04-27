@@ -11,7 +11,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// <summary>
     /// Policies for methods.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed class MethodPolicies : MemberPolicies<MethodInfo>
     {
         public sealed override IEnumerable<MethodInfo> GetDeclaredMembers([DynamicallyAccessedMembers(Helpers.DeclaredMemberTypes)] TypeInfo typeInfo)

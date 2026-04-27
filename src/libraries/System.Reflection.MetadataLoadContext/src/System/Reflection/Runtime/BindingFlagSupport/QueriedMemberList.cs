@@ -107,7 +107,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
         //
         // Filter by name and visibility from the ReflectedType.
         //
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         public static QueriedMemberList<M> Create(RuntimeTypeInfo type, string? filter, bool ignoreCase, bool immediateTypeOnly)
         {
             RuntimeTypeInfo reflectedType = type;

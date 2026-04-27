@@ -16,7 +16,7 @@ namespace System.Reflection.TypeLoading.Ecma
         private readonly EcmaModule _module;
         private readonly TypeDefinitionHandle _handle;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal EcmaDefinitionType(TypeDefinitionHandle handle, EcmaModule module)
             : base()
         {
@@ -31,7 +31,7 @@ namespace System.Reflection.TypeLoading.Ecma
         internal sealed override RoModule GetRoModule() => _module;
         internal EcmaModule GetEcmaModule() => _module;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         protected sealed override RoType? ComputeDeclaringType()
         {
             if (!TypeDefinition.IsNested)
@@ -52,7 +52,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
         protected sealed override TypeAttributes ComputeAttributeFlags() => TypeDefinition.Attributes;
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override RoType? SpecializeBaseType(RoType[] instantiation)
         {
             EntityHandle baseTypeHandle = TypeDefinition.BaseType;
@@ -61,7 +61,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return baseTypeHandle.ResolveTypeDefRefOrSpec(GetEcmaModule(), instantiation.ToTypeContext());
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override IEnumerable<RoType> SpecializeInterfaces(RoType[] instantiation)
         {
             MetadataReader reader = Reader;
@@ -74,12 +74,12 @@ namespace System.Reflection.TypeLoading.Ecma
             }
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         protected sealed override IEnumerable<CustomAttributeData> GetTrueCustomAttributes() => TypeDefinition.GetCustomAttributes().ToTrueCustomAttributes(GetEcmaModule());
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override bool IsCustomAttributeDefined(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => TypeDefinition.GetCustomAttributes().IsCustomAttributeDefined(ns, name, GetEcmaModule());
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override CustomAttributeData? TryFindCustomAttribute(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name) => TypeDefinition.GetCustomAttributes().TryFindCustomAttribute(ns, name, GetEcmaModule());
 
         public sealed override int MetadataToken => _handle.GetToken();
@@ -87,9 +87,9 @@ namespace System.Reflection.TypeLoading.Ecma
         public sealed override bool IsGenericTypeDefinition => GetGenericParameterCount() != 0;
 
         internal sealed override int GetGenericParameterCount() => GetGenericTypeParametersNoCopy().Length;
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal sealed override RoType[] GetGenericTypeParametersNoCopy() => _lazyGenericParameters ??= ComputeGenericTypeParameters();
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         private RoType[] ComputeGenericTypeParameters()
         {
             EcmaModule module = GetEcmaModule();

@@ -21,7 +21,7 @@ namespace System.Reflection.TypeLoading
             public AnnotatedRoType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] RoType? type) => Type = type;
         }
 
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal CoreTypes(MetadataLoadContext loader, string? coreAssemblyName)
         {
             int numCoreTypes = (int)CoreType.NumCoreTypes;

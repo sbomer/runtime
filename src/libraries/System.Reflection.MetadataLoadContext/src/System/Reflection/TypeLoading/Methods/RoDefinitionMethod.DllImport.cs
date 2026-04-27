@@ -12,7 +12,7 @@ namespace System.Reflection.TypeLoading
     /// </summary>
     internal sealed partial class RoDefinitionMethod<TMethodDecoder>
     {
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         private RoPseudoCustomAttributeData? ComputeDllImportCustomAttributeDataIfAny()
         {
             if ((Attributes & MethodAttributes.PinvokeImpl) == 0)

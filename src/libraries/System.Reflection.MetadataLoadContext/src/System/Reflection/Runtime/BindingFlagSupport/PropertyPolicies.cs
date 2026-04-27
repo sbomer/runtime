@@ -11,7 +11,7 @@ namespace System.Reflection.Runtime.BindingFlagSupport
     /// <summary>
     /// Policies for properties.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal sealed class PropertyPolicies : MemberPolicies<PropertyInfo>
     {
         public sealed override IEnumerable<PropertyInfo> GetDeclaredMembers([DynamicallyAccessedMembers(Helpers.DeclaredMemberTypes)] TypeInfo typeInfo)

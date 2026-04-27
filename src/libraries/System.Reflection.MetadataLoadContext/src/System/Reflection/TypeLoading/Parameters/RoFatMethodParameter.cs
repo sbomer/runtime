@@ -11,7 +11,7 @@ namespace System.Reflection.TypeLoading
     /// <summary>
     /// Base class for all RoParameter's returned by MethodBase.GetParameters() that have an entry in the Param table.
     /// </summary>
-    [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+    [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
     internal abstract class RoFatMethodParameter : RoMethodParameter
     {
         protected RoFatMethodParameter(IRoMethodBase roMethodBase, int position, Type parameterType)

@@ -86,7 +86,7 @@ namespace System.Reflection
         // Seriously, ugh - the default binder for Reflection has a dependency on checking types for equality with System.Object - for that
         // one reason, we have to instance it per MetadataLoadContext.
         //
-        [RequiresUnreferencedCode(Helpers.TrimmingRequiresUnreferencedCodeMessage)]
+        [RequiresUnreferencedCode(Helpers.RequiresUnreferencedCodeMessage)]
         internal Binder GetDefaultBinder() => _lazyDefaultBinder ??= new DefaultBinder(this);
         private volatile Binder? _lazyDefaultBinder;
     }
