@@ -60,6 +60,7 @@ using libunwind::DwarfInstructions;
 #endif
 using libunwind::UnwindInfoSections;
 
+LocalAddressSpace LocalAddressSpace::sThisAddressSpace;
 LocalAddressSpace _addressSpace;
 
 #ifdef TARGET_AMD64
