@@ -534,6 +534,32 @@
     <Compile Include="$(RuntimeBasePath)System\Runtime\TypeCast.cs">
       <Link>Runtime.Base\src\System\Runtime\TypeCast.cs</Link>
     </Compile>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetsUnix)'=='true'">
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\CompactUnwindDecoder.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\CompactUnwindDecoder.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfCfiParser.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfCfiParser.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfConstants.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfConstants.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfExpressionEvaluator.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfExpressionEvaluator.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfReader.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfReader.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfStepper.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfStepper.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfTypes.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfTypes.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\ManagedUnwindHelpers.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\ManagedUnwindHelpers.cs</Link>
+    </Compile>
     <Compile Include="$(AotCommonPath)\Internal\Runtime\TransitionBlock.cs">
       <Link>Common\TransitionBlock.cs</Link>
     </Compile>
