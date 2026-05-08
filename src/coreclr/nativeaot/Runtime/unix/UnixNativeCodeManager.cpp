@@ -22,6 +22,46 @@
 
 #include "eventtracebase.h"
 
+#if defined(TARGET_AMD64) && defined(USE_MANAGED_UNWINDER)
+// Managed DWARF parser exports from System.Runtime.Unwinding.ManagedUnwindHelpers.
+// These are RuntimeExport-ed functions compiled by NativeAOT into the final binary.
+extern "C" int ManagedStepFrame(REGDISPLAY* regs, uintptr_t startIp, uint32_t format,
+                                 uintptr_t unwindInfo, uintptr_t ehFrame, uintptr_t ehFrameLength);
+extern "C" int ManagedGetUnwindProcInfo(uintptr_t pc, void* sections, void* procInfo);
+
+// Bridge struct matching the managed UnwindInfoSections layout.
+// The native libunwind::UnwindInfoSections has conditionally compiled fields;
+// this struct has a fixed layout that the managed code expects.
+struct ManagedUnwindInfoSections {
+    uintptr_t dsoBase;
+    uintptr_t textSegmentLength;
+    uintptr_t dwarfSection;
+    uintptr_t dwarfSectionLength;
+    uintptr_t dwarfIndexSection;
+    uintptr_t dwarfIndexSectionLength;
+    uintptr_t compactUnwindSection;
+    uintptr_t compactUnwindSectionLength;
+    uintptr_t armSection;
+    uintptr_t armSectionLength;
+};
+
+static ManagedUnwindInfoSections BuildManagedSections(const libunwind::UnwindInfoSections& native)
+{
+    ManagedUnwindInfoSections managed = {};
+    managed.dsoBase = native.dso_base;
+#if defined(_LIBUNWIND_USE_DL_ITERATE_PHDR)
+    managed.textSegmentLength = native.text_segment_length;
+#endif
+    managed.dwarfSection = native.dwarf_section;
+    managed.dwarfSectionLength = native.dwarf_section_length;
+#if defined(_LIBUNWIND_SUPPORT_DWARF_INDEX)
+    managed.dwarfIndexSection = native.dwarf_index_section;
+    managed.dwarfIndexSectionLength = native.dwarf_index_section_length;
+#endif
+    return managed;
+}
+#endif
+
 #define UBF_FUNC_KIND_MASK      0x03
 #define UBF_FUNC_KIND_ROOT      0x00
 #define UBF_FUNC_KIND_HANDLER   0x01
@@ -69,8 +109,18 @@ bool UnixNativeCodeManager::VirtualUnwind(MethodInfo* pMethodInfo, REGDISPLAY* p
 {
     UnixNativeMethodInfo * pNativeMethodInfo = (UnixNativeMethodInfo *)pMethodInfo;
 
+#if defined(TARGET_AMD64) && defined(USE_MANAGED_UNWINDER)
+    return ManagedStepFrame(
+        pRegisterSet,
+        pNativeMethodInfo->start_ip,
+        pNativeMethodInfo->format,
+        pNativeMethodInfo->unwind_info,
+        m_UnwindInfoSections.dwarf_section,
+        m_UnwindInfoSections.dwarf_section_length) != 0;
+#else
     return UnwindHelpers::StepFrame(
         pRegisterSet, pNativeMethodInfo->start_ip, pNativeMethodInfo->format, pNativeMethodInfo->unwind_info);
+#endif
 }
 
 bool UnixNativeCodeManager::FindMethodInfo(PTR_VOID        ControlPC,
@@ -89,10 +139,18 @@ bool UnixNativeCodeManager::FindMethodInfo(PTR_VOID        ControlPC,
 
     unw_proc_info_t procInfo;
 
+#if defined(TARGET_AMD64) && defined(USE_MANAGED_UNWINDER)
+    ManagedUnwindInfoSections managedSections = BuildManagedSections(m_UnwindInfoSections);
+    if (!ManagedGetUnwindProcInfo((uintptr_t)ControlPC, &managedSections, &procInfo))
+    {
+        return false;
+    }
+#else
     if (!UnwindHelpers::GetUnwindProcInfo((TADDR)ControlPC, m_UnwindInfoSections, &procInfo))
     {
         return false;
     }
+#endif
 
     assert((procInfo.start_ip <= (TADDR)ControlPC) && ((TADDR)ControlPC < procInfo.end_ip));
 
@@ -800,7 +858,12 @@ int UnixNativeCodeManager::TrailingEpilogueInstructionsCount(MethodInfo * pMetho
         {
             unw_proc_info_t procInfo;
 
+#if defined(TARGET_AMD64) && defined(USE_MANAGED_UNWINDER)
+            ManagedUnwindInfoSections managedSections2 = BuildManagedSections(m_UnwindInfoSections);
+            bool result = ManagedGetUnwindProcInfo(PINSTRToPCODE((TADDR)pvAddress), &managedSections2, &procInfo) != 0;
+#else
             bool result = UnwindHelpers::GetUnwindProcInfo(PINSTRToPCODE((TADDR)pvAddress), m_UnwindInfoSections, &procInfo);
+#endif
             ASSERT(result);
 
             if (branchTarget < procInfo.start_ip || branchTarget >= procInfo.end_ip)
