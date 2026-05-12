@@ -75,7 +75,7 @@ namespace System.Runtime.Unwinding
             // Try .eh_frame_hdr binary search first (fast path)
             if (sections->DwarfIndexSection != 0 && sections->DwarfIndexSectionLength != 0)
             {
-                if (DwarfCfiParser.TryFindFdeFromEhFrameHdr(
+                if (DwarfEhFrame.TryFindFdeFromEhFrameHdr(
                     (byte*)sections->DwarfIndexSection,
                     sections->DwarfIndexSectionLength,
                     pc,
@@ -91,7 +91,7 @@ namespace System.Runtime.Unwinding
             // Fall back to linear .eh_frame scan
             if (sections->DwarfSection != 0 && sections->DwarfSectionLength != 0)
             {
-                if (DwarfCfiParser.TryFindFdeFromEhFrame(
+                if (DwarfEhFrame.TryFindFdeFromEhFrame(
                     (byte*)sections->DwarfSection,
                     sections->DwarfSectionLength,
                     pc,

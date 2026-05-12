@@ -539,14 +539,23 @@
     <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\CompactUnwindDecoder.cs">
       <Link>Runtime.Base\src\System\Runtime\Unwinding\CompactUnwindDecoder.cs</Link>
     </Compile>
-    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfCfiParser.cs">
-      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfCfiParser.cs</Link>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfCie.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfCie.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfCfiInterpreter.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfCfiInterpreter.cs</Link>
     </Compile>
     <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfConstants.cs">
       <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfConstants.cs</Link>
     </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfEhFrame.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfEhFrame.cs</Link>
+    </Compile>
     <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfExpressionEvaluator.cs">
       <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfExpressionEvaluator.cs</Link>
+    </Compile>
+    <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfFde.cs">
+      <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfFde.cs</Link>
     </Compile>
     <Compile Include="$(RuntimeBasePath)System\Runtime\Unwinding\DwarfReader.cs">
       <Link>Runtime.Base\src\System\Runtime\Unwinding\DwarfReader.cs</Link>

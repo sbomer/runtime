@@ -40,12 +40,12 @@ namespace System.Runtime.Unwinding
             byte* ehFrameBase = (byte*)ehFrame;
             byte* ehFrameEnd = ehFrameBase + ehFrameLength;
 
-            if (!DwarfCfiParser.TryParseFde((byte*)fdeStart, ehFrameBase, ehFrameEnd,
+            if (!DwarfFdeParser.TryParseFde((byte*)fdeStart, ehFrameBase, ehFrameEnd,
                 out DwarfFdeInfo fde, out DwarfCieInfo cie))
                 return false;
 
             // Interpret CFI instructions to build register restore rules
-            if (!DwarfCfiParser.TryInterpretCfi(ref cie, ref fde, pc, out DwarfPrologInfo prolog))
+            if (!DwarfCfiInterpreter.TryInterpretCfi(ref cie, ref fde, pc, out DwarfPrologInfo prolog))
                 return false;
 
             // Compute the CFA (Canonical Frame Address)
