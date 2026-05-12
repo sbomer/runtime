@@ -1,51 +1,22 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+// DWARF CFI opcodes, pointer encodings, and expression opcodes used by the
+// managed unwinder. The DW_EH_PE_* and DW_CFA_* sections intentionally
+// mirror the layout of ILCompiler.ObjectWriter.DwarfNative so that the
+// two can be unified into a shared source file in the future.
+
 namespace System.Runtime.Unwinding
 {
-    /// <summary>
-    /// DWARF Call Frame Information (CFI) opcodes.
-    /// See DWARF v5 spec, section 6.4.2.
-    /// </summary>
     internal static class DwarfConstants
     {
-        // High 2 bits encode the primary opcode; low 6 bits encode the operand.
-        internal const byte DW_CFA_advance_loc = 0x40;           // delta
-        internal const byte DW_CFA_offset = 0x80;                // register, ULEB128 offset
-        internal const byte DW_CFA_restore = 0xC0;               // register
+        // ===================================================================
+        // DW_EH_PE pointer encoding — mirrors DwarfNative DW_EH_PE block
+        // ===================================================================
 
-        // Extended opcodes (high 2 bits = 0)
-        internal const byte DW_CFA_nop = 0x00;
-        internal const byte DW_CFA_set_loc = 0x01;               // address
-        internal const byte DW_CFA_advance_loc1 = 0x02;          // 1-byte delta
-        internal const byte DW_CFA_advance_loc2 = 0x03;          // 2-byte delta
-        internal const byte DW_CFA_advance_loc4 = 0x04;          // 4-byte delta
-        internal const byte DW_CFA_offset_extended = 0x05;       // ULEB128 reg, ULEB128 offset
-        internal const byte DW_CFA_restore_extended = 0x06;      // ULEB128 reg
-        internal const byte DW_CFA_undefined = 0x07;             // ULEB128 reg
-        internal const byte DW_CFA_same_value = 0x08;            // ULEB128 reg
-        internal const byte DW_CFA_register = 0x09;              // ULEB128 reg, ULEB128 reg
-        internal const byte DW_CFA_remember_state = 0x0A;
-        internal const byte DW_CFA_restore_state = 0x0B;
-        internal const byte DW_CFA_def_cfa = 0x0C;               // ULEB128 reg, ULEB128 offset
-        internal const byte DW_CFA_def_cfa_register = 0x0D;      // ULEB128 reg
-        internal const byte DW_CFA_def_cfa_offset = 0x0E;        // ULEB128 offset
-        internal const byte DW_CFA_def_cfa_expression = 0x0F;    // BLOCK
-        internal const byte DW_CFA_expression = 0x10;            // ULEB128 reg, BLOCK
-        internal const byte DW_CFA_offset_extended_sf = 0x11;    // ULEB128 reg, SLEB128 offset
-        internal const byte DW_CFA_def_cfa_sf = 0x12;            // ULEB128 reg, SLEB128 offset
-        internal const byte DW_CFA_def_cfa_offset_sf = 0x13;     // SLEB128 offset
-        internal const byte DW_CFA_val_offset = 0x14;            // ULEB128, ULEB128
-        internal const byte DW_CFA_val_offset_sf = 0x15;         // ULEB128, SLEB128
-        internal const byte DW_CFA_val_expression = 0x16;        // ULEB128, BLOCK
-
-        // Vendor extensions
-        internal const byte DW_CFA_GNU_args_size = 0x2E;         // ULEB128
-        internal const byte DW_CFA_GNU_negative_offset_extended = 0x2F; // ULEB128 reg, ULEB128 offset
-        internal const byte DW_CFA_AARCH64_negate_ra_state = 0x2D;
-
-        // DW_EH_PE pointer encoding constants
         internal const byte DW_EH_PE_absptr = 0x00;
+        internal const byte DW_EH_PE_omit = 0xFF;
+        internal const byte DW_EH_PE_ptr = 0x00;
         internal const byte DW_EH_PE_uleb128 = 0x01;
         internal const byte DW_EH_PE_udata2 = 0x02;
         internal const byte DW_EH_PE_udata4 = 0x03;
@@ -54,21 +25,57 @@ namespace System.Runtime.Unwinding
         internal const byte DW_EH_PE_sdata2 = 0x0A;
         internal const byte DW_EH_PE_sdata4 = 0x0B;
         internal const byte DW_EH_PE_sdata8 = 0x0C;
-
+        internal const byte DW_EH_PE_signed = 0x08;
         internal const byte DW_EH_PE_pcrel = 0x10;
         internal const byte DW_EH_PE_textrel = 0x20;
         internal const byte DW_EH_PE_datarel = 0x30;
         internal const byte DW_EH_PE_funcrel = 0x40;
         internal const byte DW_EH_PE_aligned = 0x50;
-
         internal const byte DW_EH_PE_indirect = 0x80;
-        internal const byte DW_EH_PE_omit = 0xFF;
 
         // Masks for encoding components
         internal const byte DW_EH_PE_FORMAT_MASK = 0x0F;
         internal const byte DW_EH_PE_APPL_MASK = 0x70;
 
-        // DWARF expression opcodes (DW_OP_*)
+        // ===================================================================
+        // DW_CFA opcodes — mirrors DwarfNative DW_CFA block
+        // ===================================================================
+
+        internal const byte DW_CFA_nop = 0x0;
+        internal const byte DW_CFA_set_loc = 0x1;
+        internal const byte DW_CFA_advance_loc1 = 0x2;
+        internal const byte DW_CFA_advance_loc2 = 0x3;
+        internal const byte DW_CFA_advance_loc4 = 0x4;
+        internal const byte DW_CFA_offset_extended = 0x5;
+        internal const byte DW_CFA_restore_extended = 0x6;
+        internal const byte DW_CFA_undefined = 0x7;
+        internal const byte DW_CFA_same_value = 0x8;
+        internal const byte DW_CFA_register = 0x9;
+        internal const byte DW_CFA_remember_state = 0xA;
+        internal const byte DW_CFA_restore_state = 0xB;
+        internal const byte DW_CFA_def_cfa = 0xC;
+        internal const byte DW_CFA_def_cfa_register = 0xD;
+        internal const byte DW_CFA_def_cfa_offset = 0xE;
+        internal const byte DW_CFA_def_cfa_expression = 0xF;
+        internal const byte DW_CFA_expression = 0x10;
+        internal const byte DW_CFA_offset_extended_sf = 0x11;
+        internal const byte DW_CFA_def_cfa_sf = 0x12;
+        internal const byte DW_CFA_def_cfa_offset_sf = 0x13;
+        internal const byte DW_CFA_val_offset = 0x14;
+        internal const byte DW_CFA_val_offset_sf = 0x15;
+        internal const byte DW_CFA_val_expression = 0x16;
+        internal const byte DW_CFA_advance_loc = 0x40;
+        internal const byte DW_CFA_offset = 0x80;
+        internal const byte DW_CFA_restore = 0xC0;
+        internal const byte DW_CFA_GNU_window_save = 0x2D;
+        internal const byte DW_CFA_GNU_args_size = 0x2E;
+        internal const byte DW_CFA_GNU_negative_offset_extended = 0x2F;
+        internal const byte DW_CFA_AARCH64_negate_ra_state = 0x2D;
+
+        // ===================================================================
+        // DW_OP expression opcodes — reader-only (not in DwarfNative)
+        // ===================================================================
+
         internal const byte DW_OP_addr = 0x03;
         internal const byte DW_OP_deref = 0x06;
         internal const byte DW_OP_const1u = 0x08;
@@ -128,6 +135,10 @@ namespace System.Runtime.Unwinding
         internal const byte DW_OP_deref_size = 0x94;
         internal const byte DW_OP_xderef_size = 0x95;
         internal const byte DW_OP_nop = 0x96;
+
+        // ===================================================================
+        // Reader-only limits
+        // ===================================================================
 
         // Maximum register number for PrologInfo savedRegisters array.
         // This matches libunwind's kMaxRegisterNumber for x86_64 (96).
