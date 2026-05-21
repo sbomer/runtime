@@ -629,6 +629,13 @@ initDistroRid "$os" "$arch" "$crossBuild"
 # The later changes are ignored when using the cache.
 export DOTNETSDK_ALLOW_TARGETING_PACK_CACHING=0
 
+# When DOTNET_RUNTIME_BUILD_CACHE is set to a directory path, build artifacts that are
+# safe to share across worktrees/clones at the same commit are cached there. This avoids
+# redundant SDK downloads and (in the future) redundant managed task builds.
+if [[ -n "${DOTNET_RUNTIME_BUILD_CACHE:-}" ]]; then
+  export DOTNET_GLOBAL_INSTALL_DIR="$DOTNET_RUNTIME_BUILD_CACHE/sdk"
+fi
+
 # URL-encode space (%20) to avoid quoting issues until the msbuild call in /eng/common/tools.sh.
 # In *proj files (XML docs), URL-encoded string are rendered in their decoded form.
 cmakeargs="${cmakeargs// /%20}"
