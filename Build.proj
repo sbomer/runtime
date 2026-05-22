@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.Build.Traversal">
 
   <ItemGroup>
-    <ProjectReference Include="$(RepoTasksDir)tasks.proj" BuildInParallel="false" Condition="'$(SkipTasksBuild)' != 'true'" />
+    <ProjectReference Include="$(RepoTasksDir)tasks.proj" BuildInParallel="false" />
     <!-- Subsets.props which defines @(ProjectToBuild) is already imported in Directory.Build.props. -->
     <ProjectReference Include="@(ProjectToBuild)" />
   </ItemGroup>

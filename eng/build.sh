@@ -631,32 +631,9 @@ export DOTNETSDK_ALLOW_TARGETING_PACK_CACHING=0
 
 # When DOTNET_RUNTIME_BUILD_CACHE is set to a directory path, build artifacts that are
 # safe to share across worktrees/clones at the same commit are cached there. This avoids
-# redundant SDK downloads and redundant managed task builds.
+# redundant SDK downloads and (in the future) redundant managed task builds.
 if [[ -n "${DOTNET_RUNTIME_BUILD_CACHE:-}" ]]; then
   export DOTNET_GLOBAL_INSTALL_DIR="$DOTNET_RUNTIME_BUILD_CACHE/sdk"
-fi
-
-# Cache managed task build outputs (HelixTestTasks, Crossgen2Tasks, installer.tasks).
-# These are built before everything else and rarely change between commits.
-__tasksCacheRestored=0
-if [[ -n "${DOTNET_RUNTIME_BUILD_CACHE:-}" ]]; then
-  __tasksCacheKey=$(
-    {
-      git rev-parse HEAD:src/tasks 2>/dev/null
-      git hash-object "$scriptroot/../global.json" 2>/dev/null
-      git hash-object "$scriptroot/../eng/Versions.props" 2>/dev/null
-      git hash-object "$scriptroot/../Directory.Build.props" 2>/dev/null
-    } | sha256sum | cut -d' ' -f1
-  )
-  __tasksCacheDir="$DOTNET_RUNTIME_BUILD_CACHE/tasks/$__tasksCacheKey"
-
-  if [[ -d "$__tasksCacheDir" ]]; then
-    echo "Restoring cached task build outputs from $__tasksCacheDir"
-    mkdir -p "$scriptroot/../artifacts/bin"
-    cp -r "$__tasksCacheDir"/bin/* "$scriptroot/../artifacts/bin/"
-    arguments+=("/p:SkipTasksBuild=true")
-    __tasksCacheRestored=1
-  fi
 fi
 
 # URL-encode space (%20) to avoid quoting issues until the msbuild call in /eng/common/tools.sh.
@@ -692,20 +669,3 @@ if [[ "$bootstrap" == "1" ]]; then
 fi
 
 "$scriptroot/common/build.sh" ${arguments[@]+"${arguments[@]}"}
-__buildExitCode=$?
-
-# Save task build outputs to cache on success if they weren't restored from cache.
-if [[ $__buildExitCode -eq 0 && -n "${DOTNET_RUNTIME_BUILD_CACHE:-}" && $__tasksCacheRestored -eq 0 && -n "${__tasksCacheKey:-}" ]]; then
-  __tasksCacheDir="$DOTNET_RUNTIME_BUILD_CACHE/tasks/$__tasksCacheKey"
-  if [[ ! -d "$__tasksCacheDir" ]]; then
-    mkdir -p "$__tasksCacheDir/bin"
-    for __taskDir in Crossgen2Tasks HelixTestTasks installer.tasks; do
-      if [[ -d "$scriptroot/../artifacts/bin/$__taskDir" ]]; then
-        cp -r "$scriptroot/../artifacts/bin/$__taskDir" "$__tasksCacheDir/bin/"
-      fi
-    done
-    echo "Saved task build outputs to cache: $__tasksCacheDir"
-  fi
-fi
-
-exit $__buildExitCode
