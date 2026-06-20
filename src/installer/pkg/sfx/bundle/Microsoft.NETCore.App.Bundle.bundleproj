@@ -38,6 +38,17 @@
     <BundleComponentReference Include="../installers/dotnet-host.proj" Condition="'$(TestReadyToRun)' != 'true'" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="@(BundleComponentReference)"
+                      BuildReference="false"
+                      ReferenceOutputAssembly="false"
+                      AdditionalProperties="OutputPath=$(OutputPath)" />
+    <ProjectReferenceTargets Include="PublishToDisk" Targets="PublishToDisk" SkipNonexistentTargets="true" />
+    <ProjectReferenceTargets Include="PublishSymbolsToDisk" Targets="PublishSymbolsToDisk" SkipNonexistentTargets="true" />
+  </ItemGroup>
+
+  <Target Name="GenerateInstallers" />
+
   <Target Name="PublishToDisk">
     <Error Condition="'$(OutputPath)' == ''" Text="Publishing to disk requires the OutputPath to be set to the root of the path to write to." />
 
