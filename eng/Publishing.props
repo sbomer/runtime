@@ -44,6 +44,7 @@
     <MSBuild Projects="$(RepoRoot)src/installer/pkg/sfx/Microsoft.NETCore.App/Microsoft.NETCore.App.Runtime.CoreCLR.sfxproj"
              Targets="ReturnProductVersion"
              Properties="IsShipping=false;
+                         Crossgen2TasksProjectPath=;
                          Crossgen2SdkOverridePropsPath=;
                          Crossgen2SdkOverrideTargetsPath=">
       <Output TaskParameter="TargetOutputs" PropertyName="NonStableProductVersion" />
@@ -68,7 +69,8 @@
     <!-- Retrieve the runtime pack product version. -->
     <MSBuild Projects="$(RepoRoot)src/installer/pkg/sfx/Microsoft.NETCore.App/Microsoft.NETCore.App.Runtime.CoreCLR.sfxproj"
              Targets="ReturnProductVersion"
-             Properties="Crossgen2SdkOverridePropsPath=;
+             Properties="Crossgen2TasksProjectPath=;
+                         Crossgen2SdkOverridePropsPath=;
                          Crossgen2SdkOverrideTargetsPath=">
       <Output TaskParameter="TargetOutputs" PropertyName="ProductVersionForVersionsFile" />
     </MSBuild>

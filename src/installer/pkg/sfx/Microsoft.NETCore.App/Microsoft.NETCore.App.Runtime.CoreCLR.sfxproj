@@ -40,6 +40,10 @@
     <PublishReadyToRunContainerFormat>macho</PublishReadyToRunContainerFormat>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(PublishReadyToRun)' == 'true' and '$(Crossgen2TasksProjectPath)' != ''">
+    <ProjectReference Include="$(Crossgen2TasksProjectPath)" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
   <Import Project="Microsoft.NETCore.App.Runtime.props" />
 
   <PropertyGroup>

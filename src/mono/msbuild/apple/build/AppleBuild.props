@@ -59,6 +59,9 @@
   <!-- Tracking issue: https://github.com/dotnet/runtime/issues/119006
        ReadyToRun settings for CoreCLR on Apple platforms.
        This can be removed once we upstream Mach-O support in the targets to the SDK -->
+  <ItemGroup Condition="'$(PublishReadyToRun)' == 'true' and '$(UseMonoRuntime)' != 'true' and '$(UseNativeAOTRuntime)' != 'true' and '$(Crossgen2TasksProjectPath)' != ''">
+    <ProjectReference Include="$(Crossgen2TasksProjectPath)" ReferenceOutputAssembly="false" />
+  </ItemGroup>
   <Import Project="$(Crossgen2SdkOverridePropsPath)" Condition="'$(PublishReadyToRun)' == 'true' and '$(UseMonoRuntime)' != 'true' and '$(UseNativeAOTRuntime)' != 'true' and '$(Crossgen2SdkOverridePropsPath)' != '' and Exists('$(Crossgen2SdkOverridePropsPath)')" />
   <PropertyGroup Condition="'$(PublishReadyToRun)' == 'true' and '$(UseMonoRuntime)' != 'true' and '$(UseNativeAOTRuntime)' != 'true'">
     <ResolveReadyToRunCompilersDependsOn Condition="'$(ResolveReadyToRunCompilersDependsOn)' == '' and '$(RuntimeSrcDir)' != ''">ResolveRuntimeFilesFromLocalBuild</ResolveReadyToRunCompilersDependsOn>
