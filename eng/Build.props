@@ -31,6 +31,8 @@
                       GlobalPropertiesToRemove="$(_RuntimeGraphBuildGlobalPropertiesToRemove)" />
     <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/AfterSolutionBuild.proj" />
     <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/AfterSigning.proj" />
+    <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/Sign.proj" />
+    <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/Publish.proj" />
     <ProjectReferenceTargets Include="Execute" Targets="$(_RuntimeGraphBuildTargets)" />
   </ItemGroup>
 </Project>
