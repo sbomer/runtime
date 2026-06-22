@@ -24,7 +24,9 @@
     <_RuntimeGraphBuildProperties Condition="'$(Pack)' == 'true'">$(_RuntimeGraphBuildProperties);__ImportPackTargets=true</_RuntimeGraphBuildProperties>
   </PropertyGroup>
   <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and '$(Build)' == 'true' and '$(Rebuild)' != 'true'">
-    <ProjectReference Include="@(ProjectToBuild)"
+    <_RuntimeGraphProjectToBuild Include="@(ProjectToBuild)" Condition="'$(Projects)' == ''" />
+    <_RuntimeGraphProjectToBuild Include="$(Projects)" Condition="'$(Projects)' != ''" />
+    <ProjectReference Include="@(_RuntimeGraphProjectToBuild)"
                       ReferenceOutputAssembly="false"
                       Targets="$(_RuntimeGraphBuildTargets)"
                       AdditionalProperties="$(_RuntimeGraphBuildProperties)"
