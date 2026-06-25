@@ -576,7 +576,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(_subset.Contains('+clr.packages+'))">
-    <ProjectToBuild Include="$(CoreClrProjectRoot).nuget\coreclr-packages.proj" Category="clr" />
+    <ProjectToBuild Include="$(CoreClrProjectRoot).nuget\coreclr-packages.proj" Category="clr" Targets="Pack" Condition="'$(IsGraphBuild)' == 'true'" />
+    <ProjectToBuild Include="$(CoreClrProjectRoot).nuget\coreclr-packages.proj" Category="clr" Condition="'$(IsGraphBuild)' != 'true'" />
   </ItemGroup>
 
   <ItemGroup Condition="$(_subset.Contains('+clr.nativeaotlibs+')) and '$(NativeAotSupported)' == 'true'">
@@ -798,6 +799,7 @@
       <AdditionalProperties>%(AdditionalProperties);HostConfiguration=$(HostConfiguration)</AdditionalProperties>
       <AdditionalProperties>%(AdditionalProperties);TasksConfiguration=$(TasksConfiguration)</AdditionalProperties>
       <AdditionalProperties>%(AdditionalProperties);ToolsConfiguration=$(ToolsConfiguration)</AdditionalProperties>
+      <Targets Condition="'$(IsGraphBuild)' == 'true' and '%(ProjectToBuild.Targets)' == ''">Build</Targets>
     </ProjectToBuild>
   </ItemGroup>
 

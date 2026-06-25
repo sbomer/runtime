@@ -32,6 +32,7 @@
              Condition="'%(ProjectReference.Build)' != 'false'"
              BuildInParallel="$([MSBuild]::ValueOrDefault('%(ProjectReference.BuildInParallel)', '$(BuildInParallel)'))"
              Properties="%(ProjectReference.SetConfiguration); %(ProjectReference.SetPlatform); %(ProjectReference.SetTargetFramework)"
+             RemoveProperties="%(ProjectReference.GlobalPropertiesToRemove)"
              SkipNonexistentProjects="$(SkipNonexistentProjects)"
              SkipNonexistentTargets="$(SkipNonexistentTargets)"
              StopOnFirstFailure="$(StopOnFirstFailure)"
