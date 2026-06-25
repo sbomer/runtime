@@ -24,4 +24,21 @@
                       SkipGetTargetFrameworkProperties="false"  />
   </ItemGroup>
 
+  <!-- Override the Traversal SDK Build target so graph builds can collect referenced project outputs. -->
+  <Target Name="Build"
+          DependsOnTargets="$(BuildDependsOn)"
+          Returns="@(CollectedBuildOutput)">
+    <MSBuild Projects="@(ProjectReference)"
+             Condition="'%(ProjectReference.Build)' != 'false'"
+             BuildInParallel="$([MSBuild]::ValueOrDefault('%(ProjectReference.BuildInParallel)', '$(BuildInParallel)'))"
+             Properties="%(ProjectReference.SetConfiguration); %(ProjectReference.SetPlatform); %(ProjectReference.SetTargetFramework)"
+             SkipNonexistentProjects="$(SkipNonexistentProjects)"
+             SkipNonexistentTargets="$(SkipNonexistentTargets)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="%(ProjectReference.Targets)"
+             ContinueOnError="$(ContinueOnError)">
+      <Output TaskParameter="TargetOutputs" ItemName="CollectedBuildOutput" />
+    </MSBuild>
+  </Target>
+
 </Project>
