@@ -8,8 +8,9 @@
   <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
     <ProjectReference Include="$(InstallerProjectRoot)pkg\sfx\bundle\Microsoft.NETCore.App.Bundle.bundleproj"
                       ReferenceOutputAssembly="false"
+                      BuildReference="false"
                       Targets="PublishToDisk"
-                      AdditionalProperties="OutputPath=$(TestArtifactsOutputRoot)sharedFrameworkPublish/" />
+                      AdditionalProperties="OutputPath=$(TestArtifactsOutputRoot)sharedFrameworkPublish/;SkipBuild=true;GenerateInstallers=false" />
   </ItemGroup>
 
   <!-- Set up the shared framework copy the tests should use. -->

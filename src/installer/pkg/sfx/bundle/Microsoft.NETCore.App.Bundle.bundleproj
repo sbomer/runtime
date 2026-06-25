@@ -43,17 +43,17 @@
                       ReferenceOutputAssembly="false"
                       BuildReference="false"
                       Targets="PublishToDisk"
-                      AdditionalProperties="OutputPath=$(OutputPath)" />
+                      AdditionalProperties="OutputPath=$(OutputPath);SkipBuild=true;GenerateInstallers=false" />
     <ProjectReference Include="@(BundleComponentReference)"
                       ReferenceOutputAssembly="false"
                       BuildReference="false"
                       Targets="PublishToDisk"
-                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)output/" />
+                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)output/;SkipBuild=true;GenerateInstallers=false" />
     <ProjectReference Include="@(BundleComponentReference)"
                       ReferenceOutputAssembly="false"
                       BuildReference="false"
                       Targets="PublishToDisk"
-                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)o/" />
+                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)o/;SkipBuild=true;GenerateInstallers=false" />
   </ItemGroup>
 
   <Target Name="PublishToDisk">
