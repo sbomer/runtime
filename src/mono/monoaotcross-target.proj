@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.Build.NoTargets">
+
+  <PropertyGroup>
+    <MonoAotTargetOS>$(MonoAotTargetRid.Substring(0,$(MonoAotTargetRid.LastIndexOf('-'))))</MonoAotTargetOS>
+    <MonoAotTargetArchitecture>$(MonoAotTargetRid.Substring($([MSBuild]::Add(1, $(MonoAotTargetRid.LastIndexOf('-'))))))</MonoAotTargetArchitecture>
+    <MonoAotHostOS>$(TargetOS)</MonoAotHostOS>
+    <MonoAotHostOS Condition="'$(TargetsLinuxMusl)' == 'true'">linux-musl</MonoAotHostOS>
+    <MonoAotHostArchitecture>$(TargetArchitecture)</MonoAotHostArchitecture>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)llvm\llvm-init.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      AdditionalProperties="TargetArchitecture=$(MonoAotTargetArchitecture);TargetOS=$(MonoAotTargetOS);AotHostOS=$(MonoAotHostOS);AotHostArchitecture=$(MonoAotHostArchitecture)" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)mono.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="BuildMono"
+                      AdditionalProperties="AotHostOS=$(MonoAotHostOS);AotHostArchitecture=$(MonoAotHostArchitecture);BuildMonoAOTCrossCompilerOnly=true;TargetArchitecture=$(MonoAotTargetArchitecture);TargetOS=$(MonoAotTargetOS)" />
+  </ItemGroup>
+
+  <Target Name="BuildMonoCrossTarget" AfterTargets="Build">
+    <ItemGroup>
+      <_MonoAOTCrossFiles Include="$(ArtifactsBinDir)mono\$(MonoAotTargetOS).$(MonoAotTargetArchitecture).$(Configuration)\cross\$(MonoAotTargetRid.ToLower())\**" />
+    </ItemGroup>
+
+    <Error Condition="'@(_MonoAOTCrossFiles)' == '' and '$(MonoGenerateOffsetsOSGroups)' == ''" Text="No AOT cross files found for $(MonoAotTargetRid)" />
+
+    <Message Text="Copying @(_MonoAOTCrossFiles) to $(RealRuntimeBinDir)cross\$(TargetOS)-$(TargetArchitecture.ToLower())\$(MonoAotTargetRid.ToLower())" Importance="High" />
+
+    <Copy SourceFiles="@(_MonoAOTCrossFiles)"
+          DestinationFolder="$(RealRuntimeBinDir)cross\$(TargetOS)-$(TargetArchitecture.ToLower())\$(MonoAotTargetRid.ToLower())"
+          UseHardlinksIfPossible="true">
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites"/>
+    </Copy>
+  </Target>
+</Project>
