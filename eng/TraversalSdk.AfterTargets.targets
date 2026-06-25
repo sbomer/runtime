@@ -24,6 +24,12 @@
                       SkipGetTargetFrameworkProperties="false"  />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and
+                        '$(SupportsNativeAotComponents)' == 'true' and
+                        '$(MSBuildProjectFullPath)' == '$([MSBuild]::NormalizePath($(RepoRoot), `src/native/managed/compile-native.proj`))'">
+    <ProjectReferenceTargets Include="Build" Targets="Publish" />
+  </ItemGroup>
+
   <!-- Override the Traversal SDK Build target so graph builds can collect referenced project outputs. -->
   <Target Name="Build"
           DependsOnTargets="$(BuildDependsOn)"
