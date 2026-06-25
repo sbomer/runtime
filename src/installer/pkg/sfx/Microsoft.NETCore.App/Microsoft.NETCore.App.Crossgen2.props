@@ -17,7 +17,14 @@
     <ProjectReference
       Include="$(CrossgenPublishProject)"
       OutputItemType="_RawCrossgenPublishFiles"
-      ReferenceOutputAssembly="false" />
+      ReferenceOutputAssembly="false"
+      GlobalPropertiesToRemove="NoBuild;BuildProjectReferences" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <ProjectReferenceTargets Include="Build" Targets="GetTargetFrameworks" />
+    <ProjectReferenceTargets Include="Build" Targets="GetNativeManifest" />
+    <ProjectReferenceTargets Include="Build" Targets="GetCopyToOutputDirectoryItems" />
   </ItemGroup>
 
   <Target Name="PublishCrossgen"

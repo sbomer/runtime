@@ -15,9 +15,18 @@
     <InstallerProjectReference Include="installers/dotnet-runtime-deps/dotnet-runtime-deps-sles.15.proj" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <ProjectReference Include="@(InstallerProjectReference)"
+                      Exclude="bundle/*.bundleproj"
+                      ReferenceOutputAssembly="false"
+                      Targets="GenerateInstallers"
+                      SkipNonexistentTargets="true" />
+  </ItemGroup>
+
   <Target Name="BuildInstallerProjects" BeforeTargets="Build">
     <MSBuild Projects="@(InstallerProjectReference)"
              Targets="GenerateInstallers"
+             Condition="'$(IsGraphBuild)' != 'true'"
              SkipNonexistentTargets="true" />
   </Target>
 </Project>
