@@ -30,6 +30,12 @@
     <ProjectReferenceTargets Include="Build" Targets="Publish" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and
+                        '$(MSBuildProjectFullPath)' == '$([MSBuild]::NormalizePath($(RepoRoot), `src/installer/tests/hostpretest.proj`))'">
+    <ProjectReferenceTargets Remove="Build" />
+    <ProjectReferenceTargets Include="Build" Targets=".projectReferenceTargetsOrDefaultTargets" />
+  </ItemGroup>
+
   <!-- Override the Traversal SDK Build target so graph builds can collect referenced project outputs. -->
   <Target Name="Build"
           DependsOnTargets="$(BuildDependsOn)"

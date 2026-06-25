@@ -38,11 +38,30 @@
     <BundleComponentReference Include="../installers/dotnet-host.proj" Condition="'$(TestReadyToRun)' != 'true'" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <ProjectReference Include="@(BundleComponentReference)"
+                      ReferenceOutputAssembly="false"
+                      BuildReference="false"
+                      Targets="PublishToDisk"
+                      AdditionalProperties="OutputPath=$(OutputPath)" />
+    <ProjectReference Include="@(BundleComponentReference)"
+                      ReferenceOutputAssembly="false"
+                      BuildReference="false"
+                      Targets="PublishToDisk"
+                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)output/" />
+    <ProjectReference Include="@(BundleComponentReference)"
+                      ReferenceOutputAssembly="false"
+                      BuildReference="false"
+                      Targets="PublishToDisk"
+                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)o/" />
+  </ItemGroup>
+
   <Target Name="PublishToDisk">
     <Error Condition="'$(OutputPath)' == ''" Text="Publishing to disk requires the OutputPath to be set to the root of the path to write to." />
 
     <MSBuild Projects="@(BundleComponentReference)"
              Targets="PublishToDisk"
+             Condition="'$(IsGraphBuild)' != 'true'"
              Properties="OutputPath=$(OutputPath)" />
   </Target>
 
@@ -51,6 +70,7 @@
 
     <MSBuild Projects="@(BundleComponentReference)"
              Targets="PublishSymbolsToDisk"
+             Condition="'$(IsGraphBuild)' != 'true'"
              Properties="SymbolsOutputPath=$(SymbolsOutputPath)" />
   </Target>
 
