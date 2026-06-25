@@ -17,12 +17,13 @@
     <CopyWasmNativeFilesDependsOn Condition="'$(TargetOS)' == 'windows'">BuildCoreHostOnWindows</CopyWasmNativeFilesDependsOn>
     <CopyWasmNativeFilesDependsOn Condition="'$(TargetOS)' != 'windows'">BuildCoreHostOnUnix</CopyWasmNativeFilesDependsOn>
     <IntermediateOutputRootPath>$(ArtifactsObjDir)$(TargetRid).$(Configuration)\</IntermediateOutputRootPath>
+    <IntermediateOutputRootPath Condition="'$(BuildNativeHostTests)' == 'true' and '$(BuildNativeHostProduct)' != 'true'">$(ArtifactsObjDir)$(TargetRid).$(Configuration).hosttests\</IntermediateOutputRootPath>
     <!-- Global location for version files -->
     <NativeVersionFile Condition="$([MSBuild]::IsOsPlatform(Windows))">$(ArtifactsObjDir)_version.h</NativeVersionFile>
     <NativeVersionFile Condition="!$([MSBuild]::IsOsPlatform(Windows)) or '$(TargetsMobile)' == 'true'">$(ArtifactsObjDir)_version.c</NativeVersionFile>
   </PropertyGroup>
 
-  <Target Name="CopySingleFileHost" AfterTargets="Build">
+  <Target Name="CopySingleFileHost" AfterTargets="Build" Condition="'$(BuildNativeHostProduct)' == 'true'">
 
     <PropertyGroup>
       <SingleFileHostPath>$(CoreCLRArtifactsPath)/corehost/singlefilehost$(ExeSuffix)</SingleFileHostPath>
