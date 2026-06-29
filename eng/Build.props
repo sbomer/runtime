@@ -8,4 +8,33 @@
     <!-- dotnet/runtime controls which projects run in which passes through our DefaultSubsets settings in eng/Subsets.props -->
     <ProjectToBuild Include="$(RepoRoot)Build.proj" DotNetBuildPass="2" Condition="'$(DotNetBuildPass)' == '2'" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true' and '$(Build)' == 'true' and '$(Rebuild)' != 'true'">
+    <_RuntimeGraphBuildTargets>Build</_RuntimeGraphBuildTargets>
+    <_RuntimeGraphBuildTargets Condition="'$(Test)' == 'true'">$(_RuntimeGraphBuildTargets);Test</_RuntimeGraphBuildTargets>
+    <_RuntimeGraphBuildTargets Condition="'$(Pack)' == 'true'">$(_RuntimeGraphBuildTargets);Pack</_RuntimeGraphBuildTargets>
+    <_RuntimeGraphBuildTargets Condition="'$(IntegrationTest)' == 'true'">$(_RuntimeGraphBuildTargets);IntegrationTest</_RuntimeGraphBuildTargets>
+    <_RuntimeGraphBuildTargets Condition="'$(PerformanceTest)' == 'true'">$(_RuntimeGraphBuildTargets);PerformanceTest</_RuntimeGraphBuildTargets>
+    <_RuntimeGraphBuildGlobalPropertiesToRemove>Projects;Restore;Deploy;Sign;Publish;Build</_RuntimeGraphBuildGlobalPropertiesToRemove>
+    <_RuntimeGraphBuildGlobalPropertiesToRemove Condition="'$(Test)' == 'true'">$(_RuntimeGraphBuildGlobalPropertiesToRemove);Test</_RuntimeGraphBuildGlobalPropertiesToRemove>
+    <_RuntimeGraphBuildGlobalPropertiesToRemove Condition="'$(Pack)' == 'true'">$(_RuntimeGraphBuildGlobalPropertiesToRemove);Pack</_RuntimeGraphBuildGlobalPropertiesToRemove>
+    <_RuntimeGraphBuildGlobalPropertiesToRemove Condition="'$(IntegrationTest)' == 'true'">$(_RuntimeGraphBuildGlobalPropertiesToRemove);IntegrationTest</_RuntimeGraphBuildGlobalPropertiesToRemove>
+    <_RuntimeGraphBuildGlobalPropertiesToRemove Condition="'$(PerformanceTest)' == 'true'">$(_RuntimeGraphBuildGlobalPropertiesToRemove);PerformanceTest</_RuntimeGraphBuildGlobalPropertiesToRemove>
+    <_RuntimeGraphBuildProperties>Configuration=$(Configuration);ContinuousIntegrationBuild=$(ContinuousIntegrationBuild);RepoRoot=$(RepoRoot);VersionsPropsPath=$(VersionsPropsPath);__BuildPhase=SolutionBuild</_RuntimeGraphBuildProperties>
+    <_RuntimeGraphBuildProperties Condition="'$(Deploy)' != ''">$(_RuntimeGraphBuildProperties);__DeployProjectOutput=$(Deploy)</_RuntimeGraphBuildProperties>
+    <_RuntimeGraphBuildProperties Condition="'$(Pack)' == 'true'">$(_RuntimeGraphBuildProperties);__ImportPackTargets=true</_RuntimeGraphBuildProperties>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and '$(Build)' == 'true' and '$(Rebuild)' != 'true'">
+    <_RuntimeGraphProjectToBuild Include="@(ProjectToBuild)" Condition="'$(Projects)' == ''" />
+    <_RuntimeGraphProjectToBuild Include="$(Projects)" Condition="'$(Projects)' != ''" />
+    <ProjectReference Include="@(_RuntimeGraphProjectToBuild)"
+                      ReferenceOutputAssembly="false"
+                      Targets="$(_RuntimeGraphBuildTargets)"
+                      AdditionalProperties="$(_RuntimeGraphBuildProperties)"
+                      GlobalPropertiesToRemove="$(_RuntimeGraphBuildGlobalPropertiesToRemove)" />
+    <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/AfterSolutionBuild.proj" />
+    <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/AfterSigning.proj" />
+    <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/Sign.proj" />
+    <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/Publish.proj" />
+    <ProjectReferenceTargets Include="Execute" Targets="$(_RuntimeGraphBuildTargets)" />
+  </ItemGroup>
 </Project>
