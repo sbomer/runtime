@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.Build.Traversal" DefaultTargets="Pack">
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <!-- The package graph is filtered explicitly by package wrapper projects. -->
+    <AddTransitiveProjectReferencesInStaticGraph>false</AddTransitiveProjectReferencesInStaticGraph>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="Microsoft.NET.Sdk.IL\Microsoft.NET.Sdk.IL.proj" />
   </ItemGroup>

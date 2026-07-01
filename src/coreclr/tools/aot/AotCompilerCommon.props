@@ -60,4 +60,9 @@
       Condition="'$(CrossHostArch)' != '' and '$(CopyAllJitLibrariesToAotCompilerOutput)' != 'true'"
       />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <!-- PublishItemsOutputGroup depends on SDK copy-to-output logic, which queries project references directly. -->
+    <ProjectReferenceTargets Include="PublishItemsOutputGroup" Targets="GetCopyToOutputDirectoryItems" />
+  </ItemGroup>
 </Project>

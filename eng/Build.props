@@ -2,6 +2,8 @@
   <PropertyGroup>
     <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
     <GenerateRestoreUseStaticGraphEvaluationBinlog>true</GenerateRestoreUseStaticGraphEvaluationBinlog>
+    <!-- Keep the toolset entry project from adding synthetic transitive graph edges that bypass package filtering. -->
+    <AddTransitiveProjectReferencesInStaticGraph Condition="'$(IsGraphBuild)' == 'true'">false</AddTransitiveProjectReferencesInStaticGraph>
   </PropertyGroup>
   <ItemGroup>
     <ProjectToBuild Include="$(RepoRoot)Build.proj" />
