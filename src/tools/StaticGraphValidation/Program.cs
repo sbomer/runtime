@@ -127,6 +127,7 @@ internal static class CommandLine
                 "dynamic" => RunDynamic(rest),
                 "static" => RunStatic(rest),
                 "normalize" => RunNormalize(rest),
+                "normalize-replay" => RunNormalizeReplay(rest),
                 "compare-replay" => RunCompareReplay(rest),
                 _ => Unknown(command)
             };
@@ -161,6 +162,7 @@ internal static class CommandLine
               StaticGraphValidation dynamic <binlog> [options]
               StaticGraphValidation static <project> [options]
               StaticGraphValidation normalize <capture.json> --output-dir directory
+              StaticGraphValidation normalize-replay --dynamic baseline.json --phase1 query.json --static replay.json --output-dir directory
               StaticGraphValidation compare-replay --dynamic baseline.json --phase1 query.json --static replay.json [options]
 
             options:
@@ -220,6 +222,28 @@ internal static class CommandLine
         return 0;
     }
 
+    private static int RunNormalizeReplay(string[] args)
+    {
+        Options options = Options.Parse(args);
+        if (options.DynamicPath is null || options.Phase1Path is null || options.StaticPath is null)
+        {
+            PrintUsage();
+            return 1;
+        }
+
+        if (options.OutputDirectory is null)
+        {
+            throw new ArgumentException("--output-dir is required for normalize-replay.");
+        }
+
+        NormalizedCaptureWriter.WriteReplayInputs(
+            GraphJson.Read(options.DynamicPath),
+            GraphJson.Read(options.Phase1Path),
+            GraphJson.Read(options.StaticPath),
+            options.OutputDirectory);
+        return 0;
+    }
+
     private static int RunCompareReplay(string[] args)
     {
         Options options = Options.Parse(args);
@@ -240,14 +264,10 @@ internal static class CommandLine
         WriteText(report, options.OutputPath);
         return comparison.QueryDynamicOnly.Count == 0 &&
             comparison.QueryPhase1Only.Count == 0 &&
-            comparison.FullPresenceDynamicOnly.Count == 0 &&
-            comparison.FullPresenceReplayOnly.Count == 0 &&
-            comparison.BuildIdentityDynamicOnly.Count == 0 &&
-            comparison.BuildIdentityStaticOnly.Count == 0 &&
+            comparison.BuildPresenceDynamicOnly.Count == 0 &&
+            comparison.BuildPresenceStaticOnly.Count == 0 &&
             comparison.QueryEdgeDynamicOnly.Count == 0 &&
             comparison.QueryEdgePhase1Only.Count == 0 &&
-            comparison.FullPresenceEdgeDynamicOnly.Count == 0 &&
-            comparison.FullPresenceEdgeReplayOnly.Count == 0 &&
             comparison.BuildPresenceEdgeDynamicOnly.Count == 0 &&
             comparison.BuildPresenceEdgeStaticOnly.Count == 0
                 ? 0
@@ -430,16 +450,10 @@ internal sealed record ReplayComparison
     public int StaticReplayEdgeCount { get; init; }
     public IReadOnlyList<NormalizedNode> QueryDynamicOnly { get; init; } = [];
     public IReadOnlyList<NormalizedNode> QueryPhase1Only { get; init; } = [];
-    public IReadOnlyList<NormalizedNode> FullPresenceDynamicOnly { get; init; } = [];
-    public IReadOnlyList<NormalizedNode> FullPresenceReplayOnly { get; init; } = [];
     public IReadOnlyList<NormalizedNode> BuildPresenceDynamicOnly { get; init; } = [];
     public IReadOnlyList<NormalizedNode> BuildPresenceStaticOnly { get; init; } = [];
-    public IReadOnlyList<NormalizedNode> BuildIdentityDynamicOnly { get; init; } = [];
-    public IReadOnlyList<NormalizedNode> BuildIdentityStaticOnly { get; init; } = [];
     public IReadOnlyList<NormalizedEdge> QueryEdgeDynamicOnly { get; init; } = [];
     public IReadOnlyList<NormalizedEdge> QueryEdgePhase1Only { get; init; } = [];
-    public IReadOnlyList<NormalizedEdge> FullPresenceEdgeDynamicOnly { get; init; } = [];
-    public IReadOnlyList<NormalizedEdge> FullPresenceEdgeReplayOnly { get; init; } = [];
     public IReadOnlyList<NormalizedEdge> BuildPresenceEdgeDynamicOnly { get; init; } = [];
     public IReadOnlyList<NormalizedEdge> BuildPresenceEdgeStaticOnly { get; init; } = [];
 }
@@ -1041,26 +1055,16 @@ internal static class ReplayComparer
         Dictionary<string, GraphNode> phase1NodesById = NodesById(phase1Capture);
         Dictionary<string, GraphNode> staticNodesById = NodesById(staticCapture);
 
-        HashSet<NormalizedNode> dynamicAllPresence = ProjectNodes(dynamicCapture.Nodes, ComparisonProjection.FullPresence);
         HashSet<NormalizedNode> dynamicQuery = ProjectNodes(dynamicCapture.Nodes.Where(IsQueryOnlyNode), ComparisonProjection.QueryStrict);
         HashSet<NormalizedNode> dynamicNonQueryPresence = ProjectNodes(dynamicCapture.Nodes.Where(static node => !IsQueryOnlyNode(node)), ComparisonProjection.BuildPresence);
-        HashSet<NormalizedNode> dynamicNonQueryIdentity = ProjectNodes(dynamicCapture.Nodes.Where(static node => !IsQueryOnlyNode(node)), ComparisonProjection.BuildStrict);
 
         HashSet<NormalizedNode> phase1Query = ProjectNodes(phase1Capture.Nodes.Where(IsQueryOnlyNode), ComparisonProjection.QueryStrict);
-        HashSet<NormalizedNode> phase1QueryPresence = ProjectNodes(phase1Capture.Nodes.Where(IsQueryOnlyNode), ComparisonProjection.FullPresence);
         HashSet<NormalizedNode> staticReplayPresence = ProjectNodes(staticCapture.Nodes, ComparisonProjection.BuildPresence);
-        HashSet<NormalizedNode> staticReplayIdentity = ProjectNodes(staticCapture.Nodes, ComparisonProjection.BuildStrict);
-        HashSet<NormalizedNode> replayCombinedPresence = new(phase1QueryPresence, NormalizedNodeComparer.Instance);
-        replayCombinedPresence.UnionWith(staticReplayPresence);
 
-        HashSet<NormalizedEdge> dynamicAllPresenceEdges = ProjectEdges(dynamicCapture.Edges, dynamicNodesById, ComparisonProjection.FullPresence, EdgeClass.All);
         HashSet<NormalizedEdge> dynamicQueryEdges = ProjectEdges(dynamicCapture.Edges, dynamicNodesById, ComparisonProjection.QueryStrict, EdgeClass.Query);
         HashSet<NormalizedEdge> dynamicNonQueryEdges = ProjectEdges(dynamicCapture.Edges, dynamicNodesById, ComparisonProjection.BuildPresence, EdgeClass.Build);
         HashSet<NormalizedEdge> phase1QueryEdges = ProjectEdges(phase1Capture.Edges, phase1NodesById, ComparisonProjection.QueryStrict, EdgeClass.Query);
-        HashSet<NormalizedEdge> phase1QueryPresenceEdges = ProjectEdges(phase1Capture.Edges, phase1NodesById, ComparisonProjection.FullPresence, EdgeClass.Query);
         HashSet<NormalizedEdge> staticReplayEdges = ProjectEdges(staticCapture.Edges, staticNodesById, ComparisonProjection.BuildPresence, EdgeClass.All);
-        HashSet<NormalizedEdge> replayCombinedPresenceEdges = new(phase1QueryPresenceEdges, NormalizedEdgeComparer.Instance);
-        replayCombinedPresenceEdges.UnionWith(staticReplayEdges);
 
         return new ReplayComparison
         {
@@ -1080,16 +1084,10 @@ internal static class ReplayComparer
             StaticReplayEdgeCount = staticReplayEdges.Count,
             QueryDynamicOnly = Except(dynamicQuery, phase1Query),
             QueryPhase1Only = Except(phase1Query, dynamicQuery),
-            FullPresenceDynamicOnly = Except(dynamicAllPresence, replayCombinedPresence),
-            FullPresenceReplayOnly = Except(replayCombinedPresence, dynamicAllPresence),
             BuildPresenceDynamicOnly = Except(dynamicNonQueryPresence, staticReplayPresence),
             BuildPresenceStaticOnly = Except(staticReplayPresence, dynamicNonQueryPresence),
-            BuildIdentityDynamicOnly = Except(dynamicNonQueryIdentity, staticReplayIdentity),
-            BuildIdentityStaticOnly = Except(staticReplayIdentity, dynamicNonQueryIdentity),
             QueryEdgeDynamicOnly = Except(dynamicQueryEdges, phase1QueryEdges),
             QueryEdgePhase1Only = Except(phase1QueryEdges, dynamicQueryEdges),
-            FullPresenceEdgeDynamicOnly = Except(dynamicAllPresenceEdges, replayCombinedPresenceEdges),
-            FullPresenceEdgeReplayOnly = Except(replayCombinedPresenceEdges, dynamicAllPresenceEdges),
             BuildPresenceEdgeDynamicOnly = Except(dynamicNonQueryEdges, staticReplayEdges),
             BuildPresenceEdgeStaticOnly = Except(staticReplayEdges, dynamicNonQueryEdges)
         };
@@ -1231,6 +1229,27 @@ internal static class NormalizedCaptureWriter
         WriteProjection(capture, nodesById, outputDirectory, "build-strict", ComparisonProjection.BuildStrict, static node => !ReplayComparer.IsQueryOnlyNode(node), EdgeClass.Build);
     }
 
+    public static void WriteReplayInputs(GraphCapture dynamicCapture, GraphCapture phase1Capture, GraphCapture staticCapture, string outputDirectory)
+    {
+        WriteReplayProjection(dynamicCapture, Path.Combine(outputDirectory, "query-strict"), "dynamic", ComparisonProjection.QueryStrict, ReplayComparer.IsQueryOnlyNode, EdgeClass.Query);
+        WriteReplayProjection(phase1Capture, Path.Combine(outputDirectory, "query-strict"), "phase1", ComparisonProjection.QueryStrict, ReplayComparer.IsQueryOnlyNode, EdgeClass.Query);
+        WriteReplayProjection(dynamicCapture, Path.Combine(outputDirectory, "build-presence"), "dynamic", ComparisonProjection.BuildPresence, static node => !ReplayComparer.IsQueryOnlyNode(node), EdgeClass.Build);
+        WriteReplayProjection(staticCapture, Path.Combine(outputDirectory, "build-presence"), "static", ComparisonProjection.BuildPresence, static node => true, EdgeClass.All);
+    }
+
+    private static void WriteReplayProjection(
+        GraphCapture capture,
+        string outputDirectory,
+        string prefix,
+        ComparisonProjection projection,
+        Func<GraphNode, bool> nodePredicate,
+        EdgeClass edgeClass)
+    {
+        Directory.CreateDirectory(outputDirectory);
+        Dictionary<string, GraphNode> nodesById = ReplayComparer.NodesById(capture);
+        WriteProjection(capture, nodesById, outputDirectory, prefix, projection, nodePredicate, edgeClass);
+    }
+
     private static void WriteProjection(
         GraphCapture capture,
         Dictionary<string, GraphNode> nodesById,
@@ -1346,23 +1365,15 @@ internal static class ReplayReportWriter
         writer.WriteLine();
         writer.WriteLine("Projection dimensions:");
         writer.WriteLine("  QueryStrict: project + configuration + target framework + query target");
-        writer.WriteLine("  FullPresence: project + configuration + role");
         writer.WriteLine("  BuildPresence: project + configuration + build role");
-        writer.WriteLine("  BuildStrict: project + configuration + target framework + explicit runtime identity globals");
         writer.WriteLine("  Identity dimensions use global properties only; evaluated properties are diagnostic data and do not participate.");
         writer.WriteLine();
         WriteSection(writer, "QueryStrict dynamic-only", comparison.QueryDynamicOnly);
         WriteSection(writer, "QueryStrict phase1-only", comparison.QueryPhase1Only);
-        WriteSection(writer, "FullPresence dynamic-only", comparison.FullPresenceDynamicOnly);
-        WriteSection(writer, "FullPresence replay-only", comparison.FullPresenceReplayOnly);
         WriteSection(writer, "BuildPresence dynamic-only", comparison.BuildPresenceDynamicOnly);
         WriteSection(writer, "BuildPresence static-only", comparison.BuildPresenceStaticOnly);
-        WriteSection(writer, "BuildStrict dynamic-only", comparison.BuildIdentityDynamicOnly);
-        WriteSection(writer, "BuildStrict static-only", comparison.BuildIdentityStaticOnly);
         WriteSection(writer, "QueryStrict edge dynamic-only", comparison.QueryEdgeDynamicOnly);
         WriteSection(writer, "QueryStrict edge phase1-only", comparison.QueryEdgePhase1Only);
-        WriteSection(writer, "FullPresence edge dynamic-only", comparison.FullPresenceEdgeDynamicOnly);
-        WriteSection(writer, "FullPresence edge replay-only", comparison.FullPresenceEdgeReplayOnly);
         WriteSection(writer, "BuildPresence edge dynamic-only", comparison.BuildPresenceEdgeDynamicOnly);
         WriteSection(writer, "BuildPresence edge static-only", comparison.BuildPresenceEdgeStaticOnly);
         return writer.ToString();
