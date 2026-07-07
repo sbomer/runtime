@@ -429,8 +429,7 @@ internal enum ComparisonProjection
 internal enum IdentitySource
 {
     None,
-    Global,
-    Evaluated
+    Global
 }
 
 internal sealed record IdentityDimension(string Value, IdentitySource Source);
@@ -1153,9 +1152,7 @@ internal static class ReplayComparer
             return new IdentityDimension(globalValue, IdentitySource.Global);
         }
 
-        return node.EvaluatedProperties.TryGetValue(name, out string? evaluatedValue)
-            ? new IdentityDimension(evaluatedValue, IdentitySource.Evaluated)
-            : new IdentityDimension("", IdentitySource.None);
+        return new IdentityDimension("", IdentitySource.None);
     }
 
     private static bool IsQueryOnlyNode(GraphNode node)
@@ -1273,6 +1270,7 @@ internal static class ReplayReportWriter
         writer.WriteLine("  FullPresence: project + configuration + role");
         writer.WriteLine("  BuildPresence: project + configuration + build role");
         writer.WriteLine("  BuildStrict: project + configuration + target framework + explicit runtime identity globals");
+        writer.WriteLine("  Identity dimensions use global properties only; evaluated properties are diagnostic data and do not participate.");
         writer.WriteLine();
         WriteSection(writer, "QueryStrict dynamic-only", comparison.QueryDynamicOnly);
         WriteSection(writer, "QueryStrict phase1-only", comparison.QueryPhase1Only);
