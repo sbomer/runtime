@@ -126,6 +126,7 @@ internal static class CommandLine
             {
                 "dynamic" => RunDynamic(rest),
                 "static" => RunStatic(rest),
+                "normalize" => RunNormalize(rest),
                 "compare-replay" => RunCompareReplay(rest),
                 _ => Unknown(command)
             };
@@ -159,6 +160,7 @@ internal static class CommandLine
             usage:
               StaticGraphValidation dynamic <binlog> [options]
               StaticGraphValidation static <project> [options]
+              StaticGraphValidation normalize <capture.json> --output-dir directory
               StaticGraphValidation compare-replay --dynamic baseline.json --phase1 query.json --static replay.json [options]
 
             options:
@@ -166,6 +168,7 @@ internal static class CommandLine
               -t|--target Target[;...]   entry targets for static target-list capture
               -o|--output path           output path (default: stdout)
               --repo-root path           path used for relative display
+              --output-dir path          directory for normalized text files
               --format text|json         output format for compare-replay (default: text)
             """);
     }
@@ -196,6 +199,25 @@ internal static class CommandLine
         GraphCapture capture = StaticGraphCapture.Capture(args[0], options);
         WriteText(GraphJson.Serialize(capture), options.OutputPath);
         return DiagnosticsExitCode(capture);
+    }
+
+    private static int RunNormalize(string[] args)
+    {
+        if (args.Length == 0)
+        {
+            PrintUsage();
+            return 1;
+        }
+
+        Options options = Options.Parse(args.Skip(1));
+        if (options.OutputDirectory is null)
+        {
+            throw new ArgumentException("--output-dir is required for normalize.");
+        }
+
+        GraphCapture capture = GraphJson.Read(args[0]);
+        NormalizedCaptureWriter.Write(capture, options.OutputDirectory);
+        return 0;
     }
 
     private static int RunCompareReplay(string[] args)
@@ -260,6 +282,7 @@ internal sealed class Options
     public Dictionary<string, string> Properties { get; } = new(StringComparer.OrdinalIgnoreCase);
     public string[] Targets { get; private set; } = [];
     public string? OutputPath { get; private set; }
+    public string? OutputDirectory { get; private set; }
     public string? RepoRoot { get; private set; }
     public string Format { get; private set; } = "text";
     public string? DynamicPath { get; private set; }
@@ -299,6 +322,9 @@ internal sealed class Options
                     break;
                 case "--repo-root":
                     options.RepoRoot = Path.GetFullPath(Next());
+                    break;
+                case "--output-dir":
+                    options.OutputDirectory = Path.GetFullPath(Next());
                     break;
                 case "--format":
                     options.Format = Next();
@@ -1069,10 +1095,10 @@ internal static class ReplayComparer
         };
     }
 
-    private static Dictionary<string, GraphNode> NodesById(GraphCapture capture) =>
+    internal static Dictionary<string, GraphNode> NodesById(GraphCapture capture) =>
         capture.Nodes.ToDictionary(static node => node.Id, static node => node, StringComparer.Ordinal);
 
-    private static HashSet<NormalizedNode> ProjectNodes(IEnumerable<GraphNode> nodes, ComparisonProjection projection)
+    internal static HashSet<NormalizedNode> ProjectNodes(IEnumerable<GraphNode> nodes, ComparisonProjection projection)
     {
         HashSet<NormalizedNode> normalizedNodes = new(NormalizedNodeComparer.Instance);
         foreach (GraphNode node in nodes)
@@ -1083,7 +1109,7 @@ internal static class ReplayComparer
         return normalizedNodes;
     }
 
-    private static CanonicalNode ToCanonicalNode(GraphNode node)
+    internal static CanonicalNode ToCanonicalNode(GraphNode node)
     {
         string projectPath = node.RelativePath ?? node.ProjectPath.Replace('\\', '/');
         string role = IsQueryOnlyNode(node) ? $"Query:{string.Join(";", node.RequestedTargets)}" : "Build";
@@ -1099,7 +1125,7 @@ internal static class ReplayComparer
             GetDimension(node, "TargetRid"));
     }
 
-    private static NormalizedNode Project(CanonicalNode node, ComparisonProjection projection)
+    internal static NormalizedNode Project(CanonicalNode node, ComparisonProjection projection)
     {
         string targetFramework = projection is ComparisonProjection.QueryStrict or ComparisonProjection.BuildStrict ? node.TargetFramework.Value : "";
         string runtimeIdentifier = projection == ComparisonProjection.BuildStrict && node.RuntimeIdentifier.Source == IdentitySource.Global ? node.RuntimeIdentifier.Value : "";
@@ -1110,7 +1136,7 @@ internal static class ReplayComparer
         return new NormalizedNode(node.ProjectPath, node.Configuration.Value, targetFramework, runtimeIdentifier, targetOS, targetArchitecture, targetRid, role);
     }
 
-    private static HashSet<NormalizedEdge> ProjectEdges(
+    internal static HashSet<NormalizedEdge> ProjectEdges(
         IEnumerable<GraphEdge> edges,
         Dictionary<string, GraphNode> nodesById,
         ComparisonProjection projection,
@@ -1155,7 +1181,7 @@ internal static class ReplayComparer
         return new IdentityDimension("", IdentitySource.None);
     }
 
-    private static bool IsQueryOnlyNode(GraphNode node)
+    internal static bool IsQueryOnlyNode(GraphNode node)
     {
         if (node.RequestedTargets.Count == 0)
         {
@@ -1190,6 +1216,59 @@ internal enum EdgeClass
     All,
     Query,
     Build
+}
+
+internal static class NormalizedCaptureWriter
+{
+    public static void Write(GraphCapture capture, string outputDirectory)
+    {
+        Directory.CreateDirectory(outputDirectory);
+
+        Dictionary<string, GraphNode> nodesById = ReplayComparer.NodesById(capture);
+        WriteProjection(capture, nodesById, outputDirectory, "query-strict", ComparisonProjection.QueryStrict, ReplayComparer.IsQueryOnlyNode, EdgeClass.Query);
+        WriteProjection(capture, nodesById, outputDirectory, "full-presence", ComparisonProjection.FullPresence, static node => true, EdgeClass.All);
+        WriteProjection(capture, nodesById, outputDirectory, "build-presence", ComparisonProjection.BuildPresence, static node => !ReplayComparer.IsQueryOnlyNode(node), EdgeClass.Build);
+        WriteProjection(capture, nodesById, outputDirectory, "build-strict", ComparisonProjection.BuildStrict, static node => !ReplayComparer.IsQueryOnlyNode(node), EdgeClass.Build);
+    }
+
+    private static void WriteProjection(
+        GraphCapture capture,
+        Dictionary<string, GraphNode> nodesById,
+        string outputDirectory,
+        string name,
+        ComparisonProjection projection,
+        Func<GraphNode, bool> nodePredicate,
+        EdgeClass edgeClass)
+    {
+        HashSet<NormalizedNode> nodes = ReplayComparer.ProjectNodes(capture.Nodes.Where(nodePredicate), projection);
+        HashSet<NormalizedEdge> edges = ReplayComparer.ProjectEdges(capture.Edges, nodesById, projection, edgeClass);
+        File.WriteAllLines(Path.Combine(outputDirectory, $"{name}.nodes.txt"), nodes.Select(NodeLine).OrderBy(static line => line, StringComparer.OrdinalIgnoreCase));
+        File.WriteAllLines(Path.Combine(outputDirectory, $"{name}.edges.txt"), edges.Select(EdgeLine).OrderBy(static line => line, StringComparer.OrdinalIgnoreCase));
+    }
+
+    private static string NodeLine(NormalizedNode node) =>
+        string.Join('|',
+            $"Role={Escape(node.Role)}",
+            $"Project={Escape(node.ProjectPath)}",
+            $"Configuration={Escape(node.Configuration)}",
+            $"TargetFramework={Escape(node.TargetFramework)}",
+            $"RuntimeIdentifier={Escape(node.RuntimeIdentifier)}",
+            $"TargetOS={Escape(node.TargetOS)}",
+            $"TargetArchitecture={Escape(node.TargetArchitecture)}",
+            $"TargetRid={Escape(node.TargetRid)}");
+
+    private static string EdgeLine(NormalizedEdge edge) =>
+        string.Join('|',
+            $"Role={Escape(edge.Role)}",
+            $"From={Escape(NodeLine(edge.From))}",
+            $"To={Escape(NodeLine(edge.To))}");
+
+    private static string Escape(string value) =>
+        value.Replace("\\", "\\\\", StringComparison.Ordinal)
+            .Replace("|", "\\|", StringComparison.Ordinal)
+            .Replace("\r", "\\r", StringComparison.Ordinal)
+            .Replace("\n", "\\n", StringComparison.Ordinal);
+
 }
 
 internal sealed class NormalizedNodeComparer : IEqualityComparer<NormalizedNode>
