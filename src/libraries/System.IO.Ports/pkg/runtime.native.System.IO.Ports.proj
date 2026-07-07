@@ -13,8 +13,14 @@
   <ItemGroup>
     <!-- Listing the runtime specific packages to populate the dependencies section.
          Not building these references to avoid unintentional Build/Pack invocations.
-         They are filtered in the traversal build in oob-src.csproj based on the TargetRid. -->
-    <ProjectReference Include="$(MSBuildThisFileDirectory)*.proj" Exclude="$(MSBuildProjectFile)" BuildReference="false" />
+         They are filtered in the traversal build in oob-src.csproj based on the TargetRid.
+         Static graph target propagation does not honor BuildReference=false as build suppression, so omit
+         these metadata-only references in graph builds. Package dependency metadata is produced from project
+         metadata, not by executing these references. -->
+    <ProjectReference Include="$(MSBuildThisFileDirectory)*.proj"
+                      Exclude="$(MSBuildProjectFile)"
+                      BuildReference="false"
+                      Condition="'$(IsGraphBuild)' != 'true'" />
   </ItemGroup>
 
 </Project>
