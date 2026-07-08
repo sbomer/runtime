@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <Import Project="$(StaticGraphSelectedTargetFrameworksTargets)"
-          Condition="'$(StaticGraphUseSelectedTargetFrameworks)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(TargetFramework)' == '' and '$(StaticGraphSelectedTargetFrameworksTargets)' != '' and Exists('$(StaticGraphSelectedTargetFrameworksTargets)')" />
+          Condition="'$(StaticGraphUseSelectedTargetFrameworks)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(StaticGraphSelectedTargetFrameworksTargets)' != '' and Exists('$(StaticGraphSelectedTargetFrameworksTargets)')" />
 
   <Import Project="$(RepositoryEngineeringDir)staticGraphTargetFrameworkSelection.targets" />
 

@@ -17,6 +17,10 @@
           AfterTargets="ResolveP2PReferences"
           Condition="'$(CaptureStaticGraphSelectedTargetFrameworks)' == 'true' and '$(StaticGraphSelectedTargetFrameworksRawFile)' != ''">
     <ItemGroup>
+      <_StaticGraphSelectedTargetFramework Include="$(MSBuildProjectFullPath)"
+                                           Condition="'$(UsingMicrosoftTraversalSdk)' == 'true' and '$(FilterTraversalProjectReferences)' == 'true'">
+        <Line>$(MSBuildProjectFullPath)|||||||</Line>
+      </_StaticGraphSelectedTargetFramework>
       <_StaticGraphSelectedTargetFramework Include="@(ProjectReference)">
         <Line>$(MSBuildProjectFullPath)|%(ProjectReference.FullPath)|%(ProjectReference.NearestTargetFramework)|%(ProjectReference.SetTargetFramework)|%(ProjectReference.SetConfiguration)|%(ProjectReference.SetPlatform)|%(ProjectReference.UndefineProperties)|%(ProjectReference.SkipGetTargetFrameworkProperties)</Line>
       </_StaticGraphSelectedTargetFramework>
