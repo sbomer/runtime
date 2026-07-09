@@ -1,7 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageDescription>Provides the .NET app bootstrapper intended for use in the application directory</PackageDescription>
+    <_DotNetAppHostBuildOnlyProjectReference>$([MSBuild]::NormalizePath('$(SharedNativeRoot)', 'corehost', 'corehost.proj'))</_DotNetAppHostBuildOnlyProjectReference>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(_DotNetAppHostBuildOnlyProjectReference)"
+                      BuildReference="false"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      GlobalPropertiesToRemove="PackageTargetRuntime" />
+    <ProjectReferenceTargets Include="Build" Targets="Build" />
+  </ItemGroup>
+
+  <Target Name="RemoveBuildOnlyProjectReferencesFromPackage" AfterTargets="_GetProjectClosure" BeforeTargets="SplitProjectReferences">
+    <ItemGroup>
+      <_ProjectReferenceClosure Remove="$(_DotNetAppHostBuildOnlyProjectReference)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="BuildDotNetAppHostInputs" BeforeTargets="GenerateNuSpec;CreatePackage">
+    <MSBuild Projects="$(_DotNetAppHostBuildOnlyProjectReference)"
+             Targets="Build"
+             RemoveProperties="PackageTargetRuntime" />
+  </Target>
 
   <ItemGroup>
     <NativeBinary Include="$(DotNetHostBinDir)/apphost$(ExeSuffix)" />

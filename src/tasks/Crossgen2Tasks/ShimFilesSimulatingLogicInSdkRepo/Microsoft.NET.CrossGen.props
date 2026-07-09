@@ -12,9 +12,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Crossgen2TasksOverriden>true</Crossgen2TasksOverriden>
+    <Crossgen2TasksAssemblyPath Condition="'$(Crossgen2TasksAssemblyPath)' == ''">$(MSBuildThisFileDirectory)Crossgen2Tasks.dll</Crossgen2TasksAssemblyPath>
   </PropertyGroup>
 
-  <UsingTask TaskName="PrepareForReadyToRunCompilation" AssemblyFile="$(MSBuildThisFileDirectory)Crossgen2Tasks.dll" />
-  <UsingTask TaskName="ResolveReadyToRunCompilers" AssemblyFile="$(MSBuildThisFileDirectory)Crossgen2Tasks.dll" />
-  <UsingTask TaskName="RunReadyToRunCompiler" AssemblyFile="$(MSBuildThisFileDirectory)Crossgen2Tasks.dll" />
+  <UsingTask TaskName="PrepareForReadyToRunCompilation" AssemblyFile="$(Crossgen2TasksAssemblyPath)" />
+  <UsingTask TaskName="ResolveReadyToRunCompilers" AssemblyFile="$(Crossgen2TasksAssemblyPath)" />
+  <UsingTask TaskName="RunReadyToRunCompiler" AssemblyFile="$(Crossgen2TasksAssemblyPath)" />
 </Project>

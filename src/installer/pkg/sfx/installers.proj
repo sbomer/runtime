@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.Build.NoTargets">
+  <PropertyGroup>
+    <_InstallerProjectTargets>GenerateInstallers</_InstallerProjectTargets>
+    <_InstallerProjectTargets Condition="'$(IsGraphBuild)' == 'true'">Build</_InstallerProjectTargets>
+  </PropertyGroup>
+
   <ItemGroup>
     <InstallerProjectReference Include="Microsoft.NETCore.App/Microsoft.NETCore.App.Ref.sfxproj" />
     <InstallerProjectReference Include="Microsoft.NETCore.App/Microsoft.NETCore.App.Host.sfxproj" />
@@ -15,9 +20,16 @@
     <InstallerProjectReference Include="installers/dotnet-runtime-deps/dotnet-runtime-deps-sles.15.proj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="@(InstallerProjectReference)"
+                      ReferenceOutputAssembly="false"
+                      Targets="$(_InstallerProjectTargets)" />
+    <ProjectReferenceTargets Include="Build" Targets="$(_InstallerProjectTargets)" SkipNonexistentTargets="true" />
+  </ItemGroup>
+
   <Target Name="BuildInstallerProjects" BeforeTargets="Build">
     <MSBuild Projects="@(InstallerProjectReference)"
-             Targets="GenerateInstallers"
+             Targets="$(_InstallerProjectTargets)"
              SkipNonexistentTargets="true" />
   </Target>
 </Project>

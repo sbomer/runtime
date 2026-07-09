@@ -32,11 +32,4 @@
     <Reference Include="$(NetCoreSdkRoot)NuGet.Versioning.dll" Private="false" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Microsoft.NET.CrossGen.targets" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="ShimFilesSimulatingLogicInSdkRepo/Microsoft.NET.CrossGen.props"
-      Link="Microsoft.NET.CrossGen.props"
-      CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
 </Project>

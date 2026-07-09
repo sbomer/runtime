@@ -2,7 +2,29 @@
   <PropertyGroup>
     <PackageDescription>Transport package for the cdac reader to be used with diagnostics tooling</PackageDescription>
     <IsShipping>false</IsShipping>
+    <_CdacTransportBuildOnlyProjectReference>$([MSBuild]::NormalizePath('$(SharedNativeRoot)', 'managed', 'compile-native.proj'))</_CdacTransportBuildOnlyProjectReference>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(_CdacTransportBuildOnlyProjectReference)"
+                      BuildReference="false"
+                      ReferenceOutputAssembly="false"
+                      Targets="Publish"
+                      GlobalPropertiesToRemove="PackageTargetRuntime" />
+    <ProjectReferenceTargets Include="Build" Targets="Publish" />
+  </ItemGroup>
+
+  <Target Name="RemoveBuildOnlyProjectReferencesFromPackage" AfterTargets="_GetProjectClosure" BeforeTargets="SplitProjectReferences">
+    <ItemGroup>
+      <_ProjectReferenceClosure Remove="$(_CdacTransportBuildOnlyProjectReference)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="BuildCdacTransportInputs" BeforeTargets="GenerateNuSpec;CreatePackage">
+    <MSBuild Projects="$(_CdacTransportBuildOnlyProjectReference)"
+             Targets="Publish"
+             RemoveProperties="PackageTargetRuntime" />
+  </Target>
 
   <ItemGroup>
     <!--
