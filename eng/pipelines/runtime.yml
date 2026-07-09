@@ -252,6 +252,72 @@ extends:
       - template: /eng/pipelines/common/platform-matrix.yml
         parameters:
           jobTemplate: /eng/pipelines/common/global-build-job.yml
+          buildConfig: Debug
+          platforms:
+          - linux_x64
+          jobParameters:
+            nameSuffix: CoreCLR_StaticGraph
+            buildArgs: -s clr -restore -rc Release -c $(_BuildConfig)
+            timeoutInMinutes: 120
+            postBuildSteps:
+              - script: |
+                  set -euo pipefail
+                  cd "$(Build.SourcesDirectory)"
+                  staticGraphDir="$(Build.SourcesDirectory)/artifacts/obj/static-graph-ci"
+                  selectedFrameworksRawFile="$staticGraphDir/selected-target-frameworks.raw.txt"
+                  selectedFrameworksTargets="$staticGraphDir/selected-target-frameworks.targets"
+
+                  ./dotnet.sh build src/tasks/StaticGraphTasks/StaticGraphTasks.csproj -c $(_BuildConfig) --no-restore
+                  rm -f "$selectedFrameworksRawFile" "$selectedFrameworksTargets"
+
+                  ./dotnet.sh msbuild Build.proj \
+                    /t:CaptureStaticGraphSelectedTargetFrameworksRecursive \
+                    /p:Subset=clr \
+                    /p:Configuration=$(_BuildConfig) \
+                    /p:RuntimeConfiguration=Release \
+                    /p:Restore=false \
+                    /p:Build=true \
+                    /p:Ninja=true \
+                    /p:TargetOS=linux \
+                    /p:TargetArchitecture=x64 \
+                    /p:BuildArchitecture=x64 \
+                    /p:CaptureStaticGraphSelectedTargetFrameworks=true \
+                    /p:StaticGraphSelectedTargetFrameworksRawFile="$selectedFrameworksRawFile"
+
+                  ./dotnet.sh msbuild Build.proj \
+                    /t:GenerateStaticGraphSelectedTargetFrameworks \
+                    /p:Configuration=$(_BuildConfig) \
+                    /p:RuntimeConfiguration=Release \
+                    /p:Ninja=true \
+                    /p:TargetOS=linux \
+                    /p:TargetArchitecture=x64 \
+                    /p:BuildArchitecture=x64 \
+                    /p:StaticGraphSelectedTargetFrameworksRawFile="$selectedFrameworksRawFile" \
+                    /p:StaticGraphSelectedTargetFrameworksTargets="$selectedFrameworksTargets"
+
+                  ./dotnet.sh msbuild Build.proj \
+                    /graphBuild \
+                    /isolateProjects \
+                    /p:Subset=clr \
+                    /p:Configuration=$(_BuildConfig) \
+                    /p:RuntimeConfiguration=Release \
+                    /p:Restore=false \
+                    /p:Build=true \
+                    /p:Ninja=true \
+                    /p:TargetOS=linux \
+                    /p:TargetArchitecture=x64 \
+                    /p:BuildArchitecture=x64 \
+                    /p:StaticGraphUseSelectedTargetFrameworks=true \
+                    /p:StaticGraphSelectedTargetFrameworksTargets="$selectedFrameworksTargets"
+                displayName: Build CoreCLR static graph
+            condition: >-
+              or(
+                eq(stageDependencies.EvaluatePaths.evaluate_paths.outputs['SetPathVars_non_mono_and_wasm.containsChange'], true),
+                eq(variables['isRollingBuild'], true))
+
+      - template: /eng/pipelines/common/platform-matrix.yml
+        parameters:
+          jobTemplate: /eng/pipelines/common/global-build-job.yml
           buildConfig: ${{ variables.debugOnPrReleaseOnRolling }}
           platforms:
           - linux_x64
