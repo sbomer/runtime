@@ -22,6 +22,39 @@
     <MonoAotTargetRids Include="$(MonoAotTargets.Split(';'))" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)monoaotcross-target.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      AdditionalProperties="MonoAotTargetRid=android-x64;RealRuntimeBinDir=$(RuntimeBinDir)"
+                      Condition="$(_MonoCrossAOTTargetOS.contains('+android+'))" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)monoaotcross-target.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      AdditionalProperties="MonoAotTargetRid=android-arm64;RealRuntimeBinDir=$(RuntimeBinDir)"
+                      Condition="$(_MonoCrossAOTTargetOS.contains('+android+'))" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)monoaotcross-target.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      AdditionalProperties="MonoAotTargetRid=android-x86;RealRuntimeBinDir=$(RuntimeBinDir)"
+                      Condition="$(_MonoCrossAOTTargetOS.contains('+android+'))" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)monoaotcross-target.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      AdditionalProperties="MonoAotTargetRid=android-arm;RealRuntimeBinDir=$(RuntimeBinDir)"
+                      Condition="$(_MonoCrossAOTTargetOS.contains('+android+'))" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)monoaotcross-target.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      AdditionalProperties="MonoAotTargetRid=browser-wasm;RealRuntimeBinDir=$(RuntimeBinDir)"
+                      Condition="$(_MonoCrossAOTTargetOS.contains('+browser+'))" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)monoaotcross-target.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build"
+                      AdditionalProperties="MonoAotTargetRid=wasi-wasm;RealRuntimeBinDir=$(RuntimeBinDir)"
+                      Condition="$(_MonoCrossAOTTargetOS.contains('+wasi+'))" />
+  </ItemGroup>
+
   <Target Name="CheckMonoAotTargets" BeforeTargets="BuildMonoCrossAllTargets">
     <PropertyGroup>
       <_SupportOS>android, browser, wasi</_SupportOS>
@@ -34,9 +67,11 @@
   <Target Name="BuildMonoCrossAllTargets" AfterTargets="Build">
     <MSBuild Targets="Restore"
              Projects="$(MSBuildThisFileDirectory)mono.proj"
+             Condition="'$(IsGraphBuild)' != 'true'"
              Properties="MonoUseCrossTool=true;MSBuildRestoreSessionId=$([System.Guid]::NewGuid())" /> <!-- Pass this property to make the evaluation of mono.proj during the "BuildMono" target below use an evaluation that picks up NuGet-generated MSBuild targets from this restore. -->
     <MSBuild Targets="BuildMonoCrossTarget"
              Projects="$(MSBuildThisFileFullPath)"
+             Condition="'$(IsGraphBuild)' != 'true'"
              BuildInParallel="true"
              Properties="MonoAotTargetRid=%(MonoAotTargetRids.Identity);RealRuntimeBinDir=$(RuntimeBinDir)" />
 

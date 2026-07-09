@@ -92,6 +92,11 @@
     <_subset Condition="'$(Subset)' == ''">+$(DefaultSubsets)+</_subset>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(_subset.Contains('+allsubsets+')) and '$(MonoCrossAOTTargetOS)' == '' and '$(MonoAOTCrossCompilerSupported)' == 'true'">
+    <MonoCrossAOTTargetOS>android+browser+wasi</MonoCrossAOTTargetOS>
+    <MonoCrossAOTTargetOS Condition="'$(TargetOS)' == 'osx'">$(MonoCrossAOTTargetOS)+tvos+ios+maccatalyst</MonoCrossAOTTargetOS>
+  </PropertyGroup>
+
 
   <PropertyGroup Condition="'$(RuntimeFlavor)' == ''">
     <RuntimeFlavor Condition="('$(TargetsMobile)' == 'true' or '$(TargetsLinuxBionic)' == 'true') and ($(_subset.Contains('+clr.nativeaotlibs+')) or $(_subset.Contains('+clr.runtime+')))">CoreCLR</RuntimeFlavor>
@@ -424,7 +429,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(_subset.Contains('+clr.paltestlist+'))">
-    <ProjectToBuild Include="$(CoreClrProjectRoot)pal/tests/palsuite/producepaltestlist.proj" />
+    <ProjectToBuild Include="$(CoreClrProjectRoot)pal/tests/palsuite/producepaltestlist.proj" Targets="ProducePALTestList" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -574,7 +579,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(_subset.Contains('+clr.packages+'))">
-    <ProjectToBuild Include="$(CoreClrProjectRoot).nuget\coreclr-packages.proj" Category="clr" />
+    <ProjectToBuild Include="$(CoreClrProjectRoot).nuget\coreclr-packages.proj" Category="clr" Targets="Pack" Condition="'$(IsGraphBuild)' == 'true'" />
+    <ProjectToBuild Include="$(CoreClrProjectRoot).nuget\coreclr-packages.proj" Category="clr" Condition="'$(IsGraphBuild)' != 'true'" />
   </ItemGroup>
 
   <ItemGroup Condition="$(_subset.Contains('+clr.nativeaotlibs+')) and '$(NativeAotSupported)' == 'true'">
@@ -796,6 +802,7 @@
       <AdditionalProperties>%(AdditionalProperties);HostConfiguration=$(HostConfiguration)</AdditionalProperties>
       <AdditionalProperties>%(AdditionalProperties);TasksConfiguration=$(TasksConfiguration)</AdditionalProperties>
       <AdditionalProperties>%(AdditionalProperties);ToolsConfiguration=$(ToolsConfiguration)</AdditionalProperties>
+      <Targets Condition="'$(IsGraphBuild)' == 'true' and '%(ProjectToBuild.Targets)' == ''">Build</Targets>
     </ProjectToBuild>
   </ItemGroup>
 

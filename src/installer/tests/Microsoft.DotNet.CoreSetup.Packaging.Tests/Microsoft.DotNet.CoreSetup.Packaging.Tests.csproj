@@ -21,6 +21,14 @@
     <OrderProjectReference Include="@(PkgprojProjectToBuild)" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and
+                        '$(SkipBuildingSharedFrameworkTestDependencies)' != 'true' and
+                        '$(BuildingInsideVisualStudio)' != 'true'">
+    <ProjectReference Include="@(OrderProjectReference)"
+                      ReferenceOutputAssembly="false"
+                      Targets="Build" />
+  </ItemGroup>
+
   <!--
     Ensure the packaging projects build first. Don't do this in VS: the build takes too long and
     isn't incremental.
@@ -33,6 +41,7 @@
     <MSBuild
       Projects="@(OrderProjectReference)"
       Targets="Build"
+      Condition="'$(IsGraphBuild)' != 'true'"
       BuildInParallel="$(BuildInParallel)" />
   </Target>
 

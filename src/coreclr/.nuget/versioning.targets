@@ -1,10 +1,30 @@
 <Project>
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true' and ('$(OfficialBuild)' == 'true' or '$(DotNetUseShippingVersions)' == 'true')">
+    <_GraphBuildNumber>$(OfficialBuildId)</_GraphBuildNumber>
+    <_GraphBuildNumber Condition="'$(OfficialBuildId)' == ''">$([System.DateTime]::Now.ToString(yyyyMMdd)).1</_GraphBuildNumber>
+    <_GraphBuildFileVersionMajor>$(MajorVersion)</_GraphBuildFileVersionMajor>
+    <_GraphBuildFileVersionMinor>$(MinorVersion)</_GraphBuildFileVersionMinor>
+    <_GraphBuildFileVersionBuild>$(_GraphBuildNumber.Substring(2, 2))</_GraphBuildFileVersionBuild>
+    <_GraphBuildFileVersionRevision>$([MSBuild]::Add($([MSBuild]::Multiply($(_GraphBuildNumber.Substring(4, 2)), 50)), $(_GraphBuildNumber.Substring(6, 2))))$(_GraphBuildNumber.Substring(9).PadLeft(2, $([System.Convert]::ToChar(`0`))))</_GraphBuildFileVersionRevision>
+    <FileVersion>$(_GraphBuildFileVersionMajor).$(_GraphBuildFileVersionMinor).$(_GraphBuildFileVersionBuild).$(_GraphBuildFileVersionRevision)</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true' and '$(FileVersion)' == '' and '$(VersionSuffixDateStamp)' == ''">
+    <FileVersion Condition="'$(FileVersion)' == ''">42.42.42.42424</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and '$(FileVersion)' != ''">
+    <ProjectReference Update="@(ProjectReference)"
+                      AdditionalProperties="%(ProjectReference.AdditionalProperties);FileVersion=$(FileVersion)" />
+  </ItemGroup>
+
   <!-- Update the project references with additional properties calculated during the execution phase.
        _InitializeAssemblyVersion is provided by Arcade. It sets the AssemblyVersion and FileVersion properties.
        We depend on this private Arcade target instead of the SDK-defined GetAssemblyVersion since the packaging
        build does not use the .NET SDK -->
   <Target Name="UpdateAdditionalProperties"
           BeforeTargets="Build;Pack"
+          Condition="'$(IsGraphBuild)' != 'true' or '$(FileVersion)' == ''"
           DependsOnTargets="_InitializeAssemblyVersion">
     <ItemGroup>
       <!-- Pass the FileVersion calculated by _InitializeAssemblyVersion to referenced projects -->

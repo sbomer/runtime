@@ -10,6 +10,14 @@
     <ProjectReferenceTargets Include="Build" Targets="PublishToDisk" SkipNonexistentTargets="true" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <ProjectReference Include="$(InstallerProjectRoot)pkg\sfx\bundle\Microsoft.NETCore.App.Bundle.bundleproj"
+                      ReferenceOutputAssembly="false"
+                      BuildReference="false"
+                      Targets="PublishToDisk"
+                      AdditionalProperties="OutputPath=$(TestArtifactsOutputRoot)sharedFrameworkPublish/;SkipBuild=true;GenerateInstallers=false" />
+  </ItemGroup>
+
   <!-- Set up the shared framework copy the tests should use. -->
   <Target Name="SetUpSharedFrameworkPublish"
           BeforeTargets="Build">
@@ -25,9 +33,10 @@
     <MSBuild Projects="@(RuntimeSharedFrameworkProject)"
              Targets="Restore"
              Properties="MSBuildRestoreSessionId=$([System.Guid]::NewGuid())"
-             Condition="'$(IsGraphBuild)' != 'true'" />
+             Condition="'$(IsGraphBuild)' != 'true' and '$(Restore)' != 'false'" />
     <MSBuild Projects="$(InstallerProjectRoot)pkg\sfx\bundle\Microsoft.NETCore.App.Bundle.bundleproj"
              Targets="PublishToDisk"
+             Condition="'$(IsGraphBuild)' != 'true'"
              Properties="OutputPath=$(TestArtifactsOutputRoot)sharedFrameworkPublish/" />
   </Target>
 </Project>

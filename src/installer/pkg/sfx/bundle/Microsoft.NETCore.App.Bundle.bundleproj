@@ -47,6 +47,19 @@
     <ProjectReferenceTargets Include="PublishSymbolsToDisk" Targets="PublishSymbolsToDisk" SkipNonexistentTargets="true" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <ProjectReference Include="@(BundleComponentReference)"
+                      ReferenceOutputAssembly="false"
+                      BuildReference="false"
+                      Targets="PublishToDisk"
+                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)output/;SkipBuild=true;GenerateInstallers=false" />
+    <ProjectReference Include="@(BundleComponentReference)"
+                      ReferenceOutputAssembly="false"
+                      BuildReference="false"
+                      Targets="PublishToDisk"
+                      AdditionalProperties="OutputPath=$(IntermediateOutputPath)o/;SkipBuild=true;GenerateInstallers=false" />
+  </ItemGroup>
+
   <Target Name="GenerateInstallers" />
 
   <Target Name="PublishToDisk">

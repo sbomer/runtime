@@ -6,7 +6,16 @@
     <BuildIdentityPackage Condition="'$(BuildingAnOfficialBuildLeg)' == 'true' AND ('$(OS)' != 'Windows_NT' OR '$(TargetArchitecture)' != 'x64')">false</BuildIdentityPackage>
   </PropertyGroup>
 
-  <Target Name="FilterProjects" BeforeTargets="Build;Pack">
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and '$(TargetRid)' != ''">
+    <!-- Only build packages for current RID or non-RID-specific -->
+    <_projectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', '$(TargetRid)'))" />
+    <_projectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', ''))" Condition="'$(BuildIdentityPackage)' == 'true'" />
+    <_projectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', '$(NETCoreSdkRuntimeIdentifier)'))" Condition="'$(BuildHostILTools)' == 'true' and '$(IsILToolPackage)' == 'true'" AdditionalProperties="%(AdditionalProperties);PackCrossComponent=true" />
+
+    <ProjectReference Include="@(_projectsToBuild)" />
+  </ItemGroup>
+
+  <Target Name="FilterProjects" BeforeTargets="Build;Pack" Condition="'$(IsGraphBuild)' != 'true' or '$(TargetRid)' == ''">
     <Error Condition="'$(TargetRid)' == ''" Text="'TargetRid' property must be specified."/>
 
     <!-- Only build packages for current RID or non-RID-specific -->

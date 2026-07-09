@@ -8,6 +8,12 @@
 
   <Target Name="GetTargetDir" Returns="$([System.IO.Path]::GetFullPath('$(TargetDir)'))" />
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and '$(IsTestProject)' == 'true'">
+    <ProjectReference Include="$(InstallerProjectRoot)pkg\sfx\Microsoft.NETCore.App\Microsoft.NETCore.App.Ref.sfxproj"
+                      ReferenceOutputAssembly="false"
+                      Targets="ReturnProductVersion" />
+  </ItemGroup>
+
   <Target Name="SetupTestContextVariables"
           Condition="'$(IsTestProject)' == 'true'"
           DependsOnTargets="

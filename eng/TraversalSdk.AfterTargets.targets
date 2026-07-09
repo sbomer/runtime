@@ -24,4 +24,34 @@
                       SkipGetTargetFrameworkProperties="false"  />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and
+                        '$(SupportsNativeAotComponents)' == 'true' and
+                        '$(MSBuildProjectFullPath)' == '$([MSBuild]::NormalizePath($(RepoRoot), `src/native/managed/compile-native.proj`))'">
+    <ProjectReferenceTargets Include="Build" Targets="Publish" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and
+                        '$(MSBuildProjectFullPath)' == '$([MSBuild]::NormalizePath($(RepoRoot), `src/installer/tests/hostpretest.proj`))'">
+    <ProjectReferenceTargets Remove="Build" />
+    <ProjectReferenceTargets Include="Build" Targets=".projectReferenceTargetsOrDefaultTargets" />
+  </ItemGroup>
+
+  <!-- Override the Traversal SDK Build target so graph builds can collect referenced project outputs. -->
+  <Target Name="Build"
+          DependsOnTargets="$(BuildDependsOn)"
+          Returns="@(CollectedBuildOutput)">
+    <MSBuild Projects="@(ProjectReference)"
+             Condition="'%(ProjectReference.Build)' != 'false'"
+             BuildInParallel="$([MSBuild]::ValueOrDefault('%(ProjectReference.BuildInParallel)', '$(BuildInParallel)'))"
+             Properties="%(ProjectReference.SetConfiguration); %(ProjectReference.SetPlatform); %(ProjectReference.SetTargetFramework)"
+             RemoveProperties="%(ProjectReference.GlobalPropertiesToRemove)"
+             SkipNonexistentProjects="$(SkipNonexistentProjects)"
+             SkipNonexistentTargets="$(SkipNonexistentTargets)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="%(ProjectReference.Targets)"
+             ContinueOnError="$(ContinueOnError)">
+      <Output TaskParameter="TargetOutputs" ItemName="CollectedBuildOutput" />
+    </MSBuild>
+  </Target>
+
 </Project>
