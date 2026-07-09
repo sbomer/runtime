@@ -61,6 +61,25 @@
       />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and '$(Restore)' != 'true'">
+    <ProjectReference Include="$(CoreClrProjectRoot)runtime.proj"
+                      ReferenceOutputAssembly="false"
+                      SkipGetTargetFrameworkProperties="true"
+                      Targets="Build"
+                      AdditionalProperties="$(ClrRuntimeBuildSubsets);$(TargetCxxLibraryProperties)" />
+    <ProjectReferenceTargets Include="GetTargetPath" Targets="Build" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <Content Include="$(CoreCLRArtifactsPath)/$(CrossHostArch)/$(SingleJitLibraryName)"
+      CopyToOutputDirectory="PreserveNewest"
+      CopyToPublishDirectory="PreserveNewest"
+      ExcludeFromSingleFile="$(PublishSingleFile)"
+      Link="%(FileName)%(Extension)"
+      Condition="'$(CopyAllJitLibrariesToAotCompilerOutput)' == 'true'"
+      />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
     <!-- PublishItemsOutputGroup depends on SDK copy-to-output logic, which queries project references directly. -->
     <ProjectReferenceTargets Include="PublishItemsOutputGroup" Targets="GetCopyToOutputDirectoryItems" />

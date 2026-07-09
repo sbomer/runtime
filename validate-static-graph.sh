@@ -9,6 +9,15 @@ runtime_configuration="${RUNTIME_CONFIGURATION:-Release}"
 target_architecture="${TARGET_ARCHITECTURE:-x64}"
 build_architecture="${BUILD_ARCHITECTURE:-x64}"
 output_dir="$repo_root/artifacts/log/static-graph-validation/clr"
+work_dir="$(mktemp -d "${TMPDIR:-/tmp}/runtime-static-graph-validation.XXXXXX")"
+
+cleanup() {
+    mkdir -p "$output_dir"
+    cp -R "$work_dir"/. "$output_dir"/
+    rm -rf "$work_dir"
+}
+
+trap cleanup EXIT
 
 log() {
     echo
@@ -37,7 +46,6 @@ common_properties=(
 
 log "Removing artifacts for a clean validation run"
 rm -rf "$repo_root/artifacts"
-mkdir -p "$output_dir"
 
 log "Restoring the clr subset"
 ./build.sh clr --restore --runtimeConfiguration "$runtime_configuration"
@@ -48,20 +56,20 @@ log "Building validation tools"
 
 log "Capturing dynamic non-graph clr build"
 ./dotnet.sh msbuild Build.proj \
-    "/bl:$output_dir/dynamic-clr.binlog" \
+    "/bl:$work_dir/dynamic-clr.binlog" \
     "${common_properties[@]}"
 
-run_validation_tool dynamic "$output_dir/dynamic-clr.binlog" \
+run_validation_tool dynamic "$work_dir/dynamic-clr.binlog" \
     --repo-root "$repo_root" \
-    -o "$output_dir/dynamic.json"
+    -o "$work_dir/dynamic.json"
 
 log "Capturing selected target frameworks"
 ./dotnet.sh msbuild Build.proj \
     /t:CaptureStaticGraphSelectedTargetFrameworksRecursive \
-    "/bl:$output_dir/phase1-clr.binlog" \
+    "/bl:$work_dir/phase1-clr.binlog" \
     "${common_properties[@]}" \
     /p:CaptureStaticGraphSelectedTargetFrameworks=true \
-    "/p:StaticGraphSelectedTargetFrameworksRawFile=$output_dir/selected.raw.txt"
+    "/p:StaticGraphSelectedTargetFrameworksRawFile=$work_dir/selected.raw.txt"
 
 ./dotnet.sh msbuild Build.proj \
     /t:GenerateStaticGraphSelectedTargetFrameworks \
@@ -71,25 +79,34 @@ log "Capturing selected target frameworks"
     "/p:TargetArchitecture=$target_architecture" \
     "/p:BuildArchitecture=$build_architecture" \
     /p:FeatureDynamicCodeCompiled=true \
-    "/p:StaticGraphSelectedTargetFrameworksRawFile=$output_dir/selected.raw.txt" \
-    "/p:StaticGraphSelectedTargetFrameworksTargets=$output_dir/selected.targets"
+    "/p:StaticGraphSelectedTargetFrameworksRawFile=$work_dir/selected.raw.txt" \
+    "/p:StaticGraphSelectedTargetFrameworksTargets=$work_dir/selected.targets"
 
-run_validation_tool dynamic "$output_dir/phase1-clr.binlog" \
+run_validation_tool dynamic "$work_dir/phase1-clr.binlog" \
     --repo-root "$repo_root" \
-    -o "$output_dir/phase1.json"
+    -o "$work_dir/phase1.json"
+
+log "Removing artifacts before the isolated static graph build"
+rm -rf "$repo_root/artifacts"
+
+log "Restoring the clr subset for the isolated static graph build"
+./build.sh clr --restore --runtimeConfiguration "$runtime_configuration"
 
 log "Running isolated static graph clr build"
 ./dotnet.sh msbuild Build.proj \
     /graphBuild \
     /isolateProjects \
-    "/bl:$output_dir/static-clr.binlog" \
+    "/bl:$work_dir/static-clr.binlog" \
     "${common_properties[@]}" \
     /p:StaticGraphUseSelectedTargetFrameworks=true \
-    "/p:StaticGraphSelectedTargetFrameworksTargets=$output_dir/selected.targets"
+    "/p:StaticGraphSelectedTargetFrameworksTargets=$work_dir/selected.targets"
+
+log "Building validation tool for comparison reports"
+./dotnet.sh build src/tools/StaticGraphValidation/StaticGraphValidation.csproj -c "$configuration"
 
 run_validation_tool static Build.proj \
     --repo-root "$repo_root" \
-    -o "$output_dir/static.json" \
+    -o "$work_dir/static.json" \
     -p Subset=clr \
     -p "Configuration=$configuration" \
     -p "RuntimeConfiguration=$runtime_configuration" \
@@ -100,23 +117,23 @@ run_validation_tool static Build.proj \
     -p "BuildArchitecture=$build_architecture" \
     -p FeatureDynamicCodeCompiled=true \
     -p StaticGraphUseSelectedTargetFrameworks=true \
-    -p "StaticGraphSelectedTargetFrameworksTargets=$output_dir/selected.targets"
+    -p "StaticGraphSelectedTargetFrameworksTargets=$work_dir/selected.targets"
 
 log "Comparing dynamic, phase1, and static replay graphs"
 run_validation_tool compare-replay \
-    --dynamic "$output_dir/dynamic.json" \
-    --phase1 "$output_dir/phase1.json" \
-    --static "$output_dir/static.json" \
-    -o "$output_dir/comparison.txt" || true
+    --dynamic "$work_dir/dynamic.json" \
+    --phase1 "$work_dir/phase1.json" \
+    --static "$work_dir/static.json" \
+    -o "$work_dir/comparison.txt" || true
 
 run_validation_tool compare-replay \
-    --dynamic "$output_dir/dynamic.json" \
-    --phase1 "$output_dir/phase1.json" \
-    --static "$output_dir/static.json" \
+    --dynamic "$work_dir/dynamic.json" \
+    --phase1 "$work_dir/phase1.json" \
+    --static "$work_dir/static.json" \
     --format json \
-    -o "$output_dir/comparison.json" || true
+    -o "$work_dir/comparison.json" || true
 
-python - "$output_dir/comparison.json" <<'PY'
+python - "$work_dir/comparison.json" <<'PY'
 import json
 import sys
 
