@@ -30,7 +30,7 @@
   </UsingTask>
 
   <Target Name="CompileAsn" BeforeTargets="CoreCompile"
-    Condition=" '@(AsnXml)' != '' "
+    Condition=" '@(AsnXml)' != '' and '$(SkipAsnXmlGeneration)' != 'true' "
     Inputs="@(AsnXml);$(MSBuildThisFileDirectory)asn.xslt"
     Outputs="%(Identity).cs">
 
