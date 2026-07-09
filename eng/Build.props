@@ -2,6 +2,8 @@
   <PropertyGroup>
     <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
     <GenerateRestoreUseStaticGraphEvaluationBinlog>true</GenerateRestoreUseStaticGraphEvaluationBinlog>
+    <!-- Keep the toolset entry project from adding synthetic transitive graph edges that bypass package filtering. -->
+    <AddTransitiveProjectReferencesInStaticGraph Condition="'$(IsGraphBuild)' == 'true'">false</AddTransitiveProjectReferencesInStaticGraph>
   </PropertyGroup>
   <ItemGroup>
     <ProjectToBuild Include="$(RepoRoot)Build.proj" />
@@ -31,6 +33,24 @@
                       Targets="$(_RuntimeGraphBuildTargets)"
                       AdditionalProperties="$(_RuntimeGraphBuildProperties)"
                       GlobalPropertiesToRemove="$(_RuntimeGraphBuildGlobalPropertiesToRemove)" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)/AfterSolutionBuild.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="$(_RuntimeGraphBuildTargets)"
+                      AdditionalProperties="VersionsPropsPath=$(VersionsPropsPath)" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)/AfterSigning.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="$(_RuntimeGraphBuildTargets)"
+                      AdditionalProperties="VersionsPropsPath=$(VersionsPropsPath)" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)/Sign.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Execute"
+                      AdditionalProperties="VersionsPropsPath=$(VersionsPropsPath)"
+                      Condition="'$(Sign)' == 'true'" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)/Publish.proj"
+                      ReferenceOutputAssembly="false"
+                      Targets="Execute"
+                      AdditionalProperties="VersionsPropsPath=$(VersionsPropsPath)"
+                      Condition="'$(Publish)' == 'true'" />
     <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/AfterSolutionBuild.proj" />
     <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/AfterSigning.proj" />
     <GraphIsolationExemptReference Include="$(MSBuildProjectDirectory)/Sign.proj" />

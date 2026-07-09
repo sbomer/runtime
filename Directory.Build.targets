@@ -5,7 +5,13 @@
     tell Microsoft.Common.targets not to import Directory.Build.targets again
     -->
     <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+    <StaticGraphSelectedTargetFrameworksTargets Condition="'$(StaticGraphSelectedTargetFrameworksTargets)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'selected-target-frameworks.targets'))</StaticGraphSelectedTargetFrameworksTargets>
   </PropertyGroup>
+
+  <Import Project="$(StaticGraphSelectedTargetFrameworksTargets)"
+          Condition="'$(StaticGraphUseSelectedTargetFrameworks)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(StaticGraphSelectedTargetFrameworksTargets)' != '' and Exists('$(StaticGraphSelectedTargetFrameworksTargets)')" />
+
+  <Import Project="$(RepositoryEngineeringDir)staticGraphTargetFrameworkSelection.targets" />
 
   <Import Project="$(RepositoryEngineeringDir)liveBuilds.targets" />
 

@@ -6,16 +6,27 @@
     <BuildIdentityPackage Condition="'$(BuildingAnOfficialBuildLeg)' == 'true' AND ('$(OS)' != 'Windows_NT' OR '$(TargetArchitecture)' != 'x64')">false</BuildIdentityPackage>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and '$(TargetRid)' != ''">
-    <!-- Only build packages for current RID or non-RID-specific -->
-    <_projectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', '$(TargetRid)'))" />
-    <_projectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', ''))" Condition="'$(BuildIdentityPackage)' == 'true'" />
-    <_projectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', '$(NETCoreSdkRuntimeIdentifier)'))" Condition="'$(BuildHostILTools)' == 'true' and '$(IsILToolPackage)' == 'true'" AdditionalProperties="%(AdditionalProperties);PackCrossComponent=true" />
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <!-- Package wrapper projects add exactly the filtered package references below for graph builds. -->
+    <AddTransitiveProjectReferencesInStaticGraph>false</AddTransitiveProjectReferencesInStaticGraph>
+  </PropertyGroup>
 
-    <ProjectReference Include="@(_projectsToBuild)" />
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true' and Exists('$(MSBuildProjectDirectory)/$(MSBuildProjectName).pkgproj')">
+    <!-- Mirror FilterProjects at evaluation time so static graph construction sees the same package subset. -->
+    <_graphProjectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', '$(TargetRid)'))" />
+    <_graphProjectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', ''))" Condition="'$(BuildIdentityPackage)' == 'true'" />
+    <_graphProjectsToBuild Include="@(Project->WithMetadataValue('PackageTargetRuntime', '$(NETCoreSdkRuntimeIdentifier)'))"
+                           Condition="'$(BuildHostILTools)' == 'true' and '$(IsILToolPackage)' == 'true'"
+                           AdditionalProperties="%(Project.AdditionalProperties);PackCrossComponent=true" />
+
+    <ProjectReference Include="@(_graphProjectsToBuild)"
+                      Targets="Build;Pack" />
+
+    <!-- Package wrappers normally enter through Pack; their selected package projects still need Build. -->
+    <ProjectReferenceTargets Include="Pack" Targets="Build;Pack" />
   </ItemGroup>
 
-  <Target Name="FilterProjects" BeforeTargets="Build;Pack" Condition="'$(IsGraphBuild)' != 'true' or '$(TargetRid)' == ''">
+  <Target Name="FilterProjects" BeforeTargets="Build;Pack">
     <Error Condition="'$(TargetRid)' == ''" Text="'TargetRid' property must be specified."/>
 
     <!-- Only build packages for current RID or non-RID-specific -->
