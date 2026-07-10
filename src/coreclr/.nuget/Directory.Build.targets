@@ -1,4 +1,5 @@
 <Project>
   <Import Project="..\Directory.Build.targets" />
+  <Import Project="versioning.targets" />
   <Import Project="pkgproj.targets" Condition="'$(UsePkgProjTargets)' != 'false'" />
 </Project>
