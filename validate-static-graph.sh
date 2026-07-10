@@ -9,9 +9,28 @@ runtime_configuration="${RUNTIME_CONFIGURATION:-Release}"
 target_architecture="${TARGET_ARCHITECTURE:-x64}"
 build_architecture="${BUILD_ARCHITECTURE:-x64}"
 validation_tool_root="${MSBUILD_GRAPH_VALIDATION_ROOT:-$HOME/src/msbuild-graph-validation}"
-subset="clr"
-output_dir="$repo_root/artifacts/log/static-graph-validation/$subset"
-diff_output="$repo_root/static-graph-$subset.diff"
+target="${1:-${STATIC_GRAPH_TARGET:-clr}}"
+subset="$target"
+entry_project="Build.proj"
+restore_label="$target"
+
+case "$target" in
+    clr)
+        entry_project="Build.proj"
+        restore_command=(./build.sh clr --restore --runtimeConfiguration "$runtime_configuration")
+        ;;
+    libs.native)
+        entry_project="src/native/libs/build-native.proj"
+        restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
+        ;;
+    *)
+        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native" >&2
+        exit 1
+        ;;
+esac
+
+output_dir="$repo_root/artifacts/log/static-graph-validation/$target"
+diff_output="$repo_root/static-graph-$target.diff"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/runtime-static-graph-validation.XXXXXX")"
 
 cleanup() {
@@ -51,8 +70,33 @@ run_graph_validation_tool() {
     DOTNET_ROLL_FORWARD=Major dotnet "$tool_dll" "$@"
 }
 
+write_full_context_diff() {
+    local left="$1"
+    local right="$2"
+    local left_label="$3"
+    local right_label="$4"
+    local output="$5"
+
+    diff -u -U1000000 \
+        --label "$left_label" \
+        --label "$right_label" \
+        "$left" \
+        "$right" \
+        > "$output" || true
+
+    if [[ ! -s "$output" ]]; then
+        {
+            echo "--- $left_label"
+            echo "+++ $right_label"
+            local line_count
+            line_count="$(wc -l < "$left")"
+            echo "@@ -1,$line_count +1,$line_count @@"
+            sed 's/^/ /' "$left"
+        } > "$output"
+    fi
+}
+
 common_properties=(
-    "/p:Subset=$subset"
     "/p:Configuration=$configuration"
     "/p:RuntimeConfiguration=$runtime_configuration"
     "/p:Restore=false"
@@ -63,36 +107,40 @@ common_properties=(
     "/p:FeatureDynamicCodeCompiled=true"
 )
 
+if [[ "$target" == "clr" ]]; then
+    common_properties=("/p:Subset=clr" "${common_properties[@]}")
+fi
+
 log "Removing artifacts for a clean validation run"
 rm -rf "$repo_root/artifacts"
 
-log "Restoring the clr subset"
-run_timed "restore dynamic" ./build.sh clr --restore --runtimeConfiguration "$runtime_configuration"
+log "Restoring $restore_label"
+run_timed "restore dynamic" "${restore_command[@]}"
 
-log "Capturing dynamic non-graph clr build"
-run_timed "dynamic build" ./dotnet.sh msbuild Build.proj \
-    "/bl:$work_dir/dynamic-clr.binlog" \
+log "Capturing dynamic non-graph $target build"
+run_timed "dynamic build" ./dotnet.sh msbuild "$entry_project" \
+    "/bl:$work_dir/dynamic-$target.binlog" \
     "${common_properties[@]}"
 
 log "Removing artifacts before the isolated static graph build"
 rm -rf "$repo_root/artifacts"
 
-log "Restoring the clr subset for the isolated static graph build"
-run_timed "restore static" ./build.sh clr --restore --runtimeConfiguration "$runtime_configuration"
+log "Restoring $restore_label for the isolated static graph build"
+run_timed "restore static" "${restore_command[@]}"
 
-log "Running isolated static graph clr build"
-run_timed "static graph build" ./dotnet.sh msbuild Build.proj \
+log "Running isolated static graph $target build"
+run_timed "static graph build" ./dotnet.sh msbuild "$entry_project" \
     /graphBuild \
     /isolateProjects \
-    "/bl:$work_dir/static-clr.binlog" \
+    "/bl:$work_dir/static-$target.binlog" \
     "${common_properties[@]}"
 
 log "Comparing dynamic and static graph binlogs"
-run_graph_validation_tool dynamic "$work_dir/dynamic-clr.binlog" \
+run_graph_validation_tool dynamic "$work_dir/dynamic-$target.binlog" \
     --repo-root "$repo_root" \
     -o "$work_dir/dynamic.json"
 
-run_graph_validation_tool dynamic "$work_dir/static-clr.binlog" \
+run_graph_validation_tool dynamic "$work_dir/static-$target.binlog" \
     --repo-root "$repo_root" \
     -o "$work_dir/static.json"
 
@@ -106,14 +154,14 @@ for file in nodes.txt edges.txt; do
     sed -i "s|$repo_root/||g" "$work_dir/normalized/dynamic/$file" "$work_dir/normalized/static/$file"
 done
 
-diff -u -U1000000 \
-    --label "dynamic/nodes.txt" \
-    --label "static/nodes.txt" \
+write_full_context_diff \
     "$work_dir/normalized/dynamic/nodes.txt" \
     "$work_dir/normalized/static/nodes.txt" \
-    > "$diff_output" || true
+    "dynamic/nodes.txt" \
+    "static/nodes.txt" \
+    "$diff_output"
 
-cp "$diff_output" "$work_dir/static-graph-$subset.diff"
+cp "$diff_output" "$work_dir/static-graph-$target.diff"
 
 run_graph_validation_tool compare \
     --left "$work_dir/dynamic.json" \
