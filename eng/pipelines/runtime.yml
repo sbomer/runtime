@@ -264,14 +264,14 @@ extends:
                   set -euo pipefail
                   cd "$(Build.SourcesDirectory)"
                   staticGraphDir="$(Build.SourcesDirectory)/artifacts/obj/static-graph-ci"
-                  selectedFrameworksRawFile="$staticGraphDir/selected-target-frameworks.raw.txt"
-                  selectedFrameworksTargets="$staticGraphDir/selected-target-frameworks.targets"
+                  captureFile="$staticGraphDir/project-references.raw.txt"
+                  replayTargets="$staticGraphDir/project-references.replay.targets"
 
                   ./dotnet.sh build src/tasks/StaticGraphTasks/StaticGraphTasks.csproj -c $(_BuildConfig) --no-restore
-                  rm -f "$selectedFrameworksRawFile" "$selectedFrameworksTargets"
+                  rm -f "$captureFile" "$replayTargets"
 
                   ./dotnet.sh msbuild Build.proj \
-                    /t:CaptureStaticGraphSelectedTargetFrameworksRecursive \
+                    /t:CaptureProjectReferencesRecursive \
                     /p:Subset=clr \
                     /p:Configuration=$(_BuildConfig) \
                     /p:RuntimeConfiguration=Release \
@@ -281,19 +281,19 @@ extends:
                     /p:TargetOS=linux \
                     /p:TargetArchitecture=x64 \
                     /p:BuildArchitecture=x64 \
-                    /p:CaptureStaticGraphSelectedTargetFrameworks=true \
-                    /p:StaticGraphSelectedTargetFrameworksRawFile="$selectedFrameworksRawFile"
+                    /p:CaptureProjectReferences=true \
+                    /p:CaptureProjectReferencesFile="$captureFile"
 
                   ./dotnet.sh msbuild Build.proj \
-                    /t:GenerateStaticGraphSelectedTargetFrameworks \
+                    /t:GenerateProjectReferenceReplay \
                     /p:Configuration=$(_BuildConfig) \
                     /p:RuntimeConfiguration=Release \
                     /p:Ninja=true \
                     /p:TargetOS=linux \
                     /p:TargetArchitecture=x64 \
                     /p:BuildArchitecture=x64 \
-                    /p:StaticGraphSelectedTargetFrameworksRawFile="$selectedFrameworksRawFile" \
-                    /p:StaticGraphSelectedTargetFrameworksTargets="$selectedFrameworksTargets"
+                    /p:CaptureProjectReferencesFile="$captureFile" \
+                    /p:ProjectReferenceReplayTargets="$replayTargets"
 
                   ./dotnet.sh msbuild Build.proj \
                     /graphBuild \
@@ -307,8 +307,8 @@ extends:
                     /p:TargetOS=linux \
                     /p:TargetArchitecture=x64 \
                     /p:BuildArchitecture=x64 \
-                    /p:StaticGraphUseSelectedTargetFrameworks=true \
-                    /p:StaticGraphSelectedTargetFrameworksTargets="$selectedFrameworksTargets"
+                    /p:UseProjectReferenceReplay=true \
+                    /p:ProjectReferenceReplayTargets="$replayTargets"
                 displayName: Build CoreCLR static graph
             condition: >-
               or(

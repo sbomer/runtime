@@ -1,0 +1,73 @@
+<Project>
+  <PropertyGroup>
+    <CaptureProjectReferencesFile Condition="'$(CaptureProjectReferencesFile)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.raw.txt'))</CaptureProjectReferencesFile>
+    <ProjectReferenceReplayTargets Condition="'$(ProjectReferenceReplayTargets)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.replay.targets'))</ProjectReferenceReplayTargets>
+    <_StaticGraphTasksTargetFramework Condition="'$(NetCoreAppToolCurrent)' != ''">$(NetCoreAppToolCurrent)</_StaticGraphTasksTargetFramework>
+    <_StaticGraphTasksTargetFramework Condition="'$(_StaticGraphTasksTargetFramework)' == ''">net11.0</_StaticGraphTasksTargetFramework>
+    <_StaticGraphTasksArtifactsBinDir Condition="'$(ArtifactsBinDir)' != ''">$(ArtifactsBinDir)</_StaticGraphTasksArtifactsBinDir>
+    <_StaticGraphTasksArtifactsBinDir Condition="'$(_StaticGraphTasksArtifactsBinDir)' == ''">$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'artifacts', 'bin'))</_StaticGraphTasksArtifactsBinDir>
+    <StaticGraphTasksAssemblyPath Condition="'$(StaticGraphTasksAssemblyPath)' == ''">$([MSBuild]::NormalizePath('$(_StaticGraphTasksArtifactsBinDir)', 'StaticGraphTasks', '$(TasksConfiguration)', '$(_StaticGraphTasksTargetFramework)', 'StaticGraphTasks.dll'))</StaticGraphTasksAssemblyPath>
+  </PropertyGroup>
+
+  <UsingTask TaskName="Microsoft.DotNet.Runtime.Tasks.GenerateProjectReferenceReplay"
+             AssemblyFile="$(StaticGraphTasksAssemblyPath)"
+             Condition="Exists('$(StaticGraphTasksAssemblyPath)')" />
+
+  <Target Name="CaptureProjectReferences"
+          AfterTargets="ResolveP2PReferences"
+          Condition="'$(CaptureProjectReferences)' == 'true' and '$(CaptureProjectReferencesFile)' != ''">
+    <ItemGroup>
+      <_CapturedProjectReference Include="$(MSBuildProjectFullPath)"
+                                 Condition="'$(UsingMicrosoftTraversalSdk)' == 'true' and '$(FilterTraversalProjectReferences)' == 'true'">
+        <Line>$(MSBuildProjectFullPath)|||||||</Line>
+      </_CapturedProjectReference>
+      <_CapturedProjectReference Include="@(ProjectReference)">
+        <Line>$(MSBuildProjectFullPath)|%(ProjectReference.FullPath)|%(ProjectReference.NearestTargetFramework)|%(ProjectReference.SetTargetFramework)|%(ProjectReference.SetConfiguration)|%(ProjectReference.SetPlatform)|%(ProjectReference.UndefineProperties)|%(ProjectReference.SkipGetTargetFrameworkProperties)</Line>
+      </_CapturedProjectReference>
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(CaptureProjectReferencesFile)"
+                      Lines="@(_CapturedProjectReference->'%(Line)')"
+                      Overwrite="false" />
+  </Target>
+
+  <Target Name="_InitializeProjectReferenceCapture"
+          Condition="'$(CaptureProjectReferences)' == 'true' and '$(_ProjectReferenceCaptureInitialized)' != 'true' and '$(CaptureProjectReferencesFile)' != ''">
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(CaptureProjectReferencesFile)'))" />
+    <Delete Files="$(CaptureProjectReferencesFile)" />
+  </Target>
+
+  <Target Name="CaptureProjectReferencesRecursive"
+          DependsOnTargets="_InitializeProjectReferenceCapture;_CaptureProjectReferencesOuterBuild;_CaptureProjectReferencesInnerBuild" />
+
+  <Target Name="_CaptureProjectReferencesOuterBuild"
+          Condition="'$(IsCrossTargetingBuild)' == 'true'">
+    <ItemGroup>
+      <_CaptureTargetFramework Include="$(TargetFrameworks)" />
+    </ItemGroup>
+
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+             Targets="CaptureProjectReferencesRecursive"
+             Properties="TargetFramework=%(_CaptureTargetFramework.Identity);CaptureProjectReferences=true;CaptureProjectReferencesFile=$(CaptureProjectReferencesFile);_ProjectReferenceCaptureInitialized=true"
+             RemoveProperties="TargetFrameworks"
+             BuildInParallel="false"
+             SkipNonexistentTargets="true" />
+  </Target>
+
+  <Target Name="_CaptureProjectReferencesInnerBuild"
+          DependsOnTargets="PrepareProjectReferences;CaptureProjectReferences"
+          Condition="'$(IsCrossTargetingBuild)' != 'true'">
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+             Targets="CaptureProjectReferencesRecursive"
+             Properties="%(_MSBuildProjectReferenceExistent.SetTargetFramework);%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);CaptureProjectReferences=true;CaptureProjectReferencesFile=$(CaptureProjectReferencesFile);_ProjectReferenceCaptureInitialized=true"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove);%(_MSBuildProjectReferenceExistent.UndefineProperties)"
+             BuildInParallel="false"
+             SkipNonexistentTargets="true" />
+  </Target>
+
+  <Target Name="GenerateProjectReferenceReplay"
+          Condition="'$(CaptureProjectReferencesFile)' != '' and '$(ProjectReferenceReplayTargets)' != ''">
+    <Microsoft.DotNet.Runtime.Tasks.GenerateProjectReferenceReplay RawSelectionFile="$(CaptureProjectReferencesFile)"
+                                                                    OutputFile="$(ProjectReferenceReplayTargets)" />
+  </Target>
+</Project>

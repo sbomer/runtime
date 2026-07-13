@@ -5,13 +5,13 @@
     tell Microsoft.Common.targets not to import Directory.Build.targets again
     -->
     <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
-    <StaticGraphSelectedTargetFrameworksTargets Condition="'$(StaticGraphSelectedTargetFrameworksTargets)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'selected-target-frameworks.targets'))</StaticGraphSelectedTargetFrameworksTargets>
+    <ProjectReferenceReplayTargets Condition="'$(ProjectReferenceReplayTargets)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.replay.targets'))</ProjectReferenceReplayTargets>
   </PropertyGroup>
 
-  <Import Project="$(StaticGraphSelectedTargetFrameworksTargets)"
-          Condition="'$(StaticGraphUseSelectedTargetFrameworks)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(StaticGraphSelectedTargetFrameworksTargets)' != '' and Exists('$(StaticGraphSelectedTargetFrameworksTargets)')" />
+  <Import Project="$(ProjectReferenceReplayTargets)"
+          Condition="'$(UseProjectReferenceReplay)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(ProjectReferenceReplayTargets)' != '' and Exists('$(ProjectReferenceReplayTargets)')" />
 
-  <Import Project="$(RepositoryEngineeringDir)staticGraphTargetFrameworkSelection.targets" />
+  <Import Project="$(RepositoryEngineeringDir)projectReferenceReplay.targets" />
 
   <Import Project="$(RepositoryEngineeringDir)liveBuilds.targets" />
 

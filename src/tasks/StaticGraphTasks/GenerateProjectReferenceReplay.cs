@@ -11,7 +11,7 @@ using Microsoft.Build.Utilities;
 
 namespace Microsoft.DotNet.Runtime.Tasks;
 
-public sealed class GenerateSelectedTargetFrameworks : Task
+public sealed class GenerateProjectReferenceReplay : Task
 {
     [Required]
     public string? RawSelectionFile { get; set; }
