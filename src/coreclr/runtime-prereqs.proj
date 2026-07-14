@@ -9,11 +9,26 @@
     <VerifySourceLinkFileExists Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(EnableSourceControlManagerQueries)' == 'true'">true</VerifySourceLinkFileExists>
     <AssemblyName>.NET Runtime</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <NativeVersionFile Condition="$([MSBuild]::IsOsPlatform(Windows))">$(IntermediateOutputPath)_version.h</NativeVersionFile>
+    <NativeVersionFile Condition="!$([MSBuild]::IsOsPlatform(Windows)) or '$(TargetsMobile)' == 'true'">$(IntermediateOutputPath)_version.c</NativeVersionFile>
+    <NativeVersionHeaderFile>$(IntermediateOutputPath)_version.h</NativeVersionHeaderFile>
+    <RuntimeVersionFile>$(IntermediateOutputPath)runtime_version.h</RuntimeVersionFile>
+    <NativeSourceLinkFile>$(IntermediateOutputPath)native.sourcelink.json</NativeSourceLinkFile>
+  </PropertyGroup>
 
   <Import Project="$(RepositoryEngineeringDir)versioning.targets" />
   <Import Project="$(RepositoryEngineeringDir)nativepgo.targets" />
 
-  <Target Name="BuildPrereqs" BeforeTargets="Build" DependsOnTargets="GenerateRuntimeVersionFile;GenerateNativeSourcelinkFile" />
+  <Target Name="BuildPrereqs" BeforeTargets="Build" DependsOnTargets="GenerateRuntimeVersionFile;GenerateNativeSourcelinkFile;CopyGraphBuildNativeVersionHeader" />
+  <Target Name="CopyGraphBuildNativeVersionHeader"
+          Condition="'$(IsGraphBuild)' == 'true'"
+          Inputs="$(RepositoryEngineeringDir)native/version/_version.h"
+          Outputs="$(NativeVersionHeaderFile)">
+    <Copy SourceFiles="$(RepositoryEngineeringDir)native/version/_version.h"
+          DestinationFiles="$(NativeVersionHeaderFile)"
+          SkipUnchangedFiles="true" />
+  </Target>
   
   <!-- 
     This is a workaround when cross-compiling on Windows for non-windows (Mobile for now) targets. 

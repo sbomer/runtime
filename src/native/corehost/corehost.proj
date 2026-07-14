@@ -22,6 +22,15 @@
     <NativeVersionFile Condition="!$([MSBuild]::IsOsPlatform(Windows)) or '$(TargetsMobile)' == 'true'">$(ArtifactsObjDir)_version.c</NativeVersionFile>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <StaticGraphOutputDirectory Include="$(DotNetHostBinDir)" />
+    <StaticGraphOutputDirectory Include="$(IntermediateOutputRootPath)" />
+    <StaticGraphOutputDirectory Include="$(IntermediateOutputRootPath)corehost" />
+
+    <StaticGraphInputDirectory Include="$(SharedNativeRoot)corehost" />
+    <StaticGraphInputDirectory Include="$(RepositoryEngineeringDir)native" />
+  </ItemGroup>
+
   <Target Name="CopySingleFileHost" AfterTargets="Build">
 
     <PropertyGroup>

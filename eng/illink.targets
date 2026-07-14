@@ -102,7 +102,10 @@
   <UsingTask TaskName="CombineLinkerXmlFiles"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
-             Condition="'$(ILLinkTasksAssembly)' != ''" />
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' != 'true'" />
+  <UsingTask TaskName="CombineLinkerXmlFiles"
+             AssemblyFile="$(ILLinkTasksAssembly)"
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' == 'true'" />
   <Target Name="_CombineILLinkDescriptorsXmls"
           Condition="'@(ILLinkDescriptorsXmls)' != ''"
           Inputs="@(ILLinkDescriptorsXmls)"
@@ -198,7 +201,10 @@
   <UsingTask TaskName="ILLink"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
-             Condition="'$(ILLinkTasksAssembly)' != ''" />
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' != 'true'" />
+  <UsingTask TaskName="ILLink"
+             AssemblyFile="$(ILLinkTasksAssembly)"
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' == 'true'" />
   <Target Name="ILLinkTrimAssembly"
           Condition="'$(ILLinkTrimAssembly)' == 'true'"
           DependsOnTargets="PrepareForAssembliesTrim">

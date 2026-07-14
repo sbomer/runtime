@@ -5,6 +5,11 @@ __RepoRoot="$(cd "$(dirname "$__VersionFolder")/../../"; pwd -P)"
 
 for path in "${__VersionFolder}/"*{.h,.c}; do
     if [[ "$(basename $path)" == _version.c ]]; then
+        version_file_destination="${CLR_VERSION_FILE_PATH:-$__RepoRoot/artifacts/obj/_version.c}"
+        if [[ "${CLR_VERSION_FILE_PATH:-}" != "" && -e "$version_file_destination" ]]; then
+            continue
+        fi
+
         # For _version.c, update the commit ID if it has changed from the last build.
         # Set IFS to nothing to prevent the shell from combining all of the piped output into a single line in the script below
         IFS=
@@ -14,11 +19,10 @@ for path in "${__VersionFolder}/"*{.h,.c}; do
         weak_substitute="$(printf 'char sccsid[] __attribute__((used, weak)) = "@(#)Version N/A @Commit: %s";\n' "$commit")"
         retain_substitute="$(printf 'static char sccsid[] __attribute__((used, retain)) = "@(#)Version N/A @Commit: %s";\n' "$commit")"
         version_file_contents="$(cat "$path" | sed -e "s|^char sccsid\[\].*|$weak_substitute|" -e "s|^static char sccsid\[\].*|$retain_substitute|")"
-        version_file_destination="$__RepoRoot/artifacts/obj/_version.c"
         current_contents=
         is_placeholder_file=
         if [[ -e "$version_file_destination" ]]; then
-            current_contents="$(<"$__RepoRoot/artifacts/obj/_version.c")"
+            current_contents="$(<"$version_file_destination")"
             # If the current file has the version placeholder this script uses, we can update it
             # to have the current commit. Otherwise, use the current version file that has the actual product version.
             is_placeholder_file="$(echo $current_contents | grep "@(#)Version N/A @Commit:")"
@@ -27,9 +31,20 @@ for path in "${__VersionFolder}/"*{.h,.c}; do
             is_placeholder_file=1
         fi
         if [[ "$is_placeholder_file" && "$version_file_contents" != "$current_contents" ]]; then
+            mkdir -p "$(dirname "$version_file_destination")"
             echo "$version_file_contents" > "$version_file_destination"
         fi
-    elif [[ ! -e "$__RepoRoot/artifacts/obj/$(basename "$path")" ]]; then
-        cp "$path" "$__RepoRoot/artifacts/obj/"
+    else
+        destination="$__RepoRoot/artifacts/obj/$(basename "$path")"
+        if [[ "$(basename "$path")" == "_version.h" && "${CLR_VERSION_HEADER_PATH:-}" != "" ]]; then
+            destination="$CLR_VERSION_HEADER_PATH"
+        elif [[ "$(basename "$path")" == "runtime_version.h" && "${CLR_RUNTIME_VERSION_HEADER_PATH:-}" != "" ]]; then
+            destination="$CLR_RUNTIME_VERSION_HEADER_PATH"
+        fi
+
+        if [[ ! -e "$destination" ]]; then
+            mkdir -p "$(dirname "$destination")"
+            cp "$path" "$destination"
+        fi
     fi
 done

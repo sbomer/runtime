@@ -32,7 +32,10 @@
   <UsingTask TaskName="CreateRuntimeRootILLinkDescriptorFile"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
-             Condition="'$(ILLinkTasksAssembly)' != ''" />
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' != 'true'" />
+  <UsingTask TaskName="CreateRuntimeRootILLinkDescriptorFile"
+             AssemblyFile="$(ILLinkTasksAssembly)"
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' == 'true'" />
   <Target Name="_CreateILLinkRuntimeRootDescriptorFile"
           DependsOnTargets="_CombineILLinkTrimXmlFilePaths;ResolveProjectReferences"
           Inputs="$(_NamespaceFilePath);$(_MscorlibFilePath);$(_CortypeFilePath);$(_RexcepFilePath);$(_ILLinkDescriptorsIntermediatePath)"
@@ -50,7 +53,10 @@
   <UsingTask TaskName="CombineLinkerXmlFiles"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
-             Condition="'$(ILLinkTasksAssembly)' != ''" />
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' != 'true'" />
+  <UsingTask TaskName="CombineLinkerXmlFiles"
+             AssemblyFile="$(ILLinkTasksAssembly)"
+             Condition="'$(ILLinkTasksAssembly)' != '' and '$(IsGraphBuild)' == 'true'" />
   <Target Name="_CombineILLinkTrimXmlFilePaths"
           DependsOnTargets="ResolveProjectReferences"
           Inputs="@(_ILLinkDescriptorsFilePaths)"
