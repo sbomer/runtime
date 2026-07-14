@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <_StaticGraphTasksTargetFramework Condition="'$(NetCoreAppToolCurrent)' != ''">$(NetCoreAppToolCurrent)</_StaticGraphTasksTargetFramework>
+    <_StaticGraphTasksTargetFramework Condition="'$(_StaticGraphTasksTargetFramework)' == ''">net11.0</_StaticGraphTasksTargetFramework>
+    <_StaticGraphTasksArtifactsBinDir Condition="'$(ArtifactsBinDir)' != ''">$(ArtifactsBinDir)</_StaticGraphTasksArtifactsBinDir>
+    <_StaticGraphTasksArtifactsBinDir Condition="'$(_StaticGraphTasksArtifactsBinDir)' == ''">$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'artifacts', 'bin'))</_StaticGraphTasksArtifactsBinDir>
+    <StaticGraphTasksAssemblyPath Condition="'$(StaticGraphTasksAssemblyPath)' == ''">$([MSBuild]::NormalizePath('$(_StaticGraphTasksArtifactsBinDir)', 'StaticGraphTasks', '$(TasksConfiguration)', '$(_StaticGraphTasksTargetFramework)', 'StaticGraphTasks.dll'))</StaticGraphTasksAssemblyPath>
+  </PropertyGroup>
+
+  <UsingTask TaskName="Microsoft.DotNet.Runtime.Tasks.DeduplicateProjectReferenceCapture"
+             AssemblyFile="$(StaticGraphTasksAssemblyPath)"
+             Condition="Exists('$(StaticGraphTasksAssemblyPath)')" />
+  <UsingTask TaskName="Microsoft.DotNet.Runtime.Tasks.GenerateProjectReferenceReplay"
+             AssemblyFile="$(StaticGraphTasksAssemblyPath)"
+             Condition="Exists('$(StaticGraphTasksAssemblyPath)')" />
+</Project>

@@ -1,0 +1,102 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)projectReferenceTasks.targets" />
+
+  <PropertyGroup>
+    <CaptureProjectReferencesFile Condition="'$(CaptureProjectReferencesFile)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.raw.txt'))</CaptureProjectReferencesFile>
+    <_ProjectReferenceCaptureMetadata>CaptureParentProject;CaptureParentTargetFramework;CaptureReferencedProject;CaptureSetTargetFramework</_ProjectReferenceCaptureMetadata>
+  </PropertyGroup>
+
+  <!-- ResolveP2PReferences and DotNetBuildTasksTargetFrameworkAssembly are both provided by Microsoft.DotNet.Build.Tasks.TargetFramework. -->
+  <Target Name="CaptureProjectReferences"
+          DependsOnTargets="ResolveP2PReferences"
+          Condition="'$(CaptureProjectReferences)' == 'true' and '$(DotNetBuildTasksTargetFrameworkAssembly)' != ''">
+    <ItemGroup>
+      <_CapturedProjectReference Include="$(MSBuildProjectFullPath)"
+                                 Condition="'$(OmitIncompatibleProjectReferences)' == 'true'">
+        <CaptureParentProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '$(MSBuildProjectFullPath)').Replace('\', '/'))</CaptureParentProject>
+        <CaptureParentTargetFramework>$(TargetFramework)</CaptureParentTargetFramework>
+        <!-- An empty referenced project marks this project instance's reference set as authoritative. -->
+        <CaptureReferencedProject />
+        <CaptureSetTargetFramework />
+      </_CapturedProjectReference>
+      <_CapturedProjectReference Include="@(ProjectReference)">
+        <CaptureParentProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '$(MSBuildProjectFullPath)').Replace('\', '/'))</CaptureParentProject>
+        <CaptureParentTargetFramework>$(TargetFramework)</CaptureParentTargetFramework>
+        <CaptureReferencedProject>%(ProjectReference.FullPath)</CaptureReferencedProject>
+        <CaptureSetTargetFramework>%(ProjectReference.SetTargetFramework)</CaptureSetTargetFramework>
+      </_CapturedProjectReference>
+      <_CapturedProjectReference Update="@(_CapturedProjectReference)"
+                                 Condition="'%(_CapturedProjectReference.CaptureReferencedProject)' != ''">
+        <CaptureReferencedProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '%(_CapturedProjectReference.CaptureReferencedProject)').Replace('\', '/'))</CaptureReferencedProject>
+      </_CapturedProjectReference>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CaptureProjectReferencesRecursive"
+          DependsOnTargets="_CaptureProjectReferencesRecursive"
+          Condition="'$(CaptureProjectReferencesFile)' != ''">
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(CaptureProjectReferencesFile)'))" />
+    <ItemGroup>
+      <_CapturedProjectReferenceResult>
+        <Line>%(_CapturedProjectReferenceResult.CaptureParentProject)|%(_CapturedProjectReferenceResult.CaptureParentTargetFramework)|%(_CapturedProjectReferenceResult.CaptureReferencedProject)|%(_CapturedProjectReferenceResult.CaptureSetTargetFramework)</Line>
+      </_CapturedProjectReferenceResult>
+    </ItemGroup>
+    <WriteLinesToFile File="$(CaptureProjectReferencesFile)"
+                      Lines="@(_CapturedProjectReferenceResult->'%(Line)')"
+                      Overwrite="true" />
+  </Target>
+
+  <Target Name="_CaptureProjectReferencesRecursive"
+          DependsOnTargets="_CaptureProjectReferencesOuterBuild;_CaptureProjectReferencesInnerBuild;_DeduplicateCapturedProjectReferences"
+          Returns="@(_CapturedProjectReferenceResult)" />
+
+  <Target Name="_CaptureProjectReferencesOuterBuild"
+          Condition="'$(IsCrossTargetingBuild)' == 'true'">
+    <ItemGroup>
+      <_CaptureTargetFramework Include="$(TargetFrameworks)" />
+    </ItemGroup>
+
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+             Targets="_CaptureProjectReferencesRecursive"
+             Properties="TargetFramework=%(_CaptureTargetFramework.Identity);CaptureProjectReferences=true;StaticGraphTasksAssemblyPath=$(StaticGraphTasksAssemblyPath)"
+             RemoveProperties="TargetFrameworks"
+             BuildInParallel="$(BuildInParallel)"
+             SkipNonexistentTargets="true">
+      <Output TaskParameter="TargetOutputs"
+              ItemName="_CapturedProjectReferenceResult" />
+    </MSBuild>
+  </Target>
+
+  <Target Name="_CaptureProjectReferencesInnerBuild"
+          DependsOnTargets="PrepareProjectReferences;CaptureProjectReferences"
+          Condition="'$(IsCrossTargetingBuild)' != 'true'">
+    <ItemGroup>
+      <_CapturedProjectReferenceResult Include="@(_CapturedProjectReference)"
+                                       KeepMetadata="$(_ProjectReferenceCaptureMetadata)" />
+    </ItemGroup>
+
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+             Targets="_CaptureProjectReferencesRecursive"
+             Properties="%(_MSBuildProjectReferenceExistent.SetTargetFramework);%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);CaptureProjectReferences=true;StaticGraphTasksAssemblyPath=$(StaticGraphTasksAssemblyPath)"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove);%(_MSBuildProjectReferenceExistent.UndefineProperties);$(_GlobalPropertiesToRemoveFromProjectReferences)"
+             BuildInParallel="$(BuildInParallel)"
+             SkipNonexistentTargets="true">
+      <Output TaskParameter="TargetOutputs"
+              ItemName="_CapturedProjectReferenceResult" />
+    </MSBuild>
+  </Target>
+
+  <Target Name="_DeduplicateCapturedProjectReferences">
+    <!-- Shared subgraphs return the same records through multiple parents. -->
+    <Microsoft.DotNet.Runtime.Tasks.DeduplicateProjectReferenceCapture Items="@(_CapturedProjectReferenceResult)">
+      <Output TaskParameter="UniqueItems"
+              ItemName="_UniqueCapturedProjectReferenceResult" />
+    </Microsoft.DotNet.Runtime.Tasks.DeduplicateProjectReferenceCapture>
+
+    <ItemGroup>
+      <_CapturedProjectReferenceResult Remove="@(_CapturedProjectReferenceResult)" />
+      <_CapturedProjectReferenceResult Include="@(_UniqueCapturedProjectReferenceResult)"
+                                       KeepMetadata="$(_ProjectReferenceCaptureMetadata)" />
+    </ItemGroup>
+  </Target>
+</Project>

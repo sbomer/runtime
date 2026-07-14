@@ -6,12 +6,14 @@
     -->
     <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
     <ProjectReferenceReplayTargets Condition="'$(ProjectReferenceReplayTargets)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.replay.targets'))</ProjectReferenceReplayTargets>
+    <ProjectReferenceReplayEdgesTargets Condition="'$(ProjectReferenceReplayEdgesTargets)' == ''">$(ProjectReferenceReplayTargets).edges.targets</ProjectReferenceReplayEdgesTargets>
   </PropertyGroup>
 
   <Import Project="$(ProjectReferenceReplayTargets)"
-          Condition="'$(UseProjectReferenceReplay)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(ProjectReferenceReplayTargets)' != '' and Exists('$(ProjectReferenceReplayTargets)')" />
+          Condition="'$(UseProjectReferenceReplay)' == 'true' and '$(IsGraphBuild)' == 'true'" />
 
-  <Import Project="$(RepositoryEngineeringDir)projectReferenceReplay.targets" />
+  <Import Project="$(RepositoryEngineeringDir)captureProjectReferences.targets"
+          Condition="'$(CaptureProjectReferences)' == 'true'" />
 
   <Import Project="$(RepositoryEngineeringDir)liveBuilds.targets" />
 
@@ -203,4 +205,9 @@
       <Analyzer Remove="@(_targetingPackExcludedAnalyzerReferenceWithProjectName->Metadata('OriginalIdentity'))" />
     </ItemGroup>
   </Target>
+
+  <PropertyGroup Condition="'$(UseProjectReferenceReplay)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(UsingMicrosoftTraversalSdk)' != 'true'">
+    <_ProjectReferenceReplayCustomAfterTargets>$(CustomAfterDirectoryBuildTargets)</_ProjectReferenceReplayCustomAfterTargets>
+    <CustomAfterDirectoryBuildTargets>$(RepositoryEngineeringDir)projectReferenceReplay.after.targets</CustomAfterDirectoryBuildTargets>
+  </PropertyGroup>
 </Project>

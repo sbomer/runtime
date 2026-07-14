@@ -24,6 +24,21 @@
                       SkipGetTargetFrameworkProperties="false"  />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(UseProjectReferenceReplay)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(FilterTraversalProjectReferences)' == 'true'">
+    <!--
+      Traversal replaces the managed SDK's Build protocol with .default for both outer and inner builds.
+      The Arcade TFM negotiation package should restore this static graph protocol for its GetTargetFrameworks call.
+    -->
+    <ProjectReferenceTargets Remove="Build" />
+    <ProjectReferenceTargets Include="Build"
+                             Targets="GetTargetFrameworks"
+                             OuterBuild="true"
+                             SkipNonexistentTargets="true" />
+    <!-- This one is included by the traversal SDK. -->
+    <ProjectReferenceTargets Include="Build"
+                             Targets=".default" />
+  </ItemGroup>
+
   <!-- Override the Traversal SDK Build target so graph builds can collect referenced project outputs. -->
   <Target Name="Build"
           DependsOnTargets="$(BuildDependsOn)"
@@ -40,4 +55,7 @@
       <Output TaskParameter="TargetOutputs" ItemName="CollectedBuildOutput" />
     </MSBuild>
   </Target>
+
+  <Import Project="$(RepositoryEngineeringDir)projectReferenceReplay.after.targets"
+          Condition="'$(UseProjectReferenceReplay)' == 'true' and '$(IsGraphBuild)' == 'true'" />
 </Project>
