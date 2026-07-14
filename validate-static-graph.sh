@@ -49,6 +49,7 @@ esac
 output_dir="$repo_root/artifacts/log/static-graph-validation/$target"
 diff_output="$repo_root/static-graph-$target.diff"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/runtime-static-graph-validation.XXXXXX")"
+reuse_dynamic_binlog="${REUSE_DYNAMIC_BINLOG:-}"
 
 cleanup() {
     mkdir -p "$output_dir"
@@ -57,6 +58,17 @@ cleanup() {
 }
 
 trap cleanup EXIT
+
+if [[ -n "$reuse_dynamic_binlog" ]]; then
+    if [[ "$reuse_dynamic_binlog" == "true" ]]; then
+        reuse_dynamic_binlog="$output_dir/dynamic-$target.binlog"
+    fi
+    if [[ ! -f "$reuse_dynamic_binlog" ]]; then
+        echo "Dynamic binlog to reuse does not exist: $reuse_dynamic_binlog" >&2
+        exit 1
+    fi
+    cp "$reuse_dynamic_binlog" "$work_dir/dynamic-$target.binlog"
+fi
 
 log() {
     echo
@@ -142,8 +154,9 @@ run_timed "restore dynamic" "${restore_command[@]}" "$(msbuild_log_args restore-
 static_graph_properties=()
 if [[ "$use_project_reference_replay" == "true" ]]; then
     capture_file="$work_dir/project-references.raw.txt"
-    replay_file="$work_dir/project-references.replay.targets"
+    replay_file="$output_dir/project-references.replay.targets"
     static_graph_tasks="$repo_root/artifacts/bin/StaticGraphTasks/$tasks_configuration/net11.0/StaticGraphTasks.dll"
+    replay_generator_tasks="$work_dir/StaticGraphTasks.dll"
 
     log "Building project reference capture and replay tasks"
     run_timed "build replay tasks" ./dotnet.sh build src/tasks/StaticGraphTasks/StaticGraphTasks.csproj \
@@ -156,26 +169,23 @@ if [[ "$use_project_reference_replay" == "true" ]]; then
         /t:CaptureProjectReferencesRecursive \
         /nr:false \
         "${capture_parallelism[@]}" \
-        "/bl:$work_dir/dynamic-$target.binlog" \
+        "/bl:$work_dir/capture-$target.binlog" \
         "$(msbuild_log_args capture-dynamic-graph)" \
         "/p:CaptureProjectReferences=true" \
         "/p:CaptureProjectReferencesFile=$capture_file" \
         "/p:StaticGraphTasksAssemblyPath=$static_graph_tasks" \
         "${common_properties[@]}"
 
-    log "Generating project reference replay targets"
-    run_timed "generate project reference replay" ./dotnet.sh msbuild eng/projectReferenceReplay.targets \
-        /t:GenerateProjectReferenceReplay \
-        /nr:false \
-        "$(msbuild_log_args generate-project-reference-replay)" \
-        "/p:CaptureProjectReferencesFile=$capture_file" \
-        "/p:ProjectReferenceReplayTargets=$replay_file" \
-        "/p:StaticGraphTasksAssemblyPath=$static_graph_tasks"
+    cp "$static_graph_tasks" "$replay_generator_tasks"
 
     static_graph_properties=(
         "/p:UseProjectReferenceReplay=true"
         "/p:ProjectReferenceReplayTargets=$replay_file"
     )
+fi
+
+if [[ -n "$reuse_dynamic_binlog" ]]; then
+    log "Reusing dynamic non-graph $target build binlog from $reuse_dynamic_binlog"
 else
     log "Capturing dynamic non-graph $target build"
     run_timed "dynamic build" ./dotnet.sh msbuild "$entry_project" \
@@ -188,6 +198,19 @@ fi
 
 log "Removing artifacts before the isolated static graph build"
 rm -rf "$repo_root/artifacts"
+
+if [[ "$use_project_reference_replay" == "true" ]]; then
+    mkdir -p "$output_dir"
+    log "Generating project reference replay targets"
+    run_timed "generate project reference replay" ./dotnet.sh msbuild eng/projectReferenceReplay.targets \
+        /t:GenerateProjectReferenceReplay \
+        /nr:false \
+        "$(msbuild_log_args generate-project-reference-replay)" \
+        "/p:CaptureProjectReferencesFile=$capture_file" \
+        "/p:ProjectReferenceReplayTargets=$replay_file" \
+        "/p:StaticGraphTasksAssemblyPath=$replay_generator_tasks"
+    rm "$replay_generator_tasks"
+fi
 
 log "Restoring $restore_label for the isolated static graph build"
 run_timed "restore static" "${restore_command[@]}" "$(msbuild_log_args restore-static)"
@@ -249,19 +272,13 @@ write_full_context_diff \
 
 cp "$diff_output" "$work_dir/static-graph-$target.diff"
 
-if [[ "$use_project_reference_replay" == "false" ]]; then
-    run_graph_validation_tool compare \
-        --left "$work_dir/dynamic.json" \
-        --right "$work_dir/static.json" \
-        --repo-root "$repo_root" \
-        -o "$work_dir/comparison.txt"
-fi
+run_graph_validation_tool compare \
+    --left "$work_dir/dynamic.json" \
+    --right "$work_dir/static.json" \
+    --repo-root "$repo_root" \
+    -o "$work_dir/comparison.txt"
 
 echo
-if [[ "$use_project_reference_replay" == "true" ]]; then
-    echo "Static graph replay validation passed; normalized capture-vs-build differences are recorded for diagnostics"
-else
-    echo "Static graph binlog comparison passed"
-fi
+echo "Static graph binlog comparison passed"
 echo "Artifacts copied to $output_dir"
 echo "Diff written to $diff_output"
