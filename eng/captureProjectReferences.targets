@@ -19,7 +19,8 @@
         <CaptureReferencedProject />
         <CaptureSetTargetFramework />
       </_CapturedProjectReference>
-      <_CapturedProjectReference Include="@(ProjectReference)">
+      <_CapturedProjectReference Include="@(ProjectReference)"
+                                 Condition="'%(ProjectReference.BuildReference)' != 'false'">
         <CaptureParentProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '$(MSBuildProjectFullPath)').Replace('\', '/'))</CaptureParentProject>
         <CaptureParentTargetFramework>$(TargetFramework)</CaptureParentTargetFramework>
         <CaptureReferencedProject>%(ProjectReference.FullPath)</CaptureReferencedProject>
@@ -79,6 +80,7 @@
              Targets="_CaptureProjectReferencesRecursive"
              Properties="%(_MSBuildProjectReferenceExistent.SetTargetFramework);%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);CaptureProjectReferences=true;StaticGraphTasksAssemblyPath=$(StaticGraphTasksAssemblyPath)"
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove);%(_MSBuildProjectReferenceExistent.UndefineProperties);$(_GlobalPropertiesToRemoveFromProjectReferences)"
+             Condition="'%(_MSBuildProjectReferenceExistent.BuildReference)' != 'false'"
              BuildInParallel="$(BuildInParallel)"
              SkipNonexistentTargets="true">
       <Output TaskParameter="TargetOutputs"

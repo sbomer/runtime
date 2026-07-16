@@ -21,7 +21,8 @@
   <ItemGroup Condition="'$(FilterTraversalProjectReferences)' == 'true'">
     <!-- Override the Traversal SDK setting as filtering relies on the TargetFrameworkProperties being fetched. -->
     <ProjectReference Update="@(ProjectReference)"
-                      SkipGetTargetFrameworkProperties="false"  />
+                      SkipGetTargetFrameworkProperties="false"
+                      Condition="'$(UseProjectReferenceReplay)' != 'true'" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseProjectReferenceReplay)' == 'true' and '$(IsGraphBuild)' == 'true' and '$(FilterTraversalProjectReferences)' == 'true'">
@@ -34,9 +35,15 @@
                              Targets="GetTargetFrameworks"
                              OuterBuild="true"
                              SkipNonexistentTargets="true" />
-    <!-- This one is included by the traversal SDK. -->
+    <!--
+      Traversal's unqualified .default entry can also apply to outer builds, which is harmless when its
+      explicit outer-build entry also requests .default. Since the outer build above only negotiates target
+      frameworks, explicitly restrict .default to inner builds so this traversal edge does not also request
+      Build on the outer build.
+    -->
     <ProjectReferenceTargets Include="Build"
-                             Targets=".default" />
+                             Targets=".default"
+                             OuterBuild="false" />
   </ItemGroup>
 
   <!-- Override the Traversal SDK Build target so graph builds can collect referenced project outputs. -->
@@ -46,7 +53,7 @@
     <MSBuild Projects="@(ProjectReference)"
              Condition="'%(ProjectReference.Build)' != 'false'"
              BuildInParallel="$([MSBuild]::ValueOrDefault('%(ProjectReference.BuildInParallel)', '$(BuildInParallel)'))"
-             Properties="%(ProjectReference.SetConfiguration); %(ProjectReference.SetPlatform); %(ProjectReference.SetTargetFramework)"
+             Properties="%(ProjectReference.SetConfiguration); %(ProjectReference.SetPlatform); %(ProjectReference.SetTargetFramework); %(ProjectReference.ProjectReferenceReplaySetTargetFramework)"
              SkipNonexistentProjects="$(SkipNonexistentProjects)"
              SkipNonexistentTargets="$(SkipNonexistentTargets)"
              StopOnFirstFailure="$(StopOnFirstFailure)"

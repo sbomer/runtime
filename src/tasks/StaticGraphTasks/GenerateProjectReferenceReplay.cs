@@ -71,7 +71,14 @@ public sealed class GenerateProjectReferenceReplay : Task
                 continue;
             }
 
-            projectReferenceSet.ProjectReferences.Add(projectPath);
+            if (!projectReferenceSet.ProjectReferences.TryAdd(projectPath, setTargetFramework))
+            {
+                string existingSetTargetFramework = projectReferenceSet.ProjectReferences[projectPath];
+                if (!string.Equals(existingSetTargetFramework, setTargetFramework, StringComparison.OrdinalIgnoreCase))
+                {
+                    Log.LogError($"Project reference capture has conflicting SetTargetFramework metadata for '{parentProjectPath}' -> '{projectPath}': '{existingSetTargetFramework}' and '{setTargetFramework}'.");
+                }
+            }
 
             if (string.IsNullOrWhiteSpace(setTargetFramework))
             {
@@ -153,10 +160,12 @@ public sealed class GenerateProjectReferenceReplay : Task
 
             if (projectReferenceSetsByParent.TryGetValue(projectPath, out SortedDictionary<string, ProjectReferenceSet>? projectReferenceSetsByTargetFramework))
             {
+                bool hasProjectReferenceUpdates = false;
                 bool hasAuthoritativeProjectReferenceSet = false;
                 foreach (ProjectReferenceSet projectReferenceSet in projectReferenceSetsByTargetFramework.Values)
                 {
                     hasAuthoritativeProjectReferenceSet |= projectReferenceSet.IsAuthoritative;
+                    hasProjectReferenceUpdates |= projectReferenceSet.ProjectReferences.Count > 0;
                 }
 
                 if (hasAuthoritativeProjectReferenceSet)
@@ -176,7 +185,7 @@ public sealed class GenerateProjectReferenceReplay : Task
 
                     projectWriter.WriteStartElement("When");
                     projectWriter.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
-                    WriteProjectReferenceAllowListSelection(projectWriter, projectReferenceSet.ProjectReferences);
+                    WriteProjectReferenceAllowListSelection(projectWriter, projectReferenceSet.ProjectReferences.Keys);
                     projectWriter.WriteEndElement();
                 }
 
@@ -187,6 +196,13 @@ public sealed class GenerateProjectReferenceReplay : Task
                     WriteProjectReferenceAllowListApplication(projectWriter);
                 }
 
+                if (hasProjectReferenceUpdates)
+                {
+                    WriteProjectReferenceMetadata(
+                        projectWriter,
+                        projectReferenceSetsByTargetFramework,
+                        selectedFrameworksByProject);
+                }
             }
 
             projectWriter.WriteEndElement();
@@ -241,7 +257,9 @@ public sealed class GenerateProjectReferenceReplay : Task
         writer.WriteEndElement();
     }
 
-    private static void WriteProjectReferenceAllowListSelection(XmlWriter writer, SortedSet<string> selectedProjectReferences)
+    private static void WriteProjectReferenceAllowListSelection(
+        XmlWriter writer,
+        SortedDictionary<string, string>.KeyCollection selectedProjectReferences)
     {
         writer.WriteStartElement("PropertyGroup");
         writer.WriteElementString("_ApplyProjectReferenceReplayAllowList", "true");
@@ -254,6 +272,60 @@ public sealed class GenerateProjectReferenceReplay : Task
             {
                 writer.WriteStartElement("_ReplayProjectReference");
                 writer.WriteAttributeString("Include", $"$(RepoRoot){selectedProjectReference}");
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }
+    }
+
+    private static void WriteProjectReferenceMetadata(
+        XmlWriter writer,
+        SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework,
+        SortedDictionary<string, SortedSet<string>> selectedFrameworksByProject)
+    {
+        writer.WriteComment(" Replay negotiated edge metadata during evaluation for static graph construction. ");
+
+        foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
+        {
+            if (projectReferenceSet.ProjectReferences.Count == 0)
+            {
+                continue;
+            }
+
+            writer.WriteStartElement("ItemGroup");
+            writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
+            foreach ((string projectReference, string setTargetFramework) in projectReferenceSet.ProjectReferences)
+            {
+                writer.WriteStartElement("ProjectReference");
+                writer.WriteAttributeString("Update", $"$(RepoRoot){projectReference}");
+                writer.WriteElementString("SkipGetTargetFrameworkProperties", "true");
+
+                string replaySetTargetFramework = setTargetFramework;
+                if (string.IsNullOrWhiteSpace(replaySetTargetFramework) &&
+                    selectedFrameworksByProject.TryGetValue(projectReference, out SortedSet<string>? selectedFrameworks) &&
+                    selectedFrameworks.Count == 1)
+                {
+                    replaySetTargetFramework = $"TargetFramework={selectedFrameworks.Min}";
+                }
+
+                if (projectReferenceSet.IsAuthoritative)
+                {
+                    if (!string.IsNullOrWhiteSpace(replaySetTargetFramework))
+                    {
+                        writer.WriteElementString("ProjectReferenceReplaySetTargetFramework", replaySetTargetFramework);
+                    }
+                    writer.WriteEndElement();
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(replaySetTargetFramework))
+                {
+                    writer.WriteElementString("UndefineProperties", "%(ProjectReference.UndefineProperties);TargetFramework");
+                }
+                else
+                {
+                    writer.WriteElementString("SetTargetFramework", replaySetTargetFramework);
+                }
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();
@@ -292,6 +364,6 @@ public sealed class GenerateProjectReferenceReplay : Task
     {
         public bool IsAuthoritative { get; set; }
 
-        public SortedSet<string> ProjectReferences { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public SortedDictionary<string, string> ProjectReferences { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 }

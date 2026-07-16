@@ -6,6 +6,11 @@
     <BuildTargetFramework Condition="'$(BuildAllConfigurations)' != 'true'">$(NetCoreAppCurrent)</BuildTargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <!-- Direct traversal references already describe the graph; synthetic transitive edges bypass their target protocol. -->
+    <AddTransitiveProjectReferencesInStaticGraph>false</AddTransitiveProjectReferencesInStaticGraph>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == ''">
     <ProjectReference Include="sfx-src.proj" />
     <ProjectReference Include="oob-src.proj" />

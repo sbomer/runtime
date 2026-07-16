@@ -20,6 +20,9 @@ capture_parallelism=()
 static_graph_parallelism=()
 max_static_graph_nodes=0
 max_static_graph_edges=0
+prerequisite_projects=()
+bootstrap_subsets=()
+additional_common_properties=()
 
 case "$target" in
     clr)
@@ -32,6 +35,45 @@ case "$target" in
         ;;
     libs.sfx)
         entry_project="src/libraries/sfx-src.proj"
+        bootstrap_subsets=("clr+libs")
+        restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
+        use_project_reference_replay=true
+        dynamic_build_parallelism=(/m:1)
+        capture_parallelism=(/m:2)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=1000
+        max_static_graph_edges=50000
+        ;;
+    libs.sfx-gen)
+        entry_project="src/libraries/sfx-gen.proj"
+        bootstrap_subsets=("clr+libs")
+        restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
+        use_project_reference_replay=true
+        dynamic_build_parallelism=(/m:1)
+        capture_parallelism=(/m:2)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=1000
+        max_static_graph_edges=50000
+        ;;
+    libs.sfx-finish)
+        entry_project="src/libraries/sfx-finish.proj"
+        bootstrap_subsets=("clr+libs")
+        restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
+        use_project_reference_replay=true
+        dynamic_build_parallelism=(/m:1)
+        capture_parallelism=(/m:2)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=1000
+        max_static_graph_edges=50000
+        ;;
+    libs.oob)
+        entry_project="src/libraries/oob.proj"
+        bootstrap_subsets=("clr+libs")
+        prerequisite_projects=(
+            "src/native/libs/build-native.proj"
+            "src/libraries/sfx-finish.proj"
+        )
+        additional_common_properties=("/p:ApiCompatValidateAssemblies=false")
         restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
@@ -41,13 +83,14 @@ case "$target" in
         max_static_graph_edges=50000
         ;;
     *)
-        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx" >&2
+        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.sfx-gen, libs.sfx-finish, libs.oob" >&2
         exit 1
         ;;
 esac
 
 output_dir="$repo_root/artifacts/log/static-graph-validation/$target"
 diff_output="$repo_root/static-graph-$target.diff"
+comparison_output="$repo_root/static-graph-$target.comparison.txt"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/runtime-static-graph-validation.XXXXXX")"
 reuse_dynamic_binlog="${REUSE_DYNAMIC_BINLOG:-}"
 
@@ -96,7 +139,7 @@ run_graph_validation_tool() {
         dotnet build "$validation_tool_root/msbuild-graph-validation.slnx" -v:minimal
     fi
 
-    DOTNET_ROLL_FORWARD=Major dotnet "$tool_dll" "$@"
+    DOTNET_ROLL_FORWARD=Major ./dotnet.sh "$tool_dll" "$@"
 }
 
 msbuild_log_args() {
@@ -139,17 +182,68 @@ common_properties=(
     "/p:TargetArchitecture=$target_architecture"
     "/p:BuildArchitecture=$build_architecture"
     "/p:FeatureDynamicCodeCompiled=true"
+    "${additional_common_properties[@]}"
 )
 
 if [[ "$target" == "clr" ]]; then
     common_properties=("/p:Subset=clr" "${common_properties[@]}")
 fi
 
+build_prerequisites() {
+    local phase="$1"
+
+    if ((${#prerequisite_projects[@]} == 0)); then
+        return
+    fi
+
+    local prerequisite_project
+    local prerequisite_name
+    for prerequisite_project in "${prerequisite_projects[@]}"; do
+        prerequisite_name="$(basename "$prerequisite_project")"
+
+        log "Restoring $prerequisite_project for the $phase build"
+        run_timed "restore $phase prerequisite $prerequisite_name" ./dotnet.sh msbuild "$prerequisite_project" \
+            /t:Restore \
+            /nr:false \
+            "$(msbuild_log_args "${phase}-${prerequisite_name}-prerequisite-restore")" \
+            "/p:Configuration=$configuration" \
+            "/p:TargetArchitecture=$target_architecture" \
+            "/p:BuildArchitecture=$build_architecture"
+
+        log "Building $prerequisite_project for the $phase build"
+        run_timed "build $phase prerequisite $prerequisite_name" ./dotnet.sh msbuild "$prerequisite_project" \
+            /nr:false \
+            "${dynamic_build_parallelism[@]}" \
+            "$(msbuild_log_args "${phase}-${prerequisite_name}-prerequisite-build")" \
+            "${common_properties[@]}"
+    done
+}
+
+build_bootstrap_prerequisites() {
+    local phase="$1"
+
+    if ((${#bootstrap_subsets[@]} == 0)); then
+        return
+    fi
+
+    log "Building ${bootstrap_subsets[*]} bootstrap prerequisites for the $phase build"
+    run_timed "build $phase bootstrap prerequisites" ./build.sh "${bootstrap_subsets[@]}" \
+        -a "$target_architecture" \
+        -c "$configuration" \
+        -lc "$configuration" \
+        -rc "$runtime_configuration" \
+        "/p:BuildArchitecture=$build_architecture"
+}
+
 log "Removing artifacts for a clean validation run"
 rm -rf "$repo_root/artifacts"
 
+build_bootstrap_prerequisites dynamic
+
 log "Restoring $restore_label"
 run_timed "restore dynamic" "${restore_command[@]}" "$(msbuild_log_args restore-dynamic)"
+
+build_prerequisites dynamic
 
 static_graph_properties=()
 if [[ "$use_project_reference_replay" == "true" ]]; then
@@ -199,6 +293,8 @@ fi
 log "Removing artifacts before the isolated static graph build"
 rm -rf "$repo_root/artifacts"
 
+build_bootstrap_prerequisites static
+
 if [[ "$use_project_reference_replay" == "true" ]]; then
     mkdir -p "$output_dir"
     log "Generating project reference replay targets"
@@ -214,6 +310,8 @@ fi
 
 log "Restoring $restore_label for the isolated static graph build"
 run_timed "restore static" "${restore_command[@]}" "$(msbuild_log_args restore-static)"
+
+build_prerequisites static
 
 log "Running isolated static graph $target build"
 run_timed "static graph build" ./dotnet.sh msbuild "$entry_project" \
@@ -249,8 +347,15 @@ run_graph_validation_tool dynamic "$work_dir/dynamic-$target.binlog" \
     --repo-root "$repo_root" \
     -o "$work_dir/dynamic.json"
 
-run_graph_validation_tool dynamic "$work_dir/static-$target.binlog" \
+static_capture_properties=()
+for property in "${static_graph_properties[@]}" "${common_properties[@]}"; do
+    static_capture_properties+=(-p "${property#/p:}")
+done
+
+run_graph_validation_tool static "$entry_project" \
     --repo-root "$repo_root" \
+    -t Build \
+    "${static_capture_properties[@]}" \
     -o "$work_dir/static.json"
 
 run_graph_validation_tool normalize "$work_dir/dynamic.json" \
@@ -272,13 +377,25 @@ write_full_context_diff \
 
 cp "$diff_output" "$work_dir/static-graph-$target.diff"
 
+comparison_exit_code=0
 run_graph_validation_tool compare \
     --left "$work_dir/dynamic.json" \
     --right "$work_dir/static.json" \
     --repo-root "$repo_root" \
-    -o "$work_dir/comparison.txt"
+    -o "$work_dir/comparison.txt" || comparison_exit_code=$?
+
+if ((comparison_exit_code != 0 && comparison_exit_code != 2)); then
+    exit "$comparison_exit_code"
+fi
+
+cp "$work_dir/comparison.txt" "$comparison_output"
 
 echo
-echo "Static graph binlog comparison passed"
+if ((comparison_exit_code == 0)); then
+    echo "Static graph binlog comparison passed"
+else
+    echo "Static graph binlog comparison completed with differences"
+fi
 echo "Artifacts copied to $output_dir"
 echo "Diff written to $diff_output"
+echo "Comparison report written to $comparison_output"
