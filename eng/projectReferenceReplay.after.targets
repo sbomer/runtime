@@ -1,7 +1,4 @@
 <Project>
   <Import Project="$(_ProjectReferenceReplayCustomAfterTargets)"
           Condition="'$(_ProjectReferenceReplayCustomAfterTargets)' != '' and '$(_ProjectReferenceReplayCustomAfterTargets)' != '$(MSBuildThisFileFullPath)'" />
-
-  <Import Project="$(ProjectReferenceReplayEdgesTargets)"
-          Condition="'$(ProjectReferenceReplayEdgesTargets)' != ''" />
 </Project>

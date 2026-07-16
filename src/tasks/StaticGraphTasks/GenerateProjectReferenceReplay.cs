@@ -31,7 +31,6 @@ public sealed class GenerateProjectReferenceReplay : Task
 
         SortedDictionary<string, SortedSet<string>> selectedFrameworksByProject = new(StringComparer.OrdinalIgnoreCase);
         SortedDictionary<string, SortedDictionary<string, ProjectReferenceSet>> projectReferenceSetsByParent = new(StringComparer.OrdinalIgnoreCase);
-        bool hasAuthoritativeProjectReferenceSets = false;
 
         foreach (string line in File.ReadLines(rawSelectionFile))
         {
@@ -48,7 +47,8 @@ public sealed class GenerateProjectReferenceReplay : Task
             string setTargetFramework = parts[3];
 
             if (!ValidateRelativeProjectPath(parentProjectPath, allowEmpty: false, line) ||
-                !ValidateRelativeProjectPath(projectPath, allowEmpty: true, line))
+                !ValidateRelativeProjectPath(projectPath, allowEmpty: true, line) ||
+                !ValidateConditionValue(parentTargetFramework, "parent target framework", line, allowEmpty: true))
             {
                 continue;
             }
@@ -67,13 +67,7 @@ public sealed class GenerateProjectReferenceReplay : Task
 
             if (string.IsNullOrWhiteSpace(projectPath))
             {
-                if (!ValidateConditionValue(parentTargetFramework, "parent target framework", line, allowEmpty: true))
-                {
-                    continue;
-                }
-
                 projectReferenceSet.IsAuthoritative = true;
-                hasAuthoritativeProjectReferenceSets = true;
                 continue;
             }
 
@@ -112,45 +106,65 @@ public sealed class GenerateProjectReferenceReplay : Task
 
         Directory.CreateDirectory(outputDirectory);
 
+        string replayOutputDirectory = $"{outputFile}.d";
+        if (Directory.Exists(replayOutputDirectory))
+        {
+            Directory.Delete(replayOutputDirectory, recursive: true);
+        }
+        Directory.CreateDirectory(replayOutputDirectory);
+
         using XmlWriter writer = XmlWriter.Create(outputFile, new XmlWriterSettings { Indent = true });
         writer.WriteStartElement("Project");
         WriteCurrentProjectPathProperty(writer);
-
-        if (selectedFrameworksByProject.Count > 0)
-        {
-            writer.WriteComment(" Restrict outer builds to the captured target frameworks. ");
-            writer.WriteStartElement("Choose");
-            writer.WriteStartElement("When");
-            writer.WriteAttributeString("Condition", "'$(TargetFramework)' == ''");
-
-            foreach ((string projectPath, SortedSet<string> frameworks) in selectedFrameworksByProject)
-            {
-                writer.WriteStartElement("PropertyGroup");
-                writer.WriteAttributeString("Condition", $"'$(_ProjectReferenceReplayProject)' == '{projectPath}'");
-                writer.WriteElementString("TargetFrameworks", string.Join(';', frameworks));
-                writer.WriteEndElement();
-            }
-
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-        }
-
+        writer.WriteStartElement("Import");
+        writer.WriteAttributeString("Project", "$(MSBuildThisFileFullPath).d/$(_ProjectReferenceReplayProject).targets");
+        writer.WriteAttributeString("Condition", "Exists('$(MSBuildThisFileFullPath).d/$(_ProjectReferenceReplayProject).targets')");
+        writer.WriteEndElement();
         writer.WriteEndElement();
 
-        string edgesOutputFile = $"{outputFile}.edges.targets";
-        using XmlWriter edgesWriter = XmlWriter.Create(edgesOutputFile, new XmlWriterSettings { Indent = true });
-        edgesWriter.WriteStartElement("Project");
-        WriteCurrentProjectPathProperty(edgesWriter);
-
-        int allowListParentCount = 0;
-        if (hasAuthoritativeProjectReferenceSets)
+        File.Delete($"{outputFile}.edges.targets");
+        string oldEdgesOutputDirectory = $"{outputFile}.edges.targets.d";
+        if (Directory.Exists(oldEdgesOutputDirectory))
         {
-            edgesWriter.WriteComment(" Select the captured allow-list for this exact project instance. ");
-            edgesWriter.WriteStartElement("Choose");
+            Directory.Delete(oldEdgesOutputDirectory, recursive: true);
+        }
 
-            foreach ((string parentProjectPath, SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework) in projectReferenceSetsByParent)
+        SortedSet<string> replayProjects = new(selectedFrameworksByProject.Keys, StringComparer.OrdinalIgnoreCase);
+        replayProjects.UnionWith(projectReferenceSetsByParent.Keys);
+        SortedSet<string> allowListParents = new(StringComparer.OrdinalIgnoreCase);
+        foreach (string projectPath in replayProjects)
+        {
+            string replayFile = Path.Combine(
+                replayOutputDirectory,
+                $"{projectPath}.targets".Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(Path.GetDirectoryName(replayFile)!);
+
+            using XmlWriter projectWriter = XmlWriter.Create(replayFile, new XmlWriterSettings { Indent = true });
+            projectWriter.WriteStartElement("Project");
+
+            if (selectedFrameworksByProject.TryGetValue(projectPath, out SortedSet<string>? frameworks))
             {
-                bool wroteParent = false;
+                projectWriter.WriteComment(" Restrict outer builds to the captured target frameworks. ");
+                projectWriter.WriteStartElement("PropertyGroup");
+                projectWriter.WriteAttributeString("Condition", "'$(TargetFramework)' == ''");
+                projectWriter.WriteElementString("TargetFrameworks", string.Join(';', frameworks));
+                projectWriter.WriteEndElement();
+            }
+
+            if (projectReferenceSetsByParent.TryGetValue(projectPath, out SortedDictionary<string, ProjectReferenceSet>? projectReferenceSetsByTargetFramework))
+            {
+                bool hasAuthoritativeProjectReferenceSet = false;
+                foreach (ProjectReferenceSet projectReferenceSet in projectReferenceSetsByTargetFramework.Values)
+                {
+                    hasAuthoritativeProjectReferenceSet |= projectReferenceSet.IsAuthoritative;
+                }
+
+                if (hasAuthoritativeProjectReferenceSet)
+                {
+                    projectWriter.WriteComment(" Select the captured project references for this exact project instance. ");
+                    projectWriter.WriteStartElement("Choose");
+                }
+
                 foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
                 {
                     if (!projectReferenceSet.IsAuthoritative)
@@ -158,27 +172,27 @@ public sealed class GenerateProjectReferenceReplay : Task
                         continue;
                     }
 
-                    if (!wroteParent)
-                    {
-                        allowListParentCount++;
-                        wroteParent = true;
-                    }
+                    allowListParents.Add(projectPath);
 
-                    edgesWriter.WriteStartElement("When");
-                    edgesWriter.WriteAttributeString("Condition", $"'$(_ProjectReferenceReplayProject)' == '{parentProjectPath}' and '$(TargetFramework)' == '{targetFramework}'");
-                    WriteProjectReferenceAllowListSelection(edgesWriter, projectReferenceSet.ProjectReferences);
-                    edgesWriter.WriteEndElement();
+                    projectWriter.WriteStartElement("When");
+                    projectWriter.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
+                    WriteProjectReferenceAllowListSelection(projectWriter, projectReferenceSet.ProjectReferences);
+                    projectWriter.WriteEndElement();
                 }
+
+                if (hasAuthoritativeProjectReferenceSet)
+                {
+                    projectWriter.WriteEndElement();
+                    projectWriter.WriteComment(" Apply the selected allow-list once, including authoritative empty sets. ");
+                    WriteProjectReferenceAllowListApplication(projectWriter);
+                }
+
             }
 
-            edgesWriter.WriteEndElement();
+            projectWriter.WriteEndElement();
         }
 
-        edgesWriter.WriteComment(" Apply the selected allow-list once, including authoritative empty sets. ");
-        WriteProjectReferenceAllowListApplication(edgesWriter);
-        edgesWriter.WriteEndElement();
-
-        Log.LogMessage(MessageImportance.High, $"Wrote {selectedFrameworksByProject.Count} project target framework selections and {allowListParentCount} project reference allow-lists to '{outputFile}' and '{edgesOutputFile}'.");
+        Log.LogMessage(MessageImportance.High, $"Wrote {replayProjects.Count} project replay files with {selectedFrameworksByProject.Count} target framework selections and {allowListParents.Count} project reference allow-lists to '{replayOutputDirectory}'.");
         return !Log.HasLoggedErrors;
     }
 
@@ -227,25 +241,23 @@ public sealed class GenerateProjectReferenceReplay : Task
         writer.WriteEndElement();
     }
 
-    private static void WriteProjectReferenceAllowListSelection(XmlWriter writer, SortedSet<string>? selectedProjectReferences)
+    private static void WriteProjectReferenceAllowListSelection(XmlWriter writer, SortedSet<string> selectedProjectReferences)
     {
         writer.WriteStartElement("PropertyGroup");
         writer.WriteElementString("_ApplyProjectReferenceReplayAllowList", "true");
         writer.WriteEndElement();
 
-        if (selectedProjectReferences is null || selectedProjectReferences.Count == 0)
+        if (selectedProjectReferences.Count > 0)
         {
-            return;
-        }
-
-        writer.WriteStartElement("ItemGroup");
-        foreach (string selectedProjectReference in selectedProjectReferences)
-        {
-            writer.WriteStartElement("_ReplayProjectReference");
-            writer.WriteAttributeString("Include", $"$(RepoRoot){selectedProjectReference}");
+            writer.WriteStartElement("ItemGroup");
+            foreach (string selectedProjectReference in selectedProjectReferences)
+            {
+                writer.WriteStartElement("_ReplayProjectReference");
+                writer.WriteAttributeString("Include", $"$(RepoRoot){selectedProjectReference}");
+                writer.WriteEndElement();
+            }
             writer.WriteEndElement();
         }
-        writer.WriteEndElement();
     }
 
     private static void WriteProjectReferenceAllowListApplication(XmlWriter writer)

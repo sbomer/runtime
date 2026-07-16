@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(NetCoreAppToolCurrent)</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TestRunnerName>XUnitV3</TestRunnerName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StaticGraphTasks\StaticGraphTasks.csproj" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(MicrosoftBuildUtilitiesCoreVersion)" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

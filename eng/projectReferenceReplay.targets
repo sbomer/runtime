@@ -3,7 +3,6 @@
 
   <PropertyGroup>
     <ProjectReferenceReplayTargets Condition="'$(ProjectReferenceReplayTargets)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.replay.targets'))</ProjectReferenceReplayTargets>
-    <ProjectReferenceReplayEdgesTargets Condition="'$(ProjectReferenceReplayEdgesTargets)' == ''">$(ProjectReferenceReplayTargets).edges.targets</ProjectReferenceReplayEdgesTargets>
   </PropertyGroup>
 
   <Target Name="GenerateProjectReferenceReplay"
