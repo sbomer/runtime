@@ -1,6 +1,6 @@
 --- dynamic/nodes.txt
 +++ static/nodes.txt
-@@ -1,1888 +1,2430 @@
+@@ -1,1888 +1,2427 @@
  Project: eng/analyzers/PlatformDocAnalyzer/PlatformDocAnalyzer.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
      Target: Build
@@ -159,7 +159,6 @@
 +    Target: GetTargetFrameworks
  Project: src/libraries/Microsoft.Extensions.Options/gen/Microsoft.Extensions.Options.SourceGeneration.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
-+    Target: GetCopyToOutputDirectoryItems
      Target: GetTargetFrameworks
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64;TargetFramework=netstandard2.0
      Target: Build
@@ -2101,7 +2100,6 @@
      Target: GetTargetFrameworks
  Project: src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Roslyn4.4.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
-+    Target: GetCopyToOutputDirectoryItems
      Target: GetTargetFrameworks
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64;TargetFramework=net11.0
      Target: Build
@@ -2131,7 +2129,6 @@
 +    Target: GetTargetFrameworks
  Project: src/libraries/System.Text.RegularExpressions/gen/System.Text.RegularExpressions.Generator.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
-+    Target: GetCopyToOutputDirectoryItems
      Target: GetTargetFrameworks
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64;TargetFramework=netstandard2.0
      Target: Build

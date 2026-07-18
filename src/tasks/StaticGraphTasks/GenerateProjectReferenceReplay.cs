@@ -283,7 +283,7 @@ public sealed class GenerateProjectReferenceReplay : Task
         SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework,
         SortedDictionary<string, SortedSet<string>> selectedFrameworksByProject)
     {
-        writer.WriteComment(" Replay negotiated edge metadata during evaluation for static graph construction. ");
+        writer.WriteComment(" Replay selected target frameworks during evaluation for static graph construction. ");
 
         foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
         {
@@ -292,14 +292,9 @@ public sealed class GenerateProjectReferenceReplay : Task
                 continue;
             }
 
-            writer.WriteStartElement("ItemGroup");
-            writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
+            bool wroteItemGroup = false;
             foreach ((string projectReference, string setTargetFramework) in projectReferenceSet.ProjectReferences)
             {
-                writer.WriteStartElement("ProjectReference");
-                writer.WriteAttributeString("Update", $"$(RepoRoot){projectReference}");
-                writer.WriteElementString("SkipGetTargetFrameworkProperties", "true");
-
                 string replaySetTargetFramework = setTargetFramework;
                 if (string.IsNullOrWhiteSpace(replaySetTargetFramework) &&
                     selectedFrameworksByProject.TryGetValue(projectReference, out SortedSet<string>? selectedFrameworks) &&
@@ -308,27 +303,30 @@ public sealed class GenerateProjectReferenceReplay : Task
                     replaySetTargetFramework = $"TargetFramework={selectedFrameworks.Min}";
                 }
 
-                if (projectReferenceSet.IsAuthoritative)
+                if (string.IsNullOrWhiteSpace(replaySetTargetFramework))
                 {
-                    if (!string.IsNullOrWhiteSpace(replaySetTargetFramework))
-                    {
-                        writer.WriteElementString("ProjectReferenceReplaySetTargetFramework", replaySetTargetFramework);
-                    }
-                    writer.WriteEndElement();
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(replaySetTargetFramework))
+                if (!wroteItemGroup)
                 {
-                    writer.WriteElementString("UndefineProperties", "%(ProjectReference.UndefineProperties);TargetFramework");
+                    writer.WriteStartElement("ItemGroup");
+                    writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
+                    wroteItemGroup = true;
                 }
-                else
-                {
-                    writer.WriteElementString("SetTargetFramework", replaySetTargetFramework);
-                }
+
+                writer.WriteStartElement("ProjectReference");
+                writer.WriteAttributeString("Update", $"$(RepoRoot){projectReference}");
+                writer.WriteElementString(
+                    projectReferenceSet.IsAuthoritative ? "ProjectReferenceReplaySetTargetFramework" : "SetTargetFramework",
+                    replaySetTargetFramework);
                 writer.WriteEndElement();
             }
-            writer.WriteEndElement();
+
+            if (wroteItemGroup)
+            {
+                writer.WriteEndElement();
+            }
         }
     }
 

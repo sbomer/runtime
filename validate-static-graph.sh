@@ -22,7 +22,6 @@ max_static_graph_nodes=0
 max_static_graph_edges=0
 prerequisite_projects=()
 bootstrap_subsets=()
-additional_common_properties=()
 
 case "$target" in
     clr)
@@ -73,7 +72,6 @@ case "$target" in
             "src/native/libs/build-native.proj"
             "src/libraries/sfx-finish.proj"
         )
-        additional_common_properties=("/p:ApiCompatValidateAssemblies=false")
         restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
@@ -173,6 +171,18 @@ write_full_context_diff() {
     fi
 }
 
+clean_build_artifacts() {
+    if [[ ! -d "$repo_root/artifacts" ]]; then
+        return
+    fi
+
+    find "$repo_root/artifacts" -mindepth 1 -maxdepth 1 ! -name log -exec rm -rf -- {} +
+
+    if [[ -d "$repo_root/artifacts/log" ]]; then
+        find "$repo_root/artifacts/log" -mindepth 1 -maxdepth 1 ! -name static-graph-validation -exec rm -rf -- {} +
+    fi
+}
+
 common_properties=(
     "/p:Configuration=$configuration"
     "/p:RuntimeConfiguration=$runtime_configuration"
@@ -182,7 +192,6 @@ common_properties=(
     "/p:TargetArchitecture=$target_architecture"
     "/p:BuildArchitecture=$build_architecture"
     "/p:FeatureDynamicCodeCompiled=true"
-    "${additional_common_properties[@]}"
 )
 
 if [[ "$target" == "clr" ]]; then
@@ -236,7 +245,7 @@ build_bootstrap_prerequisites() {
 }
 
 log "Removing artifacts for a clean validation run"
-rm -rf "$repo_root/artifacts"
+clean_build_artifacts
 
 build_bootstrap_prerequisites dynamic
 
@@ -291,7 +300,7 @@ else
 fi
 
 log "Removing artifacts before the isolated static graph build"
-rm -rf "$repo_root/artifacts"
+clean_build_artifacts
 
 build_bootstrap_prerequisites static
 

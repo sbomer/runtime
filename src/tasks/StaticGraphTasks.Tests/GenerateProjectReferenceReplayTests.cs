@@ -62,7 +62,7 @@ public sealed class GenerateProjectReferenceReplayTests
                 edgeReplay.Descendants("ProjectReference"),
                 element => element.Attribute("Update") is not null);
             Assert.Equal("$(RepoRoot)src/Child.csproj", replayedReference.Attribute("Update")!.Value);
-            Assert.Equal("true", replayedReference.Element("SkipGetTargetFrameworkProperties")!.Value);
+            Assert.Null(replayedReference.Element("SkipGetTargetFrameworkProperties"));
             Assert.Equal("TargetFramework=net8.0", replayedReference.Element("ProjectReferenceReplaySetTargetFramework")!.Value);
             Assert.Null(replayedReference.Element("SetTargetFramework"));
             Assert.Null(replayedReference.Element("UndefineProperties"));
@@ -112,7 +112,7 @@ public sealed class GenerateProjectReferenceReplayTests
     }
 
     [Fact]
-    public void ReplaysSingleTargetFrameworkReferenceWithoutNegotiation()
+    public void DoesNotReplayMetadataForReferenceWithoutNegotiation()
     {
         string directory = CreateTemporaryDirectory();
 
@@ -132,11 +132,9 @@ public sealed class GenerateProjectReferenceReplayTests
             Assert.True(task.Execute());
 
             XDocument edgeReplay = XDocument.Load(GetReplayFile(replayFile, "src/Parent.csproj"));
-            XElement replayedReference = Assert.Single(
+            Assert.DoesNotContain(
                 edgeReplay.Descendants("ProjectReference"),
                 element => element.Attribute("Update") is not null);
-            Assert.Equal("%(ProjectReference.UndefineProperties);TargetFramework", replayedReference.Element("UndefineProperties")!.Value);
-            Assert.Null(replayedReference.Element("SetTargetFramework"));
         }
         finally
         {
