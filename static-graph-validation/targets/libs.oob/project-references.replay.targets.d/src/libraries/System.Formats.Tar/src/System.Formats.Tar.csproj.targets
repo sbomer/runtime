@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!-- Restrict outer builds to the captured target frameworks. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == ''">
+    <TargetFrameworks>net11.0-unix</TargetFrameworks>
+  </PropertyGroup>
+  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-unix'">
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

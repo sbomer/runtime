@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!-- Select the captured project references for this exact project instance. -->
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <PropertyGroup>
+        <_ApplyProjectReferenceReplayAllowList>true</_ApplyProjectReferenceReplayAllowList>
+      </PropertyGroup>
+      <ItemGroup>
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Abstractions/gen/Microsoft.Extensions.Logging.Generators.Roslyn4.4.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Options/gen/Microsoft.Extensions.Options.SourceGeneration.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.InteropServices.JavaScript/gen/JSImportGenerator/JSImportGenerator.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.InteropServices/gen/ComInterfaceGenerator/ComInterfaceGenerator.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.InteropServices/gen/LibraryImportGenerator/LibraryImportGenerator.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.InteropServices/gen/Microsoft.Interop.SourceGeneration/Microsoft.Interop.SourceGeneration.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Roslyn4.4.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Text.RegularExpressions/gen/System.Text.RegularExpressions.Generator.csproj" />
+      </ItemGroup>
+    </When>
+  </Choose>
+  <!-- Apply the selected allow-list once, including authoritative empty sets. -->
+  <ItemGroup Condition="'$(_ApplyProjectReferenceReplayAllowList)' == 'true'">
+    <_ProjectReferenceToRemove Include="@(ProjectReference-&gt;'%(FullPath)')" />
+    <_ProjectReferenceToRemove Remove="@(_ReplayProjectReference)" />
+    <ProjectReference Remove="@(_ProjectReferenceToRemove)" />
+    <_ReplayProjectReference Remove="@(_ReplayProjectReference)" />
+    <_ProjectReferenceToRemove Remove="@(_ProjectReferenceToRemove)" />
+  </ItemGroup>
+  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Options/gen/Microsoft.Extensions.Options.SourceGeneration.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=netstandard2.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Roslyn4.4.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=netstandard2.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Text.RegularExpressions/gen/System.Text.RegularExpressions.Generator.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=netstandard2.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

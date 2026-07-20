@@ -65,6 +65,7 @@ output_dir="$repo_root/artifacts/log/static-graph-validation/$target"
 validation_output_dir="$repo_root/static-graph-validation"
 diff_output_dir="$validation_output_dir/diffs"
 nodes_output_dir="$validation_output_dir/nodes"
+targets_output_dir="$validation_output_dir/targets/$target"
 diff_output="$diff_output_dir/static-graph-$target.diff"
 dynamic_nodes_output="$nodes_output_dir/$target.dynamic.nodes.txt"
 static_nodes_output="$nodes_output_dir/$target.static.nodes.txt"
@@ -225,7 +226,8 @@ build_prerequisites dynamic
 static_graph_properties=()
 if [[ "$use_project_reference_replay" == "true" ]]; then
     capture_file="$work_dir/project-references.raw.txt"
-    replay_file="$output_dir/project-references.replay.targets"
+    replay_file="$targets_output_dir/project-references.replay.targets"
+    mkdir -p "$targets_output_dir"
     static_graph_tasks="$repo_root/artifacts/bin/StaticGraphTasks/$tasks_configuration/net11.0/StaticGraphTasks.dll"
     replay_generator_tasks="$work_dir/StaticGraphTasks.dll"
 

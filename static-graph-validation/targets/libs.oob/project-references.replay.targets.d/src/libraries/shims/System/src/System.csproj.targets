@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-linux'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Diagnostics.FileVersionInfo/src/System.Diagnostics.FileVersionInfo.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Diagnostics.Process/src/System.Diagnostics.Process.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-linux</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Compression/src/System.IO.Compression.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.FileSystem.Watcher/src/System.IO.FileSystem.Watcher.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-linux</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.HttpListener/src/System.Net.HttpListener.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Mail/src/System.Net.Mail.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.NameResolution/src/System.Net.NameResolution.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.NetworkInformation/src/System.Net.NetworkInformation.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-linux</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Ping/src/System.Net.Ping.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Primitives/src/System.Net.Primitives.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Requests/src/System.Net.Requests.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Security/src/System.Net.Security.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-linux</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Sockets/src/System.Net.Sockets.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.WebClient/src/System.Net.WebClient.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.WebProxy/src/System.Net.WebProxy.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.WebSockets.Client/src/System.Net.WebSockets.Client.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.WebSockets/src/System.Net.WebSockets.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Cryptography/src/System.Security.Cryptography.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Threading.AccessControl/src/System.Threading.AccessControl.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

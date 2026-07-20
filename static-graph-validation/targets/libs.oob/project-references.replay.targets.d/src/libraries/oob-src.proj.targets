@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!-- Select the captured project references for this exact project instance. -->
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net11.0-linux'">
+      <PropertyGroup>
+        <_ApplyProjectReferenceReplayAllowList>true</_ApplyProjectReferenceReplayAllowList>
+      </PropertyGroup>
+      <ItemGroup>
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Bcl.AsyncInterfaces/src/Microsoft.Bcl.AsyncInterfaces.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Bcl.Cryptography/src/Microsoft.Bcl.Cryptography.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Bcl.Memory/src/Microsoft.Bcl.Memory.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Bcl.Numerics/src/Microsoft.Bcl.Numerics.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Bcl.TimeProvider/src/Microsoft.Bcl.TimeProvider.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Caching.Memory/src/Microsoft.Extensions.Caching.Memory.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Binder/src/Microsoft.Extensions.Configuration.Binder.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.CommandLine/src/Microsoft.Extensions.Configuration.CommandLine.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.EnvironmentVariables/src/Microsoft.Extensions.Configuration.EnvironmentVariables.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.FileExtensions/src/Microsoft.Extensions.Configuration.FileExtensions.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Ini/src/Microsoft.Extensions.Configuration.Ini.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Json/src/Microsoft.Extensions.Configuration.Json.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.UserSecrets/src/Microsoft.Extensions.Configuration.UserSecrets.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Xml/src/Microsoft.Extensions.Configuration.Xml.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration/src/Microsoft.Extensions.Configuration.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection.Specification.Tests/src/Microsoft.Extensions.DependencyInjection.Specification.Tests.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection/src/Microsoft.Extensions.DependencyInjection.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyModel/src/Microsoft.Extensions.DependencyModel.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Diagnostics/src/Microsoft.Extensions.Diagnostics.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileProviders.Composite/src/Microsoft.Extensions.FileProviders.Composite.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileProviders.Physical/src/Microsoft.Extensions.FileProviders.Physical.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileSystemGlobbing/src/Microsoft.Extensions.FileSystemGlobbing.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/src/Microsoft.Extensions.HostFactoryResolver.Sources.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting.Systemd/src/Microsoft.Extensions.Hosting.Systemd.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting.WindowsServices/src/Microsoft.Extensions.Hosting.WindowsServices.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Http/src/Microsoft.Extensions.Http.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Configuration/src/Microsoft.Extensions.Logging.Configuration.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Console/src/Microsoft.Extensions.Logging.Console.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Debug/src/Microsoft.Extensions.Logging.Debug.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.EventLog/src/Microsoft.Extensions.Logging.EventLog.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.EventSource/src/Microsoft.Extensions.Logging.EventSource.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.TraceSource/src/Microsoft.Extensions.Logging.TraceSource.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging/src/Microsoft.Extensions.Logging.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Options.ConfigurationExtensions/src/Microsoft.Extensions.Options.ConfigurationExtensions.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Options.DataAnnotations/src/Microsoft.Extensions.Options.DataAnnotations.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.NET.WebAssembly.Threading/src/Microsoft.NET.WebAssembly.Threading.proj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.NETCore.Platforms/src/Microsoft.NETCore.Platforms.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Win32.Registry.AccessControl/src/Microsoft.Win32.Registry.AccessControl.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Win32.SystemEvents/src/Microsoft.Win32.SystemEvents.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.CodeDom/src/System.CodeDom.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.ComponentModel.Composition.Registration/src/System.ComponentModel.Composition.Registration.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.ComponentModel.Composition/src/System.ComponentModel.Composition.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Composition.AttributedModel/src/System.Composition.AttributedModel.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Composition.Convention/src/System.Composition.Convention.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Composition.Hosting/src/System.Composition.Hosting.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Composition.Runtime/src/System.Composition.Runtime.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Composition.TypedParts/src/System.Composition.TypedParts.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Composition/src/System.Composition.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Configuration.ConfigurationManager/src/System.Configuration.ConfigurationManager.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Data.Odbc/src/System.Data.Odbc.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Data.OleDb/src/System.Data.OleDb.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Diagnostics.EventLog/src/System.Diagnostics.EventLog.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Diagnostics.PerformanceCounter/src/System.Diagnostics.PerformanceCounter.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.DirectoryServices.AccountManagement/src/System.DirectoryServices.AccountManagement.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.DirectoryServices.Protocols/src/System.DirectoryServices.Protocols.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.DirectoryServices/src/System.DirectoryServices.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Formats.Cbor/src/System.Formats.Cbor.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Formats.Nrbf/src/System.Formats.Nrbf.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.IO.Hashing/src/System.IO.Hashing.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.IO.Packaging/src/System.IO.Packaging.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-x64.runtime.native.System.IO.Ports.proj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.IO.Ports/src/System.IO.Ports.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Management/src/System.Management.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Memory.Data/src/System.Memory.Data.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Net.Http.WinHttpHandler/src/System.Net.Http.WinHttpHandler.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Numerics.Tensors/src/System.Numerics.Tensors.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Reflection.Context/src/System.Reflection.Context.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Reflection.MetadataLoadContext/src/System.Reflection.MetadataLoadContext.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Resources.Extensions/src/System.Resources.Extensions.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.Caching/src/System.Runtime.Caching.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.Serialization.Schema/src/System.Runtime.Serialization.Schema.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Security.Cryptography.Cose/src/System.Security.Cryptography.Cose.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Security.Cryptography.Pkcs/src/System.Security.Cryptography.Pkcs.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Security.Cryptography.ProtectedData/src/System.Security.Cryptography.ProtectedData.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Security.Cryptography.Xml/src/System.Security.Cryptography.Xml.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Security.Permissions/src/System.Security.Permissions.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.ServiceModel.Syndication/src/System.ServiceModel.Syndication.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.ServiceProcess.ServiceController/src/System.ServiceProcess.ServiceController.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Speech/src/System.Speech.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Threading.RateLimiting/src/System.Threading.RateLimiting.csproj" />
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Windows.Extensions/src/System.Windows.Extensions.csproj" />
+      </ItemGroup>
+    </When>
+  </Choose>
+  <!-- Apply the selected allow-list once, including authoritative empty sets. -->
+  <ItemGroup Condition="'$(_ApplyProjectReferenceReplayAllowList)' == 'true'">
+    <_ProjectReferenceToRemove Include="@(ProjectReference-&gt;'%(FullPath)')" />
+    <_ProjectReferenceToRemove Remove="@(_ReplayProjectReference)" />
+    <ProjectReference Remove="@(_ProjectReferenceToRemove)" />
+    <_ReplayProjectReference Remove="@(_ReplayProjectReference)" />
+    <_ProjectReferenceToRemove Remove="@(_ProjectReferenceToRemove)" />
+  </ItemGroup>
+  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-linux'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Bcl.AsyncInterfaces/src/Microsoft.Bcl.AsyncInterfaces.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=netstandard2.1</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Bcl.Cryptography/src/Microsoft.Bcl.Cryptography.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Bcl.Memory/src/Microsoft.Bcl.Memory.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Bcl.Numerics/src/Microsoft.Bcl.Numerics.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=netstandard2.1</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Bcl.TimeProvider/src/Microsoft.Bcl.TimeProvider.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net10.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Caching.Memory/src/Microsoft.Extensions.Caching.Memory.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Binder/src/Microsoft.Extensions.Configuration.Binder.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.CommandLine/src/Microsoft.Extensions.Configuration.CommandLine.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.EnvironmentVariables/src/Microsoft.Extensions.Configuration.EnvironmentVariables.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.FileExtensions/src/Microsoft.Extensions.Configuration.FileExtensions.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Ini/src/Microsoft.Extensions.Configuration.Ini.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Json/src/Microsoft.Extensions.Configuration.Json.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.UserSecrets/src/Microsoft.Extensions.Configuration.UserSecrets.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Xml/src/Microsoft.Extensions.Configuration.Xml.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration/src/Microsoft.Extensions.Configuration.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection.Specification.Tests/src/Microsoft.Extensions.DependencyInjection.Specification.Tests.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection/src/Microsoft.Extensions.DependencyInjection.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyModel/src/Microsoft.Extensions.DependencyModel.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Diagnostics/src/Microsoft.Extensions.Diagnostics.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.FileProviders.Composite/src/Microsoft.Extensions.FileProviders.Composite.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.FileProviders.Physical/src/Microsoft.Extensions.FileProviders.Physical.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.FileSystemGlobbing/src/Microsoft.Extensions.FileSystemGlobbing.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting.Systemd/src/Microsoft.Extensions.Hosting.Systemd.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting.WindowsServices/src/Microsoft.Extensions.Hosting.WindowsServices.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Http/src/Microsoft.Extensions.Http.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Configuration/src/Microsoft.Extensions.Logging.Configuration.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Console/src/Microsoft.Extensions.Logging.Console.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Debug/src/Microsoft.Extensions.Logging.Debug.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.EventLog/src/Microsoft.Extensions.Logging.EventLog.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.EventSource/src/Microsoft.Extensions.Logging.EventSource.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.TraceSource/src/Microsoft.Extensions.Logging.TraceSource.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging/src/Microsoft.Extensions.Logging.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Options.ConfigurationExtensions/src/Microsoft.Extensions.Options.ConfigurationExtensions.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Options.DataAnnotations/src/Microsoft.Extensions.Options.DataAnnotations.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Win32.Registry.AccessControl/src/Microsoft.Win32.Registry.AccessControl.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Win32.SystemEvents/src/Microsoft.Win32.SystemEvents.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.CodeDom/src/System.CodeDom.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.ComponentModel.Composition.Registration/src/System.ComponentModel.Composition.Registration.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.ComponentModel.Composition/src/System.ComponentModel.Composition.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Composition.AttributedModel/src/System.Composition.AttributedModel.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Composition.Convention/src/System.Composition.Convention.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Composition.Hosting/src/System.Composition.Hosting.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Composition.Runtime/src/System.Composition.Runtime.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Composition.TypedParts/src/System.Composition.TypedParts.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Composition/src/System.Composition.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Configuration.ConfigurationManager/src/System.Configuration.ConfigurationManager.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Data.Odbc/src/System.Data.Odbc.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0-unix</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Data.OleDb/src/System.Data.OleDb.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Diagnostics.EventLog/src/System.Diagnostics.EventLog.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Diagnostics.PerformanceCounter/src/System.Diagnostics.PerformanceCounter.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.DirectoryServices.AccountManagement/src/System.DirectoryServices.AccountManagement.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.DirectoryServices.Protocols/src/System.DirectoryServices.Protocols.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0-linux</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.DirectoryServices/src/System.DirectoryServices.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Formats.Cbor/src/System.Formats.Cbor.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Formats.Nrbf/src/System.Formats.Nrbf.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Hashing/src/System.IO.Hashing.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Packaging/src/System.IO.Packaging.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Ports/src/System.IO.Ports.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0-unix</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Management/src/System.Management.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Memory.Data/src/System.Memory.Data.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Http.WinHttpHandler/src/System.Net.Http.WinHttpHandler.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Numerics.Tensors/src/System.Numerics.Tensors.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Reflection.Context/src/System.Reflection.Context.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Reflection.MetadataLoadContext/src/System.Reflection.MetadataLoadContext.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Resources.Extensions/src/System.Resources.Extensions.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime.Caching/src/System.Runtime.Caching.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime.Serialization.Schema/src/System.Runtime.Serialization.Schema.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Cryptography.Cose/src/System.Security.Cryptography.Cose.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Cryptography.Pkcs/src/System.Security.Cryptography.Pkcs.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Cryptography.ProtectedData/src/System.Security.Cryptography.ProtectedData.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Cryptography.Xml/src/System.Security.Cryptography.Xml.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Permissions/src/System.Security.Permissions.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.ServiceModel.Syndication/src/System.ServiceModel.Syndication.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.ServiceProcess.ServiceController/src/System.ServiceProcess.ServiceController.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Speech/src/System.Speech.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Threading.RateLimiting/src/System.Threading.RateLimiting.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Windows.Extensions/src/System.Windows.Extensions.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

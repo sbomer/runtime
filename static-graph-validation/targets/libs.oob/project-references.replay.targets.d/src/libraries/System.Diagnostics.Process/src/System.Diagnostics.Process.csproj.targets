@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!-- Restrict outer builds to the captured target frameworks. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == ''">
+    <TargetFrameworks>net11.0;net11.0-linux</TargetFrameworks>
+  </PropertyGroup>
+  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Win32.Registry/src/Microsoft.Win32.Registry.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Console/src/System.Console.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Diagnostics.FileVersionInfo/src/System.Diagnostics.FileVersionInfo.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.FileSystem.DriveInfo/src/System.IO.FileSystem.DriveInfo.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Pipes/src/System.IO.Pipes.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Threading.Channels/src/System.Threading.Channels.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-linux'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Win32.Registry/src/Microsoft.Win32.Registry.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Console/src/System.Console.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Diagnostics.FileVersionInfo/src/System.Diagnostics.FileVersionInfo.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.FileSystem.DriveInfo/src/System.IO.FileSystem.DriveInfo.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Pipes/src/System.IO.Pipes.csproj">
+      <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Threading.Channels/src/System.Threading.Channels.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
