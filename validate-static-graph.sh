@@ -32,28 +32,8 @@ case "$target" in
         restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
         ;;
     libs.sfx)
-        entry_project="src/libraries/sfx-src.proj"
-        restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
-        use_project_reference_replay=true
-        dynamic_build_parallelism=(/m:1)
-        capture_parallelism=(/m:2)
-        static_graph_parallelism=(/m:2)
-        max_static_graph_nodes=1000
-        max_static_graph_edges=50000
-        ;;
-    libs.sfx-gen)
-        entry_project="src/libraries/sfx-gen.proj"
-        restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
-        use_project_reference_replay=true
-        dynamic_build_parallelism=(/m:1)
-        capture_parallelism=(/m:2)
-        static_graph_parallelism=(/m:2)
-        max_static_graph_nodes=1000
-        max_static_graph_edges=50000
-        ;;
-    libs.sfx-finish)
-        entry_project="src/libraries/sfx-finish.proj"
-        restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
+        entry_project="Build.proj"
+        restore_command=(./build.sh libs.sfx --restore --runtimeConfiguration "$runtime_configuration")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
         capture_parallelism=(/m:2)
@@ -76,7 +56,7 @@ case "$target" in
         max_static_graph_edges=50000
         ;;
     *)
-        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.sfx-gen, libs.sfx-finish, libs.oob" >&2
+        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.oob" >&2
         exit 1
         ;;
 esac
@@ -196,8 +176,12 @@ common_properties=(
     "/p:FeatureDynamicCodeCompiled=true"
 )
 
-if [[ "$target" == "clr" ]]; then
-    common_properties=("/p:Subset=clr" "${common_properties[@]}")
+if [[ "$entry_project" == "Build.proj" ]]; then
+    common_properties=("/p:Subset=$subset" "${common_properties[@]}")
+fi
+
+if [[ "$target" == "libs.sfx" ]]; then
+    common_properties=("/p:ApiCompatValidateAssemblies=false" "${common_properties[@]}")
 fi
 
 build_prerequisites() {
