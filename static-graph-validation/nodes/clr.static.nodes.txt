@@ -1,0 +1,586 @@
+Project: Build.proj
+  Globals: Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64
+    Target: Build
+Project: src/coreclr/.nuget/coreclr-packages.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/.nuget/Microsoft.NET.Sdk.IL/Microsoft.NET.Sdk.IL.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/.nuget/Microsoft.NETCore.ILAsm/Microsoft.NETCore.ILAsm.pkgproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=freebsd-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=haiku-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=illumos-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-arm;Platform=arm;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-arm;Platform=arm;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+    Target: Pack
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=netbsd-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=osx-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=osx-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=rhel.6-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=solaris-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=tizen.4.0.0-armel;Platform=armel;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=tizen.5.0.0-armel;Platform=armel;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-x86;Platform=x86;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/.nuget/Microsoft.NETCore.ILAsm/Microsoft.NETCore.ILAsm.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/.nuget/Microsoft.NETCore.ILDAsm/Microsoft.NETCore.ILDAsm.pkgproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=freebsd-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=haiku-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=illumos-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-arm;Platform=arm;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-arm;Platform=arm;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+    Target: Pack
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=netbsd-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=osx-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=osx-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=rhel.6-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=solaris-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=tizen.4.0.0-armel;Platform=armel;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=tizen.5.0.0-armel;Platform=armel;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-x86;Platform=x86;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/.nuget/Microsoft.NETCore.ILDAsm/Microsoft.NETCore.ILDAsm.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/.nuget/Microsoft.NETCore.TestHost/Microsoft.NETCore.TestHost.pkgproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=freebsd-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=haiku-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=illumos-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-arm;Platform=arm;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-arm;Platform=arm;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-musl-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+    Target: Pack
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=netbsd-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=osx-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=osx-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=rhel.6-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=solaris-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=tizen.4.0.0-armel;Platform=armel;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=tizen.5.0.0-armel;Platform=armel;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-arm64;Platform=arm64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-x64;Platform=amd64;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=win-x86;Platform=x86;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: DetermineRuntimeDependencies
+    Target: GetPackageFiles
+    Target: GetPackageIdentity
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/.nuget/Microsoft.NETCore.TestHost/Microsoft.NETCore.TestHost.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/coreclr/crossgen-corelib.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/nativeaot/BuildIntegration/BuildIntegration.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/nativeaot/System.Private.CoreLib/src/System.Private.CoreLib.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/nativeaot/System.Private.Reflection.Execution/src/System.Private.Reflection.Execution.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/nativeaot/System.Private.StackTraceMetadata/src/System.Private.StackTraceMetadata.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/nativeaot/System.Private.TypeLoader/src/System.Private.TypeLoader.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/nativeaot/Test.CoreLib/src/Test.CoreLib.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/runtime-prereqs.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/runtime.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;ClrFullNativeBuild=true;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/System.Private.CoreLib/System.Private.CoreLib.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/crossgen2/crossgen2.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/aot/crossgen2/crossgen2_inbuild.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+    Target: Publish
+    Target: PublishItemsOutputGroup
+Project: src/coreclr/tools/aot/crossgen2/crossgen2_publish.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Publish
+    Target: PublishItemsOutputGroup
+Project: src/coreclr/tools/aot/ILCompiler.Build.Tasks/ILCompiler.Build.Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/aot/ILCompiler.Compiler/ILCompiler.Compiler.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler.DependencyAnalysisFramework/ILCompiler.DependencyAnalysisFramework.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler.Diagnostics/ILCompiler.Diagnostics.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler.MetadataTransform/ILCompiler.MetadataTransform.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler.Reflection.ReadyToRun/ILCompiler.Reflection.ReadyToRun.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler.RyuJit/ILCompiler.RyuJit.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler.TypeSystem/ILCompiler.TypeSystem.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/aot/ILCompiler/ILCompiler.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/aot/ILCompiler/ILCompiler_inbuild.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Publish
+    Target: PublishItemsOutputGroup
+Project: src/coreclr/tools/aot/ILCompiler/ILCompiler_publish.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Publish
+    Target: PublishItemsOutputGroup
+Project: src/coreclr/tools/aot/ILCompiler/repro/repro.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/AssemblyChecker/AssemblyChecker.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/cdac-build-tool/cdac-build-tool.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/dotnet-pgo/dotnet-pgo.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/ILTrim.Core/ILTrim.Core.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/tools/ILTrim/ILTrim.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/ILVerification/ILVerification.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/ILVerify/ILVerify.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/PdbChecker/PdbChecker.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/r2rdump/R2RDump.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/r2rtest/R2RTest.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/runincontext/runincontext.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/SuperFileCheck/SuperFileCheck.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/coreclr/tools/tieringtest/tieringtest.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/libraries/System.Private.CoreLib/gen/EventSourceGenerator.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Private.CoreLib/gen/System.Private.CoreLib.Generators.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Private.CoreLib/ref/System.Private.CoreLib.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.InteropServices/gen/DownlevelLibraryImportGenerator/DownlevelLibraryImportGenerator.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.InteropServices/gen/LibraryImportGenerator/LibraryImportGenerator.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.InteropServices/gen/Microsoft.Interop.SourceGeneration/Microsoft.Interop.SourceGeneration.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/native/corehost/corehost.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/native/managed/cdac/gen/Microsoft.Diagnostics.DataContractReader.DataGenerator.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/native/managed/cdac/Microsoft.Diagnostics.DataContractReader.Abstractions/Microsoft.Diagnostics.DataContractReader.Abstractions.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/native/managed/cdac/Microsoft.Diagnostics.DataContractReader.Contracts/Microsoft.Diagnostics.DataContractReader.Contracts.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/native/managed/cdac/Microsoft.Diagnostics.DataContractReader/Microsoft.Diagnostics.DataContractReader.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tasks/Crossgen2Tasks/Crossgen2Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/HelixTestTasks/HelixTestTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/installer.tasks/installer.tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks.Tests/StaticGraphTasks.Tests.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks/StaticGraphTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tasks/tasks.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64
+    Target: Build
+Project: src/tools/ilasm/src/ilasm/ilasm.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Publish
+    Target: PublishItemsOutputGroup
+Project: src/tools/ilasm/src/ILAssembler/ILAssembler.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/ILLink.CodeFix/ILLink.CodeFixProvider.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/ILLink.RoslynAnalyzer/ILLink.RoslynAnalyzer.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TargetFramework=net472;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/linker/Mono.Linker.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/linker/ref/Mono.Linker.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetCopyToPublishDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/StressLogAnalyzer/src/StressLogAnalyzer.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build

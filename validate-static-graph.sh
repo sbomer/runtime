@@ -82,10 +82,17 @@ case "$target" in
 esac
 
 output_dir="$repo_root/artifacts/log/static-graph-validation/$target"
-diff_output="$repo_root/static-graph-$target.diff"
+validation_output_dir="$repo_root/static-graph-validation"
+diff_output_dir="$validation_output_dir/diffs"
+nodes_output_dir="$validation_output_dir/nodes"
+diff_output="$diff_output_dir/static-graph-$target.diff"
+dynamic_nodes_output="$nodes_output_dir/$target.dynamic.nodes.txt"
+static_nodes_output="$nodes_output_dir/$target.static.nodes.txt"
 comparison_output="$repo_root/static-graph-$target.comparison.txt"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/runtime-static-graph-validation.XXXXXX")"
 reuse_dynamic_binlog="${REUSE_DYNAMIC_BINLOG:-}"
+
+mkdir -p "$diff_output_dir" "$nodes_output_dir"
 
 cleanup() {
     mkdir -p "$output_dir"
@@ -352,9 +359,12 @@ for file in nodes.txt edges.txt; do
     sed -i "s|$repo_root/||g" "$work_dir/normalized/dynamic/$file" "$work_dir/normalized/static/$file"
 done
 
+cp "$work_dir/normalized/dynamic/nodes.txt" "$dynamic_nodes_output"
+cp "$work_dir/normalized/static/nodes.txt" "$static_nodes_output"
+
 write_full_context_diff \
-    "$work_dir/normalized/dynamic/nodes.txt" \
-    "$work_dir/normalized/static/nodes.txt" \
+    "$dynamic_nodes_output" \
+    "$static_nodes_output" \
     "dynamic/nodes.txt" \
     "static/nodes.txt" \
     "$diff_output"
@@ -382,4 +392,5 @@ else
 fi
 echo "Artifacts copied to $output_dir"
 echo "Diff written to $diff_output"
+echo "Node files written to $dynamic_nodes_output and $static_nodes_output"
 echo "Comparison report written to $comparison_output"

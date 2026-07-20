@@ -1,0 +1,3 @@
+Project: src/native/libs/build-native.proj
+  Globals: Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
+    Target: Build
