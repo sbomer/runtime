@@ -1,6 +1,6 @@
 --- dynamic/nodes.txt
 +++ static/nodes.txt
-@@ -1,1841 +1,2243 @@
+@@ -1,1842 +1,2243 @@
  Project: eng/analyzers/PlatformDocAnalyzer/PlatformDocAnalyzer.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
      Target: Build
@@ -1712,7 +1712,7 @@
  Project: src/libraries/System.Runtime.InteropServices/gen/Microsoft.Interop.SourceGeneration/Microsoft.Interop.SourceGeneration.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
      Target: Build
-+    Target: GetCopyToOutputDirectoryItems
+     Target: GetCopyToOutputDirectoryItems
      Target: GetNativeManifest
      Target: GetTargetFrameworks
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64

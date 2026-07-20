@@ -1,6 +1,6 @@
 --- dynamic/nodes.txt
 +++ static/nodes.txt
-@@ -1,39 +1,43 @@
+@@ -1,40 +1,43 @@
  Project: src/libraries/Microsoft.Extensions.Logging.Abstractions/gen/Microsoft.Extensions.Logging.Generators.Roslyn4.4.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
      Target: Build
@@ -29,7 +29,7 @@
  Project: src/libraries/System.Runtime.InteropServices/gen/Microsoft.Interop.SourceGeneration/Microsoft.Interop.SourceGeneration.csproj
    Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
      Target: Build
-+    Target: GetCopyToOutputDirectoryItems
+     Target: GetCopyToOutputDirectoryItems
      Target: GetNativeManifest
      Target: GetTargetFrameworks
  Project: src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Roslyn4.4.csproj

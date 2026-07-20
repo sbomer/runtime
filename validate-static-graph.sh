@@ -21,7 +21,6 @@ static_graph_parallelism=()
 max_static_graph_nodes=0
 max_static_graph_edges=0
 prerequisite_projects=()
-bootstrap_subsets=()
 
 case "$target" in
     clr)
@@ -34,7 +33,6 @@ case "$target" in
         ;;
     libs.sfx)
         entry_project="src/libraries/sfx-src.proj"
-        bootstrap_subsets=("clr+libs")
         restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
@@ -45,7 +43,6 @@ case "$target" in
         ;;
     libs.sfx-gen)
         entry_project="src/libraries/sfx-gen.proj"
-        bootstrap_subsets=("clr+libs")
         restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
@@ -56,7 +53,6 @@ case "$target" in
         ;;
     libs.sfx-finish)
         entry_project="src/libraries/sfx-finish.proj"
-        bootstrap_subsets=("clr+libs")
         restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
@@ -67,10 +63,9 @@ case "$target" in
         ;;
     libs.oob)
         entry_project="src/libraries/oob.proj"
-        bootstrap_subsets=("clr+libs")
         prerequisite_projects=(
-            "src/native/libs/build-native.proj"
             "src/libraries/sfx-finish.proj"
+            "src/native/libs/build-native.proj"
         )
         restore_command=(./dotnet.sh msbuild "$entry_project" /t:Restore "/p:Configuration=$configuration" "/p:TargetArchitecture=$target_architecture" "/p:BuildArchitecture=$build_architecture")
         use_project_reference_replay=true
@@ -228,26 +223,8 @@ build_prerequisites() {
     done
 }
 
-build_bootstrap_prerequisites() {
-    local phase="$1"
-
-    if ((${#bootstrap_subsets[@]} == 0)); then
-        return
-    fi
-
-    log "Building ${bootstrap_subsets[*]} bootstrap prerequisites for the $phase build"
-    run_timed "build $phase bootstrap prerequisites" ./build.sh "${bootstrap_subsets[@]}" \
-        -a "$target_architecture" \
-        -c "$configuration" \
-        -lc "$configuration" \
-        -rc "$runtime_configuration" \
-        "/p:BuildArchitecture=$build_architecture"
-}
-
 log "Removing artifacts for a clean validation run"
 clean_build_artifacts
-
-build_bootstrap_prerequisites dynamic
 
 log "Restoring $restore_label"
 run_timed "restore dynamic" "${restore_command[@]}" "$(msbuild_log_args restore-dynamic)"
@@ -301,8 +278,6 @@ fi
 
 log "Removing artifacts before the isolated static graph build"
 clean_build_artifacts
-
-build_bootstrap_prerequisites static
 
 if [[ "$use_project_reference_replay" == "true" ]]; then
     mkdir -p "$output_dir"
