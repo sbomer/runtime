@@ -317,6 +317,9 @@ public sealed class GenerateProjectReferenceReplay : Task
 
                 writer.WriteStartElement("ProjectReference");
                 writer.WriteAttributeString("Update", $"$(RepoRoot){projectReference}");
+                // TODO: Investigate whether authoritative replay can use graph-recognized SetTargetFramework metadata.
+                // ProjectReferenceReplaySetTargetFramework is only consumed during traversal execution, which can leave
+                // static graph construction propagating Build to a discovery-only outer build.
                 writer.WriteElementString(
                     projectReferenceSet.IsAuthoritative ? "ProjectReferenceReplaySetTargetFramework" : "SetTargetFramework",
                     replaySetTargetFramework);

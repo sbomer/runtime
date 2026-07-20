@@ -1,0 +1,30 @@
+Normalized graph comparison
+
+Raw node counts:
+  left: 1
+  right: 1
+Raw edge counts:
+  left: 0
+  right: 0
+
+Normalized counts:
+  left evaluated project instances: 1
+  right evaluated project instances: 1
+  left nodes: 1
+  right nodes: 1
+  left edges: 0
+  right edges: 0
+
+Normalization:
+  Node identity: project path + individual effective target + global properties
+  Effective targets: requested targets, otherwise resolved default targets; multi-target requests are split
+  Ignored global properties: IsGraphBuild
+
+Left-only nodes: 0
+
+Right-only nodes: 0
+
+Left-only edges: 0
+
+Right-only edges: 0
+

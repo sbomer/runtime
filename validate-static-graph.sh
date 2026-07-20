@@ -66,26 +66,36 @@ validation_output_dir="$repo_root/static-graph-validation"
 diff_output_dir="$validation_output_dir/diffs"
 nodes_output_dir="$validation_output_dir/nodes"
 targets_output_dir="$validation_output_dir/targets/$target"
+comparison_output_dir="$validation_output_dir/comparisons"
+binlog_output_dir="$validation_output_dir/binlogs/$target"
 diff_output="$diff_output_dir/static-graph-$target.diff"
 dynamic_nodes_output="$nodes_output_dir/$target.dynamic.nodes.txt"
 static_nodes_output="$nodes_output_dir/$target.static.nodes.txt"
-comparison_output="$repo_root/static-graph-$target.comparison.txt"
+comparison_output="$comparison_output_dir/static-graph-$target.comparison.txt"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/runtime-static-graph-validation.XXXXXX")"
 reuse_dynamic_binlog="${REUSE_DYNAMIC_BINLOG:-}"
 
-mkdir -p "$diff_output_dir" "$nodes_output_dir"
+mkdir -p "$diff_output_dir" "$nodes_output_dir" "$comparison_output_dir" "$binlog_output_dir"
 
 cleanup() {
-    mkdir -p "$output_dir"
+    local exit_code="$1"
+
+    mkdir -p "$output_dir" "$binlog_output_dir"
+    if ((exit_code == 0)); then
+        find "$binlog_output_dir" -maxdepth 1 -type f -name '*.binlog' -delete
+    fi
+    while IFS= read -r -d '' binlog; do
+        mv "$binlog" "$binlog_output_dir/"
+    done < <(find "$work_dir" -maxdepth 1 -type f -name '*.binlog' -print0)
     cp -R "$work_dir"/. "$output_dir"/
     rm -rf "$work_dir"
 }
 
-trap cleanup EXIT
+trap 'cleanup $?' EXIT
 
 if [[ -n "$reuse_dynamic_binlog" ]]; then
     if [[ "$reuse_dynamic_binlog" == "true" ]]; then
-        reuse_dynamic_binlog="$output_dir/dynamic-$target.binlog"
+        reuse_dynamic_binlog="$binlog_output_dir/dynamic-$target.binlog"
     fi
     if [[ ! -f "$reuse_dynamic_binlog" ]]; then
         echo "Dynamic binlog to reuse does not exist: $reuse_dynamic_binlog" >&2
@@ -377,6 +387,7 @@ else
     echo "Static graph binlog comparison completed with differences"
 fi
 echo "Artifacts copied to $output_dir"
+echo "Binlogs copied to $binlog_output_dir"
 echo "Diff written to $diff_output"
 echo "Node files written to $dynamic_nodes_output and $static_nodes_output"
 echo "Comparison report written to $comparison_output"
