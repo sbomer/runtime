@@ -96,12 +96,21 @@ dynamic_nodes_output="$nodes_output_dir/$target.dynamic.nodes.txt"
 static_nodes_output="$nodes_output_dir/$target.static.nodes.txt"
 comparison_output="$comparison_output_dir/static-graph-$target.comparison.txt"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/runtime-static-graph-validation.XXXXXX")"
+prerequisite_artifacts_snapshot=""
 reuse_dynamic_binlog="${REUSE_DYNAMIC_BINLOG:-}"
 
 mkdir -p "$diff_output_dir" "$nodes_output_dir" "$comparison_output_dir" "$binlog_output_dir"
 
 cleanup() {
     local exit_code="$1"
+
+    if [[ -n "$prerequisite_artifacts_snapshot" && -d "$prerequisite_artifacts_snapshot" ]]; then
+        if ((exit_code == 0)); then
+            rm -rf -- "$prerequisite_artifacts_snapshot"
+        else
+            echo "Prerequisite artifact snapshot retained after failure: $prerequisite_artifacts_snapshot" >&2
+        fi
+    fi
 
     mkdir -p "$output_dir" "$binlog_output_dir"
     if ((exit_code == 0)); then
@@ -199,6 +208,53 @@ clean_build_artifacts() {
     fi
 }
 
+copy_build_artifacts() {
+    local source_root="$1"
+    local destination_root="$2"
+
+    mkdir -p "$destination_root"
+    while IFS= read -r -d '' artifact; do
+        # A real copy keeps the snapshot isolated from writes performed by the dynamic build.
+        cp -a "$artifact" "$destination_root/"
+    done < <(find "$source_root" -mindepth 1 -maxdepth 1 ! -name log -print0)
+
+    if [[ -d "$source_root/log" ]]; then
+        mkdir -p "$destination_root/log"
+        while IFS= read -r -d '' artifact_log; do
+            cp -a "$artifact_log" "$destination_root/log/"
+        done < <(find "$source_root/log" -mindepth 1 -maxdepth 1 ! -name static-graph-validation -print0)
+    fi
+}
+
+move_build_artifacts() {
+    local source_root="$1"
+    local destination_root="$2"
+
+    mkdir -p "$destination_root"
+    while IFS= read -r -d '' artifact; do
+        mv "$artifact" "$destination_root/"
+    done < <(find "$source_root" -mindepth 1 -maxdepth 1 ! -name log -print0)
+
+    if [[ -d "$source_root/log" ]]; then
+        mkdir -p "$destination_root/log"
+        while IFS= read -r -d '' artifact_log; do
+            mv "$artifact_log" "$destination_root/log/"
+        done < <(find "$source_root/log" -mindepth 1 -maxdepth 1 -print0)
+    fi
+}
+
+snapshot_prerequisite_artifacts() {
+    prerequisite_artifacts_snapshot="$(mktemp -d "$repo_root/.artifacts-prerequisite-snapshot.XXXXXX")"
+    copy_build_artifacts "$repo_root/artifacts" "$prerequisite_artifacts_snapshot"
+}
+
+restore_prerequisite_artifacts() {
+    clean_build_artifacts
+    move_build_artifacts "$prerequisite_artifacts_snapshot" "$repo_root/artifacts"
+    rm -rf -- "$prerequisite_artifacts_snapshot"
+    prerequisite_artifacts_snapshot=""
+}
+
 common_properties=(
     "/p:Configuration=$configuration"
     "/p:RuntimeConfiguration=$runtime_configuration"
@@ -270,6 +326,11 @@ run_timed "restore dynamic" "${restore_command[@]}" "$(msbuild_log_args restore-
 
 build_prerequisites dynamic
 
+if ((${#prerequisite_subsets[@]} != 0 || ${#prerequisite_projects[@]} != 0)); then
+    log "Snapshotting prerequisite artifacts for the isolated static graph build"
+    run_timed "snapshot prerequisite artifacts" snapshot_prerequisite_artifacts
+fi
+
 static_graph_properties=()
 if [[ "$use_project_reference_replay" == "true" ]]; then
     capture_file="$work_dir/project-references.raw.txt"
@@ -332,10 +393,14 @@ if [[ "$use_project_reference_replay" == "true" ]]; then
     rm "$replay_generator_tasks"
 fi
 
-log "Restoring $restore_label for the isolated static graph build"
-run_timed "restore static" "${restore_command[@]}" "$(msbuild_log_args restore-static)"
-
-build_prerequisites static
+if [[ -n "$prerequisite_artifacts_snapshot" ]]; then
+    log "Restoring prerequisite artifacts for the isolated static graph build"
+    run_timed "restore prerequisite artifacts" restore_prerequisite_artifacts
+else
+    log "Restoring $restore_label for the isolated static graph build"
+    run_timed "restore static" "${restore_command[@]}" "$(msbuild_log_args restore-static)"
+    build_prerequisites static
+fi
 
 log "Running isolated static graph $target build"
 run_timed "static graph build" ./dotnet.sh msbuild "$entry_project" \
