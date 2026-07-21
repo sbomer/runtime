@@ -1,0 +1,208 @@
+Project: Build.proj
+  Globals: Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64
+    Target: Build
+Project: eng/analyzers/PlatformDocAnalyzer/PlatformDocAnalyzer.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/coreclr/System.Private.CoreLib/System.Private.CoreLib.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/Common/tests/System/TestILAssembly/TestILAssembly.ilproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/Common/tests/TestUtilities.Unicode/TestUtilities.Unicode.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/Common/tests/TestUtilities/TestUtilities.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net10.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/shims/stubs/System.Drawing.Common.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Private.CoreLib/gen/EventSourceGenerator.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Private.CoreLib/gen/System.Private.CoreLib.Generators.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Private.CoreLib/ref/System.Private.CoreLib.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Private.Uri/src/System.Private.Uri.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.InteropServices/gen/DownlevelLibraryImportGenerator/DownlevelLibraryImportGenerator.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.InteropServices/gen/LibraryImportGenerator/LibraryImportGenerator.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.InteropServices/gen/Microsoft.Interop.SourceGeneration/Microsoft.Interop.SourceGeneration.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.Serialization.Formatters/ref/System.Runtime.Serialization.Formatters.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net10.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime.Serialization.Formatters/src/System.Runtime.Serialization.Formatters.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net10.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+Project: src/libraries/System.Runtime/ref/System.Runtime.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime/src/System.Runtime.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime/tests/System.Runtime.Tests/System.Runtime.Tests.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net11.0-unix;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime/tests/System.Runtime.Tests/TestCollectibleAssembly/TestCollectibleAssembly.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime/tests/System.Runtime.Tests/TestLoadAssembly/TestLoadAssembly.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime/tests/System.Runtime.Tests/TestModule/System.Reflection.TestModule.ilproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Runtime/tests/System.Runtime.Tests/TestStructs/System.TestStructs.ilproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Security.Permissions/ref/System.Security.Permissions.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Security.Permissions/src/System.Security.Permissions.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Windows.Extensions/ref/System.Windows.Extensions.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+    Target: SourceFilesProjectOutputGroup
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/System.Windows.Extensions/src/System.Windows.Extensions.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: GetTargetFrameworks
+Project: src/libraries/tests.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/tasks/Crossgen2Tasks/Crossgen2Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/HelixTestTasks/HelixTestTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/installer.tasks/installer.tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks.Tests/StaticGraphTasks.Tests.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks/StaticGraphTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tasks/tasks.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64
+    Target: Build
+Project: src/tools/illink/src/ILLink.CodeFix/ILLink.CodeFixProvider.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/ILLink.RoslynAnalyzer/ILLink.RoslynAnalyzer.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetNativeManifest
+Project: src/tools/illink/src/linker/Mono.Linker.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tools/illink/src/linker/ref/Mono.Linker.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RunSmokeTestsOnly=true;RuntimeConfiguration=Release;Subset=libs.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks

@@ -1,0 +1,26 @@
+﻿<Project>
+  <!-- Select the captured project references for this exact project instance. -->
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net11.0-linux'">
+      <PropertyGroup>
+        <_ApplyProjectReferenceReplayAllowList>true</_ApplyProjectReferenceReplayAllowList>
+      </PropertyGroup>
+      <ItemGroup>
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime/tests/System.Runtime.Tests/System.Runtime.Tests.csproj" />
+      </ItemGroup>
+    </When>
+  </Choose>
+  <!-- Apply the selected allow-list once, including authoritative empty sets. -->
+  <ItemGroup Condition="'$(_ApplyProjectReferenceReplayAllowList)' == 'true'">
+    <_ProjectReferenceToRemove Include="@(ProjectReference-&gt;'%(FullPath)')" />
+    <_ProjectReferenceToRemove Remove="@(_ReplayProjectReference)" />
+    <ProjectReference Remove="@(_ProjectReferenceToRemove)" />
+    <_ReplayProjectReference Remove="@(_ReplayProjectReference)" />
+    <_ProjectReferenceToRemove Remove="@(_ProjectReferenceToRemove)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-linux'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime/tests/System.Runtime.Tests/System.Runtime.Tests.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0-unix</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
