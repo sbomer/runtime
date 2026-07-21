@@ -1,0 +1,6 @@
+﻿<Project>
+  <PropertyGroup>
+    <_ProjectReferenceReplayProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '$(MSBuildProjectFullPath)').Replace('\', '/'))</_ProjectReferenceReplayProject>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileFullPath).d/$(_ProjectReferenceReplayProject).targets" Condition="Exists('$(MSBuildThisFileFullPath).d/$(_ProjectReferenceReplayProject).targets')" />
+</Project>

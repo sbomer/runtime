@@ -20,6 +20,7 @@ capture_parallelism=()
 static_graph_parallelism=()
 max_static_graph_nodes=0
 max_static_graph_edges=0
+prerequisite_subsets=()
 prerequisite_projects=()
 
 case "$target" in
@@ -34,6 +35,17 @@ case "$target" in
     libs.sfx)
         entry_project="Build.proj"
         restore_command=(./build.sh libs.sfx --restore --runtimeConfiguration "$runtime_configuration")
+        use_project_reference_replay=true
+        dynamic_build_parallelism=(/m:1)
+        capture_parallelism=(/m:2)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=1000
+        max_static_graph_edges=50000
+        ;;
+    libs.pretest)
+        entry_project="Build.proj"
+        prerequisite_subsets=("host.native+clr.runtime+clr.corelib+libs.sfx")
+        restore_command=(./build.sh libs.pretest --restore --runtimeConfiguration "$runtime_configuration")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
         capture_parallelism=(/m:2)
@@ -56,7 +68,7 @@ case "$target" in
         max_static_graph_edges=50000
         ;;
     *)
-        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.oob" >&2
+        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.pretest, libs.oob" >&2
         exit 1
         ;;
 esac
@@ -197,6 +209,16 @@ fi
 
 build_prerequisites() {
     local phase="$1"
+
+    if ((${#prerequisite_subsets[@]} != 0)); then
+        log "Building ${prerequisite_subsets[*]} artifact prerequisites for the $phase build"
+        run_timed "build $phase subset prerequisites" ./build.sh "${prerequisite_subsets[@]}" \
+            -a "$target_architecture" \
+            -c "$configuration" \
+            -lc "$configuration" \
+            -rc "$runtime_configuration" \
+            "/p:BuildArchitecture=$build_architecture"
+    fi
 
     if ((${#prerequisite_projects[@]} == 0)); then
         return

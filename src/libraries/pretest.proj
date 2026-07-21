@@ -9,6 +9,11 @@
     <CreateVsCodeRunSettingsFile>true</CreateVsCodeRunSettingsFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <!-- Direct traversal references already describe the graph; synthetic transitive edges bypass their target protocol. -->
+    <AddTransitiveProjectReferencesInStaticGraph>false</AddTransitiveProjectReferencesInStaticGraph>
+  </PropertyGroup>
+
   <!--
     Explicitly build the externals.csproj project first to create the PlatformManifest for
     the targeting and runtimepack before the test runners which consume that asset are built.
