@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
+﻿<Project>
   <!-- Select the captured project references for this exact project instance. -->
   <Choose>
     <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -26,7 +25,6 @@
     <_ReplayProjectReference Remove="@(_ReplayProjectReference)" />
     <_ProjectReferenceToRemove Remove="@(_ProjectReferenceToRemove)" />
   </ItemGroup>
-  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Options/gen/Microsoft.Extensions.Options.SourceGeneration.csproj">
       <ProjectReferenceReplaySetTargetFramework>TargetFramework=netstandard2.0</ProjectReferenceReplaySetTargetFramework>

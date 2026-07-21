@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
-  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
+﻿<Project>
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-linux'">
     <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Requests/src/System.Net.Requests.csproj">
       <SetTargetFramework>TargetFramework=net11.0-unix</SetTargetFramework>

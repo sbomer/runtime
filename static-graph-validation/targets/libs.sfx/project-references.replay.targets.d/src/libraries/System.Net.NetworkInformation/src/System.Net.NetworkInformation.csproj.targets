@@ -1,10 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
-  <!-- Restrict outer builds to the captured target frameworks. -->
+﻿<Project>
   <PropertyGroup Condition="'$(TargetFramework)' == ''">
     <TargetFrameworks>net11.0;net11.0-linux</TargetFrameworks>
   </PropertyGroup>
-  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
     <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Primitives/src/System.Net.Primitives.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>

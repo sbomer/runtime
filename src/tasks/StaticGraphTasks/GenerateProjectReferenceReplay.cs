@@ -120,7 +120,8 @@ public sealed class GenerateProjectReferenceReplay : Task
         }
         Directory.CreateDirectory(replayOutputDirectory);
 
-        using XmlWriter writer = XmlWriter.Create(outputFile, new XmlWriterSettings { Indent = true });
+        XmlWriterSettings xmlWriterSettings = new() { Indent = true, OmitXmlDeclaration = true };
+        using XmlWriter writer = XmlWriter.Create(outputFile, xmlWriterSettings);
         writer.WriteStartElement("Project");
         WriteCurrentProjectPathProperty(writer);
         writer.WriteStartElement("Import");
@@ -139,37 +140,51 @@ public sealed class GenerateProjectReferenceReplay : Task
         SortedSet<string> replayProjects = new(selectedFrameworksByProject.Keys, StringComparer.OrdinalIgnoreCase);
         replayProjects.UnionWith(projectReferenceSetsByParent.Keys);
         SortedSet<string> allowListParents = new(StringComparer.OrdinalIgnoreCase);
+        int replayFileCount = 0;
         foreach (string projectPath in replayProjects)
         {
+            selectedFrameworksByProject.TryGetValue(projectPath, out SortedSet<string>? frameworks);
+            projectReferenceSetsByParent.TryGetValue(projectPath, out SortedDictionary<string, ProjectReferenceSet>? projectReferenceSetsByTargetFramework);
+
+            bool hasProjectReferenceUpdates = false;
+            bool hasAuthoritativeProjectReferenceSet = false;
+            if (projectReferenceSetsByTargetFramework is not null)
+            {
+                foreach (ProjectReferenceSet projectReferenceSet in projectReferenceSetsByTargetFramework.Values)
+                {
+                    hasAuthoritativeProjectReferenceSet |= projectReferenceSet.IsAuthoritative;
+                    hasProjectReferenceUpdates |= projectReferenceSet.ProjectReferences.Count > 0;
+                }
+            }
+
+            if (frameworks is null && !hasAuthoritativeProjectReferenceSet && !hasProjectReferenceUpdates)
+            {
+                continue;
+            }
+
             string replayFile = Path.Combine(
                 replayOutputDirectory,
                 $"{projectPath}.targets".Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(Path.GetDirectoryName(replayFile)!);
 
-            using XmlWriter projectWriter = XmlWriter.Create(replayFile, new XmlWriterSettings { Indent = true });
+            using XmlWriter projectWriter = XmlWriter.Create(replayFile, xmlWriterSettings);
             projectWriter.WriteStartElement("Project");
+            bool wroteReplayContent = false;
 
-            if (selectedFrameworksByProject.TryGetValue(projectPath, out SortedSet<string>? frameworks))
+            if (frameworks is not null)
             {
-                projectWriter.WriteComment(" Restrict outer builds to the captured target frameworks. ");
+                wroteReplayContent = true;
                 projectWriter.WriteStartElement("PropertyGroup");
                 projectWriter.WriteAttributeString("Condition", "'$(TargetFramework)' == ''");
                 projectWriter.WriteElementString("TargetFrameworks", string.Join(';', frameworks));
                 projectWriter.WriteEndElement();
             }
 
-            if (projectReferenceSetsByParent.TryGetValue(projectPath, out SortedDictionary<string, ProjectReferenceSet>? projectReferenceSetsByTargetFramework))
+            if (projectReferenceSetsByTargetFramework is not null)
             {
-                bool hasProjectReferenceUpdates = false;
-                bool hasAuthoritativeProjectReferenceSet = false;
-                foreach (ProjectReferenceSet projectReferenceSet in projectReferenceSetsByTargetFramework.Values)
-                {
-                    hasAuthoritativeProjectReferenceSet |= projectReferenceSet.IsAuthoritative;
-                    hasProjectReferenceUpdates |= projectReferenceSet.ProjectReferences.Count > 0;
-                }
-
                 if (hasAuthoritativeProjectReferenceSet)
                 {
+                    wroteReplayContent = true;
                     projectWriter.WriteComment(" Select the captured project references for this exact project instance. ");
                     projectWriter.WriteStartElement("Choose");
                 }
@@ -198,7 +213,7 @@ public sealed class GenerateProjectReferenceReplay : Task
 
                 if (hasProjectReferenceUpdates)
                 {
-                    WriteProjectReferenceMetadata(
+                    wroteReplayContent |= WriteProjectReferenceMetadata(
                         projectWriter,
                         projectReferenceSetsByTargetFramework,
                         selectedFrameworksByProject);
@@ -206,9 +221,19 @@ public sealed class GenerateProjectReferenceReplay : Task
             }
 
             projectWriter.WriteEndElement();
+            projectWriter.Close();
+
+            if (wroteReplayContent)
+            {
+                replayFileCount++;
+            }
+            else
+            {
+                File.Delete(replayFile);
+            }
         }
 
-        Log.LogMessage(MessageImportance.High, $"Wrote {replayProjects.Count} project replay files with {selectedFrameworksByProject.Count} target framework selections and {allowListParents.Count} project reference allow-lists to '{replayOutputDirectory}'.");
+        Log.LogMessage(MessageImportance.High, $"Wrote {replayFileCount} project replay files with {selectedFrameworksByProject.Count} target framework selections and {allowListParents.Count} project reference allow-lists to '{replayOutputDirectory}'.");
         return !Log.HasLoggedErrors;
     }
 
@@ -278,12 +303,12 @@ public sealed class GenerateProjectReferenceReplay : Task
         }
     }
 
-    private static void WriteProjectReferenceMetadata(
+    private static bool WriteProjectReferenceMetadata(
         XmlWriter writer,
         SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework,
         SortedDictionary<string, SortedSet<string>> selectedFrameworksByProject)
     {
-        writer.WriteComment(" Replay selected target frameworks during evaluation for static graph construction. ");
+        bool wroteMetadata = false;
 
         foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
         {
@@ -313,6 +338,7 @@ public sealed class GenerateProjectReferenceReplay : Task
                     writer.WriteStartElement("ItemGroup");
                     writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
                     wroteItemGroup = true;
+                    wroteMetadata = true;
                 }
 
                 writer.WriteStartElement("ProjectReference");
@@ -331,6 +357,8 @@ public sealed class GenerateProjectReferenceReplay : Task
                 writer.WriteEndElement();
             }
         }
+
+        return wroteMetadata;
     }
 
     private static void WriteProjectReferenceAllowListApplication(XmlWriter writer)

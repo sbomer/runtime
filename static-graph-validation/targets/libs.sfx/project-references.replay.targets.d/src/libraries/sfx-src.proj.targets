@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
+﻿<Project>
   <!-- Select the captured project references for this exact project instance. -->
   <Choose>
     <When Condition="'$(TargetFramework)' == 'net11.0-linux'">
@@ -199,7 +198,6 @@
     <_ReplayProjectReference Remove="@(_ReplayProjectReference)" />
     <_ProjectReferenceToRemove Remove="@(_ProjectReferenceToRemove)" />
   </ItemGroup>
-  <!-- Replay selected target frameworks during evaluation for static graph construction. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-linux'">
     <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.CSharp/src/Microsoft.CSharp.csproj">
       <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>

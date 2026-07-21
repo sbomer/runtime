@@ -41,11 +41,18 @@ public sealed class GenerateProjectReferenceReplayTests
             Assert.True(task.Execute());
             Assert.Empty(buildEngine.Errors);
 
+            string dispatcherText = File.ReadAllText(replayFile);
+            Assert.DoesNotContain("<?xml", dispatcherText, StringComparison.Ordinal);
+
             XDocument dispatcher = XDocument.Load(replayFile);
             XElement import = Assert.Single(dispatcher.Descendants("Import"));
             Assert.Contains("$(_ProjectReferenceReplayProject).targets", import.Attribute("Project")!.Value);
 
             XDocument nodeReplay = XDocument.Load(GetReplayFile(replayFile, "src/Child.csproj"));
+            string nodeReplayText = File.ReadAllText(GetReplayFile(replayFile, "src/Child.csproj"));
+            Assert.DoesNotContain("<?xml", nodeReplayText, StringComparison.Ordinal);
+            Assert.DoesNotContain("Restrict outer builds", nodeReplayText, StringComparison.Ordinal);
+            Assert.DoesNotContain("Replay selected target frameworks", nodeReplayText, StringComparison.Ordinal);
             XElement[] targetFrameworks = nodeReplay.Descendants("TargetFrameworks").ToArray();
             XElement targetFramework = Assert.Single(targetFrameworks);
             Assert.Equal("net8.0;net9.0", targetFramework.Value);
@@ -131,10 +138,7 @@ public sealed class GenerateProjectReferenceReplayTests
 
             Assert.True(task.Execute());
 
-            XDocument edgeReplay = XDocument.Load(GetReplayFile(replayFile, "src/Parent.csproj"));
-            Assert.DoesNotContain(
-                edgeReplay.Descendants("ProjectReference"),
-                element => element.Attribute("Update") is not null);
+            Assert.False(File.Exists(GetReplayFile(replayFile, "src/Parent.csproj")));
         }
         finally
         {
