@@ -5,6 +5,11 @@
     <NoDefaultSlnGenSolutionFolder>true</NoDefaultSlnGenSolutionFolder>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <!-- Direct traversal references already describe the graph; synthetic transitive edges bypass their target protocol. -->
+    <AddTransitiveProjectReferencesInStaticGraph>false</AddTransitiveProjectReferencesInStaticGraph>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="sfx-src.proj" />
     <ProjectReference Include="sfx-gen.proj" />

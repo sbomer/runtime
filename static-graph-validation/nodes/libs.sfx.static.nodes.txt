@@ -22,11 +22,8 @@ Project: src/libraries/Microsoft.CSharp/ref/Microsoft.CSharp.csproj
 Project: src/libraries/Microsoft.CSharp/src/Microsoft.CSharp.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Caching.Abstractions/ref/Microsoft.Extensions.Caching.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -35,16 +32,12 @@ Project: src/libraries/Microsoft.Extensions.Caching.Abstractions/ref/Microsoft.E
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Caching.Abstractions/src/Microsoft.Extensions.Caching.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Configuration.Abstractions/ref/Microsoft.Extensions.Configuration.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -53,7 +46,6 @@ Project: src/libraries/Microsoft.Extensions.Configuration.Abstractions/ref/Micro
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Configuration.Abstractions/src/Microsoft.Extensions.Configuration.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -62,7 +54,6 @@ Project: src/libraries/Microsoft.Extensions.Configuration.Abstractions/src/Micro
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.DependencyInjection.Abstractions/ref/Microsoft.Extensions.DependencyInjection.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -71,7 +62,6 @@ Project: src/libraries/Microsoft.Extensions.DependencyInjection.Abstractions/ref
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.DependencyInjection.Abstractions/src/Microsoft.Extensions.DependencyInjection.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -80,7 +70,6 @@ Project: src/libraries/Microsoft.Extensions.DependencyInjection.Abstractions/src
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Diagnostics.Abstractions/ref/Microsoft.Extensions.Diagnostics.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -89,7 +78,6 @@ Project: src/libraries/Microsoft.Extensions.Diagnostics.Abstractions/ref/Microso
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Diagnostics.Abstractions/src/Microsoft.Extensions.Diagnostics.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -98,7 +86,6 @@ Project: src/libraries/Microsoft.Extensions.Diagnostics.Abstractions/src/Microso
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.FileProviders.Abstractions/ref/Microsoft.Extensions.FileProviders.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -107,7 +94,6 @@ Project: src/libraries/Microsoft.Extensions.FileProviders.Abstractions/ref/Micro
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.FileProviders.Abstractions/src/Microsoft.Extensions.FileProviders.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -116,7 +102,6 @@ Project: src/libraries/Microsoft.Extensions.FileProviders.Abstractions/src/Micro
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Hosting.Abstractions/ref/Microsoft.Extensions.Hosting.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -125,16 +110,12 @@ Project: src/libraries/Microsoft.Extensions.Hosting.Abstractions/ref/Microsoft.E
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/Microsoft.Extensions.Hosting.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Logging.Abstractions/gen/Microsoft.Extensions.Logging.Generators.Roslyn3.11.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -161,7 +142,6 @@ Project: src/libraries/Microsoft.Extensions.Logging.Abstractions/ref/Microsoft.E
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Logging.Abstractions/src/Microsoft.Extensions.Logging.Abstractions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -170,7 +150,6 @@ Project: src/libraries/Microsoft.Extensions.Logging.Abstractions/src/Microsoft.E
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Options/gen/Microsoft.Extensions.Options.SourceGeneration.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=netstandard2.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -179,7 +158,6 @@ Project: src/libraries/Microsoft.Extensions.Options/gen/Microsoft.Extensions.Opt
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Options/ref/Microsoft.Extensions.Options.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -188,7 +166,6 @@ Project: src/libraries/Microsoft.Extensions.Options/ref/Microsoft.Extensions.Opt
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Options/src/Microsoft.Extensions.Options.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -197,7 +174,6 @@ Project: src/libraries/Microsoft.Extensions.Options/src/Microsoft.Extensions.Opt
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Primitives/ref/Microsoft.Extensions.Primitives.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -206,7 +182,6 @@ Project: src/libraries/Microsoft.Extensions.Primitives/ref/Microsoft.Extensions.
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Extensions.Primitives/src/Microsoft.Extensions.Primitives.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -215,7 +190,6 @@ Project: src/libraries/Microsoft.Extensions.Primitives/src/Microsoft.Extensions.
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.VisualBasic.Core/ref/Microsoft.VisualBasic.Core.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -230,7 +204,6 @@ Project: src/libraries/Microsoft.VisualBasic.Core/src/Microsoft.VisualBasic.Core
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/Microsoft.Win32.Primitives/ref/Microsoft.Win32.Primitives.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -258,7 +231,6 @@ Project: src/libraries/Microsoft.Win32.Registry/src/Microsoft.Win32.Registry.csp
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/sfx-finish.proj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -281,8 +253,6 @@ Project: src/libraries/sfx.proj
 Project: src/libraries/shims/Microsoft.VisualBasic/src/Microsoft.VisualBasic.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/mscorlib/ref/mscorlib.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -293,14 +263,10 @@ Project: src/libraries/shims/mscorlib/ref/mscorlib.csproj
 Project: src/libraries/shims/mscorlib/src/mscorlib.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/netstandard/src/netstandard.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/stubs/Microsoft.Win32.SystemEvents.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -357,7 +323,6 @@ Project: src/libraries/shims/stubs/System.Drawing.Common.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/shims/stubs/System.IO.Packaging.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -422,38 +387,26 @@ Project: src/libraries/shims/stubs/System.Windows.Extensions.csproj
 Project: src/libraries/shims/System.AppContext/src/System.AppContext.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Buffers/src/System.Buffers.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.ComponentModel.DataAnnotations/src/System.ComponentModel.DataAnnotations.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Configuration/src/System.Configuration.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Core/src/System.Core.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Data.DataSetExtensions/src/System.Data.DataSetExtensions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Data/ref/System.Data.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -464,296 +417,198 @@ Project: src/libraries/shims/System.Data/ref/System.Data.csproj
 Project: src/libraries/shims/System.Data/src/System.Data.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Diagnostics.Debug/src/System.Diagnostics.Debug.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Diagnostics.Tools/src/System.Diagnostics.Tools.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Drawing/src/System.Drawing.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Dynamic.Runtime/src/System.Dynamic.Runtime.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Globalization.Calendars/src/System.Globalization.Calendars.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Globalization.Extensions/src/System.Globalization.Extensions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Globalization/src/System.Globalization.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.IO.Compression.FileSystem/src/System.IO.Compression.FileSystem.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.IO.FileSystem.Primitives/src/System.IO.FileSystem.Primitives.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.IO.FileSystem/src/System.IO.FileSystem.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.IO.UnmanagedMemoryStream/src/System.IO.UnmanagedMemoryStream.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.IO/src/System.IO.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Net.ServicePoint/src/System.Net.ServicePoint.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Net/src/System.Net.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Numerics/src/System.Numerics.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Reflection.Extensions/src/System.Reflection.Extensions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Reflection/src/System.Reflection.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Resources.Reader/src/System.Resources.Reader.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Resources.ResourceManager/src/System.Resources.ResourceManager.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Runtime.CompilerServices.Unsafe/src/System.Runtime.CompilerServices.Unsafe.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Runtime.Extensions/src/System.Runtime.Extensions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Runtime.Handles/src/System.Runtime.Handles.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Runtime.InteropServices.RuntimeInformation/src/System.Runtime.InteropServices.RuntimeInformation.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Runtime.Serialization/src/System.Runtime.Serialization.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Cryptography.Algorithms/src/System.Security.Cryptography.Algorithms.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Cryptography.Cng/src/System.Security.Cryptography.Cng.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Cryptography.Csp/src/System.Security.Cryptography.Csp.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Cryptography.Encoding/src/System.Security.Cryptography.Encoding.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Cryptography.OpenSsl/src/System.Security.Cryptography.OpenSsl.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Cryptography.Primitives/src/System.Security.Cryptography.Primitives.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Cryptography.X509Certificates/src/System.Security.Cryptography.X509Certificates.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.Principal/src/System.Security.Principal.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security.SecureString/src/System.Security.SecureString.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Security/src/System.Security.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.ServiceModel.Web/src/System.ServiceModel.Web.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.ServiceProcess/src/System.ServiceProcess.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Text.Encoding/src/System.Text.Encoding.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Threading.Tasks.Extensions/src/System.Threading.Tasks.Extensions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Threading.Tasks/src/System.Threading.Tasks.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Threading.Timer/src/System.Threading.Timer.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Transactions/src/System.Transactions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.ValueTuple/src/System.ValueTuple.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Web/src/System.Web.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Windows/src/System.Windows.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Xml.Linq/src/System.Xml.Linq.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Xml.Serialization/src/System.Xml.Serialization.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Xml.XmlDocument/src/System.Xml.XmlDocument.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System.Xml/src/System.Xml.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/System/ref/System.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -764,14 +619,10 @@ Project: src/libraries/shims/System/ref/System.csproj
 Project: src/libraries/shims/System/src/System.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/shims/WindowsBase/src/WindowsBase.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/libraries/System.Collections.Concurrent/ref/System.Collections.Concurrent.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -792,7 +643,6 @@ Project: src/libraries/System.Collections.Immutable/ref/System.Collections.Immut
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Collections.Immutable/src/System.Collections.Immutable.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -801,7 +651,6 @@ Project: src/libraries/System.Collections.Immutable/src/System.Collections.Immut
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Collections.NonGeneric/ref/System.Collections.NonGeneric.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -918,7 +767,6 @@ Project: src/libraries/System.Console/src/System.Console.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Data.Common/ref/System.Data.Common.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -951,7 +799,6 @@ Project: src/libraries/System.Diagnostics.DiagnosticSource/ref/System.Diagnostic
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Diagnostics.DiagnosticSource/src/System.Diagnostics.DiagnosticSource.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -960,7 +807,6 @@ Project: src/libraries/System.Diagnostics.DiagnosticSource/src/System.Diagnostic
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Diagnostics.FileVersionInfo/ref/System.Diagnostics.FileVersionInfo.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -981,7 +827,6 @@ Project: src/libraries/System.Diagnostics.FileVersionInfo/src/System.Diagnostics
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Diagnostics.Process/ref/System.Diagnostics.Process.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1002,7 +847,6 @@ Project: src/libraries/System.Diagnostics.Process/src/System.Diagnostics.Process
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Diagnostics.StackTrace/ref/System.Diagnostics.StackTrace.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1065,7 +909,6 @@ Project: src/libraries/System.Drawing.Primitives/src/System.Drawing.Primitives.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Formats.Asn1/ref/System.Formats.Asn1.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1074,7 +917,6 @@ Project: src/libraries/System.Formats.Asn1/ref/System.Formats.Asn1.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Formats.Asn1/src/System.Formats.Asn1.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1083,7 +925,6 @@ Project: src/libraries/System.Formats.Asn1/src/System.Formats.Asn1.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Formats.Tar/ref/System.Formats.Tar.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1094,11 +935,8 @@ Project: src/libraries/System.Formats.Tar/ref/System.Formats.Tar.csproj
 Project: src/libraries/System.Formats.Tar/src/System.Formats.Tar.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0-unix;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.Compression.Brotli/ref/System.IO.Compression.Brotli.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1119,7 +957,6 @@ Project: src/libraries/System.IO.Compression.Brotli/src/System.IO.Compression.Br
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.Compression.ZipFile/ref/System.IO.Compression.ZipFile.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1134,7 +971,6 @@ Project: src/libraries/System.IO.Compression.ZipFile/src/System.IO.Compression.Z
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.Compression/ref/System.IO.Compression.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1155,7 +991,6 @@ Project: src/libraries/System.IO.Compression/src/System.IO.Compression.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.FileSystem.AccessControl/ref/System.IO.FileSystem.AccessControl.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1171,7 +1006,6 @@ Project: src/libraries/System.IO.FileSystem.AccessControl/src/System.IO.FileSyst
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.FileSystem.DriveInfo/ref/System.IO.FileSystem.DriveInfo.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1191,7 +1025,6 @@ Project: src/libraries/System.IO.FileSystem.DriveInfo/src/System.IO.FileSystem.D
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.FileSystem.Watcher/ref/System.IO.FileSystem.Watcher.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1206,7 +1039,6 @@ Project: src/libraries/System.IO.FileSystem.Watcher/src/System.IO.FileSystem.Wat
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.IsolatedStorage/ref/System.IO.IsolatedStorage.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1221,7 +1053,6 @@ Project: src/libraries/System.IO.IsolatedStorage/src/System.IO.IsolatedStorage.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.MemoryMappedFiles/ref/System.IO.MemoryMappedFiles.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1242,7 +1073,6 @@ Project: src/libraries/System.IO.MemoryMappedFiles/src/System.IO.MemoryMappedFil
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.Pipelines/ref/System.IO.Pipelines.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1251,7 +1081,6 @@ Project: src/libraries/System.IO.Pipelines/ref/System.IO.Pipelines.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.Pipelines/src/System.IO.Pipelines.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1260,7 +1089,6 @@ Project: src/libraries/System.IO.Pipelines/src/System.IO.Pipelines.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.Pipes.AccessControl/ref/System.IO.Pipes.AccessControl.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1276,7 +1104,6 @@ Project: src/libraries/System.IO.Pipes.AccessControl/src/System.IO.Pipes.AccessC
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.IO.Pipes/ref/System.IO.Pipes.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1297,7 +1124,6 @@ Project: src/libraries/System.IO.Pipes/src/System.IO.Pipes.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Linq.AsyncEnumerable/ref/System.Linq.AsyncEnumerable.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1306,16 +1132,12 @@ Project: src/libraries/System.Linq.AsyncEnumerable/ref/System.Linq.AsyncEnumerab
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Linq.AsyncEnumerable/src/System.Linq.AsyncEnumerable.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Linq.Expressions/ref/System.Linq.Expressions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1384,16 +1206,12 @@ Project: src/libraries/System.Net.Http.Json/ref/System.Net.Http.Json.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Http.Json/src/System.Net.Http.Json.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Http/ref/System.Net.Http.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1414,7 +1232,6 @@ Project: src/libraries/System.Net.Http/src/System.Net.Http.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.HttpListener/ref/System.Net.HttpListener.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1429,7 +1246,6 @@ Project: src/libraries/System.Net.HttpListener/src/System.Net.HttpListener.cspro
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Mail/ref/System.Net.Mail.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1444,7 +1260,6 @@ Project: src/libraries/System.Net.Mail/src/System.Net.Mail.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.NameResolution/ref/System.Net.NameResolution.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1465,7 +1280,6 @@ Project: src/libraries/System.Net.NameResolution/src/System.Net.NameResolution.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.NetworkInformation/ref/System.Net.NetworkInformation.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1486,7 +1300,6 @@ Project: src/libraries/System.Net.NetworkInformation/src/System.Net.NetworkInfor
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Ping/ref/System.Net.Ping.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1501,7 +1314,6 @@ Project: src/libraries/System.Net.Ping/src/System.Net.Ping.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Primitives/ref/System.Net.Primitives.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1522,7 +1334,6 @@ Project: src/libraries/System.Net.Primitives/src/System.Net.Primitives.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Quic/ref/System.Net.Quic.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1543,7 +1354,6 @@ Project: src/libraries/System.Net.Quic/src/System.Net.Quic.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Requests/ref/System.Net.Requests.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1564,7 +1374,6 @@ Project: src/libraries/System.Net.Requests/src/System.Net.Requests.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Security/ref/System.Net.Security.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1585,7 +1394,6 @@ Project: src/libraries/System.Net.Security/src/System.Net.Security.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.ServerSentEvents/ref/System.Net.ServerSentEvents.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1594,16 +1402,12 @@ Project: src/libraries/System.Net.ServerSentEvents/ref/System.Net.ServerSentEven
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.ServerSentEvents/src/System.Net.ServerSentEvents.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.Sockets/ref/System.Net.Sockets.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1624,7 +1428,6 @@ Project: src/libraries/System.Net.Sockets/src/System.Net.Sockets.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.WebClient/ref/System.Net.WebClient.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1639,7 +1442,6 @@ Project: src/libraries/System.Net.WebClient/src/System.Net.WebClient.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.WebHeaderCollection/ref/System.Net.WebHeaderCollection.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1666,7 +1468,6 @@ Project: src/libraries/System.Net.WebProxy/src/System.Net.WebProxy.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.WebSockets.Client/ref/System.Net.WebSockets.Client.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1681,7 +1482,6 @@ Project: src/libraries/System.Net.WebSockets.Client/src/System.Net.WebSockets.Cl
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Net.WebSockets/ref/System.Net.WebSockets.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1702,7 +1502,6 @@ Project: src/libraries/System.Net.WebSockets/src/System.Net.WebSockets.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Numerics.Vectors/ref/System.Numerics.Vectors.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1771,7 +1570,6 @@ Project: src/libraries/System.Private.Xml/src/System.Private.Xml.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Reflection.DispatchProxy/ref/System.Reflection.DispatchProxy.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1828,7 +1626,6 @@ Project: src/libraries/System.Reflection.Metadata/ref/System.Reflection.Metadata
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Reflection.Metadata/src/System.Reflection.Metadata.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1837,7 +1634,6 @@ Project: src/libraries/System.Reflection.Metadata/src/System.Reflection.Metadata
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Reflection.Primitives/ref/System.Reflection.Primitives.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1903,11 +1699,8 @@ Project: src/libraries/System.Runtime.InteropServices.JavaScript/ref/System.Runt
 Project: src/libraries/System.Runtime.InteropServices.JavaScript/src/System.Runtime.InteropServices.JavaScript.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Runtime.InteropServices/gen/ComInterfaceGenerator/ComInterfaceGenerator.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1982,7 +1775,6 @@ Project: src/libraries/System.Runtime.Serialization.Formatters/ref/System.Runtim
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Runtime.Serialization.Formatters/src/System.Runtime.Serialization.Formatters.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -1991,7 +1783,6 @@ Project: src/libraries/System.Runtime.Serialization.Formatters/src/System.Runtim
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Runtime.Serialization.Json/ref/System.Runtime.Serialization.Json.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2055,7 +1846,6 @@ Project: src/libraries/System.Security.AccessControl/src/System.Security.AccessC
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Security.Claims/ref/System.Security.Claims.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2088,7 +1878,6 @@ Project: src/libraries/System.Security.Cryptography/src/System.Security.Cryptogr
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Security.Principal.Windows/ref/System.Security.Principal.Windows.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2104,7 +1893,6 @@ Project: src/libraries/System.Security.Principal.Windows/src/System.Security.Pri
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.Encoding.CodePages/ref/System.Text.Encoding.CodePages.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2113,16 +1901,12 @@ Project: src/libraries/System.Text.Encoding.CodePages/ref/System.Text.Encoding.C
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.Encoding.CodePages/src/System.Text.Encoding.CodePages.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.Encoding.Extensions/ref/System.Text.Encoding.Extensions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2143,7 +1927,6 @@ Project: src/libraries/System.Text.Encodings.Web/ref/System.Text.Encodings.Web.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.Encodings.Web/src/System.Text.Encodings.Web.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2152,7 +1935,6 @@ Project: src/libraries/System.Text.Encodings.Web/src/System.Text.Encodings.Web.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Roslyn3.11.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2178,7 +1960,6 @@ Project: src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Ro
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.Json/ref/System.Text.Json.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2187,7 +1968,6 @@ Project: src/libraries/System.Text.Json/ref/System.Text.Json.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.Json/src/System.Text.Json.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2196,7 +1976,6 @@ Project: src/libraries/System.Text.Json/src/System.Text.Json.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.RegularExpressions/gen/System.Text.RegularExpressions.Generator.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=netstandard2.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2205,7 +1984,6 @@ Project: src/libraries/System.Text.RegularExpressions/gen/System.Text.RegularExp
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Text.RegularExpressions/ref/System.Text.RegularExpressions.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2227,7 +2005,6 @@ Project: src/libraries/System.Threading.AccessControl/ref/System.Threading.Acces
     Target: GetTargetFrameworks
     Target: SourceFilesProjectOutputGroup
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Threading.AccessControl/src/System.Threading.AccessControl.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2236,7 +2013,6 @@ Project: src/libraries/System.Threading.AccessControl/src/System.Threading.Acces
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Threading.Channels/ref/System.Threading.Channels.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2245,7 +2021,6 @@ Project: src/libraries/System.Threading.Channels/ref/System.Threading.Channels.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Threading.Channels/src/System.Threading.Channels.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2254,7 +2029,6 @@ Project: src/libraries/System.Threading.Channels/src/System.Threading.Channels.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Threading.Overlapped/ref/System.Threading.Overlapped.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2275,16 +2049,12 @@ Project: src/libraries/System.Threading.Tasks.Dataflow/ref/System.Threading.Task
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Threading.Tasks.Dataflow/src/System.Threading.Tasks.Dataflow.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Threading.Tasks.Parallel/ref/System.Threading.Tasks.Parallel.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2347,7 +2117,6 @@ Project: src/libraries/System.Transactions.Local/src/System.Transactions.Local.c
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/libraries/System.Web.HttpUtility/ref/System.Web.HttpUtility.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
@@ -2461,7 +2230,6 @@ Project: src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj
     Target: GetNativeManifest
     Target: GetTargetFrameworks
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
     Target: GetTargetFrameworks
 Project: src/tools/illink/src/linker/Mono.Linker.csproj
   Globals: ApiCompatValidateAssemblies=false;Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=libs.sfx;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
