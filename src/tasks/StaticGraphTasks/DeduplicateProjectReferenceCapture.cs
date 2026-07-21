@@ -42,8 +42,7 @@ public sealed class DeduplicateProjectReferenceCapture : Task
             StringComparer.OrdinalIgnoreCase.Equals(x.ParentTargetFramework, y.ParentTargetFramework) &&
             StringComparer.OrdinalIgnoreCase.Equals(x.ReferencedProject, y.ReferencedProject) &&
             StringComparer.OrdinalIgnoreCase.Equals(x.SetTargetFramework, y.SetTargetFramework) &&
-            x.IsDynamicallyAdded == y.IsDynamicallyAdded &&
-            StringComparer.Ordinal.Equals(x.ProjectReferenceMetadata, y.ProjectReferenceMetadata);
+            x.IsDynamicallyAdded == y.IsDynamicallyAdded;
 
         public int GetHashCode(CaptureKey obj)
         {
@@ -53,7 +52,6 @@ public sealed class DeduplicateProjectReferenceCapture : Task
             hashCode.Add(obj.ReferencedProject, StringComparer.OrdinalIgnoreCase);
             hashCode.Add(obj.SetTargetFramework, StringComparer.OrdinalIgnoreCase);
             hashCode.Add(obj.IsDynamicallyAdded);
-            hashCode.Add(obj.ProjectReferenceMetadata, StringComparer.Ordinal);
             return hashCode.ToHashCode();
         }
     }
@@ -63,8 +61,7 @@ public sealed class DeduplicateProjectReferenceCapture : Task
         string ParentTargetFramework,
         string ReferencedProject,
         string SetTargetFramework,
-        bool IsDynamicallyAdded,
-        string ProjectReferenceMetadata)
+        bool IsDynamicallyAdded)
     {
         public CaptureKey(ITaskItem item)
             : this(
@@ -72,8 +69,7 @@ public sealed class DeduplicateProjectReferenceCapture : Task
                 item.GetMetadata("CaptureParentTargetFramework"),
                 item.GetMetadata("CaptureReferencedProject"),
                 item.GetMetadata("CaptureSetTargetFramework"),
-                string.Equals(item.GetMetadata("CaptureIsDynamicallyAdded"), "true", StringComparison.OrdinalIgnoreCase),
-                item.GetMetadata("CaptureProjectReferenceMetadata"))
+                string.Equals(item.GetMetadata("CaptureIsDynamicallyAdded"), "true", StringComparison.OrdinalIgnoreCase))
         {
         }
     }

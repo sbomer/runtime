@@ -10,15 +10,9 @@
       <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Bcl.AsyncInterfaces/src/Microsoft.Bcl.AsyncInterfaces.csproj">
-      <NuGetPackageId>Microsoft.Bcl.AsyncInterfaces</NuGetPackageId>
-      <NuGetPackageVersion>11.0.0-dev</NuGetPackageVersion>
-      <ReferenceSourceTarget>ProjectReference</ReferenceSourceTarget>
       <SetTargetFramework>TargetFramework=netstandard2.1</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection.Abstractions/src/Microsoft.Extensions.DependencyInjection.Abstractions.csproj">
-      <NuGetPackageId>Microsoft.Extensions.DependencyInjection.Abstractions</NuGetPackageId>
-      <NuGetPackageVersion>11.0.0-dev</NuGetPackageVersion>
-      <ReferenceSourceTarget>ProjectReference</ReferenceSourceTarget>
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection.Specification.Tests/src/Microsoft.Extensions.DependencyInjection.Specification.Tests.csproj">

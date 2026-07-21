@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Xml;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -38,7 +36,7 @@ public sealed class GenerateProjectReferenceReplay : Task
         foreach (string line in File.ReadLines(rawSelectionFile))
         {
             string[] parts = line.Split('|');
-            if (parts.Length is not 4 and not 6)
+            if (parts.Length is not 4 and not 5)
             {
                 Log.LogWarning($"Ignoring malformed project reference capture record: {line}");
                 continue;
@@ -49,30 +47,14 @@ public sealed class GenerateProjectReferenceReplay : Task
             string projectPath = parts[2];
             string setTargetFramework = parts[3];
             bool isDynamicallyAdded = false;
-            SortedDictionary<string, string> metadata = new(StringComparer.OrdinalIgnoreCase);
 
-            if (parts.Length == 6)
+            if (parts.Length == 5)
             {
                 if (!string.IsNullOrEmpty(parts[4]) &&
                     !bool.TryParse(parts[4], out isDynamicallyAdded))
                 {
                     Log.LogWarning($"Ignoring project reference capture record with invalid dynamically-added marker: {line}");
                     continue;
-                }
-
-                if (!string.IsNullOrEmpty(parts[5]))
-                {
-                    try
-                    {
-                        byte[] serializedMetadata = Convert.FromBase64String(parts[5]);
-                        metadata = JsonSerializer.Deserialize<SortedDictionary<string, string>>(
-                            Encoding.UTF8.GetString(serializedMetadata))!;
-                    }
-                    catch (Exception exception) when (exception is FormatException or JsonException)
-                    {
-                        Log.LogWarning($"Ignoring project reference capture record with invalid metadata: {line}");
-                        continue;
-                    }
                 }
             }
 
@@ -101,7 +83,7 @@ public sealed class GenerateProjectReferenceReplay : Task
                 continue;
             }
 
-            CapturedProjectReference capturedProjectReference = new(setTargetFramework, isDynamicallyAdded, metadata);
+            CapturedProjectReference capturedProjectReference = new(setTargetFramework, isDynamicallyAdded);
             if (!projectReferenceSet.ProjectReferences.TryAdd(projectPath, capturedProjectReference))
             {
                 CapturedProjectReference existingProjectReference = projectReferenceSet.ProjectReferences[projectPath];
@@ -381,13 +363,6 @@ public sealed class GenerateProjectReferenceReplay : Task
                 writer.WriteAttributeString(
                     capturedProjectReference.IsDynamicallyAdded ? "Include" : "Update",
                     $"$(RepoRoot){projectReference}");
-                foreach ((string metadataName, string metadataValue) in capturedProjectReference.Metadata)
-                {
-                    if (!string.Equals(metadataName, "SetTargetFramework", StringComparison.OrdinalIgnoreCase))
-                    {
-                        writer.WriteElementString(metadataName, metadataValue);
-                    }
-                }
                 // TODO: Investigate whether authoritative replay can use graph-recognized SetTargetFramework metadata.
                 // ProjectReferenceReplaySetTargetFramework is only consumed during traversal execution, which can leave
                 // static graph construction propagating Build to a discovery-only outer build.
@@ -469,15 +444,10 @@ public sealed class GenerateProjectReferenceReplay : Task
 
     private sealed record CapturedProjectReference(
         string SetTargetFramework,
-        bool IsDynamicallyAdded,
-        SortedDictionary<string, string> Metadata)
+        bool IsDynamicallyAdded)
     {
         public bool HasSameMetadata(CapturedProjectReference other) =>
             string.Equals(SetTargetFramework, other.SetTargetFramework, StringComparison.OrdinalIgnoreCase) &&
-            IsDynamicallyAdded == other.IsDynamicallyAdded &&
-            Metadata.Count == other.Metadata.Count &&
-            Metadata.All(
-                metadata => other.Metadata.TryGetValue(metadata.Key, out string? value) &&
-                    string.Equals(metadata.Value, value, StringComparison.Ordinal));
+            IsDynamicallyAdded == other.IsDynamicallyAdded;
     }
 }

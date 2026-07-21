@@ -16,9 +16,6 @@
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/System.Windows.Extensions/src/System.Windows.Extensions.csproj">
-      <NuGetPackageId>System.Windows.Extensions</NuGetPackageId>
-      <NuGetPackageVersion>11.0.0-dev</NuGetPackageVersion>
-      <ReferenceSourceTarget>ProjectReference</ReferenceSourceTarget>
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
   </ItemGroup>
