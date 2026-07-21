@@ -10,6 +10,9 @@
   <UsingTask TaskName="Microsoft.DotNet.Runtime.Tasks.DeduplicateProjectReferenceCapture"
              AssemblyFile="$(StaticGraphTasksAssemblyPath)"
              Condition="Exists('$(StaticGraphTasksAssemblyPath)')" />
+  <UsingTask TaskName="Microsoft.DotNet.Runtime.Tasks.PrepareProjectReferenceCapture"
+             AssemblyFile="$(StaticGraphTasksAssemblyPath)"
+             Condition="Exists('$(StaticGraphTasksAssemblyPath)')" />
   <UsingTask TaskName="Microsoft.DotNet.Runtime.Tasks.GenerateProjectReferenceReplay"
              AssemblyFile="$(StaticGraphTasksAssemblyPath)"
              Condition="Exists('$(StaticGraphTasksAssemblyPath)')" />

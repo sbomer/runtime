@@ -41,7 +41,9 @@ public sealed class DeduplicateProjectReferenceCapture : Task
             StringComparer.OrdinalIgnoreCase.Equals(x.ParentProject, y.ParentProject) &&
             StringComparer.OrdinalIgnoreCase.Equals(x.ParentTargetFramework, y.ParentTargetFramework) &&
             StringComparer.OrdinalIgnoreCase.Equals(x.ReferencedProject, y.ReferencedProject) &&
-            StringComparer.OrdinalIgnoreCase.Equals(x.SetTargetFramework, y.SetTargetFramework);
+            StringComparer.OrdinalIgnoreCase.Equals(x.SetTargetFramework, y.SetTargetFramework) &&
+            x.IsDynamicallyAdded == y.IsDynamicallyAdded &&
+            StringComparer.Ordinal.Equals(x.ProjectReferenceMetadata, y.ProjectReferenceMetadata);
 
         public int GetHashCode(CaptureKey obj)
         {
@@ -50,6 +52,8 @@ public sealed class DeduplicateProjectReferenceCapture : Task
             hashCode.Add(obj.ParentTargetFramework, StringComparer.OrdinalIgnoreCase);
             hashCode.Add(obj.ReferencedProject, StringComparer.OrdinalIgnoreCase);
             hashCode.Add(obj.SetTargetFramework, StringComparer.OrdinalIgnoreCase);
+            hashCode.Add(obj.IsDynamicallyAdded);
+            hashCode.Add(obj.ProjectReferenceMetadata, StringComparer.Ordinal);
             return hashCode.ToHashCode();
         }
     }
@@ -58,14 +62,18 @@ public sealed class DeduplicateProjectReferenceCapture : Task
         string ParentProject,
         string ParentTargetFramework,
         string ReferencedProject,
-        string SetTargetFramework)
+        string SetTargetFramework,
+        bool IsDynamicallyAdded,
+        string ProjectReferenceMetadata)
     {
         public CaptureKey(ITaskItem item)
             : this(
                 item.GetMetadata("CaptureParentProject"),
                 item.GetMetadata("CaptureParentTargetFramework"),
                 item.GetMetadata("CaptureReferencedProject"),
-                item.GetMetadata("CaptureSetTargetFramework"))
+                item.GetMetadata("CaptureSetTargetFramework"),
+                string.Equals(item.GetMetadata("CaptureIsDynamicallyAdded"), "true", StringComparison.OrdinalIgnoreCase),
+                item.GetMetadata("CaptureProjectReferenceMetadata"))
         {
         }
     }

@@ -6,6 +6,7 @@
         <_ApplyProjectReferenceReplayAllowList>true</_ApplyProjectReferenceReplayAllowList>
       </PropertyGroup>
       <ItemGroup>
+        <_ReplayProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection/tests/DI.External.Tests/Microsoft.Extensions.DependencyInjection.ExternalContainers.Tests.csproj" />
         <_ReplayProjectReference Include="$(RepoRoot)src/libraries/System.Runtime/tests/System.Runtime.Tests/System.Runtime.Tests.csproj" />
       </ItemGroup>
     </When>
@@ -19,6 +20,9 @@
     <_ProjectReferenceToRemove Remove="@(_ProjectReferenceToRemove)" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-linux'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.DependencyInjection/tests/DI.External.Tests/Microsoft.Extensions.DependencyInjection.ExternalContainers.Tests.csproj">
+      <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0</ProjectReferenceReplaySetTargetFramework>
+    </ProjectReference>
     <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime/tests/System.Runtime.Tests/System.Runtime.Tests.csproj">
       <ProjectReferenceReplaySetTargetFramework>TargetFramework=net11.0-unix</ProjectReferenceReplaySetTargetFramework>
     </ProjectReference>

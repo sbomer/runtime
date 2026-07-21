@@ -4,6 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Xml;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -35,7 +38,7 @@ public sealed class GenerateProjectReferenceReplay : Task
         foreach (string line in File.ReadLines(rawSelectionFile))
         {
             string[] parts = line.Split('|');
-            if (parts.Length != 4)
+            if (parts.Length is not 4 and not 6)
             {
                 Log.LogWarning($"Ignoring malformed project reference capture record: {line}");
                 continue;
@@ -45,6 +48,33 @@ public sealed class GenerateProjectReferenceReplay : Task
             string parentTargetFramework = parts[1];
             string projectPath = parts[2];
             string setTargetFramework = parts[3];
+            bool isDynamicallyAdded = false;
+            SortedDictionary<string, string> metadata = new(StringComparer.OrdinalIgnoreCase);
+
+            if (parts.Length == 6)
+            {
+                if (!string.IsNullOrEmpty(parts[4]) &&
+                    !bool.TryParse(parts[4], out isDynamicallyAdded))
+                {
+                    Log.LogWarning($"Ignoring project reference capture record with invalid dynamically-added marker: {line}");
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(parts[5]))
+                {
+                    try
+                    {
+                        byte[] serializedMetadata = Convert.FromBase64String(parts[5]);
+                        metadata = JsonSerializer.Deserialize<SortedDictionary<string, string>>(
+                            Encoding.UTF8.GetString(serializedMetadata))!;
+                    }
+                    catch (Exception exception) when (exception is FormatException or JsonException)
+                    {
+                        Log.LogWarning($"Ignoring project reference capture record with invalid metadata: {line}");
+                        continue;
+                    }
+                }
+            }
 
             if (!ValidateRelativeProjectPath(parentProjectPath, allowEmpty: false, line) ||
                 !ValidateRelativeProjectPath(projectPath, allowEmpty: true, line) ||
@@ -71,12 +101,13 @@ public sealed class GenerateProjectReferenceReplay : Task
                 continue;
             }
 
-            if (!projectReferenceSet.ProjectReferences.TryAdd(projectPath, setTargetFramework))
+            CapturedProjectReference capturedProjectReference = new(setTargetFramework, isDynamicallyAdded, metadata);
+            if (!projectReferenceSet.ProjectReferences.TryAdd(projectPath, capturedProjectReference))
             {
-                string existingSetTargetFramework = projectReferenceSet.ProjectReferences[projectPath];
-                if (!string.Equals(existingSetTargetFramework, setTargetFramework, StringComparison.OrdinalIgnoreCase))
+                CapturedProjectReference existingProjectReference = projectReferenceSet.ProjectReferences[projectPath];
+                if (!existingProjectReference.HasSameMetadata(capturedProjectReference))
                 {
-                    Log.LogError($"Project reference capture has conflicting SetTargetFramework metadata for '{parentProjectPath}' -> '{projectPath}': '{existingSetTargetFramework}' and '{setTargetFramework}'.");
+                    Log.LogError($"Project reference capture has conflicting metadata for '{parentProjectPath}' -> '{projectPath}'.");
                 }
             }
 
@@ -213,6 +244,9 @@ public sealed class GenerateProjectReferenceReplay : Task
 
                 if (hasProjectReferenceUpdates)
                 {
+                    wroteReplayContent |= WriteDisableDynamicProjectReferences(
+                        projectWriter,
+                        projectReferenceSetsByTargetFramework);
                     wroteReplayContent |= WriteProjectReferenceMetadata(
                         projectWriter,
                         projectReferenceSetsByTargetFramework,
@@ -284,7 +318,7 @@ public sealed class GenerateProjectReferenceReplay : Task
 
     private static void WriteProjectReferenceAllowListSelection(
         XmlWriter writer,
-        SortedDictionary<string, string>.KeyCollection selectedProjectReferences)
+        ICollection<string> selectedProjectReferences)
     {
         writer.WriteStartElement("PropertyGroup");
         writer.WriteElementString("_ApplyProjectReferenceReplayAllowList", "true");
@@ -318,8 +352,9 @@ public sealed class GenerateProjectReferenceReplay : Task
             }
 
             bool wroteItemGroup = false;
-            foreach ((string projectReference, string setTargetFramework) in projectReferenceSet.ProjectReferences)
+            foreach ((string projectReference, CapturedProjectReference capturedProjectReference) in projectReferenceSet.ProjectReferences)
             {
+                string setTargetFramework = capturedProjectReference.SetTargetFramework;
                 string replaySetTargetFramework = setTargetFramework;
                 if (string.IsNullOrWhiteSpace(replaySetTargetFramework) &&
                     selectedFrameworksByProject.TryGetValue(projectReference, out SortedSet<string>? selectedFrameworks) &&
@@ -328,7 +363,8 @@ public sealed class GenerateProjectReferenceReplay : Task
                     replaySetTargetFramework = $"TargetFramework={selectedFrameworks.Min}";
                 }
 
-                if (string.IsNullOrWhiteSpace(replaySetTargetFramework))
+                if (!capturedProjectReference.IsDynamicallyAdded &&
+                    string.IsNullOrWhiteSpace(replaySetTargetFramework))
                 {
                     continue;
                 }
@@ -342,13 +378,25 @@ public sealed class GenerateProjectReferenceReplay : Task
                 }
 
                 writer.WriteStartElement("ProjectReference");
-                writer.WriteAttributeString("Update", $"$(RepoRoot){projectReference}");
+                writer.WriteAttributeString(
+                    capturedProjectReference.IsDynamicallyAdded ? "Include" : "Update",
+                    $"$(RepoRoot){projectReference}");
+                foreach ((string metadataName, string metadataValue) in capturedProjectReference.Metadata)
+                {
+                    if (!string.Equals(metadataName, "SetTargetFramework", StringComparison.OrdinalIgnoreCase))
+                    {
+                        writer.WriteElementString(metadataName, metadataValue);
+                    }
+                }
                 // TODO: Investigate whether authoritative replay can use graph-recognized SetTargetFramework metadata.
                 // ProjectReferenceReplaySetTargetFramework is only consumed during traversal execution, which can leave
                 // static graph construction propagating Build to a discovery-only outer build.
-                writer.WriteElementString(
-                    projectReferenceSet.IsAuthoritative ? "ProjectReferenceReplaySetTargetFramework" : "SetTargetFramework",
-                    replaySetTargetFramework);
+                if (!string.IsNullOrWhiteSpace(replaySetTargetFramework))
+                {
+                    writer.WriteElementString(
+                        projectReferenceSet.IsAuthoritative ? "ProjectReferenceReplaySetTargetFramework" : "SetTargetFramework",
+                        replaySetTargetFramework);
+                }
                 writer.WriteEndElement();
             }
 
@@ -359,6 +407,29 @@ public sealed class GenerateProjectReferenceReplay : Task
         }
 
         return wroteMetadata;
+    }
+
+    private static bool WriteDisableDynamicProjectReferences(
+        XmlWriter writer,
+        SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework)
+    {
+        bool wroteProperty = false;
+
+        foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
+        {
+            if (!projectReferenceSet.ProjectReferences.Values.Any(projectReference => projectReference.IsDynamicallyAdded))
+            {
+                continue;
+            }
+
+            wroteProperty = true;
+            writer.WriteStartElement("PropertyGroup");
+            writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
+            writer.WriteElementString("DisableTransitiveProjectReferences", "true");
+            writer.WriteEndElement();
+        }
+
+        return wroteProperty;
     }
 
     private static void WriteProjectReferenceAllowListApplication(XmlWriter writer)
@@ -393,6 +464,20 @@ public sealed class GenerateProjectReferenceReplay : Task
     {
         public bool IsAuthoritative { get; set; }
 
-        public SortedDictionary<string, string> ProjectReferences { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public SortedDictionary<string, CapturedProjectReference> ProjectReferences { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private sealed record CapturedProjectReference(
+        string SetTargetFramework,
+        bool IsDynamicallyAdded,
+        SortedDictionary<string, string> Metadata)
+    {
+        public bool HasSameMetadata(CapturedProjectReference other) =>
+            string.Equals(SetTargetFramework, other.SetTargetFramework, StringComparison.OrdinalIgnoreCase) &&
+            IsDynamicallyAdded == other.IsDynamicallyAdded &&
+            Metadata.Count == other.Metadata.Count &&
+            Metadata.All(
+                metadata => other.Metadata.TryGetValue(metadata.Key, out string? value) &&
+                    string.Equals(metadata.Value, value, StringComparison.Ordinal));
     }
 }

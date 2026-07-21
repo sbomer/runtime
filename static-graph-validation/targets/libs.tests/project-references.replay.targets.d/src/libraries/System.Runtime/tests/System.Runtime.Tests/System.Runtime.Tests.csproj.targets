@@ -2,6 +2,9 @@
   <PropertyGroup Condition="'$(TargetFramework)' == ''">
     <TargetFrameworks>net11.0-unix</TargetFrameworks>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0-unix'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-unix'">
     <ProjectReference Update="$(RepoRoot)src/libraries/Common/tests/TestUtilities/TestUtilities.csproj">
       <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
@@ -12,7 +15,10 @@
     <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Permissions/src/System.Security.Permissions.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Windows.Extensions/src/System.Windows.Extensions.csproj">
+    <ProjectReference Include="$(RepoRoot)src/libraries/System.Windows.Extensions/src/System.Windows.Extensions.csproj">
+      <NuGetPackageId>System.Windows.Extensions</NuGetPackageId>
+      <NuGetPackageVersion>11.0.0-dev</NuGetPackageVersion>
+      <ReferenceSourceTarget>ProjectReference</ReferenceSourceTarget>
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
   </ItemGroup>

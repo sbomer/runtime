@@ -6,8 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Xml.Linq;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using Xunit;
 
 namespace Microsoft.DotNet.Runtime.Tasks.Tests;
@@ -116,6 +119,101 @@ public sealed class GenerateProjectReferenceReplayTests
         {
             Directory.Delete(directory, recursive: true);
         }
+    }
+
+    [Fact]
+    public void MaterializesDynamicallyAddedReferenceWithCapturedMetadata()
+    {
+        string directory = CreateTemporaryDirectory();
+
+        try
+        {
+            string captureFile = Path.Combine(directory, "capture.txt");
+            string replayFile = Path.Combine(directory, "replay.targets");
+            string metadata = Convert.ToBase64String(
+                Encoding.UTF8.GetBytes(
+                    """{"NuGetPackageId":"Child.Package","ReferenceOutputAssembly":"false","SetTargetFramework":"TargetFramework=net8.0"}"""));
+            File.WriteAllText(
+                captureFile,
+                $"src/Parent.csproj|net8.0|src/Child.csproj|TargetFramework=net8.0|true|{metadata}");
+
+            GenerateProjectReferenceReplay task = new()
+            {
+                BuildEngine = new TestBuildEngine(),
+                RawSelectionFile = captureFile,
+                OutputFile = replayFile,
+            };
+
+            Assert.True(task.Execute());
+
+            XDocument replay = XDocument.Load(GetReplayFile(replayFile, "src/Parent.csproj"));
+            XElement disableTransitiveReferences = Assert.Single(replay.Descendants("DisableTransitiveProjectReferences"));
+            Assert.Equal("true", disableTransitiveReferences.Value);
+            Assert.Equal("'$(TargetFramework)' == 'net8.0'", disableTransitiveReferences.Parent!.Attribute("Condition")!.Value);
+
+            XElement replayedReference = Assert.Single(
+                replay.Descendants("ProjectReference"),
+                element => element.Attribute("Include") is not null);
+            Assert.Equal("$(RepoRoot)src/Child.csproj", replayedReference.Attribute("Include")!.Value);
+            Assert.Null(replayedReference.Attribute("Update"));
+            Assert.Equal("Child.Package", replayedReference.Element("NuGetPackageId")!.Value);
+            Assert.Equal("false", replayedReference.Element("ReferenceOutputAssembly")!.Value);
+            Assert.Equal("TargetFramework=net8.0", replayedReference.Element("SetTargetFramework")!.Value);
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void CapturesMetadataForReferencesAddedAfterEvaluation()
+    {
+        TaskItem evaluationReference = new("src/Existing.csproj");
+        TaskItem resolvedReference = new("src/Existing.csproj");
+        TaskItem dynamicallyAddedReference = new("src/Added.csproj");
+        dynamicallyAddedReference.SetMetadata("CustomMetadata", "CustomValue");
+        dynamicallyAddedReference.SetMetadata("ReferenceOutputAssembly", "false");
+        dynamicallyAddedReference.SetMetadata("AdditionalPropertiesFromProject", "<AdditionalProjectProperties />");
+        dynamicallyAddedReference.SetMetadata("HasSingleTargetFramework", "false");
+        dynamicallyAddedReference.SetMetadata("IsRidAgnostic", "true");
+        dynamicallyAddedReference.SetMetadata("IsVcxOrNativeProj", "false");
+        dynamicallyAddedReference.SetMetadata("MSBuildSourceProjectFile", "src/Added.csproj");
+        dynamicallyAddedReference.SetMetadata("MSBuildSourceTargetName", "GetTargetFrameworks");
+        dynamicallyAddedReference.SetMetadata("NearestTargetFramework", "net8.0");
+        dynamicallyAddedReference.SetMetadata("OriginalItemSpec", "src/Added.csproj");
+        dynamicallyAddedReference.SetMetadata("Platform", "AnyCPU");
+        dynamicallyAddedReference.SetMetadata("Platforms", "AnyCPU");
+        dynamicallyAddedReference.SetMetadata("SetTargetFramework", "TargetFramework=net8.0");
+        dynamicallyAddedReference.SetMetadata("SkipGetTargetFrameworkProperties", "true");
+        dynamicallyAddedReference.SetMetadata("TargetFrameworkMonikers", ".NETCoreApp,Version=v8.0");
+        dynamicallyAddedReference.SetMetadata("TargetFrameworks", "net8.0");
+        dynamicallyAddedReference.SetMetadata("TargetPlatformMonikers", "None");
+        dynamicallyAddedReference.SetMetadata("UndefineProperties", "RuntimeIdentifier;SelfContained");
+
+        PrepareProjectReferenceCapture task = new()
+        {
+            EvaluationProjectReferences = [evaluationReference],
+            ResolvedProjectReferences = [resolvedReference, dynamicallyAddedReference],
+        };
+
+        Assert.True(task.Execute());
+
+        Assert.False(bool.Parse(task.PreparedProjectReferences[0].GetMetadata("CaptureIsDynamicallyAdded")));
+        Assert.Empty(task.PreparedProjectReferences[0].GetMetadata("CaptureProjectReferenceMetadata"));
+
+        ITaskItem preparedDynamicReference = task.PreparedProjectReferences[1];
+        Assert.True(bool.Parse(preparedDynamicReference.GetMetadata("CaptureIsDynamicallyAdded")));
+        byte[] serializedMetadata = Convert.FromBase64String(
+            preparedDynamicReference.GetMetadata("CaptureProjectReferenceMetadata"));
+        Dictionary<string, string> metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(
+            Encoding.UTF8.GetString(serializedMetadata))!;
+        Assert.Equal("CustomValue", metadata["CustomMetadata"]);
+        Assert.Equal("false", metadata["ReferenceOutputAssembly"]);
+        Assert.Equal(
+            ["CustomMetadata", "ReferenceOutputAssembly"],
+            metadata.Keys.Order(StringComparer.OrdinalIgnoreCase));
+        Assert.Equal("TargetFramework=net8.0", preparedDynamicReference.GetMetadata("SetTargetFramework"));
     }
 
     [Fact]

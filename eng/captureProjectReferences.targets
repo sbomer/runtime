@@ -3,13 +3,28 @@
 
   <PropertyGroup>
     <CaptureProjectReferencesFile Condition="'$(CaptureProjectReferencesFile)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.raw.txt'))</CaptureProjectReferencesFile>
-    <_ProjectReferenceCaptureMetadata>CaptureParentProject;CaptureParentTargetFramework;CaptureReferencedProject;CaptureSetTargetFramework</_ProjectReferenceCaptureMetadata>
+    <_ProjectReferenceCaptureMetadata>CaptureParentProject;CaptureParentTargetFramework;CaptureReferencedProject;CaptureSetTargetFramework;CaptureIsDynamicallyAdded;CaptureProjectReferenceMetadata</_ProjectReferenceCaptureMetadata>
   </PropertyGroup>
+
+  <!-- Run as the first inner-build capture dependency so this observes the complete evaluation result before any other target executes. -->
+  <Target Name="_CaptureEvaluationProjectReferences"
+          Condition="'$(CaptureProjectReferences)' == 'true' and '$(DotNetBuildTasksTargetFrameworkAssembly)' != ''">
+    <ItemGroup>
+      <_EvaluationProjectReference Include="@(ProjectReference)" />
+    </ItemGroup>
+  </Target>
 
   <!-- ResolveP2PReferences and DotNetBuildTasksTargetFrameworkAssembly are both provided by Microsoft.DotNet.Build.Tasks.TargetFramework. -->
   <Target Name="CaptureProjectReferences"
-          DependsOnTargets="ResolveP2PReferences"
+          DependsOnTargets="_CaptureEvaluationProjectReferences;ResolveP2PReferences"
           Condition="'$(CaptureProjectReferences)' == 'true' and '$(DotNetBuildTasksTargetFrameworkAssembly)' != ''">
+    <Microsoft.DotNet.Runtime.Tasks.PrepareProjectReferenceCapture
+      EvaluationProjectReferences="@(_EvaluationProjectReference)"
+      ResolvedProjectReferences="@(ProjectReference)">
+      <Output TaskParameter="PreparedProjectReferences"
+              ItemName="_PreparedProjectReference" />
+    </Microsoft.DotNet.Runtime.Tasks.PrepareProjectReferenceCapture>
+
     <ItemGroup>
       <_CapturedProjectReference Include="$(MSBuildProjectFullPath)"
                                  Condition="'$(OmitIncompatibleProjectReferences)' == 'true'">
@@ -19,12 +34,14 @@
         <CaptureReferencedProject />
         <CaptureSetTargetFramework />
       </_CapturedProjectReference>
-      <_CapturedProjectReference Include="@(ProjectReference)"
-                                 Condition="'%(ProjectReference.BuildReference)' != 'false'">
+      <_CapturedProjectReference Include="@(_PreparedProjectReference)"
+                                 Condition="'%(_PreparedProjectReference.BuildReference)' != 'false'">
         <CaptureParentProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '$(MSBuildProjectFullPath)').Replace('\', '/'))</CaptureParentProject>
         <CaptureParentTargetFramework>$(TargetFramework)</CaptureParentTargetFramework>
-        <CaptureReferencedProject>%(ProjectReference.FullPath)</CaptureReferencedProject>
-        <CaptureSetTargetFramework>%(ProjectReference.SetTargetFramework)</CaptureSetTargetFramework>
+        <CaptureReferencedProject>%(_PreparedProjectReference.FullPath)</CaptureReferencedProject>
+        <CaptureSetTargetFramework>%(_PreparedProjectReference.SetTargetFramework)</CaptureSetTargetFramework>
+        <CaptureIsDynamicallyAdded>%(_PreparedProjectReference.CaptureIsDynamicallyAdded)</CaptureIsDynamicallyAdded>
+        <CaptureProjectReferenceMetadata>%(_PreparedProjectReference.CaptureProjectReferenceMetadata)</CaptureProjectReferenceMetadata>
       </_CapturedProjectReference>
       <_CapturedProjectReference Update="@(_CapturedProjectReference)"
                                  Condition="'%(_CapturedProjectReference.CaptureReferencedProject)' != ''">
@@ -39,7 +56,7 @@
     <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(CaptureProjectReferencesFile)'))" />
     <ItemGroup>
       <_CapturedProjectReferenceResult>
-        <Line>%(_CapturedProjectReferenceResult.CaptureParentProject)|%(_CapturedProjectReferenceResult.CaptureParentTargetFramework)|%(_CapturedProjectReferenceResult.CaptureReferencedProject)|%(_CapturedProjectReferenceResult.CaptureSetTargetFramework)</Line>
+        <Line>%(_CapturedProjectReferenceResult.CaptureParentProject)|%(_CapturedProjectReferenceResult.CaptureParentTargetFramework)|%(_CapturedProjectReferenceResult.CaptureReferencedProject)|%(_CapturedProjectReferenceResult.CaptureSetTargetFramework)|%(_CapturedProjectReferenceResult.CaptureIsDynamicallyAdded)|%(_CapturedProjectReferenceResult.CaptureProjectReferenceMetadata)</Line>
       </_CapturedProjectReferenceResult>
     </ItemGroup>
     <WriteLinesToFile File="$(CaptureProjectReferencesFile)"
@@ -69,7 +86,7 @@
   </Target>
 
   <Target Name="_CaptureProjectReferencesInnerBuild"
-          DependsOnTargets="PrepareProjectReferences;CaptureProjectReferences"
+          DependsOnTargets="CaptureProjectReferences;PrepareProjectReferences"
           Condition="'$(IsCrossTargetingBuild)' != 'true'">
     <ItemGroup>
       <_CapturedProjectReferenceResult Include="@(_CapturedProjectReference)"
