@@ -4,7 +4,7 @@ Raw node counts:
   left: 353
   right: 132
 Raw edge counts:
-  left: 814
+  left: 816
   right: 573
 
 Normalized counts:
@@ -12,7 +12,7 @@ Normalized counts:
   right evaluated project instances: 132
   left nodes: 358
   right nodes: 381
-  left edges: 957
+  left edges: 959
   right edges: 6658
 
 Normalization:
@@ -58,7 +58,7 @@ Left-only edges: 3
   /home/sven/src/runtime-staticgraph/src/coreclr/.nuget/Microsoft.NET.Sdk.IL/Microsoft.NET.Sdk.IL.proj|target=Pack|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug -> /home/sven/src/runtime-staticgraph/src/coreclr/.nuget/Microsoft.NET.Sdk.IL/Microsoft.NET.Sdk.IL.proj|target=_GetFrameworksWithSuppressedDependencies|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;BuildProjectReferences=false;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
   /home/sven/src/runtime-staticgraph/src/coreclr/.nuget/Microsoft.NET.Sdk.IL/Microsoft.NET.Sdk.IL.proj|target=Pack|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug -> /home/sven/src/runtime-staticgraph/src/coreclr/.nuget/Microsoft.NET.Sdk.IL/Microsoft.NET.Sdk.IL.proj|target=_GetTfmSpecificContentForPackage|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TargetFramework=net11.0;TasksConfiguration=Debug;ToolsConfiguration=Debug
 
-Right-only edges: 5704
+Right-only edges: 5702
   /home/sven/src/runtime-staticgraph/Build.proj|target=Build|globals=Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/coreclr/nativeaot/System.Private.CoreLib/src/System.Private.CoreLib.csproj|target=GetCopyToOutputDirectoryItems|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
   /home/sven/src/runtime-staticgraph/Build.proj|target=Build|globals=Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/coreclr/nativeaot/System.Private.CoreLib/src/System.Private.CoreLib.csproj|target=GetNativeManifest|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
   /home/sven/src/runtime-staticgraph/Build.proj|target=Build|globals=Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/coreclr/nativeaot/System.Private.CoreLib/src/System.Private.CoreLib.csproj|target=GetTargetFrameworks|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=clr;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug

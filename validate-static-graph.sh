@@ -67,6 +67,8 @@ case "$target" in
     libs.oob)
         entry_project="src/libraries/oob.proj"
         prerequisite_projects=(
+            "src/libraries/sfx-gen.proj"
+            "src/libraries/sfx-src.proj"
             "src/libraries/sfx-finish.proj"
             "src/native/libs/build-native.proj"
         )

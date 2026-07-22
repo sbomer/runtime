@@ -3,6 +3,23 @@
     <TargetFrameworks>net11.0-unix</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0-unix'">
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.android-arm.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.android-arm64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.android-x64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.android-x86.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-arm.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-arm64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-bionic-arm64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-bionic-x64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-musl-arm.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-musl-arm64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-musl-x64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.linux-x64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.maccatalyst-arm64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.maccatalyst-x64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.osx-arm64.runtime.native.System.IO.Ports.proj" />
+    <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.osx-x64.runtime.native.System.IO.Ports.proj" />
     <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Ports/ref/System.IO.Ports.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>

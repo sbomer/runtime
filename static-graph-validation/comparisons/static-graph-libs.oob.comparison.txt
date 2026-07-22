@@ -5,7 +5,7 @@ Raw node counts:
   right: 762
 Raw edge counts:
   left: 15118
-  right: 21810
+  right: 21403
 
 Normalized counts:
   left evaluated project instances: 1515
@@ -13,7 +13,7 @@ Normalized counts:
   left nodes: 1593
   right nodes: 2365
   left edges: 14020
-  right edges: 294082
+  right edges: 289156
 
 Normalization:
   Node identity: project path + individual effective target + global properties
@@ -152,7 +152,7 @@ Left-only edges: 23
   /home/sven/src/runtime-staticgraph/src/libraries/System.IO.Ports/src/System.IO.Ports.csproj|target=Build|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64;TargetFramework=net11.0-unix -> /home/sven/src/runtime-staticgraph/src/libraries/System.IO.Ports/pkg/runtime.osx-arm64.runtime.native.System.IO.Ports.proj|target=GetTargetFrameworks|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
   /home/sven/src/runtime-staticgraph/src/libraries/System.IO.Ports/src/System.IO.Ports.csproj|target=Build|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64;TargetFramework=net11.0-unix -> /home/sven/src/runtime-staticgraph/src/libraries/System.IO.Ports/pkg/runtime.osx-x64.runtime.native.System.IO.Ports.proj|target=GetTargetFrameworks|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
 
-Right-only edges: 280085
+Right-only edges: 275159
   /home/sven/src/runtime-staticgraph/src/coreclr/System.Private.CoreLib/System.Private.CoreLib.csproj|target=GetCopyToOutputDirectoryItems|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/libraries/System.Private.CoreLib/gen/EventSourceGenerator.csproj|target=Build|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
   /home/sven/src/runtime-staticgraph/src/coreclr/System.Private.CoreLib/System.Private.CoreLib.csproj|target=GetCopyToOutputDirectoryItems|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/libraries/System.Private.CoreLib/gen/EventSourceGenerator.csproj|target=GetCopyToOutputDirectoryItems|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
   /home/sven/src/runtime-staticgraph/src/coreclr/System.Private.CoreLib/System.Private.CoreLib.csproj|target=GetCopyToOutputDirectoryItems|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/libraries/System.Private.CoreLib/gen/EventSourceGenerator.csproj|target=GetNativeManifest|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Release;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;TargetArchitecture=x64
