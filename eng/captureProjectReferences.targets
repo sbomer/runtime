@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <CaptureProjectReferencesFile Condition="'$(CaptureProjectReferencesFile)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.raw.txt'))</CaptureProjectReferencesFile>
-    <_ProjectReferenceCaptureMetadata>CaptureParentProject;CaptureParentTargetFramework;CaptureReferencedProject;CaptureSetTargetFramework;CaptureIsDynamicallyAdded</_ProjectReferenceCaptureMetadata>
+    <_ProjectReferenceCaptureMetadata>CaptureParentProject;CaptureParentTargetFramework;CaptureReferencedProject;CaptureSetTargetFramework;CaptureOperation</_ProjectReferenceCaptureMetadata>
   </PropertyGroup>
 
   <!-- Run as the first inner-build capture dependency so this observes the complete evaluation result before any other target executes. -->
@@ -30,17 +30,16 @@
                                  Condition="'$(OmitIncompatibleProjectReferences)' == 'true'">
         <CaptureParentProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '$(MSBuildProjectFullPath)').Replace('\', '/'))</CaptureParentProject>
         <CaptureParentTargetFramework>$(TargetFramework)</CaptureParentTargetFramework>
-        <!-- An empty referenced project marks this project instance's reference set as authoritative. -->
         <CaptureReferencedProject />
         <CaptureSetTargetFramework />
+        <CaptureOperation>Configure</CaptureOperation>
       </_CapturedProjectReference>
-      <_CapturedProjectReference Include="@(_PreparedProjectReference)"
-                                 Condition="'%(_PreparedProjectReference.BuildReference)' != 'false'">
+      <_CapturedProjectReference Include="@(_PreparedProjectReference)">
         <CaptureParentProject>$([MSBuild]::MakeRelative('$(RepoRoot)', '$(MSBuildProjectFullPath)').Replace('\', '/'))</CaptureParentProject>
         <CaptureParentTargetFramework>$(TargetFramework)</CaptureParentTargetFramework>
         <CaptureReferencedProject>%(_PreparedProjectReference.FullPath)</CaptureReferencedProject>
         <CaptureSetTargetFramework>%(_PreparedProjectReference.SetTargetFramework)</CaptureSetTargetFramework>
-        <CaptureIsDynamicallyAdded>%(_PreparedProjectReference.CaptureIsDynamicallyAdded)</CaptureIsDynamicallyAdded>
+        <CaptureOperation>%(_PreparedProjectReference.CaptureOperation)</CaptureOperation>
       </_CapturedProjectReference>
       <_CapturedProjectReference Update="@(_CapturedProjectReference)"
                                  Condition="'%(_CapturedProjectReference.CaptureReferencedProject)' != ''">
@@ -55,7 +54,7 @@
     <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(CaptureProjectReferencesFile)'))" />
     <ItemGroup>
       <_CapturedProjectReferenceResult>
-        <Line>%(_CapturedProjectReferenceResult.CaptureParentProject)|%(_CapturedProjectReferenceResult.CaptureParentTargetFramework)|%(_CapturedProjectReferenceResult.CaptureReferencedProject)|%(_CapturedProjectReferenceResult.CaptureSetTargetFramework)|%(_CapturedProjectReferenceResult.CaptureIsDynamicallyAdded)</Line>
+        <Line>%(_CapturedProjectReferenceResult.CaptureParentProject)|%(_CapturedProjectReferenceResult.CaptureParentTargetFramework)|%(_CapturedProjectReferenceResult.CaptureReferencedProject)|%(_CapturedProjectReferenceResult.CaptureSetTargetFramework)|%(_CapturedProjectReferenceResult.CaptureOperation)</Line>
       </_CapturedProjectReferenceResult>
     </ItemGroup>
     <WriteLinesToFile File="$(CaptureProjectReferencesFile)"

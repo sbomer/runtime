@@ -8,6 +8,14 @@ using Microsoft.Build.Utilities;
 
 namespace Microsoft.DotNet.Runtime.Tasks;
 
+internal enum ProjectReferenceCaptureOperation
+{
+    Add,
+    Configure,
+    Remove,
+    Update,
+}
+
 public sealed class PrepareProjectReferenceCapture : Task
 {
     public ITaskItem[]? EvaluationProjectReferences { get; set; }
@@ -19,20 +27,44 @@ public sealed class PrepareProjectReferenceCapture : Task
 
     public override bool Execute()
     {
-        HashSet<string> evaluationProjectReferences = new(StringComparer.OrdinalIgnoreCase);
+        SortedDictionary<string, ITaskItem> evaluationProjectReferences = new(StringComparer.OrdinalIgnoreCase);
         foreach (ITaskItem projectReference in EvaluationProjectReferences ?? [])
         {
-            evaluationProjectReferences.Add(projectReference.GetMetadata("FullPath"));
+            evaluationProjectReferences.TryAdd(projectReference.GetMetadata("FullPath"), projectReference);
         }
 
         ITaskItem[] resolvedProjectReferences = ResolvedProjectReferences ?? [];
-        List<ITaskItem> preparedProjectReferences = new(resolvedProjectReferences.Length);
+        HashSet<string> finalProjectReferences = new(StringComparer.OrdinalIgnoreCase);
+        List<ITaskItem> preparedProjectReferences = new(resolvedProjectReferences.Length + evaluationProjectReferences.Count);
         foreach (ITaskItem projectReference in resolvedProjectReferences)
         {
-            TaskItem preparedProjectReference = new(projectReference);
-            bool isDynamicallyAdded = !evaluationProjectReferences.Contains(projectReference.GetMetadata("FullPath"));
-            preparedProjectReference.SetMetadata("CaptureIsDynamicallyAdded", isDynamicallyAdded.ToString());
+            if (string.Equals(projectReference.GetMetadata("BuildReference"), "false", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
 
+            string fullPath = projectReference.GetMetadata("FullPath");
+            finalProjectReferences.Add(fullPath);
+
+            TaskItem preparedProjectReference = new(projectReference);
+            ProjectReferenceCaptureOperation operation = evaluationProjectReferences.ContainsKey(fullPath)
+                ? ProjectReferenceCaptureOperation.Update
+                : ProjectReferenceCaptureOperation.Add;
+            preparedProjectReference.SetMetadata("CaptureOperation", operation.ToString());
+
+            preparedProjectReferences.Add(preparedProjectReference);
+        }
+
+        foreach ((string fullPath, ITaskItem projectReference) in evaluationProjectReferences)
+        {
+            if (finalProjectReferences.Contains(fullPath))
+            {
+                continue;
+            }
+
+            TaskItem preparedProjectReference = new(projectReference);
+            preparedProjectReference.SetMetadata("SetTargetFramework", "");
+            preparedProjectReference.SetMetadata("CaptureOperation", ProjectReferenceCaptureOperation.Remove.ToString());
             preparedProjectReferences.Add(preparedProjectReference);
         }
 

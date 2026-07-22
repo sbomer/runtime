@@ -36,7 +36,7 @@ public sealed class GenerateProjectReferenceReplay : Task
         foreach (string line in File.ReadLines(rawSelectionFile))
         {
             string[] parts = line.Split('|');
-            if (parts.Length is not 4 and not 5)
+            if (parts.Length != 5)
             {
                 Log.LogWarning($"Ignoring malformed project reference capture record: {line}");
                 continue;
@@ -46,16 +46,10 @@ public sealed class GenerateProjectReferenceReplay : Task
             string parentTargetFramework = parts[1];
             string projectPath = parts[2];
             string setTargetFramework = parts[3];
-            bool isDynamicallyAdded = false;
-
-            if (parts.Length == 5)
+            if (!Enum.TryParse(parts[4], ignoreCase: true, out ProjectReferenceCaptureOperation operation))
             {
-                if (!string.IsNullOrEmpty(parts[4]) &&
-                    !bool.TryParse(parts[4], out isDynamicallyAdded))
-                {
-                    Log.LogWarning($"Ignoring project reference capture record with invalid dynamically-added marker: {line}");
-                    continue;
-                }
+                Log.LogError($"Project reference capture record has an invalid operation: {line}");
+                continue;
             }
 
             if (!ValidateRelativeProjectPath(parentProjectPath, allowEmpty: false, line) ||
@@ -77,13 +71,31 @@ public sealed class GenerateProjectReferenceReplay : Task
                 projectReferenceSetsByTargetFramework.Add(parentTargetFramework, projectReferenceSet);
             }
 
-            if (string.IsNullOrWhiteSpace(projectPath))
+            if (operation == ProjectReferenceCaptureOperation.Configure)
             {
-                projectReferenceSet.IsAuthoritative = true;
+                if (!string.IsNullOrWhiteSpace(projectPath) || !string.IsNullOrWhiteSpace(setTargetFramework))
+                {
+                    Log.LogWarning($"Ignoring invalid project reference configuration record: {line}");
+                    continue;
+                }
+
+                projectReferenceSet.UseTraversalSetTargetFramework = true;
                 continue;
             }
 
-            CapturedProjectReference capturedProjectReference = new(setTargetFramework, isDynamicallyAdded);
+            if (string.IsNullOrWhiteSpace(projectPath))
+            {
+                Log.LogWarning($"Ignoring project reference capture record with an empty referenced project: {line}");
+                continue;
+            }
+
+            if (operation == ProjectReferenceCaptureOperation.Remove && !string.IsNullOrWhiteSpace(setTargetFramework))
+            {
+                Log.LogWarning($"Ignoring removed project reference with SetTargetFramework metadata: {line}");
+                continue;
+            }
+
+            CapturedProjectReference capturedProjectReference = new(setTargetFramework, operation);
             if (!projectReferenceSet.ProjectReferences.TryAdd(projectPath, capturedProjectReference))
             {
                 CapturedProjectReference existingProjectReference = projectReferenceSet.ProjectReferences[projectPath];
@@ -93,7 +105,8 @@ public sealed class GenerateProjectReferenceReplay : Task
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(setTargetFramework))
+            if (operation == ProjectReferenceCaptureOperation.Remove ||
+                string.IsNullOrWhiteSpace(setTargetFramework))
             {
                 continue;
             }
@@ -152,7 +165,6 @@ public sealed class GenerateProjectReferenceReplay : Task
 
         SortedSet<string> replayProjects = new(selectedFrameworksByProject.Keys, StringComparer.OrdinalIgnoreCase);
         replayProjects.UnionWith(projectReferenceSetsByParent.Keys);
-        SortedSet<string> allowListParents = new(StringComparer.OrdinalIgnoreCase);
         int replayFileCount = 0;
         foreach (string projectPath in replayProjects)
         {
@@ -160,17 +172,15 @@ public sealed class GenerateProjectReferenceReplay : Task
             projectReferenceSetsByParent.TryGetValue(projectPath, out SortedDictionary<string, ProjectReferenceSet>? projectReferenceSetsByTargetFramework);
 
             bool hasProjectReferenceUpdates = false;
-            bool hasAuthoritativeProjectReferenceSet = false;
             if (projectReferenceSetsByTargetFramework is not null)
             {
                 foreach (ProjectReferenceSet projectReferenceSet in projectReferenceSetsByTargetFramework.Values)
                 {
-                    hasAuthoritativeProjectReferenceSet |= projectReferenceSet.IsAuthoritative;
                     hasProjectReferenceUpdates |= projectReferenceSet.ProjectReferences.Count > 0;
                 }
             }
 
-            if (frameworks is null && !hasAuthoritativeProjectReferenceSet && !hasProjectReferenceUpdates)
+            if (frameworks is null && !hasProjectReferenceUpdates)
             {
                 continue;
             }
@@ -195,41 +205,12 @@ public sealed class GenerateProjectReferenceReplay : Task
 
             if (projectReferenceSetsByTargetFramework is not null)
             {
-                if (hasAuthoritativeProjectReferenceSet)
-                {
-                    wroteReplayContent = true;
-                    projectWriter.WriteComment(" Select the captured project references for this exact project instance. ");
-                    projectWriter.WriteStartElement("Choose");
-                }
-
-                foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
-                {
-                    if (!projectReferenceSet.IsAuthoritative)
-                    {
-                        continue;
-                    }
-
-                    allowListParents.Add(projectPath);
-
-                    projectWriter.WriteStartElement("When");
-                    projectWriter.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
-                    WriteProjectReferenceAllowListSelection(projectWriter, projectReferenceSet.ProjectReferences.Keys);
-                    projectWriter.WriteEndElement();
-                }
-
-                if (hasAuthoritativeProjectReferenceSet)
-                {
-                    projectWriter.WriteEndElement();
-                    projectWriter.WriteComment(" Apply the selected allow-list once, including authoritative empty sets. ");
-                    WriteProjectReferenceAllowListApplication(projectWriter);
-                }
-
                 if (hasProjectReferenceUpdates)
                 {
                     wroteReplayContent |= WriteDisableDynamicProjectReferences(
                         projectWriter,
                         projectReferenceSetsByTargetFramework);
-                    wroteReplayContent |= WriteProjectReferenceMetadata(
+                    wroteReplayContent |= WriteProjectReferenceDelta(
                         projectWriter,
                         projectReferenceSetsByTargetFramework,
                         selectedFrameworksByProject);
@@ -249,7 +230,7 @@ public sealed class GenerateProjectReferenceReplay : Task
             }
         }
 
-        Log.LogMessage(MessageImportance.High, $"Wrote {replayFileCount} project replay files with {selectedFrameworksByProject.Count} target framework selections and {allowListParents.Count} project reference allow-lists to '{replayOutputDirectory}'.");
+        Log.LogMessage(MessageImportance.High, $"Wrote {replayFileCount} project replay files with {selectedFrameworksByProject.Count} target framework selections to '{replayOutputDirectory}'.");
         return !Log.HasLoggedErrors;
     }
 
@@ -298,33 +279,12 @@ public sealed class GenerateProjectReferenceReplay : Task
         writer.WriteEndElement();
     }
 
-    private static void WriteProjectReferenceAllowListSelection(
-        XmlWriter writer,
-        ICollection<string> selectedProjectReferences)
-    {
-        writer.WriteStartElement("PropertyGroup");
-        writer.WriteElementString("_ApplyProjectReferenceReplayAllowList", "true");
-        writer.WriteEndElement();
-
-        if (selectedProjectReferences.Count > 0)
-        {
-            writer.WriteStartElement("ItemGroup");
-            foreach (string selectedProjectReference in selectedProjectReferences)
-            {
-                writer.WriteStartElement("_ReplayProjectReference");
-                writer.WriteAttributeString("Include", $"$(RepoRoot){selectedProjectReference}");
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-        }
-    }
-
-    private static bool WriteProjectReferenceMetadata(
+    private static bool WriteProjectReferenceDelta(
         XmlWriter writer,
         SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework,
         SortedDictionary<string, SortedSet<string>> selectedFrameworksByProject)
     {
-        bool wroteMetadata = false;
+        bool wroteDelta = false;
 
         foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
         {
@@ -336,6 +296,15 @@ public sealed class GenerateProjectReferenceReplay : Task
             bool wroteItemGroup = false;
             foreach ((string projectReference, CapturedProjectReference capturedProjectReference) in projectReferenceSet.ProjectReferences)
             {
+                if (capturedProjectReference.Operation == ProjectReferenceCaptureOperation.Remove)
+                {
+                    StartItemGroup();
+                    writer.WriteStartElement("ProjectReference");
+                    writer.WriteAttributeString("Remove", $"$(RepoRoot){projectReference}");
+                    writer.WriteEndElement();
+                    continue;
+                }
+
                 string setTargetFramework = capturedProjectReference.SetTargetFramework;
                 string replaySetTargetFramework = setTargetFramework;
                 if (string.IsNullOrWhiteSpace(replaySetTargetFramework) &&
@@ -345,31 +314,24 @@ public sealed class GenerateProjectReferenceReplay : Task
                     replaySetTargetFramework = $"TargetFramework={selectedFrameworks.Min}";
                 }
 
-                if (!capturedProjectReference.IsDynamicallyAdded &&
+                if (capturedProjectReference.Operation == ProjectReferenceCaptureOperation.Update &&
                     string.IsNullOrWhiteSpace(replaySetTargetFramework))
                 {
                     continue;
                 }
 
-                if (!wroteItemGroup)
-                {
-                    writer.WriteStartElement("ItemGroup");
-                    writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
-                    wroteItemGroup = true;
-                    wroteMetadata = true;
-                }
-
+                StartItemGroup();
                 writer.WriteStartElement("ProjectReference");
                 writer.WriteAttributeString(
-                    capturedProjectReference.IsDynamicallyAdded ? "Include" : "Update",
+                    capturedProjectReference.Operation == ProjectReferenceCaptureOperation.Add ? "Include" : "Update",
                     $"$(RepoRoot){projectReference}");
-                // TODO: Investigate whether authoritative replay can use graph-recognized SetTargetFramework metadata.
+                // TODO: Investigate whether replay can use graph-recognized SetTargetFramework metadata.
                 // ProjectReferenceReplaySetTargetFramework is only consumed during traversal execution, which can leave
                 // static graph construction propagating Build to a discovery-only outer build.
                 if (!string.IsNullOrWhiteSpace(replaySetTargetFramework))
                 {
                     writer.WriteElementString(
-                        projectReferenceSet.IsAuthoritative ? "ProjectReferenceReplaySetTargetFramework" : "SetTargetFramework",
+                        projectReferenceSet.UseTraversalSetTargetFramework ? "ProjectReferenceReplaySetTargetFramework" : "SetTargetFramework",
                         replaySetTargetFramework);
                 }
                 writer.WriteEndElement();
@@ -379,9 +341,22 @@ public sealed class GenerateProjectReferenceReplay : Task
             {
                 writer.WriteEndElement();
             }
+
+            void StartItemGroup()
+            {
+                if (wroteItemGroup)
+                {
+                    return;
+                }
+
+                writer.WriteStartElement("ItemGroup");
+                writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
+                wroteItemGroup = true;
+                wroteDelta = true;
+            }
         }
 
-        return wroteMetadata;
+        return wroteDelta;
     }
 
     private static bool WriteDisableDynamicProjectReferences(
@@ -392,7 +367,8 @@ public sealed class GenerateProjectReferenceReplay : Task
 
         foreach ((string targetFramework, ProjectReferenceSet projectReferenceSet) in projectReferenceSetsByTargetFramework)
         {
-            if (!projectReferenceSet.ProjectReferences.Values.Any(projectReference => projectReference.IsDynamicallyAdded))
+            if (!projectReferenceSet.ProjectReferences.Values.Any(
+                    projectReference => projectReference.Operation == ProjectReferenceCaptureOperation.Add))
             {
                 continue;
             }
@@ -407,47 +383,19 @@ public sealed class GenerateProjectReferenceReplay : Task
         return wroteProperty;
     }
 
-    private static void WriteProjectReferenceAllowListApplication(XmlWriter writer)
-    {
-        writer.WriteStartElement("ItemGroup");
-        writer.WriteAttributeString("Condition", "'$(_ApplyProjectReferenceReplayAllowList)' == 'true'");
-
-        writer.WriteStartElement("_ProjectReferenceToRemove");
-        writer.WriteAttributeString("Include", "@(ProjectReference->'%(FullPath)')");
-        writer.WriteEndElement();
-
-        writer.WriteStartElement("_ProjectReferenceToRemove");
-        writer.WriteAttributeString("Remove", "@(_ReplayProjectReference)");
-        writer.WriteEndElement();
-
-        writer.WriteStartElement("ProjectReference");
-        writer.WriteAttributeString("Remove", "@(_ProjectReferenceToRemove)");
-        writer.WriteEndElement();
-
-        writer.WriteStartElement("_ReplayProjectReference");
-        writer.WriteAttributeString("Remove", "@(_ReplayProjectReference)");
-        writer.WriteEndElement();
-
-        writer.WriteStartElement("_ProjectReferenceToRemove");
-        writer.WriteAttributeString("Remove", "@(_ProjectReferenceToRemove)");
-        writer.WriteEndElement();
-
-        writer.WriteEndElement();
-    }
-
     private sealed class ProjectReferenceSet
     {
-        public bool IsAuthoritative { get; set; }
+        public bool UseTraversalSetTargetFramework { get; set; }
 
         public SortedDictionary<string, CapturedProjectReference> ProjectReferences { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
     private sealed record CapturedProjectReference(
         string SetTargetFramework,
-        bool IsDynamicallyAdded)
+        ProjectReferenceCaptureOperation Operation)
     {
         public bool HasSameMetadata(CapturedProjectReference other) =>
             string.Equals(SetTargetFramework, other.SetTargetFramework, StringComparison.OrdinalIgnoreCase) &&
-            IsDynamicallyAdded == other.IsDynamicallyAdded;
+            Operation == other.Operation;
     }
 }

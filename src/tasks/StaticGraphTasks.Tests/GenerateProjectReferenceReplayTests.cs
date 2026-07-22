@@ -26,9 +26,9 @@ public sealed class GenerateProjectReferenceReplayTests
             string replayFile = Path.Combine(directory, "replay.targets");
             File.WriteAllLines(captureFile,
             [
-                "src/Parent.proj|net8.0||",
-                "src/Parent.proj|net8.0|src/Child.csproj|TargetFramework=net8.0",
-                "src/Other.proj|net9.0|src/Child.csproj|TargetFramework=net9.0",
+                "src/Parent.proj|net8.0|||Configure",
+                "src/Parent.proj|net8.0|src/Child.csproj|TargetFramework=net8.0|Update",
+                "src/Other.proj|net9.0|src/Child.csproj|TargetFramework=net9.0|Update",
             ]);
 
             TestBuildEngine buildEngine = new();
@@ -60,11 +60,6 @@ public sealed class GenerateProjectReferenceReplayTests
             Assert.Equal("'$(TargetFramework)' == ''", targetFramework.Parent!.Attribute("Condition")!.Value);
 
             XDocument edgeReplay = XDocument.Load(GetReplayFile(replayFile, "src/Parent.proj"));
-            XElement when = Assert.Single(
-                edgeReplay.Descendants("When"),
-                element => element.Attribute("Condition")!.Value.Contains("net8.0", StringComparison.Ordinal));
-            XElement selectedReference = Assert.Single(when.Descendants("_ReplayProjectReference"));
-            Assert.Equal("$(RepoRoot)src/Child.csproj", selectedReference.Attribute("Include")!.Value);
             Assert.Empty(edgeReplay.Descendants("Target"));
             XElement replayedReference = Assert.Single(
                 edgeReplay.Descendants("ProjectReference"),
@@ -74,7 +69,7 @@ public sealed class GenerateProjectReferenceReplayTests
             Assert.Equal("TargetFramework=net8.0", replayedReference.Element("ProjectReferenceReplaySetTargetFramework")!.Value);
             Assert.Null(replayedReference.Element("SetTargetFramework"));
             Assert.Null(replayedReference.Element("UndefineProperties"));
-            Assert.Single(edgeReplay.Descendants("_ProjectReferenceToRemove"), element => element.Attribute("Include") is not null);
+            Assert.Empty(edgeReplay.Descendants("_ReplayProjectReference"));
         }
         finally
         {
@@ -93,8 +88,8 @@ public sealed class GenerateProjectReferenceReplayTests
             string replayFile = Path.Combine(directory, "replay.targets");
             File.WriteAllLines(captureFile,
             [
-                "src/Parent.csproj|net8.0|src/Child.csproj|",
-                "src/Other.csproj|net8.0|src/Child.csproj|TargetFramework=net8.0",
+                "src/Parent.csproj|net8.0|src/Child.csproj||Update",
+                "src/Other.csproj|net8.0|src/Child.csproj|TargetFramework=net8.0|Update",
             ]);
 
             GenerateProjectReferenceReplay task = new()
@@ -130,7 +125,7 @@ public sealed class GenerateProjectReferenceReplayTests
             string replayFile = Path.Combine(directory, "replay.targets");
             File.WriteAllText(
                 captureFile,
-                "src/Parent.csproj|net8.0|src/Child.csproj|TargetFramework=net8.0|true");
+                "src/Parent.csproj|net8.0|src/Child.csproj|TargetFramework=net8.0|Add");
 
             GenerateProjectReferenceReplay task = new()
             {
@@ -160,26 +155,33 @@ public sealed class GenerateProjectReferenceReplayTests
     }
 
     [Fact]
-    public void CapturesOnlyReplayStateForReferencesAddedAfterEvaluation()
+    public void ClassifiesProjectReferenceDelta()
     {
         TaskItem evaluationReference = new("src/Existing.csproj");
+        TaskItem removedEvaluationReference = new("src/Removed.csproj");
         TaskItem resolvedReference = new("src/Existing.csproj");
+        TaskItem removedResolvedReference = new("src/Removed.csproj");
+        removedResolvedReference.SetMetadata("BuildReference", "false");
         TaskItem dynamicallyAddedReference = new("src/Added.csproj");
         dynamicallyAddedReference.SetMetadata("SetTargetFramework", "TargetFramework=net8.0");
 
         PrepareProjectReferenceCapture task = new()
         {
-            EvaluationProjectReferences = [evaluationReference],
-            ResolvedProjectReferences = [resolvedReference, dynamicallyAddedReference],
+            EvaluationProjectReferences = [evaluationReference, removedEvaluationReference],
+            ResolvedProjectReferences = [resolvedReference, removedResolvedReference, dynamicallyAddedReference],
         };
 
         Assert.True(task.Execute());
 
-        Assert.False(bool.Parse(task.PreparedProjectReferences[0].GetMetadata("CaptureIsDynamicallyAdded")));
+        Assert.Equal("Update", task.PreparedProjectReferences[0].GetMetadata("CaptureOperation"));
 
         ITaskItem preparedDynamicReference = task.PreparedProjectReferences[1];
-        Assert.True(bool.Parse(preparedDynamicReference.GetMetadata("CaptureIsDynamicallyAdded")));
+        Assert.Equal("Add", preparedDynamicReference.GetMetadata("CaptureOperation"));
         Assert.Equal("TargetFramework=net8.0", preparedDynamicReference.GetMetadata("SetTargetFramework"));
+
+        ITaskItem preparedRemovedReference = task.PreparedProjectReferences[2];
+        Assert.Equal("Remove", preparedRemovedReference.GetMetadata("CaptureOperation"));
+        Assert.Equal(removedEvaluationReference.GetMetadata("FullPath"), preparedRemovedReference.GetMetadata("FullPath"));
     }
 
     [Fact]
@@ -191,7 +193,7 @@ public sealed class GenerateProjectReferenceReplayTests
         {
             string captureFile = Path.Combine(directory, "capture.txt");
             string replayFile = Path.Combine(directory, "replay.targets");
-            File.WriteAllText(captureFile, "src/Parent.csproj|net8.0|src/Child.csproj|");
+            File.WriteAllText(captureFile, "src/Parent.csproj|net8.0|src/Child.csproj||Update");
 
             GenerateProjectReferenceReplay task = new()
             {
@@ -210,10 +212,8 @@ public sealed class GenerateProjectReferenceReplayTests
         }
     }
 
-    [Theory]
-    [InlineData("net8.0")]
-    [InlineData("")]
-    public void GeneratesAuthoritativeEmptyEdgeSet(string targetFramework)
+    [Fact]
+    public void RemovesReferenceRemovedAfterEvaluation()
     {
         string directory = CreateTemporaryDirectory();
 
@@ -221,7 +221,7 @@ public sealed class GenerateProjectReferenceReplayTests
         {
             string captureFile = Path.Combine(directory, "capture.txt");
             string replayFile = Path.Combine(directory, "replay.targets");
-            File.WriteAllText(captureFile, $"src/Parent.proj|{targetFramework}||");
+            File.WriteAllText(captureFile, "src/Parent.proj|net8.0|src/Removed.csproj||Remove");
 
             GenerateProjectReferenceReplay task = new()
             {
@@ -233,10 +233,11 @@ public sealed class GenerateProjectReferenceReplayTests
             Assert.True(task.Execute());
 
             XDocument edgeReplay = XDocument.Load(GetReplayFile(replayFile, "src/Parent.proj"));
-            XElement when = Assert.Single(edgeReplay.Descendants("When"));
-            Assert.Empty(when.Descendants("_ReplayProjectReference"));
-            Assert.Equal("true", Assert.Single(when.Descendants("_ApplyProjectReferenceReplayAllowList")).Value);
-            Assert.Single(edgeReplay.Descendants("ProjectReference"), element => element.Attribute("Remove") is not null);
+            XElement removedReference = Assert.Single(
+                edgeReplay.Descendants("ProjectReference"),
+                element => element.Attribute("Remove") is not null);
+            Assert.Equal("$(RepoRoot)src/Removed.csproj", removedReference.Attribute("Remove")!.Value);
+            Assert.Empty(edgeReplay.Descendants("_ReplayProjectReference"));
         }
         finally
         {
@@ -245,10 +246,11 @@ public sealed class GenerateProjectReferenceReplayTests
     }
 
     [Theory]
-    [InlineData("/rooted/Parent.proj|net8.0||")]
-    [InlineData("../Parent.proj|net8.0||")]
-    [InlineData("src/Parent.proj|net'8.0||")]
-    [InlineData("src/Parent.proj|net'8.0|src/Child.csproj|TargetFramework=net8.0")]
+    [InlineData("/rooted/Parent.proj|net8.0|||Configure")]
+    [InlineData("../Parent.proj|net8.0|||Configure")]
+    [InlineData("src/Parent.proj|net'8.0|||Configure")]
+    [InlineData("src/Parent.proj|net'8.0|src/Child.csproj|TargetFramework=net8.0|Update")]
+    [InlineData("src/Parent.proj|net8.0|src/Child.csproj||Invalid")]
     public void RejectsInvalidConditionInputs(string record)
     {
         string directory = CreateTemporaryDirectory();

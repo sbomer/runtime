@@ -42,7 +42,7 @@ public sealed class DeduplicateProjectReferenceCapture : Task
             StringComparer.OrdinalIgnoreCase.Equals(x.ParentTargetFramework, y.ParentTargetFramework) &&
             StringComparer.OrdinalIgnoreCase.Equals(x.ReferencedProject, y.ReferencedProject) &&
             StringComparer.OrdinalIgnoreCase.Equals(x.SetTargetFramework, y.SetTargetFramework) &&
-            x.IsDynamicallyAdded == y.IsDynamicallyAdded;
+            StringComparer.OrdinalIgnoreCase.Equals(x.Operation, y.Operation);
 
         public int GetHashCode(CaptureKey obj)
         {
@@ -51,7 +51,7 @@ public sealed class DeduplicateProjectReferenceCapture : Task
             hashCode.Add(obj.ParentTargetFramework, StringComparer.OrdinalIgnoreCase);
             hashCode.Add(obj.ReferencedProject, StringComparer.OrdinalIgnoreCase);
             hashCode.Add(obj.SetTargetFramework, StringComparer.OrdinalIgnoreCase);
-            hashCode.Add(obj.IsDynamicallyAdded);
+            hashCode.Add(obj.Operation, StringComparer.OrdinalIgnoreCase);
             return hashCode.ToHashCode();
         }
     }
@@ -61,7 +61,7 @@ public sealed class DeduplicateProjectReferenceCapture : Task
         string ParentTargetFramework,
         string ReferencedProject,
         string SetTargetFramework,
-        bool IsDynamicallyAdded)
+        string Operation)
     {
         public CaptureKey(ITaskItem item)
             : this(
@@ -69,7 +69,7 @@ public sealed class DeduplicateProjectReferenceCapture : Task
                 item.GetMetadata("CaptureParentTargetFramework"),
                 item.GetMetadata("CaptureReferencedProject"),
                 item.GetMetadata("CaptureSetTargetFramework"),
-                string.Equals(item.GetMetadata("CaptureIsDynamicallyAdded"), "true", StringComparison.OrdinalIgnoreCase))
+                item.GetMetadata("CaptureOperation"))
         {
         }
     }
