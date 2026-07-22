@@ -669,10 +669,6 @@
                       BuildInParallel="false" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(BuildStaticGraphValidationTestSubset)' == 'true'">
-    <ProjectReference Include="$(MSBuildThisFileDirectory)Microsoft.Extensions.DependencyInjection\tests\DI.External.Tests\Microsoft.Extensions.DependencyInjection.ExternalContainers.Tests.csproj" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(RunSmokeTestsOnly)' != 'true'
                         and '$(RunHighAOTResourceRequiringTestsOnly)' != 'true'
                         and '$(RunLimitedSetOfTests)' != 'true'">

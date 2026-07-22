@@ -1,0 +1,22 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Bcl.AsyncInterfaces/src/Microsoft.Bcl.AsyncInterfaces.csproj">
+      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="$(RepoRoot)src/libraries/System.IO.Pipelines/src/System.IO.Pipelines.csproj">
+      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="$(RepoRoot)src/libraries/System.Text.Encodings.Web/src/System.Text.Encodings.Web.csproj">
+      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Roslyn4.4.csproj">
+      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Text.Json/src/System.Text.Json.csproj">
+      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,19 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == ''">
+    <TargetFrameworks>net11.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.ComponentModel.Composition.Registration/ref/System.ComponentModel.Composition.Registration.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.ComponentModel.Composition/src/System.ComponentModel.Composition.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Reflection.Context/src/System.Reflection.Context.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

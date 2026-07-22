@@ -1,0 +1,7 @@
+﻿<Project>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Formats.Cbor/src/System.Formats.Cbor.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

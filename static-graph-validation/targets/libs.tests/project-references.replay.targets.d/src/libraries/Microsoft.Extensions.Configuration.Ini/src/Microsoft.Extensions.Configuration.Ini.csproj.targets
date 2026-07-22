@@ -1,0 +1,28 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == ''">
+    <TargetFrameworks>net11.0</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.FileExtensions/src/Microsoft.Extensions.Configuration.FileExtensions.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Ini/ref/Microsoft.Extensions.Configuration.Ini.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration/src/Microsoft.Extensions.Configuration.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileProviders.Physical/src/Microsoft.Extensions.FileProviders.Physical.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileSystemGlobbing/src/Microsoft.Extensions.FileSystemGlobbing.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

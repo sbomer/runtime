@@ -1,0 +1,7 @@
+﻿<Project>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

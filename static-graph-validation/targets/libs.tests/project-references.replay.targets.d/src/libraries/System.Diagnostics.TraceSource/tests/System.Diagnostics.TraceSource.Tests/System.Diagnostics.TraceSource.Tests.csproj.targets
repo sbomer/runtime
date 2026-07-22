@@ -1,0 +1,22 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Common/tests/TestUtilities/TestUtilities.csproj">
+      <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Configuration.ConfigurationManager/src/System.Configuration.ConfigurationManager.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="$(RepoRoot)src/libraries/System.Diagnostics.EventLog/src/System.Diagnostics.EventLog.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="$(RepoRoot)src/libraries/System.Security.Cryptography.ProtectedData/src/System.Security.Cryptography.ProtectedData.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

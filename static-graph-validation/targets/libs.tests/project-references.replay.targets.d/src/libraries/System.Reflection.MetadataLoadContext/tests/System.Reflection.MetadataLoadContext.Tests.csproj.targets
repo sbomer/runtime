@@ -1,0 +1,13 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == ''">
+    <TargetFrameworks>net11.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <ProjectReference Update="$(RepoRoot)src/libraries/Common/tests/TestUtilities/TestUtilities.csproj">
+      <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Update="$(RepoRoot)src/libraries/System.Reflection.MetadataLoadContext/src/System.Reflection.MetadataLoadContext.csproj">
+      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

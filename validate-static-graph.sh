@@ -56,13 +56,13 @@ case "$target" in
     libs.tests)
         entry_project="Build.proj"
         prerequisite_subsets=("host.native+clr.runtime+clr.corelib+libs.sfx+libs.pretest")
-        restore_command=(./build.sh libs.tests --restore --runtimeConfiguration "$runtime_configuration" /p:RunSmokeTestsOnly=true /p:BuildStaticGraphValidationTestSubset=true)
+        restore_command=(./build.sh libs.tests --restore --runtimeConfiguration "$runtime_configuration")
         use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
         capture_parallelism=(/m:2)
         static_graph_parallelism=(/m:2)
-        max_static_graph_nodes=1000
-        max_static_graph_edges=50000
+        max_static_graph_nodes=10000
+        max_static_graph_edges=500000
         ;;
     libs.oob)
         entry_project="src/libraries/oob.proj"
@@ -272,10 +272,6 @@ fi
 
 if [[ "$target" == "libs.sfx" ]]; then
     common_properties=("/p:ApiCompatValidateAssemblies=false" "${common_properties[@]}")
-fi
-
-if [[ "$target" == "libs.tests" ]]; then
-    common_properties=("/p:RunSmokeTestsOnly=true" "/p:BuildStaticGraphValidationTestSubset=true" "${common_properties[@]}")
 fi
 
 build_prerequisites() {
