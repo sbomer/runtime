@@ -3,21 +3,6 @@
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
-    <ProjectReference Update="$(RepoRoot)src/libraries/Common/tests/TestUtilities/TestUtilities.csproj">
-      <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
-    </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.Loader/tests/MissingDependency.Mid/MissingDependency.Mid.csproj" />
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime.Loader/tests/System.Runtime.Loader.Test.Assembly/System.Runtime.Loader.Test.Assembly.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime.Loader/tests/System.Runtime.Loader.Test.Assembly2/System.Runtime.Loader.Test.Assembly2.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime.Loader/tests/System.Runtime.Loader.Test.AssemblyVersion1/System.Runtime.Loader.Test.AssemblyVersion1.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Runtime.Loader/tests/System.Runtime.Loader.Test.AssemblyVersion2/System.Runtime.Loader.Test.AssemblyVersion2.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
   </ItemGroup>
 </Project>

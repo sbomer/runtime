@@ -12,11 +12,5 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/System.Text.Encodings.Web/src/System.Text.Encodings.Web.csproj">
       <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Text.Json/gen/System.Text.Json.SourceGeneration.Roslyn4.4.csproj">
-      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Text.Json/src/System.Text.Json.csproj">
-      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-    </ProjectReference>
   </ItemGroup>
 </Project>

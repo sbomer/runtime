@@ -9,12 +9,6 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Binder/src/Microsoft.Extensions.Configuration.Binder.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.CommandLine/src/Microsoft.Extensions.Configuration.CommandLine.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.EnvironmentVariables/src/Microsoft.Extensions.Configuration.EnvironmentVariables.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.FileExtensions/src/Microsoft.Extensions.Configuration.FileExtensions.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
@@ -39,13 +33,7 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileSystemGlobbing/src/Microsoft.Extensions.FileSystemGlobbing.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Configuration/src/Microsoft.Extensions.Logging.Configuration.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Console/src/Microsoft.Extensions.Logging.Console.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Debug/src/Microsoft.Extensions.Logging.Debug.csproj">

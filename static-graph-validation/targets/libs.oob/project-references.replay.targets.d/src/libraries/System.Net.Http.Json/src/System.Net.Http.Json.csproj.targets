@@ -2,24 +2,4 @@
   <PropertyGroup Condition="'$(TargetFramework)' == ''">
     <TargetFrameworks>net11.0</TargetFrameworks>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Pipelines/src/System.IO.Pipelines.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Http.Json/ref/System.Net.Http.Json.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Http/src/System.Net.Http.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Net.Primitives/src/System.Net.Primitives.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Text.Json/src/System.Text.Json.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

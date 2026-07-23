@@ -16,7 +16,7 @@ namespace Microsoft.DotNet.Runtime.Tasks.Tests;
 public sealed class GenerateProjectReferenceReplayTests
 {
     [Fact]
-    public void GeneratesNodeAndEdgeReplay()
+    public void GeneratesNodeAndAddedEdgeReplay()
     {
         string directory = CreateTemporaryDirectory();
 
@@ -28,6 +28,7 @@ public sealed class GenerateProjectReferenceReplayTests
             [
                 "src/Parent.proj|net8.0|||Configure",
                 "src/Parent.proj|net8.0|src/Child.csproj|TargetFramework=net8.0|Update",
+                "src/Parent.proj|net8.0|src/Added.csproj|TargetFramework=net8.0|Add",
                 "src/Other.proj|net9.0|src/Child.csproj|TargetFramework=net9.0|Update",
             ]);
 
@@ -63,8 +64,9 @@ public sealed class GenerateProjectReferenceReplayTests
             Assert.Empty(edgeReplay.Descendants("Target"));
             XElement replayedReference = Assert.Single(
                 edgeReplay.Descendants("ProjectReference"),
-                element => element.Attribute("Update") is not null);
-            Assert.Equal("$(RepoRoot)src/Child.csproj", replayedReference.Attribute("Update")!.Value);
+                element => element.Attribute("Include") is not null);
+            Assert.Equal("$(RepoRoot)src/Added.csproj", replayedReference.Attribute("Include")!.Value);
+            Assert.Null(replayedReference.Attribute("Update"));
             Assert.Null(replayedReference.Element("SkipGetTargetFrameworkProperties"));
             Assert.Equal("TargetFramework=net8.0", replayedReference.Element("ProjectReferenceReplaySetTargetFramework")!.Value);
             Assert.Null(replayedReference.Element("SetTargetFramework"));
@@ -78,7 +80,7 @@ public sealed class GenerateProjectReferenceReplayTests
     }
 
     [Fact]
-    public void ReplaysSingleSelectedFrameworkForUnspecifiedEdge()
+    public void DoesNotUpdateExistingReferenceWithInferredFramework()
     {
         string directory = CreateTemporaryDirectory();
 
@@ -101,12 +103,7 @@ public sealed class GenerateProjectReferenceReplayTests
 
             Assert.True(task.Execute());
 
-            XDocument replay = XDocument.Load(GetReplayFile(replayFile, "src/Parent.csproj"));
-            XElement replayedReference = Assert.Single(
-                replay.Descendants("ProjectReference"),
-                element => element.Attribute("Update") is not null);
-            Assert.Equal("TargetFramework=net8.0", replayedReference.Element("SetTargetFramework")!.Value);
-            Assert.Null(replayedReference.Element("UndefineProperties"));
+            Assert.False(File.Exists(GetReplayFile(replayFile, "src/Parent.csproj")));
         }
         finally
         {

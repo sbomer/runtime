@@ -2,18 +2,4 @@
   <PropertyGroup Condition="'$(TargetFramework)' == ''">
     <TargetFrameworks>net11.0</TargetFrameworks>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.AccessControl/src/System.Security.AccessControl.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Security.Principal.Windows/src/System.Security.Principal.Windows.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Threading.AccessControl/ref/System.Threading.AccessControl.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

@@ -6,9 +6,6 @@
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
-    <ProjectReference Update="$(RepoRoot)src/libraries/Common/tests/TestUtilities/TestUtilities.csproj">
-      <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
-    </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Configuration.Binder/src/Microsoft.Extensions.Configuration.Binder.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
@@ -42,55 +39,7 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileSystemGlobbing/src/Microsoft.Extensions.FileSystemGlobbing.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/ApplicationNameSetFromArgument/ApplicationNameSetFromArgument.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/ArbitraryDiagnosticEventPatternTestSite/ArbitraryDiagnosticEventPatternTestSite.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/BuildWebHostInvalidSignature/BuildWebHostInvalidSignature.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/BuildWebHostPatternTestSite/BuildWebHostPatternTestSite.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/CreateHostBuilderInvalidSignature/CreateHostBuilderInvalidSignature.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/CreateHostBuilderPatternTestSite/CreateHostBuilderPatternTestSite.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/CreateWebHostBuilderInvalidSignature/CreateWebHostBuilderInvalidSignature.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/CreateWebHostBuilderPatternTestSite/CreateWebHostBuilderPatternTestSite.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/MockHostTypes/MockHostTypes.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/NoSpecialEntryPointPattern/NoSpecialEntryPointPattern.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/NoSpecialEntryPointPatternBuildsThenThrows/NoSpecialEntryPointPatternBuildsThenThrows.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/NoSpecialEntryPointPatternExits/NoSpecialEntryPointPatternExits.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/NoSpecialEntryPointPatternHangs/NoSpecialEntryPointPatternHangs.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/NoSpecialEntryPointPatternMainNoArgs/NoSpecialEntryPointPatternMainNoArgs.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/NoSpecialEntryPointPatternThrows/NoSpecialEntryPointPatternThrows.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/TopLevelStatements/TopLevelStatements.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.HostFactoryResolver/tests/TopLevelStatementsTestsTimeout/TopLevelStatementsTestsTimeout.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj">
@@ -118,9 +67,6 @@
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/System.Diagnostics.EventLog/src/System.Diagnostics.EventLog.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
   </ItemGroup>

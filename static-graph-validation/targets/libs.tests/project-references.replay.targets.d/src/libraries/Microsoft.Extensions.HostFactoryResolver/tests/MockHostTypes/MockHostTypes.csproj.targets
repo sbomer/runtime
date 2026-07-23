@@ -39,9 +39,6 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileSystemGlobbing/src/Microsoft.Extensions.FileSystemGlobbing.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Configuration/src/Microsoft.Extensions.Logging.Configuration.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>

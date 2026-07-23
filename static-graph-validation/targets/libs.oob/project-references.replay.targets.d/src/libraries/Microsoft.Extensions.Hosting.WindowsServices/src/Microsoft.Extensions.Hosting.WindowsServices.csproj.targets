@@ -39,12 +39,6 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.FileSystemGlobbing/src/Microsoft.Extensions.FileSystemGlobbing.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting.WindowsServices/ref/Microsoft.Extensions.Hosting.WindowsServices.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Hosting/src/Microsoft.Extensions.Hosting.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Configuration/src/Microsoft.Extensions.Logging.Configuration.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
@@ -52,9 +46,6 @@
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.Debug/src/Microsoft.Extensions.Logging.Debug.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.EventLog/src/Microsoft.Extensions.Logging.EventLog.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/Microsoft.Extensions.Logging.EventSource/src/Microsoft.Extensions.Logging.EventSource.csproj">
@@ -67,12 +58,6 @@
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
     <ProjectReference Include="$(RepoRoot)src/libraries/System.Diagnostics.EventLog/src/System.Diagnostics.EventLog.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.ServiceProcess.ServiceController/src/System.ServiceProcess.ServiceController.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
       <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
     </ProjectReference>
   </ItemGroup>

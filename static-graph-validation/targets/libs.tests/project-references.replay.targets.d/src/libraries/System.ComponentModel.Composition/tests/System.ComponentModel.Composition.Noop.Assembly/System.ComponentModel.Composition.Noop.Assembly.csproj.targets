@@ -1,7 +1,0 @@
-﻿<Project>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.ComponentModel.Composition/src/System.ComponentModel.Composition.csproj">
-      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-    </ProjectReference>
-  </ItemGroup>
-</Project>

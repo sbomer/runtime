@@ -20,11 +20,5 @@
     <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.native.System.IO.Ports.proj" />
     <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.osx-arm64.runtime.native.System.IO.Ports.proj" />
     <ProjectReference Remove="$(RepoRoot)src/libraries/System.IO.Ports/pkg/runtime.osx-x64.runtime.native.System.IO.Ports.proj" />
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.IO.Ports/ref/System.IO.Ports.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
   </ItemGroup>
 </Project>

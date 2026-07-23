@@ -171,16 +171,12 @@ public sealed class GenerateProjectReferenceReplay : Task
             selectedFrameworksByProject.TryGetValue(projectPath, out SortedSet<string>? frameworks);
             projectReferenceSetsByParent.TryGetValue(projectPath, out SortedDictionary<string, ProjectReferenceSet>? projectReferenceSetsByTargetFramework);
 
-            bool hasProjectReferenceUpdates = false;
-            if (projectReferenceSetsByTargetFramework is not null)
-            {
-                foreach (ProjectReferenceSet projectReferenceSet in projectReferenceSetsByTargetFramework.Values)
-                {
-                    hasProjectReferenceUpdates |= projectReferenceSet.ProjectReferences.Count > 0;
-                }
-            }
+            bool hasProjectReferenceDeltas = projectReferenceSetsByTargetFramework is not null &&
+                projectReferenceSetsByTargetFramework.Values.Any(
+                    projectReferenceSet => projectReferenceSet.ProjectReferences.Values.Any(
+                        projectReference => projectReference.Operation != ProjectReferenceCaptureOperation.Update));
 
-            if (frameworks is null && !hasProjectReferenceUpdates)
+            if (frameworks is null && !hasProjectReferenceDeltas)
             {
                 continue;
             }
@@ -203,18 +199,14 @@ public sealed class GenerateProjectReferenceReplay : Task
                 projectWriter.WriteEndElement();
             }
 
-            if (projectReferenceSetsByTargetFramework is not null)
+            if (hasProjectReferenceDeltas)
             {
-                if (hasProjectReferenceUpdates)
-                {
-                    wroteReplayContent |= WriteDisableDynamicProjectReferences(
-                        projectWriter,
-                        projectReferenceSetsByTargetFramework);
-                    wroteReplayContent |= WriteProjectReferenceDelta(
-                        projectWriter,
-                        projectReferenceSetsByTargetFramework,
-                        selectedFrameworksByProject);
-                }
+                wroteReplayContent |= WriteDisableDynamicProjectReferences(
+                    projectWriter,
+                    projectReferenceSetsByTargetFramework!);
+                wroteReplayContent |= WriteProjectReferenceDelta(
+                    projectWriter,
+                    projectReferenceSetsByTargetFramework!);
             }
 
             projectWriter.WriteEndElement();
@@ -281,8 +273,7 @@ public sealed class GenerateProjectReferenceReplay : Task
 
     private static bool WriteProjectReferenceDelta(
         XmlWriter writer,
-        SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework,
-        SortedDictionary<string, SortedSet<string>> selectedFrameworksByProject)
+        SortedDictionary<string, ProjectReferenceSet> projectReferenceSetsByTargetFramework)
     {
         bool wroteDelta = false;
 
@@ -296,6 +287,11 @@ public sealed class GenerateProjectReferenceReplay : Task
             bool wroteItemGroup = false;
             foreach ((string projectReference, CapturedProjectReference capturedProjectReference) in projectReferenceSet.ProjectReferences)
             {
+                if (capturedProjectReference.Operation == ProjectReferenceCaptureOperation.Update)
+                {
+                    continue;
+                }
+
                 if (capturedProjectReference.Operation == ProjectReferenceCaptureOperation.Remove)
                 {
                     StartItemGroup();
@@ -305,34 +301,14 @@ public sealed class GenerateProjectReferenceReplay : Task
                     continue;
                 }
 
-                string setTargetFramework = capturedProjectReference.SetTargetFramework;
-                string replaySetTargetFramework = setTargetFramework;
-                if (string.IsNullOrWhiteSpace(replaySetTargetFramework) &&
-                    selectedFrameworksByProject.TryGetValue(projectReference, out SortedSet<string>? selectedFrameworks) &&
-                    selectedFrameworks.Count == 1)
-                {
-                    replaySetTargetFramework = $"TargetFramework={selectedFrameworks.Min}";
-                }
-
-                if (capturedProjectReference.Operation == ProjectReferenceCaptureOperation.Update &&
-                    string.IsNullOrWhiteSpace(replaySetTargetFramework))
-                {
-                    continue;
-                }
-
                 StartItemGroup();
                 writer.WriteStartElement("ProjectReference");
-                writer.WriteAttributeString(
-                    capturedProjectReference.Operation == ProjectReferenceCaptureOperation.Add ? "Include" : "Update",
-                    $"$(RepoRoot){projectReference}");
-                // TODO: Investigate whether replay can use graph-recognized SetTargetFramework metadata.
-                // ProjectReferenceReplaySetTargetFramework is only consumed during traversal execution, which can leave
-                // static graph construction propagating Build to a discovery-only outer build.
-                if (!string.IsNullOrWhiteSpace(replaySetTargetFramework))
+                writer.WriteAttributeString("Include", $"$(RepoRoot){projectReference}");
+                if (!string.IsNullOrWhiteSpace(capturedProjectReference.SetTargetFramework))
                 {
                     writer.WriteElementString(
                         projectReferenceSet.UseTraversalSetTargetFramework ? "ProjectReferenceReplaySetTargetFramework" : "SetTargetFramework",
-                        replaySetTargetFramework);
+                        capturedProjectReference.SetTargetFramework);
                 }
                 writer.WriteEndElement();
             }

@@ -6,11 +6,5 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/Common/tests/System/Xml/ModuleCore/ModuleCore.csproj" />
     <ProjectReference Include="$(RepoRoot)src/libraries/Common/tests/System/Xml/XmlCoreTest/XmlCoreTest.csproj" />
     <ProjectReference Include="$(RepoRoot)src/libraries/Common/tests/System/Xml/XmlDiff/XmlDiff.csproj" />
-    <ProjectReference Update="$(RepoRoot)src/libraries/Common/tests/TestUtilities/TestUtilities.csproj">
-      <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
-    </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj">
-      <SetTargetFramework>TargetFramework=net11.0</SetTargetFramework>
-    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -15,8 +15,5 @@
     <ProjectReference Include="$(RepoRoot)src/libraries/System.Composition.Runtime/src/System.Composition.Runtime.csproj">
       <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
     </ProjectReference>
-    <ProjectReference Update="$(RepoRoot)src/libraries/System.Composition.TypedParts/src/System.Composition.TypedParts.csproj">
-      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-    </ProjectReference>
   </ItemGroup>
 </Project>
