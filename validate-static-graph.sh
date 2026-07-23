@@ -22,6 +22,7 @@ max_static_graph_nodes=0
 max_static_graph_edges=0
 prerequisite_subsets=()
 prerequisite_projects=()
+prerequisite_properties=()
 
 case "$target" in
     clr)
@@ -73,6 +74,15 @@ case "$target" in
         max_static_graph_nodes=1000
         max_static_graph_edges=50000
         ;;
+    host.tests)
+        entry_project="Build.proj"
+        prerequisite_subsets=("host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest+host.pretest")
+        restore_command=(./build.sh host.tests --restore --runtimeConfiguration "$runtime_configuration")
+        dynamic_build_parallelism=(/m:1)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=1000
+        max_static_graph_edges=50000
+        ;;
     libs.oob)
         entry_project="src/libraries/oob.proj"
         prerequisite_projects=(
@@ -90,7 +100,7 @@ case "$target" in
         max_static_graph_edges=50000
         ;;
     *)
-        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.pretest, libs.tests, libs.oob, host.pretest" >&2
+        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.pretest, libs.tests, libs.oob, host.pretest, host.tests" >&2
         exit 1
         ;;
 esac
@@ -285,8 +295,13 @@ if [[ "$target" == "libs.sfx" ]]; then
     common_properties=("/p:ApiCompatValidateAssemblies=false" "${common_properties[@]}")
 fi
 
-if [[ "$target" == "host.pretest" && ( "${configuration,,}" == "debug" || "${configuration,,}" == "checked" ) ]]; then
+if [[ ( "$target" == "host.pretest" || "$target" == "host.tests" ) &&
+      ( "${configuration,,}" == "debug" || "${configuration,,}" == "checked" ) ]]; then
     common_properties=("/p:FeatureInterpreter=true" "${common_properties[@]}")
+fi
+
+if [[ "$target" == "host.tests" && ( "${configuration,,}" == "debug" || "${configuration,,}" == "checked" ) ]]; then
+    prerequisite_properties=("/p:FeatureInterpreter=true")
 fi
 
 build_prerequisites() {
@@ -299,7 +314,8 @@ build_prerequisites() {
             -c "$configuration" \
             -lc "$configuration" \
             -rc "$runtime_configuration" \
-            "/p:BuildArchitecture=$build_architecture"
+            "/p:BuildArchitecture=$build_architecture" \
+            "${prerequisite_properties[@]}"
     fi
 
     if ((${#prerequisite_projects[@]} == 0)); then

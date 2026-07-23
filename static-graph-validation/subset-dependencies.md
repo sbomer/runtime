@@ -13,6 +13,7 @@ and must be produced before the consuming subset runs.
 | `libs.pretest` | CoreCLR runtime and CoreLib; native host; completed shared-framework and reference-pack outputs | Full and bootstrap builds include `clr.runtime`, `clr.corelib`, `host.native`, and `libs.sfx`. Their `@(ProjectToBuild)` declaration order and `BuildInParallel=false` place all producers before `pretest.proj`. Validation builds `host.native+clr.runtime+clr.corelib+libs.sfx` before each isolated phase. |
 | `libs.tests` | Completed testhost from `libs.pretest` and its CoreCLR, host, and SFX producers | The default libraries build places `libs.tests` after `libs.pretest` when tests are enabled. Validation builds `host.native+clr.runtime+clr.corelib+libs.sfx+libs.pretest` before the full test subset. |
 | `host.pretest` | CoreCLR runtime, CoreLib, and Crossgen2; native host; native and shared-framework libraries; completed library pretest assets | The normal build completes the CoreCLR and libraries subsets before host pretest. Validation builds `host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest` before each isolated phase. |
+| `host.tests` | Native host test prerequisites; the shared-framework layout and managed test assets produced by `host.pretest` | The default host expansion places `host.tests` after `host.pretest`. Validation builds `host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest+host.pretest` before each isolated phase. |
 
 ## Subset Expansion Notes
 
@@ -25,3 +26,6 @@ and must be produced before the consuming subset runs.
 - `host.pretest` publishes a shared-framework layout through `PublishToDisk`. Static graph
   execution discovers the same `hostpretestpublish.proj` coordinator and explicit
   bundle-component references used by the normal build.
+- `host.tests` represents the managed test projects' runtime `ReturnProductVersion` query through
+  `hosttestversion.proj`. Single-target test-to-test references skip redundant target-framework
+  negotiation so their graph edges use the same target framework selected by the parent.

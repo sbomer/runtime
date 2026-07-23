@@ -1,9 +1,21 @@
 <Project>
 
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+
   <!-- Exclude any ProjectReferences to framework assemblies on the latest framework -->
   <Import Project="$(LibrariesProjectRoot)NetCoreAppLibrary.props" Condition="'$(TargetFramework)' == '$(NetCoreAppCurrent)'" />
   <ItemGroup Condition="'$(TargetFramework)' == '$(NetCoreAppCurrent)'">
     <ProjectReferenceExclusion Include="@(NetCoreAppLibrary)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <HostTestVersionProject Include="$(MSBuildThisFileDirectory)hosttestversion.proj" />
+    <ProjectReference Include="@(HostTestVersionProject)"
+                      PrivateAssets="all"
+                      ReferenceOutputAssembly="false"
+                      SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
 
   <Target Name="GetTargetDir" Returns="$([System.IO.Path]::GetFullPath('$(TargetDir)'))" />
@@ -36,8 +48,8 @@
       the same as the package's version. Fetch this directly from the project to avoid guesswork.
     -->
     <MSBuild
-      Projects="$(InstallerProjectRoot)pkg\sfx\Microsoft.NETCore.App\Microsoft.NETCore.App.Ref.sfxproj"
-      Targets="ReturnProductVersion">
+      Projects="@(HostTestVersionProject)"
+      Targets="Build">
       <Output TaskParameter="TargetOutputs" PropertyName="NETCoreAppRuntimePackageVersion" />
     </MSBuild>
 
