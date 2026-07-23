@@ -1,0 +1,27 @@
+<Project DefaultTargets="Build">
+
+  <ItemGroup>
+    <RuntimeSharedFrameworkProject Include="$(MSBuildThisFileDirectory)..\pkg\sfx\Microsoft.NETCore.App\Microsoft.NETCore.App.Runtime.CoreCLR.sfxproj"
+                                   Condition="'$(RuntimeFlavor)' == 'CoreCLR'" />
+    <RuntimeSharedFrameworkProject Include="$(MSBuildThisFileDirectory)..\pkg\sfx\Microsoft.NETCore.App\Microsoft.NETCore.App.Runtime.Mono.sfxproj"
+                                   Condition="'$(RuntimeFlavor)' == 'Mono'" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\pkg\sfx\bundle\Microsoft.NETCore.App.Bundle.bundleproj"
+                      AdditionalProperties="OutputPath=$(OutputPath)" />
+    <ProjectReferenceTargets Include="Build"
+                             Targets="PublishToDisk" />
+  </ItemGroup>
+
+  <Target Name="Build">
+    <!--
+      Explicitly restore before PublishToDisk. IsRestoring ensures that this evaluation will not be reused.
+      See https://github.com/dotnet/msbuild/issues/2811.
+    -->
+    <MSBuild Projects="@(RuntimeSharedFrameworkProject)"
+             Targets="Restore"
+             Properties="MSBuildRestoreSessionId=$([System.Guid]::NewGuid())"
+             Condition="'$(IsGraphBuild)' != 'true'" />
+    <MSBuild Projects="@(ProjectReference)"
+             Targets="PublishToDisk"
+             Properties="OutputPath=$(OutputPath)" />
+  </Target>
+</Project>

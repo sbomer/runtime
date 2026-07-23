@@ -1,27 +1,25 @@
 <Project Sdk="Microsoft.Build.Traversal">
 
+  <!-- The graph explicitly contains the restored coordinator reference; do not add it again with the normal Build protocol. -->
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+
   <!-- Build all test project assets. Output will be used by tests. -->
   <ItemGroup>
+    <HostPretestPublishProject Include="hostpretestpublish.proj" />
     <ProjectReference Include="$(InstallerProjectRoot)tests\Assets\Projects\**\*.csproj" />
+    <ProjectReference Include="@(HostPretestPublishProject)"
+                      AdditionalProperties="OutputPath=$(TestArtifactsOutputRoot)sharedFrameworkPublish/;RuntimeFlavor=$(RuntimeFlavor)">
+      <Build Condition="'$(IsGraphBuild)' != 'true'">false</Build>
+    </ProjectReference>
   </ItemGroup>
 
   <!-- Set up the shared framework copy the tests should use. -->
   <Target Name="SetUpSharedFrameworkPublish"
           BeforeTargets="Build">
-
-    <ItemGroup>
-      <RuntimeSharedFrameworkProject Include="$(InstallerProjectRoot)pkg\sfx\Microsoft.NETCore.App\Microsoft.NETCore.App.Runtime.CoreCLR.sfxproj" Condition="'$(RuntimeFlavor)' == 'CoreCLR'" />
-      <RuntimeSharedFrameworkProject Include="$(InstallerProjectRoot)pkg\sfx\Microsoft.NETCore.App\Microsoft.NETCore.App.Runtime.Mono.sfxproj" Condition="'$(RuntimeFlavor)' == 'Mono'" />
-    </ItemGroup>
-    <!--
-      Explicitly restore before PublishToDisk. IsRestoring property ensures that this evaluation won't be reused.
-      See https://github.com/dotnet/msbuild/issues/2811
-    -->
-    <MSBuild Projects="@(RuntimeSharedFrameworkProject)"
-             Targets="Restore"
-             Properties="MSBuildRestoreSessionId=$([System.Guid]::NewGuid())" />
-    <MSBuild Projects="$(InstallerProjectRoot)pkg\sfx\bundle\Microsoft.NETCore.App.Bundle.bundleproj"
-             Targets="PublishToDisk"
-             Properties="OutputPath=$(TestArtifactsOutputRoot)sharedFrameworkPublish/" />
+    <MSBuild Projects="@(HostPretestPublishProject)"
+             Targets="Build"
+             Properties="OutputPath=$(TestArtifactsOutputRoot)sharedFrameworkPublish/;RuntimeFlavor=$(RuntimeFlavor)" />
   </Target>
 </Project>

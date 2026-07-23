@@ -64,6 +64,15 @@ case "$target" in
         max_static_graph_nodes=10000
         max_static_graph_edges=500000
         ;;
+    host.pretest)
+        entry_project="Build.proj"
+        prerequisite_subsets=("host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest")
+        restore_command=(./build.sh host.pretest --restore --runtimeConfiguration "$runtime_configuration")
+        dynamic_build_parallelism=(/m:1)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=1000
+        max_static_graph_edges=50000
+        ;;
     libs.oob)
         entry_project="src/libraries/oob.proj"
         prerequisite_projects=(
@@ -81,7 +90,7 @@ case "$target" in
         max_static_graph_edges=50000
         ;;
     *)
-        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.pretest, libs.tests, libs.oob" >&2
+        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.pretest, libs.tests, libs.oob, host.pretest" >&2
         exit 1
         ;;
 esac
@@ -274,6 +283,10 @@ fi
 
 if [[ "$target" == "libs.sfx" ]]; then
     common_properties=("/p:ApiCompatValidateAssemblies=false" "${common_properties[@]}")
+fi
+
+if [[ "$target" == "host.pretest" && ( "${configuration,,}" == "debug" || "${configuration,,}" == "checked" ) ]]; then
+    common_properties=("/p:FeatureInterpreter=true" "${common_properties[@]}")
 fi
 
 build_prerequisites() {

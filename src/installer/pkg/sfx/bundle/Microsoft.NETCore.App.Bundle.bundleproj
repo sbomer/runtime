@@ -18,6 +18,11 @@
     <UseWix5>true</UseWix5>
   </PropertyGroup>
 
+  <!-- The graph explicitly contains the restored component references; do not add them again with the normal Build protocol. -->
+  <PropertyGroup Condition="'$(IsGraphBuild)' == 'true'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Microsoft.Wix is a dotnet tool package, so exclude its assets. -->
     <PackageReference Condition="'$(GenerateInstallers)' == 'true'" Include="Microsoft.Wix" Version="$(MicrosoftWixVersion)" ExcludeAssets="all" />
@@ -36,6 +41,11 @@
     <BundleComponentReference Include="../Microsoft.NETCore.App/Microsoft.NETCore.App.Runtime.Mono.sfxproj" Condition="'$(RuntimeFlavor)' == 'Mono' or '$(TargetsLinuxBionic)' == 'true'" />
     <BundleComponentReference Include="../installers/dotnet-hostfxr.proj" Condition="'$(TestReadyToRun)' != 'true'" />
     <BundleComponentReference Include="../installers/dotnet-host.proj" Condition="'$(TestReadyToRun)' != 'true'" />
+    <ProjectReference Include="@(BundleComponentReference)"
+                      AdditionalProperties="OutputPath=$(OutputPath)"
+                      Condition="'$(MSBuildRestoreSessionId)' != '' or '$(IsGraphBuild)' == 'true'" />
+    <ProjectReferenceTargets Include="PublishToDisk"
+                             Targets="PublishToDisk" />
   </ItemGroup>
 
   <Target Name="PublishToDisk">

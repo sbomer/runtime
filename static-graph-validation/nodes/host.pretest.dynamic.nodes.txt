@@ -1,0 +1,115 @@
+Project: Build.proj
+  Globals: Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64
+    Target: Build
+Project: src/installer/pkg/sfx/bundle/Microsoft.NETCore.App.Bundle.bundleproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;OutputPath=artifacts/tests/host/linux.x64.Debug/sharedFrameworkPublish/;Restore=false;RuntimeConfiguration=Release;RuntimeFlavor=CoreCLR;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: PublishToDisk
+Project: src/installer/pkg/sfx/installers/dotnet-host.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;OutputPath=artifacts/tests/host/linux.x64.Debug/sharedFrameworkPublish/;Restore=false;RuntimeConfiguration=Release;RuntimeFlavor=CoreCLR;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: PublishToDisk
+Project: src/installer/pkg/sfx/installers/dotnet-hostfxr.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;OutputPath=artifacts/tests/host/linux.x64.Debug/sharedFrameworkPublish/;Restore=false;RuntimeConfiguration=Release;RuntimeFlavor=CoreCLR;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: PublishToDisk
+Project: src/installer/pkg/sfx/Microsoft.NETCore.App/Microsoft.NETCore.App.Runtime.CoreCLR.sfxproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;MSBuildRestoreSessionId=94a77f0b-380a-455a-b7ca-40998803ba79;Ninja=true;OutputPath=artifacts/tests/host/linux.x64.Debug/sharedFrameworkPublish/;Restore=false;RuntimeConfiguration=Release;RuntimeFlavor=CoreCLR;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Restore
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;OutputPath=artifacts/tests/host/linux.x64.Debug/sharedFrameworkPublish/;Restore=false;RuntimeConfiguration=Release;RuntimeFlavor=CoreCLR;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: PublishToDisk
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;RuntimeFlavor=CoreCLR;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: _GetAllSharedFrameworkFiles
+Project: src/installer/tests/Assets/Projects/AppWithCustomEntryPoints/AppWithCustomEntryPoints.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/AppWithSubDirs/AppWithSubDirs.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/AppWithUnknownLanguageResource/AppWithUnknownLanguageResource.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/AppWithWait/AppWithWait.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/ComLibrary/ComLibrary.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/ComLibraryConflictingGuid/ComLibraryConflictingGuid.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/ComLibraryMissingGuid/ComLibraryMissingGuid.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/Component/Component.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/HammerServicing/HammerServicing.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/HelloWorld/HelloWorld.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/HelloWorld/HelloWorld_中文.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/HelloWorld/SelfContained.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/HostApiInvokerApp/HostApiInvokerApp.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/LocalizedApp/LocalizedApp.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/ManagedHost/ManagedHost.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/ManagedHost/RegFreeCom.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/ServicedLibrary/ServicedLibrary.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/SharedLibrary/SharedLibrary.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/installer/tests/Assets/Projects/SingleFileApiTests/SingleFileApiTests.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/StartupHook/StartupHook.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/StartupHookWithAssemblyResolver/StartupHookWithAssemblyResolver.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/Assets/Projects/WindowsSpecific/WindowsSpecific.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/hostpretest.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/installer/tests/hostpretestpublish.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;OutputPath=artifacts/tests/host/linux.x64.Debug/sharedFrameworkPublish/;Restore=false;RuntimeConfiguration=Release;RuntimeFlavor=CoreCLR;Subset=host.pretest;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/tasks/Crossgen2Tasks/Crossgen2Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/HelixTestTasks/HelixTestTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/installer.tasks/installer.tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks.Tests/StaticGraphTasks.Tests.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks/StaticGraphTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tasks/tasks.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pretest;TargetArchitecture=x64
+    Target: Build
