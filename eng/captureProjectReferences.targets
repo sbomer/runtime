@@ -4,23 +4,27 @@
   <PropertyGroup>
     <CaptureProjectReferencesFile Condition="'$(CaptureProjectReferencesFile)' == ''">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'static-graph', 'project-references.raw.txt'))</CaptureProjectReferencesFile>
     <_ProjectReferenceCaptureMetadata>CaptureParentProject;CaptureParentTargetFramework;CaptureReferencedProject;CaptureSetTargetFramework;CaptureOperation</_ProjectReferenceCaptureMetadata>
+    <_CaptureProjectReferencesDependsOn>_CaptureEvaluationProjectReferences</_CaptureProjectReferencesDependsOn>
+    <_CaptureProjectReferencesDependsOn Condition="'$(DotNetBuildTasksTargetFrameworkAssembly)' != ''">$(_CaptureProjectReferencesDependsOn);ResolveP2PReferences</_CaptureProjectReferencesDependsOn>
+    <_CaptureProjectReferencesDependsOn Condition="'$(DotNetBuildTasksTargetFrameworkAssembly)' == ''">$(_CaptureProjectReferencesDependsOn);PrepareProjectReferences</_CaptureProjectReferencesDependsOn>
   </PropertyGroup>
 
   <!-- Run as the first inner-build capture dependency so this observes the complete evaluation result before any other target executes. -->
   <Target Name="_CaptureEvaluationProjectReferences"
-          Condition="'$(CaptureProjectReferences)' == 'true' and '$(DotNetBuildTasksTargetFrameworkAssembly)' != ''">
+          Condition="'$(CaptureProjectReferences)' == 'true'">
     <ItemGroup>
       <_EvaluationProjectReference Include="@(ProjectReference)" />
     </ItemGroup>
   </Target>
 
-  <!-- ResolveP2PReferences and DotNetBuildTasksTargetFrameworkAssembly are both provided by Microsoft.DotNet.Build.Tasks.TargetFramework. -->
+  <!-- Use Arcade negotiation when available; otherwise capture the SDK's built-in PrepareProjectReferences result. -->
   <Target Name="CaptureProjectReferences"
-          DependsOnTargets="_CaptureEvaluationProjectReferences;ResolveP2PReferences"
-          Condition="'$(CaptureProjectReferences)' == 'true' and '$(DotNetBuildTasksTargetFrameworkAssembly)' != ''">
+          DependsOnTargets="$(_CaptureProjectReferencesDependsOn)"
+          Condition="'$(CaptureProjectReferences)' == 'true'">
     <Microsoft.DotNet.Runtime.Tasks.PrepareProjectReferenceCapture
       EvaluationProjectReferences="@(_EvaluationProjectReference)"
-      ResolvedProjectReferences="@(ProjectReference)">
+      ResolvedProjectReferences="@(ProjectReference)"
+      NegotiatedProjectReferences="@(_MSBuildProjectReferenceExistent)">
       <Output TaskParameter="PreparedProjectReferences"
               ItemName="_PreparedProjectReference" />
     </Microsoft.DotNet.Runtime.Tasks.PrepareProjectReferenceCapture>

@@ -156,21 +156,27 @@ public sealed class GenerateProjectReferenceReplayTests
     {
         TaskItem evaluationReference = new("src/Existing.csproj");
         TaskItem removedEvaluationReference = new("src/Removed.csproj");
+        TaskItem ignoredEvaluationReference = new("src/Ignored.csproj");
+        ignoredEvaluationReference.SetMetadata("BuildReference", "false");
         TaskItem resolvedReference = new("src/Existing.csproj");
         TaskItem removedResolvedReference = new("src/Removed.csproj");
         removedResolvedReference.SetMetadata("BuildReference", "false");
         TaskItem dynamicallyAddedReference = new("src/Added.csproj");
         dynamicallyAddedReference.SetMetadata("SetTargetFramework", "TargetFramework=net8.0");
+        TaskItem negotiatedReference = new("src/Existing.csproj");
+        negotiatedReference.SetMetadata("SetTargetFramework", "TargetFramework=net9.0");
 
         PrepareProjectReferenceCapture task = new()
         {
-            EvaluationProjectReferences = [evaluationReference, removedEvaluationReference],
+            EvaluationProjectReferences = [evaluationReference, removedEvaluationReference, ignoredEvaluationReference],
             ResolvedProjectReferences = [resolvedReference, removedResolvedReference, dynamicallyAddedReference],
+            NegotiatedProjectReferences = [negotiatedReference],
         };
 
         Assert.True(task.Execute());
 
         Assert.Equal("Update", task.PreparedProjectReferences[0].GetMetadata("CaptureOperation"));
+        Assert.Equal("TargetFramework=net9.0", task.PreparedProjectReferences[0].GetMetadata("SetTargetFramework"));
 
         ITaskItem preparedDynamicReference = task.PreparedProjectReferences[1];
         Assert.Equal("Add", preparedDynamicReference.GetMetadata("CaptureOperation"));

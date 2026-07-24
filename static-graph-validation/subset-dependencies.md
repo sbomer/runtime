@@ -27,5 +27,6 @@ and must be produced before the consuming subset runs.
   execution discovers the same `hostpretestpublish.proj` coordinator and explicit
   bundle-component references used by the normal build.
 - `host.tests` represents the managed test projects' runtime `ReturnProductVersion` query through
-  `hosttestversion.proj`. Single-target test-to-test references skip redundant target-framework
-  negotiation so their graph edges use the same target framework selected by the parent.
+  `hosttestversion.proj`. Project-reference replay restricts outer builds to the target frameworks
+  selected by normal negotiation, avoiding unused inner builds such as the .NET Framework
+  `Microsoft.NET.HostModel` configuration.

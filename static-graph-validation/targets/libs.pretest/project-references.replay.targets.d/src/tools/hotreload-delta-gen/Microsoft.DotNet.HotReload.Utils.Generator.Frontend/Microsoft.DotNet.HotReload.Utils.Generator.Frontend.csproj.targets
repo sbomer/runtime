@@ -1,0 +1,8 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <ProjectReference Include="$(RepoRoot)src/tools/hotreload-delta-gen/Microsoft.DotNet.HotReload.Utils.Generator.Data/Microsoft.DotNet.HotReload.Utils.Generator.Data.csproj" />
+  </ItemGroup>
+</Project>

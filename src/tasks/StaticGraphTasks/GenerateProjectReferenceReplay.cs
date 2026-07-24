@@ -352,6 +352,7 @@ public sealed class GenerateProjectReferenceReplay : Task
             wroteProperty = true;
             writer.WriteStartElement("PropertyGroup");
             writer.WriteAttributeString("Condition", $"'$(TargetFramework)' == '{targetFramework}'");
+            // TODO: Investigate whether replaying captured additions makes transitive-reference suppression unnecessary.
             writer.WriteElementString("DisableTransitiveProjectReferences", "true");
             writer.WriteEndElement();
         }

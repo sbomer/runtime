@@ -7,11 +7,6 @@ Project: src/installer/managed/Microsoft.NET.HostModel/Microsoft.NET.HostModel.c
     Target: GetCopyToOutputDirectoryItems
     Target: GetNativeManifest
     Target: GetTargetFrameworks
-  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.tests;TargetArchitecture=x64;TargetFramework=net472;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
-    Target: GetTargetFrameworks
   Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: GetTargetFrameworks
 Project: src/installer/pkg/sfx/Microsoft.NETCore.App/Microsoft.NETCore.App.Ref.sfxproj
@@ -36,18 +31,6 @@ Project: src/installer/tests/Microsoft.NET.HostModel.Tests/Microsoft.NET.HostMod
     Target: GetNativeManifest
     Target: GetTargetFrameworks
 Project: src/installer/tests/TestUtils/TestUtils.csproj
-  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
-    Target: GetTargetFrameworks
-Project: src/libraries/System.Runtime.InteropServices/gen/DownlevelLibraryImportGenerator/DownlevelLibraryImportGenerator.csproj
-  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
-    Target: Build
-    Target: GetCopyToOutputDirectoryItems
-    Target: GetNativeManifest
-    Target: GetTargetFrameworks
-Project: src/libraries/System.Runtime.InteropServices/gen/Microsoft.Interop.SourceGeneration/Microsoft.Interop.SourceGeneration.csproj
   Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;FeatureInterpreter=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.tests;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
     Target: Build
     Target: GetCopyToOutputDirectoryItems

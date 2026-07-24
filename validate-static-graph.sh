@@ -78,7 +78,9 @@ case "$target" in
         entry_project="Build.proj"
         prerequisite_subsets=("host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest+host.pretest")
         restore_command=(./build.sh host.tests --restore --runtimeConfiguration "$runtime_configuration")
+        use_project_reference_replay=true
         dynamic_build_parallelism=(/m:1)
+        capture_parallelism=(/m:2)
         static_graph_parallelism=(/m:2)
         max_static_graph_nodes=1000
         max_static_graph_edges=50000

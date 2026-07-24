@@ -22,6 +22,8 @@ public sealed class PrepareProjectReferenceCapture : Task
 
     public ITaskItem[]? ResolvedProjectReferences { get; set; }
 
+    public ITaskItem[]? NegotiatedProjectReferences { get; set; }
+
     [Output]
     public ITaskItem[] PreparedProjectReferences { get; private set; } = [];
 
@@ -30,7 +32,18 @@ public sealed class PrepareProjectReferenceCapture : Task
         SortedDictionary<string, ITaskItem> evaluationProjectReferences = new(StringComparer.OrdinalIgnoreCase);
         foreach (ITaskItem projectReference in EvaluationProjectReferences ?? [])
         {
+            if (ShouldIgnoreReference(projectReference))
+            {
+                continue;
+            }
+
             evaluationProjectReferences.TryAdd(projectReference.GetMetadata("FullPath"), projectReference);
+        }
+
+        Dictionary<string, ITaskItem> negotiatedProjectReferences = new(StringComparer.OrdinalIgnoreCase);
+        foreach (ITaskItem projectReference in NegotiatedProjectReferences ?? [])
+        {
+            negotiatedProjectReferences.TryAdd(projectReference.GetMetadata("FullPath"), projectReference);
         }
 
         ITaskItem[] resolvedProjectReferences = ResolvedProjectReferences ?? [];
@@ -38,7 +51,7 @@ public sealed class PrepareProjectReferenceCapture : Task
         List<ITaskItem> preparedProjectReferences = new(resolvedProjectReferences.Length + evaluationProjectReferences.Count);
         foreach (ITaskItem projectReference in resolvedProjectReferences)
         {
-            if (string.Equals(projectReference.GetMetadata("BuildReference"), "false", StringComparison.OrdinalIgnoreCase))
+            if (ShouldIgnoreReference(projectReference))
             {
                 continue;
             }
@@ -47,6 +60,13 @@ public sealed class PrepareProjectReferenceCapture : Task
             finalProjectReferences.Add(fullPath);
 
             TaskItem preparedProjectReference = new(projectReference);
+            if (negotiatedProjectReferences.TryGetValue(fullPath, out ITaskItem? negotiatedProjectReference))
+            {
+                preparedProjectReference.SetMetadata(
+                    "SetTargetFramework",
+                    negotiatedProjectReference.GetMetadata("SetTargetFramework"));
+            }
+
             ProjectReferenceCaptureOperation operation = evaluationProjectReferences.ContainsKey(fullPath)
                 ? ProjectReferenceCaptureOperation.Update
                 : ProjectReferenceCaptureOperation.Add;
@@ -71,4 +91,7 @@ public sealed class PrepareProjectReferenceCapture : Task
         PreparedProjectReferences = preparedProjectReferences.ToArray();
         return true;
     }
+
+    private static bool ShouldIgnoreReference(ITaskItem projectReference) =>
+        string.Equals(projectReference.GetMetadata("BuildReference"), "false", StringComparison.OrdinalIgnoreCase);
 }
