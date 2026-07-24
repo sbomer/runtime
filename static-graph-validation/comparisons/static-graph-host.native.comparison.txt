@@ -1,0 +1,32 @@
+Normalized graph comparison
+
+Raw node counts:
+  left: 11
+  right: 8
+Raw edge counts:
+  left: 11
+  right: 8
+
+Normalized counts:
+  left evaluated project instances: 8
+  right evaluated project instances: 8
+  left nodes: 11
+  right nodes: 11
+  left edges: 11
+  right edges: 14
+
+Normalization:
+  Node identity: project path + individual effective target + global properties
+  Effective targets: requested targets, otherwise resolved default targets; multi-target requests are split
+  Ignored global properties: IsGraphBuild
+
+Left-only nodes: 0
+
+Right-only nodes: 0
+
+Left-only edges: 0
+
+Right-only edges: 3
+  /home/sven/src/runtime-staticgraph/src/tasks/tasks.proj|target=Build|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/tasks/StaticGraphTasks/StaticGraphTasks.csproj|target=GetCopyToOutputDirectoryItems|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+  /home/sven/src/runtime-staticgraph/src/tasks/tasks.proj|target=Build|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/tasks/StaticGraphTasks/StaticGraphTasks.csproj|target=GetNativeManifest|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+  /home/sven/src/runtime-staticgraph/src/tasks/tasks.proj|target=Build|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64 -> /home/sven/src/runtime-staticgraph/src/tasks/StaticGraphTasks/StaticGraphTasks.csproj|target=GetTargetFrameworks|globals=Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64

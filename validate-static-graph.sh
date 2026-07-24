@@ -65,6 +65,14 @@ case "$target" in
         max_static_graph_nodes=10000
         max_static_graph_edges=500000
         ;;
+    host.native)
+        entry_project="Build.proj"
+        restore_command=(./build.sh host.native --restore --runtimeConfiguration "$runtime_configuration")
+        dynamic_build_parallelism=(/m:1)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=100
+        max_static_graph_edges=1000
+        ;;
     host.pretest)
         entry_project="Build.proj"
         prerequisite_subsets=("host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest")
@@ -102,7 +110,7 @@ case "$target" in
         max_static_graph_edges=50000
         ;;
     *)
-        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.pretest, libs.tests, libs.oob, host.pretest, host.tests" >&2
+        echo "Unsupported static graph validation target '$target'. Supported targets: clr, libs.native, libs.sfx, libs.pretest, libs.tests, libs.oob, host.native, host.pretest, host.tests" >&2
         exit 1
         ;;
 esac

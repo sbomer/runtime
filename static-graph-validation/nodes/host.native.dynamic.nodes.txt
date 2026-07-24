@@ -1,0 +1,27 @@
+Project: Build.proj
+  Globals: Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+    Target: Build
+Project: src/native/corehost/corehost.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Build
+Project: src/tasks/Crossgen2Tasks/Crossgen2Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/HelixTestTasks/HelixTestTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/installer.tasks/installer.tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks.Tests/StaticGraphTasks.Tests.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks/StaticGraphTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tasks/tasks.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.native;TargetArchitecture=x64
+    Target: Build
