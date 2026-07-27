@@ -16,7 +16,36 @@
     <StrongNameKeyId>MicrosoftAspNetCore</StrongNameKeyId>
     <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
     <DefineConstants>$(DefineConstants);HOST_MODEL</DefineConstants>
+    <AddTransitiveProjectReferencesInStaticGraph>false</AddTransitiveProjectReferencesInStaticGraph>
   </PropertyGroup>
+
+  <!-- NuGet pack queries each inner build with BuildProjectReferences=false. Model those
+       configurations without causing the normal build to execute the synthetic reference. -->
+  <ItemGroup Condition="'$(TargetFramework)' != '' and '$(BuildProjectReferences)' != 'false'">
+    <ProjectReference Include="$(MSBuildProjectFullPath)"
+                      AdditionalProperties="BuildProjectReferences=false"
+                      BuildReference="false"
+                      ReferenceOutputAssembly="false"
+                      Targets="_GetFrameworkAssemblyReferences;_GetFrameworksWithSuppressedDependencies;GetReferencesForApiCompatValidatePackage" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)' != ''">
+    <ProjectReferenceTargets Include="Build"
+                             Targets="_GetBuildOutputFilesWithTfm;_GetDebugSymbolsWithTfm;_GetTfmSpecificContentForPackage" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(BuildProjectReferences)' == 'false'">
+    <ProjectReferenceTargets Include="_GetFrameworkAssemblyReferences"
+                             Targets="GetTargetFrameworks;GetTargetPath" />
+    <!-- GetCopyToOutputDirectoryItems recursively invokes itself on ProjectReferences
+         (_GetCopyToOutputDirectoryItemsFromTransitiveProjectReferences), but the common static
+         graph protocol in Microsoft.Common.CurrentVersion.targets only models it as a companion
+         of Build. That is fine when it rides along with a normal build, but the pack self-calls
+         schedule it standalone, so the recursive hop is invisible to the graph. Declaring the
+         mapping here keeps the workaround local; the general fix belongs in the common targets. -->
+    <ProjectReferenceTargets Include="GetCopyToOutputDirectoryItems"
+                             Targets="GetCopyToOutputDirectoryItems" />
+  </ItemGroup>
 
   <!-- Manually reference these assemblies which are provided by MSBuild / .NET SDK -->
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
