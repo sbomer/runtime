@@ -1,0 +1,32 @@
+Project: Build.proj
+  Globals: Build=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64
+    Target: Build
+Project: src/installer/pkg/projects/host-packages.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/installer/pkg/projects/Microsoft.NETCore.DotNetAppHost/Microsoft.NETCore.DotNetAppHost.pkgproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;PackageTargetRuntime=linux-x64;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;HostConfiguration=Debug;LibrariesConfiguration=Debug;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64;TasksConfiguration=Debug;ToolsConfiguration=Debug
+    Target: Pack
+Project: src/tasks/Crossgen2Tasks/Crossgen2Tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/HelixTestTasks/HelixTestTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/installer.tasks/installer.tasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks.Tests/StaticGraphTasks.Tests.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64
+    Target: Build
+Project: src/tasks/StaticGraphTasks/StaticGraphTasks.csproj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64
+    Target: Build
+    Target: GetCopyToOutputDirectoryItems
+    Target: GetNativeManifest
+    Target: GetTargetFrameworks
+Project: src/tasks/tasks.proj
+  Globals: Build=true;BuildAllProjects=true;BuildArchitecture=x64;Configuration=Debug;FeatureDynamicCodeCompiled=true;Ninja=true;Restore=false;RuntimeConfiguration=Release;Subset=host.pkg;TargetArchitecture=x64
+    Target: Build

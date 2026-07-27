@@ -81,6 +81,15 @@ case "$target" in
         max_static_graph_nodes=100
         max_static_graph_edges=1000
         ;;
+    host.pkg)
+        entry_project="Build.proj"
+        prerequisite_subsets=("clr.runtime+host.native")
+        restore_command=(./build.sh host.pkg --restore --runtimeConfiguration "$runtime_configuration")
+        dynamic_build_parallelism=(/m:1)
+        static_graph_parallelism=(/m:2)
+        max_static_graph_nodes=100
+        max_static_graph_edges=1000
+        ;;
     host.pretest)
         entry_project="Build.proj"
         prerequisite_subsets=("host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest")

@@ -14,6 +14,7 @@ and must be produced before the consuming subset runs.
 | `libs.tests` | Completed testhost from `libs.pretest` and its CoreCLR, host, and SFX producers | The default libraries build places `libs.tests` after `libs.pretest` when tests are enabled. Validation builds `host.native+clr.runtime+clr.corelib+libs.sfx+libs.pretest` before the full test subset. |
 | `host.native` | None | `corehost.proj` contains the native host product build and is independently buildable. |
 | `host.tools` | None | The subset contains the independently buildable `Microsoft.NET.HostModel` managed project. |
+| `host.pkg` | The native host binaries, including `singlefilehost` produced by the CoreCLR native build | The normal build orders `clr.runtime` and `host.native` before the host packaging projects. `corehost.proj` copies `singlefilehost` out of the CoreCLR artifacts, and the pkgproj consumes the copied binaries by path. Validation builds `clr.runtime+host.native` before each isolated phase. |
 | `host.pretest` | CoreCLR runtime, CoreLib, and Crossgen2; native host; native and shared-framework libraries; completed library pretest assets | The normal build completes the CoreCLR and libraries subsets before host pretest. Validation builds `host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest` before each isolated phase. |
 | `host.tests` | Native host test prerequisites; the shared-framework layout and managed test assets produced by `host.pretest` | The default host expansion places `host.tests` after `host.pretest`. Validation builds `host.native+clr.runtime+clr.corelib+clr.tools+libs.native+libs.sfx+libs.pretest+host.pretest` before each isolated phase. |
 
@@ -32,3 +33,10 @@ and must be produced before the consuming subset runs.
   `hosttestversion.proj`. Project-reference replay restricts outer builds to the target frameworks
   selected by normal negotiation, avoiding unused inner builds such as the .NET Framework
   `Microsoft.NET.HostModel` configuration.
+- `host.pkg` packs `Microsoft.NETCore.DotNetAppHost.pkgproj` twice: once RID-agnostic and once with
+  `PackageTargetRuntime=$(TargetRid)`. The RID-agnostic configuration additionally queries
+  `GetPackageIdentity` on one configuration of itself per supported RID through
+  `CreateRuntimeDependencyItems`. Those self-invocations are not graph nodes, but MSBuild allows a
+  project to call itself in isolated mode, and the isolated build executes them identically to the
+  normal build. The comparison reports them as dynamic-only because the graph build reuses cached
+  project instances instead of emitting separate evaluations for them.
