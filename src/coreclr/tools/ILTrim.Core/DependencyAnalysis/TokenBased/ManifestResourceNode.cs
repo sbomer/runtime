@@ -57,6 +57,11 @@ namespace ILCompiler.DependencyAnalysis
                         dependencies = DescriptorMarker.GetDependencies(factory.Logger, factory, ms, resource, _module, "resource " + resourceName + " in " + _module.ToString(), factory.Settings.FeatureSettings);
                     }
                 }
+                else if (resourceName == "ILLink.Substitutions.xml")
+                {
+                    string assemblyName = _module.Assembly.GetName().Name;
+                    _skipWritingResource = factory.Settings.Optimizations.IsEnabled(CodeOptimizations.RemoveSubstitutions, assemblyName);
+                }
             }
             else
             {

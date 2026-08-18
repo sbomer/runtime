@@ -23,16 +23,24 @@ namespace ILCompiler
     {
         private readonly ILProvider _nestedILProvider;
         private readonly SubstitutionProvider _substitutionProvider;
+#if !ILTRIM
         private readonly DevirtualizationManager _devirtualizationManager;
         private readonly MetadataManager _metadataManager;
+#endif
         private readonly HashSet<string> _characteristics;
 
+#if ILTRIM
+        public SubstitutedILProvider(ILProvider nestedILProvider, SubstitutionProvider substitutionProvider, IEnumerable<string> characteristics = null)
+#else
         public SubstitutedILProvider(ILProvider nestedILProvider, SubstitutionProvider substitutionProvider, DevirtualizationManager devirtualizationManager, MetadataManager metadataManager = null, IEnumerable<string> characteristics = null)
+#endif
         {
             _nestedILProvider = nestedILProvider;
             _substitutionProvider = substitutionProvider;
+#if !ILTRIM
             _devirtualizationManager = devirtualizationManager;
             _metadataManager = metadataManager;
+#endif
             _characteristics = characteristics != null ? new HashSet<string>(characteristics) : null;
         }
 
@@ -414,8 +422,13 @@ namespace ILCompiler
                     {
                         var callee = method.GetObject(reader.ReadILToken(), NotFoundBehavior.ReturnNull) as EcmaMethod;
                         if (callee != null && callee.IsSpecialName && callee.OwningType is EcmaType calleeType
+#if ILTRIM
+                            && calleeType.Name == "SR"u8
+                            && calleeType.Namespace == "System"u8
+#else
                             && calleeType.Name == InlineableStringsResourceNode.ResourceAccessorTypeName
                             && calleeType.Namespace == InlineableStringsResourceNode.ResourceAccessorTypeNamespace
+#endif
                             && callee.Signature is { Length: 0, IsStatic: true }
                             && callee.Name.StartsWith("get_"u8))
                         {
@@ -1015,6 +1028,9 @@ namespace ILCompiler
         private bool TryExpandTypeEquality(in TypeEqualityPatternAnalyzer analyzer, MethodIL methodIL, out int constant)
         {
             constant = 0;
+#if ILTRIM
+            return false;
+#else
             if (!analyzer.IsTypeEqualityBranch)
                 return false;
 
@@ -1076,11 +1092,15 @@ namespace ILCompiler
                 constant ^= 1;
 
             return true;
+#endif
         }
 
         private bool TryExpandIsInst(in IsInstCheckPatternAnalyzer analyzer, MethodIL methodIL, out int constant)
         {
             constant = 0;
+#if ILTRIM
+            return false;
+#else
             if (!analyzer.IsIsInstBranch)
                 return false;
 
@@ -1109,6 +1129,7 @@ namespace ILCompiler
             constant = 0;
 
             return true;
+#endif
         }
 
         private static TypeDesc ReadLdToken(ref ILReader reader, MethodIL methodIL, OpcodeFlags[] flags)

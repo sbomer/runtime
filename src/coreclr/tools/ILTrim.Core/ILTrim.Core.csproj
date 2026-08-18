@@ -22,6 +22,7 @@
     <Compile Include="..\Common\TypeSystem\IL\ILProvider.cs" Link="IL\ILProvider.cs" />
     <Compile Include="..\Common\TypeSystem\IL\ILReader.cs" Link="IL\ILReader.cs" />
     <Compile Include="..\Common\TypeSystem\IL\HelperExtensions.cs" Link="IL\HelperExtensions.cs" />
+    <Compile Include="..\Common\TypeSystem\IL\InstantiatedMethodIL.cs" Link="IL\InstantiatedMethodIL.cs" />
     <Compile Include="..\Common\TypeSystem\Interop\InteropTypes.cs" Link="Interop\InteropTypes.cs" />
   </ItemGroup>
 
@@ -53,9 +54,14 @@
 
   <!-- ILCompiler.Compiler shared extension method files -->
   <ItemGroup>
-    <Compile Include="..\aot\ILCompiler.Compiler\Compiler\CustomAttributeExtensions.cs" Link="Shared\CustomAttributeExtensions.cs" />
     <Compile Include="..\aot\ILCompiler.Compiler\Compiler\AssemblyExtensions.cs" Link="Shared\AssemblyExtensions.cs" />
+    <Compile Include="..\aot\ILCompiler.Compiler\Compiler\BodySubstitutionParser.cs" Link="Shared\BodySubstitutionParser.cs" />
+    <Compile Include="..\aot\ILCompiler.Compiler\Compiler\CustomAttributeExtensions.cs" Link="Shared\CustomAttributeExtensions.cs" />
+    <Compile Include="..\aot\ILCompiler.Compiler\IL\IsInstCheckPatternAnalyzer.cs" Link="Shared\IsInstCheckPatternAnalyzer.cs" />
     <Compile Include="..\aot\ILCompiler.Compiler\Compiler\Logging\NativeAotFatalErrorException.cs" Link="Logging\NativeAotFatalErrorException.cs" />
+    <Compile Include="..\aot\ILCompiler.Compiler\Compiler\SubstitutedILProvider.cs" Link="Shared\SubstitutedILProvider.cs" />
+    <Compile Include="..\aot\ILCompiler.Compiler\Compiler\SubstitutionProvider.cs" Link="Shared\SubstitutionProvider.cs" />
+    <Compile Include="..\aot\ILCompiler.Compiler\IL\TypeEqualityPatternAnalyzer.cs" Link="Shared\TypeEqualityPatternAnalyzer.cs" />
   </ItemGroup>
 
   <!-- ILCompiler.Compiler shared Dataflow files -->

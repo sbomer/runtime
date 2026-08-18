@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 
+using Internal.TypeSystem;
 using Internal.TypeSystem.Ecma;
 
 namespace ILCompiler.DependencyAnalysis
@@ -20,6 +21,8 @@ namespace ILCompiler.DependencyAnalysis
 
         private MethodSpecificationHandle Handle => (MethodSpecificationHandle)_handle;
 
+        public MethodDesc Method => (MethodDesc)_module.GetObject(Handle);
+
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
         {
             MethodSpecification methodSpec = _module.MetadataReader.GetMethodSpecification(Handle);
@@ -31,7 +34,6 @@ namespace ILCompiler.DependencyAnalysis
                 _module.MetadataReader.GetBlobReader(methodSpec.Signature),
                 factory,
                 dependencies);
-
             dependencies.Add(factory.GetNodeForMethodToken(_module, methodSpec.Method), "Instantiated method");
 
             return dependencies;

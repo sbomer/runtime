@@ -76,7 +76,10 @@ namespace ILCompiler
                 case "stub":
                     BodySubstitution stubBody = null;
                     if (method.Signature.ReturnType.IsVoid)
-                        stubBody = BodySubstitution.EmptyBody;
+                    {
+                        if (string.IsNullOrEmpty(GetAttribute(methodNav, "value")))
+                            stubBody = BodySubstitution.EmptyBody;
+                    }
                     else
                     {
                         object substitution = TryCreateSubstitution(method.Signature.ReturnType, GetAttribute(methodNav, "value"));
@@ -202,7 +205,7 @@ namespace ILCompiler
                         goto case TypeFlags.Int32;
 
                 default:
-                    throw new NotSupportedException(type.ToString());
+                    return null;
             }
 
             return null;

@@ -360,7 +360,11 @@ namespace Mono.Linker
                             if (!GetStringParam(token, out string? substitutionFile))
                                 return -1;
 
+#if ILTRIM
+                            context.SubstitutionFiles.Add(substitutionFile);
+#else
                             body_substituter_steps.Push(substitutionFile);
+#endif
 
                             continue;
                         case "--explicit-reflection":

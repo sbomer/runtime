@@ -21,10 +21,17 @@ namespace ILCompiler
     public class SubstitutionProvider
     {
         private readonly FeatureSwitchHashtable _hashtable;
+        private readonly Func<EcmaModule, bool> _substituteFeatureGuards;
 
-        public SubstitutionProvider(Logger logger, IReadOnlyDictionary<string, bool> switchValues, BodyAndFieldSubstitutions globalSubstitutions)
+        public SubstitutionProvider(
+            Logger logger,
+            IReadOnlyDictionary<string, bool> switchValues,
+            BodyAndFieldSubstitutions globalSubstitutions,
+            bool ignoreEmbeddedSubstitutions = false,
+            Func<EcmaModule, bool> substituteFeatureGuards = null)
         {
-            _hashtable = new FeatureSwitchHashtable(logger, switchValues, globalSubstitutions);
+            _hashtable = new FeatureSwitchHashtable(logger, switchValues, globalSubstitutions, ignoreEmbeddedSubstitutions);
+            _substituteFeatureGuards = substituteFeatureGuards;
         }
 
         public BodySubstitution GetSubstitution(MethodDesc method)
@@ -70,6 +77,9 @@ namespace ILCompiler
 
             foreach (var featureGuardAttribute in property.GetDecodedCustomAttributes("System.Diagnostics.CodeAnalysis", "FeatureGuardAttribute"))
             {
+                if (_substituteFeatureGuards is not null && !_substituteFeatureGuards(method.Module))
+                    return false;
+
                 if (featureGuardAttribute.FixedArguments is not [CustomAttributeTypedArgument<TypeDesc> { Value: EcmaType featureType }])
                     continue;
 
@@ -113,7 +123,7 @@ namespace ILCompiler
             if (field.GetTypicalFieldDefinition() is EcmaField ecmaField)
             {
                 AssemblyFeatureInfo info = _hashtable.GetOrCreateValue(ecmaField.Module);
-                if (info.BodySubstitutions != null && info.FieldSubstitutions.TryGetValue(ecmaField, out object result))
+                if (info.FieldSubstitutions != null && info.FieldSubstitutions.TryGetValue(ecmaField, out object result))
                     return result;
             }
 
@@ -152,12 +162,18 @@ namespace ILCompiler
             internal readonly IReadOnlyDictionary<string, bool> _switchValues;
             private readonly Logger _logger;
             private readonly BodyAndFieldSubstitutions _globalSubstitutions;
+            private readonly bool _ignoreEmbeddedSubstitutions;
 
-            public FeatureSwitchHashtable(Logger logger, IReadOnlyDictionary<string, bool> switchValues, BodyAndFieldSubstitutions globalSubstitutions)
+            public FeatureSwitchHashtable(
+                Logger logger,
+                IReadOnlyDictionary<string, bool> switchValues,
+                BodyAndFieldSubstitutions globalSubstitutions,
+                bool ignoreEmbeddedSubstitutions)
             {
                 _logger = logger;
                 _switchValues = switchValues;
                 _globalSubstitutions = globalSubstitutions;
+                _ignoreEmbeddedSubstitutions = ignoreEmbeddedSubstitutions;
             }
 
             protected override bool CompareKeyToValue(EcmaModule key, AssemblyFeatureInfo value) => key == value.Module;
@@ -167,7 +183,7 @@ namespace ILCompiler
 
             protected override AssemblyFeatureInfo CreateValueFromKey(EcmaModule key)
             {
-                return new AssemblyFeatureInfo(key, _logger, _switchValues, _globalSubstitutions);
+                return new AssemblyFeatureInfo(key, _logger, _switchValues, _globalSubstitutions, _ignoreEmbeddedSubstitutions);
             }
         }
 
@@ -179,7 +195,12 @@ namespace ILCompiler
             public IReadOnlyDictionary<FieldDesc, object> FieldSubstitutions { get; }
             public Dictionary<string, string> InlineableResourceStrings { get; }
 
-            public AssemblyFeatureInfo(EcmaModule module, Logger logger, IReadOnlyDictionary<string, bool> featureSwitchValues, BodyAndFieldSubstitutions globalSubstitutions)
+            public AssemblyFeatureInfo(
+                EcmaModule module,
+                Logger logger,
+                IReadOnlyDictionary<string, bool> featureSwitchValues,
+                BodyAndFieldSubstitutions globalSubstitutions,
+                bool ignoreEmbeddedSubstitutions)
             {
                 Module = module;
 
@@ -198,7 +219,7 @@ namespace ILCompiler
                     }
 
                     string resourceName = module.MetadataReader.GetString(resource.Name);
-                    if (resourceName == "ILLink.Substitutions.xml")
+                    if (resourceName == "ILLink.Substitutions.xml" && !ignoreEmbeddedSubstitutions)
                     {
                         BlobReader reader = resourceDirectory.GetReader((int)resource.Offset, resourceDirectory.Length - (int)resource.Offset);
                         int length = (int)reader.ReadUInt32();
@@ -211,7 +232,7 @@ namespace ILCompiler
 
                         substitutions = BodySubstitutionsParser.GetSubstitutions(logger, module.Context, ms, resource, module, "name", featureSwitchValues);
                     }
-                    else if (InlineableStringsResourceNode.IsInlineableStringsResource(module, resourceName))
+                    else if (IsInlineableStringsResource(module, resourceName))
                     {
                         BlobReader reader = resourceDirectory.GetReader((int)resource.Offset, resourceDirectory.Length - (int)resource.Offset);
                         int length = (int)reader.ReadUInt32();
@@ -239,6 +260,26 @@ namespace ILCompiler
                 substitutions.AppendFrom(globalSubstitutions);
 
                 (BodySubstitutions, FieldSubstitutions) = (substitutions.BodySubstitutions, substitutions.FieldSubstitutions);
+            }
+
+            private static bool IsInlineableStringsResource(EcmaModule module, string resourceName)
+            {
+#if ILTRIM
+                if (!resourceName.EndsWith(".resources", StringComparison.Ordinal))
+                    return false;
+
+                string simpleName = module.Assembly.GetName().Name;
+                if (resourceName != $"{simpleName}.Strings.resources"
+                    && resourceName != $"FxResources.{simpleName}.SR.resources")
+                {
+                    return false;
+                }
+
+                MetadataType srType = module.GetType("System"u8, "SR"u8, throwIfNotFound: false);
+                return srType?.GetMethod("GetResourceString"u8, null) is not null;
+#else
+                return InlineableStringsResourceNode.IsInlineableStringsResource(module, resourceName);
+#endif
             }
         }
     }

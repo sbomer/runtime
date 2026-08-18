@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 using ILCompiler;
 using ILCompiler.Dataflow;
@@ -35,7 +36,7 @@ namespace Mono.Linker
             EcmaModule corelib = tsContext.GetModuleForSimpleName("System.Private.CoreLib");
             tsContext.SetSystemModule(corelib);
 
-            var ilProvider = new ILTrimILProvider();
+            var baseILProvider = new ILTrimILProvider();
 
             var suppressedCategories = new List<string> { MessageSubCategory.AotAnalysis };
             if (context.NoTrimWarn)
@@ -43,7 +44,7 @@ namespace Mono.Linker
 
             Logger logger = new Logger(
                 context.LogWriter,
-                ilProvider,
+                baseILProvider,
                 isVerbose: context.LogMessages,
                 suppressedWarnings: context.NoWarn,
                 singleWarn: context.GeneralSingleWarn,
@@ -53,6 +54,28 @@ namespace Mono.Linker
                 treatWarningsAsErrors: context.GeneralWarnAsError,
                 warningsAsErrors: context.WarnAsError,
                 disableGeneratedCodeHeuristics: context.DisableGeneratedCodeHeuristics);
+
+            BodyAndFieldSubstitutions substitutions = default;
+            foreach (string substitutionFilePath in context.SubstitutionFiles)
+            {
+                using FileStream stream = File.OpenRead(substitutionFilePath);
+                substitutions.AppendFrom(BodySubstitutionsParser.GetSubstitutions(
+                    logger,
+                    tsContext,
+                    XmlReader.Create(stream),
+                    substitutionFilePath,
+                    context.FeatureSettings));
+            }
+
+            var substitutionProvider = new SubstitutionProvider(
+                logger,
+                context.FeatureSettings,
+                substitutions,
+                context.IgnoreSubstitutions,
+                module => context.Optimizations.IsEnabled(
+                    CodeOptimizations.SubstituteFeatureGuards,
+                    module.Assembly.GetName().Name));
+            var ilProvider = new SubstitutedILProvider(baseILProvider, substitutionProvider);
 
             var factory = new NodeFactory(context, logger, ilProvider, tsContext);
 

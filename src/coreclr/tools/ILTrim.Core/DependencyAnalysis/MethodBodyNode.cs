@@ -12,10 +12,9 @@ using Internal.IL;
 using Internal.TypeSystem;
 using Internal.TypeSystem.Ecma;
 
-using ILCompiler.Dataflow;
 using ILCompiler.DependencyAnalysisFramework;
 
-using ReflectionMethodBodyScanner = ILCompiler.Dataflow.ReflectionMethodBodyScanner;
+using ILCompiler.Dataflow;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -48,26 +47,33 @@ namespace ILCompiler.DependencyAnalysis
                 return;
 
             MethodBodyBlock bodyBlock = _module.PEReader.GetMethodBody(rva);
+            EcmaMethod owningMethod = (EcmaMethod)_module.GetMethod(_methodHandle);
+            MethodIL methodIL = GetMethodIL(factory, owningMethod);
 
-            if (!bodyBlock.LocalSignature.IsNil)
+            if (HasExactInstantiation(owningMethod))
+                _dependencies.Add(factory.MethodInstantiation(owningMethod), "Method body analysis");
+
+            if (methodIL.GetLocals().Length != 0 && !bodyBlock.LocalSignature.IsNil)
                 _dependencies.Add(factory.StandaloneSignature(_module, bodyBlock.LocalSignature), "Signatures of local variables");
 
-            var exceptionRegions = bodyBlock.ExceptionRegions;
-            if (!bodyBlock.ExceptionRegions.IsEmpty)
+            ILExceptionRegion[] exceptionRegions = methodIL.GetExceptionRegions();
+            if (exceptionRegions.Length != 0)
             {
-                foreach (var exceptionRegion in exceptionRegions)
+                foreach (ILExceptionRegion exceptionRegion in exceptionRegions)
                 {
-                    if (exceptionRegion.Kind != ExceptionRegionKind.Catch)
+                    if (exceptionRegion.Kind != ILExceptionRegionKind.Catch)
                         continue;
 
-                    _dependencies.Add(factory.GetNodeForTypeToken(_module, exceptionRegion.CatchType), "Catch type of exception region");
+                    _dependencies.Add(
+                        factory.GetNodeForTypeToken(_module, MetadataTokens.EntityHandle(exceptionRegion.ClassToken)),
+                        "Catch type of exception region");
                 }
             }
 
             bool requiresMethodBodyScanner = ReflectionMethodBodyScanner.RequiresReflectionMethodBodyScannerForMethodBody(
                 factory.FlowAnnotations, _module.GetMethod(_methodHandle));
 
-            ILReader ilReader = new(bodyBlock.GetILBytes());
+            ILReader ilReader = new(methodIL.GetILBytes());
             while (ilReader.HasNext)
             {
                 ILOpcode opcode = ilReader.ReadILOpcode();
@@ -105,13 +111,14 @@ namespace ILCompiler.DependencyAnalysis
                     case ILOpcode.refanyval:
                     case ILOpcode.mkrefany:
                     case ILOpcode.constrained:
-                        EntityHandle token = MetadataTokens.EntityHandle(ilReader.ReadILToken());
+                        int tokenValue = ilReader.ReadILToken();
+                        EntityHandle token = MetadataTokens.EntityHandle(tokenValue);
 
                         MethodDesc method;
                         if (opcode == ILOpcode.newobj || opcode == ILOpcode.call || opcode == ILOpcode.callvirt ||
                             opcode == ILOpcode.ldvirtftn || opcode == ILOpcode.ldftn)
                         {
-                            method = _module.TryGetMethod(token);
+                            method = methodIL.GetObject(tokenValue, NotFoundBehavior.ReturnNull) as MethodDesc;
                         }
                         else
                         {
@@ -122,7 +129,7 @@ namespace ILCompiler.DependencyAnalysis
                         if (opcode == ILOpcode.ldfld || opcode == ILOpcode.ldflda ||
                             opcode == ILOpcode.ldsfld || opcode == ILOpcode.ldsflda)
                         {
-                            field = _module.TryGetField(token);
+                            field = methodIL.GetObject(tokenValue, NotFoundBehavior.ReturnNull) as FieldDesc;
                         }
                         else
                         {
@@ -136,6 +143,9 @@ namespace ILCompiler.DependencyAnalysis
                                 method.GetTypicalMethodDefinition());
                             _dependencies.Add(factory.VirtualMethodUse((EcmaMethod)slotMethod), "Callvirt/ldvirtftn");
                         }
+
+                        if (method is not null && HasExactInstantiation(method))
+                            _dependencies.Add(factory.MethodInstantiation(method), "Method call analysis");
 
                         _dependencies.Add(token.Kind switch
                         {
@@ -169,16 +179,27 @@ namespace ILCompiler.DependencyAnalysis
                 }
             }
 
-            // TODO: add DataflowAnalyzedMethod instead. We should make sure to handle the state machine/nested function case correctly
-            if (requiresMethodBodyScanner)
+            if (requiresMethodBodyScanner &&
+                factory.TryGetDataflowAnalyzedMethod(owningMethod, out DataflowAnalyzedMethodNode analyzedMethod))
             {
-                var ecmaMethod = (EcmaMethod)_module.GetMethod(_methodHandle);
-                if (!CompilerGeneratedState.IsNestedFunctionOrStateMachineMember(ecmaMethod))
+                _dependencies.Add(analyzedMethod, "Method requires dataflow analysis");
+            }
+
+            static bool HasExactInstantiation(MethodDesc method)
+            {
+                if (method.GetTypicalMethodDefinition() is not EcmaMethod ||
+                    method.OwningType.ContainsSignatureVariables(treatGenericParameterLikeSignatureVariable: true))
                 {
-                    var list = ReflectionMethodBodyScanner.ScanAndProcessReturnValue(factory, factory.FlowAnnotations, factory.Logger,
-                        EcmaMethodIL.Create(ecmaMethod), out _);
-                    _dependencies.AddRange(list);
+                    return false;
                 }
+
+                foreach (TypeDesc argument in method.Instantiation)
+                {
+                    if (argument.ContainsSignatureVariables(treatGenericParameterLikeSignatureVariable: true))
+                        return false;
+                }
+
+                return true;
             }
         }
 
@@ -189,14 +210,16 @@ namespace ILCompiler.DependencyAnalysis
                 return -1;
 
             MethodBodyBlock bodyBlock = _module.PEReader.GetMethodBody(rva);
-            var exceptionRegions = bodyBlock.ExceptionRegions;
+            EcmaMethod owningMethod = (EcmaMethod)_module.GetMethod(_methodHandle);
+            MethodIL methodIL = GetMethodIL(writeContext.Factory, owningMethod);
+            ILExceptionRegion[] exceptionRegions = methodIL.GetExceptionRegions();
 
             // Use small exception regions when the code size of the try block and
             // the handler code are less than 256 bytes and offsets smaller than 65536 bytes.
             bool useSmallExceptionRegions = ExceptionRegionEncoder.IsSmallRegionCount(exceptionRegions.Length);
             if (useSmallExceptionRegions)
             {
-                foreach (var exceptionRegion in exceptionRegions)
+                foreach (ILExceptionRegion exceptionRegion in exceptionRegions)
                 {
                     if (!ExceptionRegionEncoder.IsSmallExceptionRegion(exceptionRegion.TryOffset, exceptionRegion.TryLength) ||
                         !ExceptionRegionEncoder.IsSmallExceptionRegion(exceptionRegion.HandlerOffset, exceptionRegion.HandlerLength))
@@ -208,7 +231,7 @@ namespace ILCompiler.DependencyAnalysis
             }
 
             BlobBuilder outputBodyBuilder = writeContext.GetSharedBlobBuilder();
-            byte[] bodyBytes = bodyBlock.GetILBytes();
+            byte[] bodyBytes = methodIL.GetILBytes();
             ILReader ilReader = new ILReader(bodyBytes);
             while (ilReader.HasNext)
             {
@@ -266,8 +289,7 @@ namespace ILCompiler.DependencyAnalysis
                         outputBodyBuilder.WriteInt32(
                             MetadataTokens.GetToken(
                                 writeContext.MetadataBuilder.GetOrAddUserString(
-                                    _module.MetadataReader.GetUserString(
-                                        MetadataTokens.UserStringHandle(ilReader.ReadILToken())))));
+                                    (string)methodIL.GetObject(ilReader.ReadILToken()))));
                         break;
 
                     case ILOpcode.switch_:
@@ -290,28 +312,30 @@ namespace ILCompiler.DependencyAnalysis
 
             MethodBodyStreamEncoder.MethodBody bodyEncoder = writeContext.MethodBodyEncoder.AddMethodBody(
                 outputBodyBuilder.Count,
-                bodyBlock.MaxStack,
+                methodIL.MaxStack,
                 exceptionRegionCount: exceptionRegions.Length,
                 hasSmallExceptionRegions: useSmallExceptionRegions,
-                (StandaloneSignatureHandle)writeContext.TokenMap.MapToken(bodyBlock.LocalSignature),
-                bodyBlock.LocalVariablesInitialized ? MethodBodyAttributes.InitLocals : MethodBodyAttributes.None);
+                methodIL.GetLocals().Length == 0
+                    ? default
+                    : (StandaloneSignatureHandle)writeContext.TokenMap.MapToken(bodyBlock.LocalSignature),
+                methodIL.IsInitLocals ? MethodBodyAttributes.InitLocals : MethodBodyAttributes.None);
             BlobWriter instructionsWriter = new(bodyEncoder.Instructions);
 
             ExceptionRegionEncoder exceptionRegionEncoder = bodyEncoder.ExceptionRegions;
-            foreach (var exceptionRegion in exceptionRegions)
+            foreach (ILExceptionRegion exceptionRegion in exceptionRegions)
             {
                 switch (exceptionRegion.Kind)
                 {
-                    case ExceptionRegionKind.Catch:
+                    case ILExceptionRegionKind.Catch:
                         exceptionRegionEncoder.AddCatch(
                             exceptionRegion.TryOffset,
                             exceptionRegion.TryLength,
                             exceptionRegion.HandlerOffset,
                             exceptionRegion.HandlerLength,
-                            writeContext.TokenMap.MapToken(exceptionRegion.CatchType));
+                            writeContext.TokenMap.MapToken(MetadataTokens.EntityHandle(exceptionRegion.ClassToken)));
                         break;
 
-                    case ExceptionRegionKind.Filter:
+                    case ILExceptionRegionKind.Filter:
                         exceptionRegionEncoder.AddFilter(
                             exceptionRegion.TryOffset,
                             exceptionRegion.TryLength,
@@ -320,8 +344,16 @@ namespace ILCompiler.DependencyAnalysis
                             exceptionRegion.FilterOffset);
                         break;
 
-                    case ExceptionRegionKind.Finally:
+                    case ILExceptionRegionKind.Finally:
                         exceptionRegionEncoder.AddFinally(
+                            exceptionRegion.TryOffset,
+                            exceptionRegion.TryLength,
+                            exceptionRegion.HandlerOffset,
+                            exceptionRegion.HandlerLength);
+                        break;
+
+                    case ILExceptionRegionKind.Fault:
+                        exceptionRegionEncoder.AddFault(
                             exceptionRegion.TryOffset,
                             exceptionRegion.TryLength,
                             exceptionRegion.HandlerOffset,
@@ -333,6 +365,14 @@ namespace ILCompiler.DependencyAnalysis
             outputBodyBuilder.WriteContentTo(ref instructionsWriter);
 
             return bodyEncoder.Offset;
+        }
+
+        private MethodIL GetMethodIL(NodeFactory factory, EcmaMethod method)
+        {
+            Mono.Linker.AssemblyAction action = factory.Settings.CalculateAssemblyAction(_module);
+            return action is Mono.Linker.AssemblyAction.Copy or Mono.Linker.AssemblyAction.CopyUsed
+                ? EcmaMethodIL.Create(method)
+                : factory.FlowAnnotations.ILProvider.GetMethodIL(method);
         }
 
         protected override string GetName(NodeFactory factory)
