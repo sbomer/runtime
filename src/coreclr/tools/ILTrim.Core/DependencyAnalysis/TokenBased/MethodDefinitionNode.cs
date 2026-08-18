@@ -55,6 +55,15 @@ namespace ILCompiler.DependencyAnalysis
 
             dependencies.Add(factory.TypeDefinition(_module, declaringType), "Method owning type");
 
+            EcmaMethod method = (EcmaMethod)_module.GetMethod(Handle);
+            if (method.OwningType.IsInterface && method.IsVirtual)
+            {
+                dependencies.Add(
+                    factory.ConstrainedInterfaceMethodUseResolver(
+                        (EcmaType)method.OwningType.GetTypeDefinition()),
+                    "Constrained interface dispatch resolution");
+            }
+
             if (!IsInstanceMethodOnReferenceType)
             {
                 // Static methods and methods on value types are not subject to the unused method body optimization.
@@ -62,6 +71,7 @@ namespace ILCompiler.DependencyAnalysis
             }
 
             CustomAttributeNode.AddDependenciesDueToCustomAttributes(ref dependencies, factory, _module, methodDef.GetCustomAttributes());
+            ReflectionDependencyAttributesOnEntityNode.AddDependenciesDueToAttributes(ref dependencies, factory, method);
 
             foreach (ParameterHandle parameter in methodDef.GetParameters())
             {
@@ -78,7 +88,6 @@ namespace ILCompiler.DependencyAnalysis
                 MethodImport import = methodDef.GetImport();
                 dependencies.Add(factory.ModuleReference(_module, import.Module), "DllImport");
 
-                EcmaMethod method = (EcmaMethod)_module.GetMethod(Handle);
                 if (method.Signature.ReturnType.GetTypeDefinition() is EcmaType ecmaReturnType)
                     AddInteropAllocatedType(factory, dependencies, ecmaReturnType);
                 foreach (var parameter in method.Signature)
@@ -98,8 +107,34 @@ namespace ILCompiler.DependencyAnalysis
             if ((methodDef.Attributes & (MethodAttributes.SpecialName | MethodAttributes.RTSpecialName)) == (MethodAttributes.SpecialName | MethodAttributes.RTSpecialName) &&
                 reader.StringComparer.Equals(methodDef.Name, ".ctor"))
             {
-                EcmaMethod method = (EcmaMethod)_module.GetMethod(Handle);
                 dependencies.Add(factory.ConstructedType((EcmaType)method.OwningType), "Type with a kept constructor");
+            }
+
+            if (methodDef.Attributes.HasFlag(MethodAttributes.Virtual))
+            {
+                MethodDesc slotDefiningMethod = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(method);
+                if (slotDefiningMethod.GetTypicalMethodDefinition() is EcmaMethod slotDefinition &&
+                    slotDefinition != method.GetTypicalMethodDefinition() &&
+                    factory.IsModuleTrimmed(slotDefinition.Module))
+                {
+                    dependencies.Add(
+                        factory.MethodDefinition(slotDefinition.Module, slotDefinition.Handle),
+                        "BaseMethod");
+                }
+            }
+
+            TypeDefinition declaringTypeDefinition = reader.GetTypeDefinition(declaringType);
+            foreach (MethodImplementationHandle methodImplementationHandle in declaringTypeDefinition.GetMethodImplementations())
+            {
+                MethodImplementation methodImplementation = reader.GetMethodImplementation(methodImplementationHandle);
+                if (_module.TryGetMethod(methodImplementation.MethodBody) is EcmaMethod bodyMethod &&
+                    bodyMethod.GetTypicalMethodDefinition() == _module.GetMethod(Handle).GetTypicalMethodDefinition() &&
+                    _module.TryGetMethod(methodImplementation.MethodDeclaration)?.OwningType.IsInterface == true)
+                {
+                    dependencies.Add(
+                        factory.MethodImplementation(_module, methodImplementationHandle),
+                        "Explicit interface implementation");
+                }
             }
 
             // TODO-SIZE: Property/event metadata is not strictly necessary for accessor method calls —

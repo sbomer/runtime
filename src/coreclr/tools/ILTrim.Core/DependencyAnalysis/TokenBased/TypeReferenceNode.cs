@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 
+using Mono.Linker;
+
 using Internal.TypeSystem.Ecma;
 
 using Debug = System.Diagnostics.Debug;
@@ -50,10 +52,41 @@ namespace ILCompiler.DependencyAnalysis
         {
             yield return new(GetResolutionScopeNode(factory), "Resolution Scope of a type reference");
 
+            TypeReference typeReference = _module.MetadataReader.GetTypeReference(Handle);
             var typeDescObject = _module.GetObject(Handle);
-            if (typeDescObject is EcmaType typeDef && factory.IsModuleTrimmed(typeDef.Module))
+            if (typeDescObject is not EcmaType typeDef)
+                yield break;
+
+            AssemblyAction targetAction = factory.Settings.CalculateAssemblyAction(typeDef.Module);
+            if (targetAction == AssemblyAction.Link)
             {
                 yield return new(factory.TypeDefinition(typeDef.Module, typeDef.Handle), "Target of a type reference");
+            }
+            else if (targetAction == AssemblyAction.CopyUsed)
+            {
+                yield return new(factory.CopyUsedAssembly(typeDef.Module), "CopyUsed target of a type reference");
+            }
+
+            AssemblyAction sourceAction = factory.Settings.CalculateAssemblyAction(_module);
+            if (sourceAction == AssemblyAction.Copy &&
+                typeReference.ResolutionScope.Kind == HandleKind.AssemblyReference &&
+                _module.GetObject(typeReference.ResolutionScope) is EcmaModule resolutionModule &&
+                resolutionModule != typeDef.Module)
+            {
+                MetadataReader resolutionReader = resolutionModule.MetadataReader;
+                foreach (ExportedTypeHandle exportedTypeHandle in resolutionReader.ExportedTypes)
+                {
+                    ExportedType exportedType = resolutionReader.GetExportedType(exportedTypeHandle);
+                    if (exportedType.IsForwarder &&
+                        resolutionReader.StringComparer.Equals(exportedType.Namespace, _module.MetadataReader.GetString(typeReference.Namespace)) &&
+                        resolutionReader.StringComparer.Equals(exportedType.Name, _module.MetadataReader.GetString(typeReference.Name)))
+                    {
+                        yield return new(
+                            factory.ExportedType(resolutionModule, exportedTypeHandle),
+                            "Type forwarder of a type reference");
+                        break;
+                    }
+                }
             }
         }
 

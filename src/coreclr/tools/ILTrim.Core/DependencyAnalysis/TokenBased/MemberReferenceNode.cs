@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using ILCompiler.DependencyAnalysisFramework;
 using Internal.TypeSystem;
 using Internal.TypeSystem.Ecma;
 
@@ -21,6 +22,8 @@ namespace ILCompiler.DependencyAnalysis
 
         private MemberReferenceHandle Handle => (MemberReferenceHandle)_handle;
 
+        public MethodDesc? Method => _module.GetObject(Handle) as MethodDesc;
+
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
         {
             var methodOrFieldDef = _module.GetObject(Handle);
@@ -31,18 +34,25 @@ namespace ILCompiler.DependencyAnalysis
             switch (methodOrFieldDef)
             {
                 case MethodDesc method:
-                    if (method.GetTypicalMethodDefinition() is EcmaMethod ecmaMethod && factory.IsModuleTrimmed(ecmaMethod.Module))
+                    if (method.GetTypicalMethodDefinition() is EcmaMethod ecmaMethod)
                     {
-                        dependencies.Add(factory.MethodDefinition(ecmaMethod.Module, ecmaMethod.Handle), "Target method def of member reference");
+                        AddTargetDependency(
+                            dependencies,
+                            factory,
+                            ecmaMethod.Module,
+                            factory.MethodDefinition(ecmaMethod.Module, ecmaMethod.Handle),
+                            "Target method def of member reference");
                     }
                     break;
 
                 case FieldDesc field:
                     var ecmaField = (EcmaField)field.GetTypicalFieldDefinition();
-                    if (factory.IsModuleTrimmed(ecmaField.Module))
-                    {
-                        dependencies.Add(factory.FieldDefinition(ecmaField.Module, ecmaField.Handle), "Target field def of member reference");
-                    }
+                    AddTargetDependency(
+                        dependencies,
+                        factory,
+                        ecmaField.Module,
+                        factory.FieldDefinition(ecmaField.Module, ecmaField.Handle),
+                        "Target field def of member reference");
                     break;
             }
 
@@ -74,6 +84,24 @@ namespace ILCompiler.DependencyAnalysis
                 dependencies);
 
             return dependencies;
+
+            static void AddTargetDependency(
+                DependencyList dependencies,
+                NodeFactory factory,
+                EcmaModule targetModule,
+                DependencyNodeCore<NodeFactory> targetDefinition,
+                string reason)
+            {
+                switch (factory.Settings.CalculateAssemblyAction(targetModule))
+                {
+                    case Mono.Linker.AssemblyAction.Link:
+                        dependencies.Add(targetDefinition, reason);
+                        break;
+                    case Mono.Linker.AssemblyAction.CopyUsed:
+                        dependencies.Add(factory.CopyUsedAssembly(targetModule), "Used copy assembly");
+                        break;
+                }
+            }
         }
 
         protected override EntityHandle WriteInternal(ModuleWritingContext writeContext)

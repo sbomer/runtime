@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -35,6 +36,12 @@ namespace Mono.Linker
 
             EcmaModule corelib = tsContext.GetModuleForSimpleName("System.Private.CoreLib");
             tsContext.SetSystemModule(corelib);
+
+            foreach (DependencyNodeCore<NodeFactory> input in context.Inputs)
+            {
+                if (input is AssemblyRootNode assemblyRoot)
+                    assemblyRoot.ApplyConfiguration(context, tsContext);
+            }
 
             var baseILProvider = new ILTrimILProvider();
 
@@ -89,6 +96,41 @@ namespace Mono.Linker
             foreach (var input in context.Inputs)
                 analyzer.AddRoot(input, "Command line root");
 
+            foreach ((string assemblyName, string assemblyPath) in context.Resolver.ToExplicitReferenceFilePaths())
+            {
+                if (context.Actions.TryGetValue(assemblyName, out AssemblyAction explicitAction))
+                {
+                    if (explicitAction != AssemblyAction.Copy)
+                        continue;
+                }
+                else if (context.DefaultAction != AssemblyAction.Copy && context.TrimAction != AssemblyAction.Copy)
+                {
+                    continue;
+                }
+
+                EcmaModule module;
+                try
+                {
+                    module = tsContext.ResolveAssembly(
+                        AssemblyNameInfo.Parse(assemblyName),
+                        throwIfNotFound: false) as EcmaModule;
+                }
+                catch (Exception ex) when (context.IgnoreUnresolved && ex is TypeSystemException or BadImageFormatException)
+                {
+                    continue;
+                }
+
+                if (module is null)
+                {
+                    if (!context.IgnoreUnresolved)
+                        context.LogError(null, DiagnosticId.ReferenceAssemblyCouldNotBeLoaded, assemblyPath);
+                    continue;
+                }
+
+                if (context.CalculateAssemblyAction(module) == AssemblyAction.Copy)
+                    analyzer.AddRoot(new AssemblyRootNode(assemblyName, AssemblyRootMode.AllMembers), "Copy assembly action");
+            }
+
             analyzer.AddRoot(factory.VirtualMethodUse(
                 (EcmaMethod)tsContext.GetWellKnownType(WellKnownType.Object).GetMethod("Finalize"u8, null)),
                 "Finalizer");
@@ -111,7 +153,7 @@ namespace Mono.Linker
                 DgmlWriter.WriteDependencyGraphToStream<NodeFactory>(logStream, analyzer, factory);
             }
 
-            return logger.HasLoggedErrors ? 1 : 0;
+            return logger.HasLoggedErrors || context.HasLoggedErrors ? 1 : 0;
 
             void ComputeDependencyNodeDependencies(List<DependencyNodeCore<NodeFactory>> nodesWithPendingDependencyCalculation) =>
                 RunForEach(

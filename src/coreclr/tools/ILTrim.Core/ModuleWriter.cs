@@ -32,6 +32,14 @@ namespace ILCompiler
 
         public void Save(Stream outputStream)
         {
+            Mono.Linker.AssemblyAction action = _factory.Settings.CalculateAssemblyAction(_module);
+            if (action is Mono.Linker.AssemblyAction.Copy or Mono.Linker.AssemblyAction.CopyUsed)
+            {
+                using FileStream inputStream = File.OpenRead(_factory.TypeSystemContext.GetPathForModule(_module));
+                inputStream.CopyTo(outputStream);
+                return;
+            }
+
             List<TokenWriterNode> earlySortedTokens = new();
             List<TokenBasedNodeWithDelayedSort> delaySortedTokens = new();
 

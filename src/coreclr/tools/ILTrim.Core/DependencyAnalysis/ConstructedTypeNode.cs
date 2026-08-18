@@ -65,9 +65,9 @@ namespace ILCompiler.DependencyAnalysis
                             result.Add(new(
                                 factory.MethodDefinition(ecmaImpl.Module, ecmaImpl.Handle),
                                 declUse,
-                                "Virtual method"));
+                                "OverrideOnInstantiatedType"));
 
-                            var implHandle = TryGetMethodImplementationHandle(_type, declDefinition);
+                            var implHandle = MethodImplementationNode.TryGetMethodImplementationHandle(_type, declDefinition, impl);
                             if (!implHandle.IsNil)
                             {
                                 result.Add(new(
@@ -83,31 +83,44 @@ namespace ILCompiler.DependencyAnalysis
             // For each interface, figure out what implements the individual interface methods on it.
             foreach (DefType intface in _type.RuntimeInterfaces)
             {
-                foreach (MethodDesc interfaceMethod in intface.GetAllVirtualMethods())
+                foreach (MethodDesc interfaceMethod in intface.EnumAllVirtualSlots())
                 {
-                    // TODO: static virtual methods (not in the type system yet)
-                    if (interfaceMethod.Signature.IsStatic)
-                        continue;
+                    MethodDesc slotMethod = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(interfaceMethod);
+                    var slotDefinition = (EcmaMethod)slotMethod.GetTypicalMethodDefinition();
+                    VirtualMethodUseNode interfaceMethodUse = factory.VirtualMethodUse(slotDefinition);
 
-                    MethodDesc implMethod = _type.ResolveInterfaceMethodToVirtualMethodOnType(interfaceMethod);
+                    MethodDesc implMethod = interfaceMethod.Signature.IsStatic
+                        ? _type.ResolveInterfaceMethodToStaticVirtualMethodOnType(interfaceMethod)
+                        : _type.ResolveInterfaceMethodToVirtualMethodOnType(interfaceMethod);
                     if (implMethod != null)
                     {
-                        var interfaceMethodDefinition = (EcmaMethod)interfaceMethod.GetTypicalMethodDefinition();
-                        VirtualMethodUseNode interfaceMethodUse = factory.VirtualMethodUse(interfaceMethodDefinition);
-
                         result ??= new List<CombinedDependencyListEntry>();
 
                         // Interface method implementation provided within the class hierarchy.
-                        result.Add(new(factory.VirtualMethodUse((EcmaMethod)implMethod.GetTypicalMethodDefinition()),
-                            interfaceMethodUse,
-                            "Interface method"));
-
-                        if (factory.IsModuleTrimmed(_type.Module))
+                        EcmaMethod implementationDefinition = (EcmaMethod)implMethod.GetTypicalMethodDefinition();
+                        if (interfaceMethod.Signature.IsStatic)
                         {
-                            MethodImplementationHandle implHandle = TryGetMethodImplementationHandle(_type, interfaceMethodDefinition);
+                            result.Add(new(factory.MethodDefinition(implementationDefinition.Module, implementationDefinition.Handle),
+                                interfaceMethodUse,
+                                "Static interface method"));
+                        }
+                        else
+                        {
+                            result.Add(new(factory.VirtualMethodUse(implementationDefinition),
+                                interfaceMethodUse,
+                                "Interface method"));
+                        }
+
+                        if (implMethod.OwningType.GetTypeDefinition() is EcmaType implementingType &&
+                            factory.IsModuleTrimmed(implementingType.Module))
+                        {
+                            MethodImplementationHandle implHandle = MethodImplementationNode.TryGetMethodImplementationHandle(
+                                implementingType,
+                                interfaceMethod,
+                                implMethod);
                             if (!implHandle.IsNil)
                             {
-                                result.Add(new(factory.MethodImplementation(_type.Module, implHandle),
+                                result.Add(new(factory.MethodImplementation(implementingType.Module, implHandle),
                                     interfaceMethodUse,
                                     "Explicitly implemented interface method"));
                             }
@@ -117,22 +130,49 @@ namespace ILCompiler.DependencyAnalysis
                     {
                         // Is the implementation provided by a default interface method?
                         var resolution = _type.ResolveInterfaceMethodToDefaultImplementationOnType(interfaceMethod, out implMethod);
-                        if (resolution == DefaultInterfaceMethodResolution.DefaultImplementation || resolution == DefaultInterfaceMethodResolution.Reabstraction)
+                        if (resolution == DefaultInterfaceMethodResolution.DefaultImplementation)
                         {
                             result ??= new List<CombinedDependencyListEntry>();
-                            result.Add(new(factory.VirtualMethodUse((EcmaMethod)implMethod.GetTypicalMethodDefinition()),
-                                factory.VirtualMethodUse((EcmaMethod)interfaceMethod.GetTypicalMethodDefinition()),
+                            EcmaMethod implementationDefinition = (EcmaMethod)implMethod.GetTypicalMethodDefinition();
+                            result.Add(new(factory.MethodDefinition(implementationDefinition.Module, implementationDefinition.Handle),
+                                interfaceMethodUse,
                                 "Default interface method"));
+
+                            EcmaType providingInterface = (EcmaType)implMethod.OwningType.GetTypeDefinition();
+                            result.Add(new(
+                                factory.InterfaceUse(providingInterface),
+                                interfaceMethodUse,
+                                "Interface providing default implementation"));
+
+                            MethodImplementationHandle implHandle = MethodImplementationNode.TryGetMethodImplementationHandle(
+                                providingInterface,
+                                interfaceMethod,
+                                implMethod);
+                            if (!implHandle.IsNil)
+                            {
+                                result.Add(new(
+                                    factory.MethodImplementation(providingInterface.Module, implHandle),
+                                    interfaceMethodUse,
+                                    "Explicit default interface method"));
+                            }
                         }
-                        else
+                        else if (resolution is DefaultInterfaceMethodResolution.Diamond or DefaultInterfaceMethodResolution.Reabstraction)
                         {
-                            // TODO: if there's a diamond, we should consider both implementations used
+                            result ??= new List<CombinedDependencyListEntry>();
+                            foreach (DefType candidateInterface in _type.RuntimeInterfaces)
+                            {
+                                result.Add(new(
+                                    factory.InterfaceUse((EcmaType)candidateInterface.GetTypeDefinition()),
+                                    interfaceMethodUse,
+                                    "Interface participating in default method resolution"));
+                            }
                         }
                     }
                 }
             }
 
             // For each interface, make the interface considered constructed if the interface is used
+            IReadOnlyList<DefType> directlyImplementedInterfaces = GetDirectlyImplementedInterfaces(_type);
             foreach (DefType intface in _type.RuntimeInterfaces)
             {
                 result ??= new List<CombinedDependencyListEntry>();
@@ -140,6 +180,31 @@ namespace ILCompiler.DependencyAnalysis
                 result.Add(new(factory.ConstructedType(interfaceDefinition),
                     factory.InterfaceUse(interfaceDefinition),
                     "Used interface on a constructed type"));
+
+                bool directlyImplemented = false;
+                foreach (DefType directlyImplementedInterface in directlyImplementedInterfaces)
+                {
+                    if (directlyImplementedInterface == intface)
+                    {
+                        directlyImplemented = true;
+                        break;
+                    }
+                }
+
+                if (!directlyImplemented)
+                {
+                    foreach (DefType directlyImplementedInterface in directlyImplementedInterfaces)
+                    {
+                        if (ImplementsInterface(directlyImplementedInterface, intface))
+                        {
+                            result.Add(new(
+                                factory.InterfaceUse((EcmaType)directlyImplementedInterface.GetTypeDefinition()),
+                                factory.InterfaceUse(interfaceDefinition),
+                                "Direct interface implementing a used interface"));
+                            break;
+                        }
+                    }
+                }
             }
 
             // Check to see if we have any dataflow annotations on the type.
@@ -233,20 +298,31 @@ namespace ILCompiler.DependencyAnalysis
         public override bool StaticDependenciesAreComputed => _conditionalDependencies != null;
         public override IEnumerable<CombinedDependencyListEntry> SearchDynamicDependencies(List<DependencyNodeCore<NodeFactory>> markedNodes, int firstNode, NodeFactory factory) => null;
 
-        private static MethodImplementationHandle TryGetMethodImplementationHandle(EcmaType implementingType, EcmaMethod declMethod)
+        private static IReadOnlyList<DefType> GetDirectlyImplementedInterfaces(EcmaType type)
         {
-            MetadataReader reader = implementingType.MetadataReader;
+            MetadataReader reader = type.MetadataReader;
+            var result = new List<DefType>();
 
-            foreach (MethodImplementationHandle implRecordHandle in reader.GetTypeDefinition(implementingType.Handle).GetMethodImplementations())
+            foreach (InterfaceImplementationHandle interfaceImplementationHandle in reader.GetTypeDefinition(type.Handle).GetInterfaceImplementations())
             {
-                MethodImplementation implRecord = reader.GetMethodImplementation(implRecordHandle);
-                if (implementingType.Module.TryGetMethod(implRecord.MethodDeclaration) == declMethod)
-                {
-                    return implRecordHandle;
-                }
+                InterfaceImplementation interfaceImplementation = reader.GetInterfaceImplementation(interfaceImplementationHandle);
+                if (type.Module.TryGetType(interfaceImplementation.Interface) is DefType interfaceType)
+                    result.Add(interfaceType);
             }
 
-            return default;
+            return result;
         }
+
+        private static bool ImplementsInterface(DefType interfaceType, DefType baseInterface)
+        {
+            foreach (DefType runtimeInterface in interfaceType.RuntimeInterfaces)
+            {
+                if (runtimeInterface == baseInterface)
+                    return true;
+            }
+
+            return false;
+        }
+
     }
 }

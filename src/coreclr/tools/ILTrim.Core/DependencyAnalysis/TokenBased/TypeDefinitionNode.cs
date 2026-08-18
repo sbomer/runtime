@@ -106,7 +106,6 @@ namespace ILCompiler.DependencyAnalysis
         {
             MetadataReader reader = _module.MetadataReader;
             TypeDefinition typeDef = reader.GetTypeDefinition(Handle);
-
             foreach (InterfaceImplementationHandle intfImplHandle in typeDef.GetInterfaceImplementations())
             {
                 InterfaceImplementation intfImpl = reader.GetInterfaceImplementation(intfImplHandle);
@@ -117,6 +116,12 @@ namespace ILCompiler.DependencyAnalysis
                         factory.GetNodeForTypeToken(_module, intfImpl.Interface),
                         factory.InterfaceUse(interfaceType),
                         "Implemented interface");
+                    yield return new(
+                        factory.GetNodeForTypeToken(_module, intfImpl.Interface),
+                        factory.InterfaceImplementationUse(
+                            (EcmaType)_module.GetObject(Handle),
+                            interfaceType),
+                        "Specifically implemented interface");
                 }
             }
         }
@@ -162,7 +167,11 @@ namespace ILCompiler.DependencyAnalysis
             {
                 InterfaceImplementation intfImpl = reader.GetInterfaceImplementation(intfImplHandle);
                 EcmaType interfaceType = _module.TryGetType(intfImpl.Interface)?.GetTypeDefinition() as EcmaType;
-                if (interfaceType != null && writeContext.Factory.InterfaceUse(interfaceType).Marked)
+                if (interfaceType != null &&
+                    (writeContext.Factory.InterfaceUse(interfaceType).Marked ||
+                    writeContext.Factory.InterfaceImplementationUse(
+                        (EcmaType)_module.GetObject(Handle),
+                        interfaceType).Marked))
                 {
                     builder.AddInterfaceImplementation(outputHandle,
                         writeContext.TokenMap.MapToken(intfImpl.Interface));
