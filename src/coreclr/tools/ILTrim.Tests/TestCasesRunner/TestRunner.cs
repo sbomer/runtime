@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.DotNet.XUnitExtensions;
 using Xunit.Sdk;
@@ -12,6 +13,8 @@ namespace Mono.Linker.Tests.TestCasesRunner
 {
     public partial class TestRunner
     {
+        private TrimmingCustomizations? _trimmingCustomizations;
+
         partial void IgnoreTest(string reason)
         {
             throw new SkipTestException(reason);
@@ -35,10 +38,23 @@ namespace Mono.Linker.Tests.TestCasesRunner
         }
 
         protected virtual partial TrimmingCustomizations? CustomizeTrimming(TrimmingDriver linker, TestCaseMetadataProvider metadataProvider)
-            => null;
+        {
+            _trimmingCustomizations = new TrimmingCustomizations
+            {
+                DependencyRecorder = new TestDependencyRecorder(),
+            };
+            return _trimmingCustomizations;
+        }
 
         protected partial void AddDumpDependenciesOptions(TestCaseLinkerOptions caseDefinedOptions, ManagedCompilationResult compilationResult, TrimmingArgumentBuilder builder, TestCaseMetadataProvider metadataProvider)
         {
+            Debug.Assert(_trimmingCustomizations is not null);
+            NPath dependencyFilePath = compilationResult.InputAssemblyPath.Parent.Combine("iltrim-dependencies.dgml");
+            _trimmingCustomizations.DependencyFilePath = dependencyFilePath;
+            _trimmingCustomizations.InputAssemblyPath = compilationResult.InputAssemblyPath;
+
+            builder.AddAdditionalArgument("--dump-dependencies", [compilationResult.InputAssemblyPath.FileNameWithoutExtension]);
+            builder.AddAdditionalArgument("--dependencies-file", [dependencyFilePath]);
         }
 
         static partial void AddOutputDirectory(TestCaseSandbox sandbox, ManagedCompilationResult compilationResult, TrimmingArgumentBuilder builder)

@@ -6,5 +6,7 @@ namespace Mono.Linker.Tests.TestCasesRunner
     public class TrimmingCustomizations
     {
         public TestDependencyRecorder DependencyRecorder { get; set; }
+        public string DependencyFilePath { get; set; }
+        public string InputAssemblyPath { get; set; }
     }
 }
