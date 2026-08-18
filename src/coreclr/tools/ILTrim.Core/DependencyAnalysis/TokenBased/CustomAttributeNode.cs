@@ -40,10 +40,29 @@ namespace ILCompiler.DependencyAnalysis
             {
                 if (factory.Settings.StripSecurity && IsCustomAttributeForSecurity(module, customAttribute))
                     continue;
+                if (factory.Settings.Optimizations.IsEnabled(
+                        Mono.Linker.CodeOptimizations.RemoveDynamicDependencyAttribute,
+                        module.Assembly.GetName().Name)
+                    && IsReflectionDependencyAttribute(module, customAttribute))
+                {
+                    continue;
+                }
 
                 dependencies ??= new DependencyList();
                 dependencies.Add(factory.CustomAttribute(module, customAttribute), "Custom attribute");
             }
+        }
+
+        private static bool IsReflectionDependencyAttribute(EcmaModule module, CustomAttributeHandle handle)
+        {
+            MetadataReader reader = module.MetadataReader;
+            if (!reader.GetAttributeNamespaceAndName(handle, out StringHandle namespaceHandle, out StringHandle nameHandle))
+                return false;
+
+            return (reader.StringEquals(namespaceHandle, "System.Diagnostics.CodeAnalysis"u8)
+                    && reader.StringEquals(nameHandle, "DynamicDependencyAttribute"u8))
+                || (reader.StringEquals(namespaceHandle, "System.Runtime.CompilerServices"u8)
+                    && reader.StringEquals(nameHandle, "PreserveDependencyAttribute"u8));
         }
 
         public static bool IsCustomAttributeForSecurity(EcmaModule module, CustomAttributeHandle handle)

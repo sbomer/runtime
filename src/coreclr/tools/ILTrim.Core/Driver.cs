@@ -96,6 +96,9 @@ namespace Mono.Linker
             foreach (var input in context.Inputs)
                 analyzer.AddRoot(input, "Command line root");
 
+            foreach (string linkAttributesFilePath in context.LinkAttributesFiles)
+                analyzer.AddRoot(new LinkAttributesNode(linkAttributesFilePath), "Link attributes file");
+
             foreach ((string assemblyName, string assemblyPath) in context.Resolver.ToExplicitReferenceFilePaths())
             {
                 if (context.Actions.TryGetValue(assemblyName, out AssemblyAction explicitAction))

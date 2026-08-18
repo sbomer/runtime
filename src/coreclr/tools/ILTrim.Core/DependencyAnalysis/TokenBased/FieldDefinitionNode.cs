@@ -42,6 +42,10 @@ namespace ILCompiler.DependencyAnalysis
             }
 
             CustomAttributeNode.AddDependenciesDueToCustomAttributes(ref dependencies, factory, _module, fieldDef.GetCustomAttributes());
+            ReflectionDependencyAttributesOnEntityNode.AddDependenciesDueToAttributes(
+                ref dependencies,
+                factory,
+                _module.GetField(Handle));
 
             return dependencies;
         }

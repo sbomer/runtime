@@ -17,25 +17,49 @@ namespace ILCompiler
         public static bool TryGetDependenciesForReflectedType(
             ref DependencyList dependencies, NodeFactory factory, TypeDesc type, string reason)
         {
-            dependencies ??= new DependencyList();
-            dependencies.Add(factory.ReflectedType(type), reason);
-            return true;
+            try
+            {
+                if (type.ContainsSignatureVariables(treatGenericParameterLikeSignatureVariable: true))
+                    type = type.GetTypeDefinition();
+
+                dependencies ??= new DependencyList();
+                dependencies.Add(factory.ReflectedType(type), reason);
+                return true;
+            }
+            catch (TypeSystemException)
+            {
+                return false;
+            }
         }
 
         public static bool TryGetDependenciesForReflectedMethod(
             ref DependencyList dependencies, NodeFactory factory, MethodDesc method, string reason)
         {
-            dependencies ??= new DependencyList();
-            dependencies.Add(factory.ReflectedMethod(method), reason);
-            return true;
+            try
+            {
+                dependencies ??= new DependencyList();
+                dependencies.Add(factory.ReflectedMethod(method.GetTypicalMethodDefinition()), reason);
+                return true;
+            }
+            catch (TypeSystemException)
+            {
+                return false;
+            }
         }
 
         public static bool TryGetDependenciesForReflectedField(
             ref DependencyList dependencies, NodeFactory factory, FieldDesc field, string reason)
         {
-            dependencies ??= new DependencyList();
-            dependencies.Add(factory.ReflectedField(field), reason);
-            return true;
+            try
+            {
+                dependencies ??= new DependencyList();
+                dependencies.Add(factory.ReflectedField(field.GetTypicalFieldDefinition()), reason);
+                return true;
+            }
+            catch (TypeSystemException)
+            {
+                return false;
+            }
         }
     }
 }

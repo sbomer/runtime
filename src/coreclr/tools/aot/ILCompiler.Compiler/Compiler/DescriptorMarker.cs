@@ -164,10 +164,9 @@ namespace ILCompiler
 
         protected override MetadataType? ProcessExportedType(MetadataType exported, ModuleDesc assembly, XPathNavigator nav)
         {
-            // Rooting module metadata roots type forwarder metadata for all types in the module that are reflection visible.
-            // (We don't track individual type forwarders right now.)
-            // TODO-ILTRIM: add handling of type forwards
-#if !ILTRIM
+#if ILTRIM
+            _dependencies.Add(_factory.ReflectionVisibleModule(assembly), "Type used through forwarder");
+#else
             _dependencies.Add(_factory.ModuleMetadata(assembly), "Type used through forwarder");
 #endif
             return base.ProcessExportedType(exported, assembly, nav);
@@ -242,8 +241,13 @@ namespace ILCompiler
         {
             if (customData is bool required && !required)
             {
-                //TODO: Add a conditional dependency if the type is used also mark the method
-                _dependencies.Add(_factory.ReflectedMethod(method), "method kept due to descriptor");
+                _dependencies.Add(
+#if ILTRIM
+                    _factory.ReflectedMethodOnTypeUse(method),
+#else
+                    _factory.ReflectedMethod(method),
+#endif
+                    "method conditionally kept due to descriptor");
             }
             else
             {

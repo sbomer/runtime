@@ -115,15 +115,15 @@ namespace ILCompiler.Dataflow
             if (_enabled)
             {
                 string displayName = reason.GetDisplayName();
-                // Also add module metadata in case this reference was through a type forward
-                // TODO-ILTRIM: add handling of type forwards
-#if !ILTRIM
                 foreach (ModuleDesc referencedModule in referencedModules)
                 {
+#if ILTRIM
+                    _dependencies.Add(Factory.ReflectionVisibleModule(referencedModule), displayName);
+#else
                     if (Factory.MetadataManager.CanGenerateMetadata(referencedModule.GetGlobalModuleType()))
                         _dependencies.Add(Factory.ModuleMetadata(referencedModule), displayName);
-                }
 #endif
+                }
 
                 MarkType(diagnosticContext.Origin, foundType, displayName);
             }
@@ -145,15 +145,15 @@ namespace ILCompiler.Dataflow
 
             if (_enabled)
             {
-                // Also add module metadata in case this reference was through a type forward
-                // TODO-ILTRIM: add handling of type forwards
-#if !ILTRIM
                 foreach (ModuleDesc referencedModule in referencedModules)
                 {
+#if ILTRIM
+                    _dependencies.Add(Factory.ReflectionVisibleModule(referencedModule), reason);
+#else
                     if (Factory.MetadataManager.CanGenerateMetadata(referencedModule.GetGlobalModuleType()))
                         _dependencies.Add(Factory.ModuleMetadata(referencedModule), reason);
-                }
 #endif
+                }
 
                 MarkType(diagnosticContext.Origin, foundType, reason);
             }

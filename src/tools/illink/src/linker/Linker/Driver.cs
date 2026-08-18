@@ -610,7 +610,11 @@ namespace Mono.Linker
                                 return -1;
 
                             foreach (string file in GetFiles(fileList))
+#if ILTRIM
+                                context.LinkAttributesFiles.Add(file);
+#else
                                 xml_custom_attribute_steps.Push(file);
+#endif
 
                             continue;
 
