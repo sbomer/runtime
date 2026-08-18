@@ -100,8 +100,28 @@ namespace ILCompiler
             }
 
             // Serialize to the output PE file
-            // TODO: instead of the default header, copy flags from the source module
-            var headerBuilder = PEHeaderBuilder.CreateExecutableHeader();
+            PEHeaders sourceHeaders = _module.PEReader.PEHeaders;
+            PEHeader sourceHeader = sourceHeaders.PEHeader;
+            var headerBuilder = new PEHeaderBuilder(
+                machine: sourceHeaders.CoffHeader.Machine,
+                sectionAlignment: sourceHeader.SectionAlignment,
+                fileAlignment: sourceHeader.FileAlignment,
+                imageBase: sourceHeader.ImageBase,
+                majorLinkerVersion: sourceHeader.MajorLinkerVersion,
+                minorLinkerVersion: sourceHeader.MinorLinkerVersion,
+                majorOperatingSystemVersion: sourceHeader.MajorOperatingSystemVersion,
+                minorOperatingSystemVersion: sourceHeader.MinorOperatingSystemVersion,
+                majorImageVersion: sourceHeader.MajorImageVersion,
+                minorImageVersion: sourceHeader.MinorImageVersion,
+                majorSubsystemVersion: sourceHeader.MajorSubsystemVersion,
+                minorSubsystemVersion: sourceHeader.MinorSubsystemVersion,
+                subsystem: sourceHeader.Subsystem,
+                dllCharacteristics: sourceHeader.DllCharacteristics,
+                imageCharacteristics: sourceHeaders.CoffHeader.Characteristics,
+                sizeOfStackReserve: sourceHeader.SizeOfStackReserve,
+                sizeOfStackCommit: sourceHeader.SizeOfStackCommit,
+                sizeOfHeapReserve: sourceHeader.SizeOfHeapReserve,
+                sizeOfHeapCommit: sourceHeader.SizeOfHeapCommit);
             var mdRootBuilder = new MetadataRootBuilder(context.MetadataBuilder);
             var peBuilder = new ManagedPEBuilder(
                 headerBuilder,
@@ -109,7 +129,8 @@ namespace ILCompiler
                 context.MethodBodyEncoder.Builder,
                 mappedFieldData: context.FieldDataBuilder,
                 managedResources: context.ManagedResourceBuilder,
-                entryPoint: outputEntryPoint);
+                entryPoint: outputEntryPoint,
+                flags: corHeader.Flags & ~CorFlags.StrongNameSigned);
 
             var o = new BlobBuilder();
             peBuilder.Serialize(o);

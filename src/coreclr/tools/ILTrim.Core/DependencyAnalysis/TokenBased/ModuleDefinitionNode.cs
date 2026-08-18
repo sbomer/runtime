@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
 using Internal.TypeSystem.Ecma;
 
 using Debug = System.Diagnostics.Debug;
@@ -30,6 +31,17 @@ namespace ILCompiler.DependencyAnalysis
 
             if (_module.MetadataReader.IsAssembly)
                 dependencies.Add(factory.AssemblyDefinition(_module), "Assembly definition of the module");
+
+            CorHeader corHeader = _module.PEReader.PEHeaders.CorHeader;
+            if ((corHeader.Flags & CorFlags.NativeEntryPoint) == 0 &&
+                corHeader.EntryPointTokenOrRelativeVirtualAddress != 0)
+            {
+                dependencies.Add(
+                    factory.MethodDefinition(
+                        _module,
+                        (MethodDefinitionHandle)MetadataTokens.Handle(corHeader.EntryPointTokenOrRelativeVirtualAddress)),
+                    "Module entry point");
+            }
 
             dependencies.Add(factory.TypeDefinition(_module, GlobalModuleTypeHandle), "Global module type");
 
