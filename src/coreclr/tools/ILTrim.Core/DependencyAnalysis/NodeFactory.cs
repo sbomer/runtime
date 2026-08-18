@@ -107,7 +107,10 @@ namespace ILCompiler.DependencyAnalysis
             => new VirtualMethodUseNode(key));
         public VirtualMethodUseNode VirtualMethodUse(EcmaMethod method)
         {
-            return _virtualMethodUses.GetOrAdd(method);
+            EcmaMethod slotDefiningMethod = (EcmaMethod)MetadataVirtualMethodAlgorithm
+                .FindSlotDefiningMethodForVirtualMethod(method)
+                .GetTypicalMethodDefinition();
+            return _virtualMethodUses.GetOrAdd(slotDefiningMethod);
         }
 
         NodeCache<EcmaType, InterfaceUseNode> _interfaceUses = new NodeCache<EcmaType, InterfaceUseNode>(key
@@ -115,6 +118,14 @@ namespace ILCompiler.DependencyAnalysis
         public InterfaceUseNode InterfaceUse(EcmaType type)
         {
             return _interfaceUses.GetOrAdd(type);
+        }
+
+        NodeCache<InterfaceImplementationUseKey, InterfaceImplementationUseNode> _interfaceImplementationUses
+            = new NodeCache<InterfaceImplementationUseKey, InterfaceImplementationUseNode>(key
+                => new InterfaceImplementationUseNode(key));
+        public InterfaceImplementationUseNode InterfaceImplementationUse(EcmaType implementingType, EcmaType interfaceType)
+        {
+            return _interfaceImplementationUses.GetOrAdd(new InterfaceImplementationUseKey(implementingType, interfaceType));
         }
 
         NodeCache<HandleKey<TypeReferenceHandle>, TypeReferenceNode> _typeReferences
@@ -131,6 +142,14 @@ namespace ILCompiler.DependencyAnalysis
         public TypeDefinitionNode TypeDefinition(EcmaModule module, TypeDefinitionHandle handle)
         {
             return _typeDefinitions.GetOrAdd(new HandleKey<TypeDefinitionHandle>(module, handle));
+        }
+
+        NodeCache<HandleKey<ExportedTypeHandle>, ExportedTypeNode> _exportedTypes
+            = new NodeCache<HandleKey<ExportedTypeHandle>, ExportedTypeNode>(key
+                => new ExportedTypeNode(key.Module, key.Handle));
+        public ExportedTypeNode ExportedType(EcmaModule module, ExportedTypeHandle handle)
+        {
+            return _exportedTypes.GetOrAdd(new HandleKey<ExportedTypeHandle>(module, handle));
         }
 
         NodeCache<HandleKey<MethodImplementationHandle>, MethodImplementationNode> _methodImplementations
@@ -163,6 +182,68 @@ namespace ILCompiler.DependencyAnalysis
         public MethodBodyNode MethodBody(EcmaModule module, MethodDefinitionHandle handle)
         {
             return _methodBodies.GetOrAdd(new HandleKey<MethodDefinitionHandle>(module, handle));
+        }
+
+        NodeCache<EcmaMethod, DataflowAnalyzedMethodNode> _dataflowAnalyzedMethods
+            = new NodeCache<EcmaMethod, DataflowAnalyzedMethodNode>(method
+                => new DataflowAnalyzedMethodNode(method));
+        public DataflowAnalyzedMethodNode DataflowAnalyzedMethod(EcmaMethod method)
+        {
+            return _dataflowAnalyzedMethods.GetOrAdd(method);
+        }
+
+        public bool TryGetDataflowAnalyzedMethod(EcmaMethod method, out DataflowAnalyzedMethodNode analyzedMethod)
+        {
+            MethodDesc methodDefinition = method.GetTypicalMethodDefinition();
+            if (FlowAnnotations.CompilerGeneratedState.TryGetUserMethodForCompilerGeneratedMember(methodDefinition, out MethodDesc userMethod))
+            {
+                // Feature substitutions are not represented in ILTrimILProvider. Avoid using an
+                // unreachable generated body to trigger analysis of its user method.
+                if (Settings.FeatureSettings.Count != 0)
+                {
+                    analyzedMethod = null;
+                    return false;
+                }
+
+                methodDefinition = userMethod;
+            }
+
+            if (CompilerGeneratedState.IsNestedFunctionOrStateMachineMember(methodDefinition))
+            {
+                analyzedMethod = null;
+                return false;
+            }
+
+            analyzedMethod = DataflowAnalyzedMethod((EcmaMethod)methodDefinition);
+            return true;
+        }
+
+        NodeCache<MethodDesc, MethodInstantiationNode> _methodInstantiations
+            = new NodeCache<MethodDesc, MethodInstantiationNode>(method
+                => new MethodInstantiationNode(method));
+        public MethodInstantiationNode MethodInstantiation(MethodDesc method)
+        {
+            return _methodInstantiations.GetOrAdd(method);
+        }
+
+        NodeCache<ConstrainedInterfaceMethodUseKey, ConstrainedInterfaceMethodUseNode> _constrainedInterfaceMethodUses
+            = new NodeCache<ConstrainedInterfaceMethodUseKey, ConstrainedInterfaceMethodUseNode>(key
+                => new ConstrainedInterfaceMethodUseNode(key));
+        public ConstrainedInterfaceMethodUseNode ConstrainedInterfaceMethodUse(
+            TypeDesc constrainedType,
+            MethodDesc interfaceMethod,
+            ConstrainedInterfaceMethodUseKind kind)
+        {
+            return _constrainedInterfaceMethodUses.GetOrAdd(
+                new ConstrainedInterfaceMethodUseKey(constrainedType, interfaceMethod, kind));
+        }
+
+        NodeCache<EcmaType, ConstrainedInterfaceMethodUseResolverNode> _constrainedInterfaceMethodUseResolvers
+            = new NodeCache<EcmaType, ConstrainedInterfaceMethodUseResolverNode>(interfaceType
+                => new ConstrainedInterfaceMethodUseResolverNode(interfaceType));
+        public ConstrainedInterfaceMethodUseResolverNode ConstrainedInterfaceMethodUseResolver(EcmaType interfaceType)
+        {
+            return _constrainedInterfaceMethodUseResolvers.GetOrAdd(interfaceType);
         }
 
         NodeCache<HandleKey<MemberReferenceHandle>, MemberReferenceNode> _memberReferences
@@ -227,6 +308,17 @@ namespace ILCompiler.DependencyAnalysis
         public ModuleDefinitionNode ModuleDefinition(EcmaModule module)
         {
             return _moduleDefinitions.GetOrAdd(module);
+        }
+
+        NodeCache<EcmaModule, ReflectionVisibleModuleNode> _reflectionVisibleModules
+            = new NodeCache<EcmaModule, ReflectionVisibleModuleNode>(module
+                => new ReflectionVisibleModuleNode(module));
+        public DependencyNode ReflectionVisibleModule(ModuleDesc module)
+        {
+            if (module is not EcmaModule ecmaModule || !IsModuleTrimmed(ecmaModule))
+                return NullDependencyNode.Instance;
+
+            return _reflectionVisibleModules.GetOrAdd(ecmaModule);
         }
 
         NodeCache<HandleKey<MethodSpecificationHandle>, MethodSpecificationNode> _methodSpecifications
@@ -295,48 +387,68 @@ namespace ILCompiler.DependencyAnalysis
 
         public bool IsModuleTrimmed(EcmaModule module)
         {
-            return Settings.CalculateAssemblyAction(module.Assembly.GetName().Name) == AssemblyAction.Link;
+            return Settings.CalculateAssemblyAction(module) == AssemblyAction.Link;
         }
+
+        NodeCache<EcmaModule, AssemblyRootNode> _copyUsedAssemblyRoots
+            = new NodeCache<EcmaModule, AssemblyRootNode>(module
+                => new AssemblyRootNode(module.Assembly.GetName().Name, Mono.Linker.AssemblyRootMode.AllMembers));
+        internal AssemblyRootNode CopyUsedAssembly(EcmaModule module)
+        {
+            return _copyUsedAssemblyRoots.GetOrAdd(module);
+        }
+
+        NodeCache<TypeDesc, ReflectedTypeNode> _reflectedTypes = new NodeCache<TypeDesc, ReflectedTypeNode>(type
+            => new ReflectedTypeNode(type));
+        NodeCache<MethodDesc, ReflectedMethodNode> _reflectedMethods = new NodeCache<MethodDesc, ReflectedMethodNode>(method
+            => new ReflectedMethodNode(method));
+        NodeCache<FieldDesc, ReflectedFieldNode> _reflectedFields = new NodeCache<FieldDesc, ReflectedFieldNode>(field
+            => new ReflectedFieldNode(field));
+        NodeCache<TypeSystemEntity, ReflectionDependencyAttributesOnEntityNode> _reflectionDependencyAttributes
+            = new NodeCache<TypeSystemEntity, ReflectionDependencyAttributesOnEntityNode>(entity
+                => new ReflectionDependencyAttributesOnEntityNode(entity));
+        NodeCache<MethodDesc, ReflectedMethodOnTypeUseNode> _reflectedMethodsOnTypeUse
+            = new NodeCache<MethodDesc, ReflectedMethodOnTypeUseNode>(method
+                => new ReflectedMethodOnTypeUseNode(method));
 
         NodeCache<MetadataType, ObjectGetTypeCalledNode> _objectGetTypeCalledNodes = new NodeCache<MetadataType, ObjectGetTypeCalledNode>(key
             => new ObjectGetTypeCalledNode(key));
 
         public DependencyNode ReflectedType(TypeDesc type)
         {
-            // TODO: this should be a separate node with more logic
-
             while (type.IsParameterizedType)
                 type = ((ParameterizedType)type).ParameterType;
 
-            var definition = (EcmaType)type.GetTypeDefinition();
-
-            if (!IsModuleTrimmed(definition.Module))
+            TypeDesc definition = type.GetTypeDefinition();
+            if (definition is not EcmaType ecmaDefinition || !IsModuleTrimmed(ecmaDefinition.Module))
                 return NullDependencyNode.Instance;
 
-            return TypeDefinition(definition.Module, definition.Handle);
+            return _reflectedTypes.GetOrAdd(definition);
         }
 
         public DependencyNode ReflectedMethod(MethodDesc method)
         {
-            // TODO: this should be a separate node with more logic
-            var definition = (EcmaMethod)method.GetTypicalMethodDefinition();
-
-            if (!IsModuleTrimmed(definition.Module))
+            MethodDesc definition = method.GetTypicalMethodDefinition();
+            if (definition is not EcmaMethod ecmaDefinition || !IsModuleTrimmed(ecmaDefinition.Module))
                 return NullDependencyNode.Instance;
 
-            return MethodDefinition(definition.Module, definition.Handle);
+            return _reflectedMethods.GetOrAdd(definition);
         }
 
         public DependencyNode ReflectedField(FieldDesc field)
         {
-            // TODO: this should be a separate node with more logic
-            var definition = (EcmaField)field.GetTypicalFieldDefinition();
-
-            if (!IsModuleTrimmed(definition.Module))
+            FieldDesc definition = field.GetTypicalFieldDefinition();
+            if (definition is not EcmaField ecmaDefinition || !IsModuleTrimmed(ecmaDefinition.Module))
                 return NullDependencyNode.Instance;
 
-            return FieldDefinition(definition.Module, definition.Handle);
+            return _reflectedFields.GetOrAdd(definition);
         }
+
+        public ReflectionDependencyAttributesOnEntityNode ReflectionDependencyAttributes(TypeSystemEntity entity)
+            => _reflectionDependencyAttributes.GetOrAdd(entity);
+
+        public ReflectedMethodOnTypeUseNode ReflectedMethodOnTypeUse(MethodDesc method)
+            => _reflectedMethodsOnTypeUse.GetOrAdd(method.GetTypicalMethodDefinition());
 
         public class NullDependencyNode : DependencyNodeCore<NodeFactory>
         {
