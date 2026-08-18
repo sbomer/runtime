@@ -21,6 +21,8 @@ namespace ILCompiler
 {
     public class Logger
     {
+        private const int CurrentWarningVersion = 5;
+
         private readonly ILogWriter _logWriter;
         private readonly CompilerGeneratedState _compilerGeneratedState;
         private readonly UnconditionalSuppressMessageAttributeState _unconditionalSuppressMessageAttributeState;
@@ -36,12 +38,13 @@ namespace ILCompiler
 
         private readonly bool _treatWarningsAsErrors;
         private readonly Dictionary<int, bool> _warningsAsErrors;
-
         public static Logger Null = new Logger(new TextLogWriter(TextWriter.Null), null, false, true);
 
         public bool IsVerbose { get; }
 
         public bool HasLoggedErrors { get; private set; }
+
+        internal int? MaximumWarningVersion { private get; set; }
 
         public Logger(
             ILogWriter writer,
@@ -170,6 +173,34 @@ namespace ILCompiler
             LogError(new MessageOrigin(origin), id, args);
 
         internal bool IsWarningSubcategorySuppressed(string category) => _suppressedCategories.Contains(category);
+
+        internal bool IsWarningVersionSuppressed() => MaximumWarningVersion < CurrentWarningVersion;
+
+        internal void AddExternalSuppression(SuppressMessageInfo info, TypeSystemEntity provider, MessageOrigin origin) =>
+            _unconditionalSuppressMessageAttributeState.AddExternalSuppression(info, provider, origin);
+
+        internal void GatherSuppressions(TypeSystemEntity provider) =>
+            _unconditionalSuppressMessageAttributeState.GatherSuppressions(provider);
+
+        internal IEnumerable<TypeSystemEntity> GetSuppressionProviders() =>
+            _unconditionalSuppressMessageAttributeState.GetSuppressionProviders();
+
+        internal void ReportRedundantSuppressions()
+        {
+            foreach (UnconditionalSuppressMessageAttributeState.Suppression suppression
+                in _unconditionalSuppressMessageAttributeState.GetUnusedSuppressions())
+            {
+                DiagnosticId suppressedDiagnostic = (DiagnosticId)suppression.SuppressMessageInfo.Id;
+                if (suppressedDiagnostic.GetDiagnosticCategory() == DiagnosticCategory.Trimming
+                    && suppressedDiagnostic != DiagnosticId.RedundantSuppression)
+                {
+                    LogWarning(
+                        suppression.Origin,
+                        DiagnosticId.RedundantSuppression,
+                        $"IL{suppression.SuppressMessageInfo.Id:0000}");
+                }
+            }
+        }
 
         internal bool IsWarningSuppressed(int code, MessageOrigin origin)
         {

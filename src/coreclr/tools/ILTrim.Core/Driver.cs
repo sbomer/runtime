@@ -46,6 +46,10 @@ namespace Mono.Linker
             var baseILProvider = new ILTrimILProvider();
 
             var suppressedCategories = new List<string> { MessageSubCategory.AotAnalysis };
+            int firstSingleFileWarning = (int)DiagnosticId.AvoidAssemblyLocationInSingleFile;
+            int singleFileWarningCount = (int)DiagnosticId.RequiresDynamicCode - firstSingleFileWarning;
+            IEnumerable<int> suppressedWarnings = context.NoWarn.Concat(
+                Enumerable.Range(firstSingleFileWarning, singleFileWarningCount));
             if (context.NoTrimWarn)
                 suppressedCategories.Add(MessageSubCategory.TrimAnalysis);
 
@@ -53,14 +57,28 @@ namespace Mono.Linker
                 context.LogWriter,
                 baseILProvider,
                 isVerbose: context.LogMessages,
-                suppressedWarnings: context.NoWarn,
+                suppressedWarnings: suppressedWarnings,
                 singleWarn: context.GeneralSingleWarn,
                 singleWarnEnabledModules: context.SingleWarn.Where(kv => kv.Value).Select(kv => kv.Key),
                 singleWarnDisabledModules: context.SingleWarn.Where(kv => !kv.Value).Select(kv => kv.Key),
                 suppressedCategories: suppressedCategories,
                 treatWarningsAsErrors: context.GeneralWarnAsError,
                 warningsAsErrors: context.WarnAsError,
-                disableGeneratedCodeHeuristics: context.DisableGeneratedCodeHeuristics);
+                disableGeneratedCodeHeuristics: context.DisableGeneratedCodeHeuristics)
+            {
+                MaximumWarningVersion = (int)context.WarnVersion,
+            };
+            context.AnalysisLogger = logger;
+
+            foreach (string linkAttributesFilePath in context.LinkAttributesFiles)
+            {
+                LinkAttributesSuppressionsReader.Process(
+                    logger,
+                    tsContext,
+                    File.OpenRead(linkAttributesFilePath),
+                    linkAttributesFilePath,
+                    context.FeatureSettings);
+            }
 
             BodyAndFieldSubstitutions substitutions = default;
             foreach (string substitutionFilePath in context.SubstitutionFiles)
@@ -139,6 +157,8 @@ namespace Mono.Linker
                 "Finalizer");
 
             analyzer.ComputeMarkedNodes();
+            GatherMarkedSuppressions();
+            logger.ReportRedundantSuppressions();
 
             var writers = ModuleWriter.CreateWriters(factory, analyzer.MarkedNodeList);
             if (!Directory.Exists(context.OutputDirectory))
@@ -157,6 +177,101 @@ namespace Mono.Linker
             }
 
             return logger.HasLoggedErrors || context.HasLoggedErrors ? 1 : 0;
+
+            void GatherMarkedSuppressions()
+            {
+                var markedNodes = new HashSet<DependencyNodeCore<NodeFactory>>(analyzer.MarkedNodeList);
+                foreach (string assemblyName in context.Resolver.ToReferenceFilePaths().Keys)
+                {
+                    if (tsContext.ResolveAssembly(AssemblyNameInfo.Parse(assemblyName), throwIfNotFound: false) is not EcmaModule module)
+                        continue;
+
+                    MetadataReader reader = module.MetadataReader;
+                    foreach (CustomAttributeHandle attributeHandle in reader.CustomAttributes)
+                    {
+                        CustomAttribute attribute = reader.GetCustomAttribute(attributeHandle);
+                        if (module.TryGetMethod(attribute.Constructor)?.OwningType is not MetadataType attributeType
+                            || attributeType.Namespace != "System.Diagnostics.CodeAnalysis"u8
+                            || attributeType.Name != "UnconditionalSuppressMessageAttribute"u8)
+                        {
+                            continue;
+                        }
+
+                        TypeSystemEntity provider = GetAttributeProvider(module, attribute.Parent);
+                        if (provider is not null && IsProviderMarked(provider))
+                            logger.GatherSuppressions(provider);
+                    }
+                }
+
+                foreach (TypeSystemEntity provider in logger.GetSuppressionProviders())
+                {
+                    if (IsProviderMarked(provider))
+                        logger.GatherSuppressions(provider);
+                }
+
+                bool IsProviderMarked(TypeSystemEntity provider)
+                {
+                    switch (provider)
+                    {
+                        case EcmaAssembly assembly:
+                            return markedNodes.Contains(factory.AssemblyDefinition(assembly))
+                                || markedNodes.Contains(factory.ModuleDefinition(assembly));
+                        case EcmaType type:
+                            return markedNodes.Contains(factory.TypeDefinition(type.Module, type.Handle));
+                        case EcmaMethod method:
+                            return markedNodes.Contains(factory.MethodDefinition((EcmaModule)method.Module, method.Handle));
+                        case EcmaField field:
+                            return markedNodes.Contains(factory.FieldDefinition((EcmaModule)field.Module, field.Handle));
+                        case PropertyPseudoDesc property:
+                            return IsPropertyMarked(property);
+                        case EventPseudoDesc @event:
+                            return IsEventMarked(@event);
+                        default:
+                            return false;
+                    }
+                }
+
+                bool IsPropertyMarked(PropertyPseudoDesc property)
+                {
+                    var module = (EcmaModule)property.OwningType.Module;
+                    PropertyAccessors accessors = module.MetadataReader.GetPropertyDefinition(property.Handle).GetAccessors();
+                    return (!accessors.Getter.IsNil && markedNodes.Contains(factory.MethodDefinition(module, accessors.Getter)))
+                        || (!accessors.Setter.IsNil && markedNodes.Contains(factory.MethodDefinition(module, accessors.Setter)));
+                }
+
+                bool IsEventMarked(EventPseudoDesc @event)
+                {
+                    var module = (EcmaModule)@event.OwningType.Module;
+                    EventAccessors accessors = module.MetadataReader.GetEventDefinition(@event.Handle).GetAccessors();
+                    return (!accessors.Adder.IsNil && markedNodes.Contains(factory.MethodDefinition(module, accessors.Adder)))
+                        || (!accessors.Remover.IsNil && markedNodes.Contains(factory.MethodDefinition(module, accessors.Remover)))
+                        || (!accessors.Raiser.IsNil && markedNodes.Contains(factory.MethodDefinition(module, accessors.Raiser)));
+                }
+            }
+
+            static TypeSystemEntity GetAttributeProvider(EcmaModule module, EntityHandle parent) =>
+                parent.Kind switch
+                {
+                    HandleKind.AssemblyDefinition or HandleKind.ModuleDefinition => module,
+                    HandleKind.TypeDefinition => module.GetType((TypeDefinitionHandle)parent),
+                    HandleKind.MethodDefinition => module.GetMethod((MethodDefinitionHandle)parent),
+                    HandleKind.FieldDefinition => module.GetField((FieldDefinitionHandle)parent),
+                    HandleKind.PropertyDefinition => CreateProperty(module, (PropertyDefinitionHandle)parent),
+                    HandleKind.EventDefinition => CreateEvent(module, (EventDefinitionHandle)parent),
+                    _ => null,
+                };
+
+            static PropertyPseudoDesc CreateProperty(EcmaModule module, PropertyDefinitionHandle handle)
+            {
+                TypeDefinitionHandle declaringType = module.MetadataReader.GetPropertyDefinition(handle).GetDeclaringType();
+                return new PropertyPseudoDesc((EcmaType)module.GetType(declaringType), handle);
+            }
+
+            static EventPseudoDesc CreateEvent(EcmaModule module, EventDefinitionHandle handle)
+            {
+                TypeDefinitionHandle declaringType = module.MetadataReader.GetEventDefinition(handle).GetDeclaringType();
+                return new EventPseudoDesc((EcmaType)module.GetType(declaringType), handle);
+            }
 
             void ComputeDependencyNodeDependencies(List<DependencyNodeCore<NodeFactory>> nodesWithPendingDependencyCalculation) =>
                 RunForEach(

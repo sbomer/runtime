@@ -31,35 +31,27 @@ namespace ILCompiler.Logging
         {
             public SuppressMessageInfo SuppressMessageInfo { get; }
             public bool Used { get; set; }
-            public CustomAttributeValue<TypeDesc> OriginAttribute { get; }
+            public MessageOrigin Origin { get; }
             public TypeSystemEntity Provider { get; }
 
-            public Suppression(SuppressMessageInfo suppressMessageInfo, CustomAttributeValue<TypeDesc> originAttribute, TypeSystemEntity provider)
+            public Suppression(SuppressMessageInfo suppressMessageInfo, MessageOrigin origin, TypeSystemEntity provider)
             {
                 SuppressMessageInfo = suppressMessageInfo;
-                OriginAttribute = originAttribute;
+                Origin = origin;
                 Provider = provider;
             }
         }
 
-        private sealed class AssemblyWarningsReportedHashtable : LockFreeReaderHashtable<EcmaAssembly, EcmaAssembly>
-        {
-            protected override bool CompareKeyToValue(EcmaAssembly key, EcmaAssembly value) => key == value;
-            protected override bool CompareValueToValue(EcmaAssembly value1, EcmaAssembly value2) => value1 == value2;
-            protected override EcmaAssembly CreateValueFromKey(EcmaAssembly key) => throw new NotImplementedException();
-            protected override int GetKeyHashCode(EcmaAssembly key) => key.GetHashCode();
-            protected override int GetValueHashCode(EcmaAssembly value) => value.GetHashCode();
-        }
-
         private readonly CompilerGeneratedState? _compilerGeneratedState;
         private readonly Logger _logger;
-        private readonly AssemblyWarningsReportedHashtable _assemblyWarningsReportedHashtable;
+        private readonly Dictionary<TypeSystemEntity, Dictionary<int, Suppression>> _suppressions = new();
+        private readonly HashSet<TypeSystemEntity> _initializedProviders = new();
+        private readonly HashSet<EcmaAssembly> _initializedAssemblies = new();
 
         public UnconditionalSuppressMessageAttributeState(CompilerGeneratedState? compilerGeneratedState, Logger logger)
         {
             _compilerGeneratedState = compilerGeneratedState;
             _logger = logger;
-            _assemblyWarningsReportedHashtable = new();
         }
 
         public bool IsSuppressed(int id, MessageOrigin warningOrigin)
@@ -90,84 +82,131 @@ namespace ILCompiler.Logging
             return false;
         }
 
+        public void AddExternalSuppression(SuppressMessageInfo info, TypeSystemEntity provider, MessageOrigin origin)
+        {
+            lock (_suppressions)
+                AddSuppression(new Suppression(info, origin, provider));
+        }
+
+        public void GatherSuppressions(TypeSystemEntity provider)
+        {
+            lock (_suppressions)
+                TryGetSuppressionsForProvider(provider, out _);
+        }
+
+        public IEnumerable<Suppression> GetUnusedSuppressions()
+        {
+            lock (_suppressions)
+            {
+                return _suppressions.Values
+                    .SelectMany(static suppressions => suppressions.Values)
+                    .Where(suppression => !suppression.Used && IsProviderInitialized(suppression.Provider))
+                    .ToArray();
+            }
+
+            bool IsProviderInitialized(TypeSystemEntity provider)
+            {
+                if (provider is ModuleDesc)
+                    return GetModuleFromProvider(provider) is EcmaAssembly assembly && _initializedAssemblies.Contains(assembly);
+
+                return _initializedProviders.Contains(provider);
+            }
+        }
+
+        public IEnumerable<TypeSystemEntity> GetSuppressionProviders()
+        {
+            lock (_suppressions)
+                return _suppressions.Keys.ToArray();
+        }
+
         private bool IsSuppressed(int id, TypeSystemEntity? warningOrigin)
         {
             if (warningOrigin == null)
                 return false;
 
-            ModuleDesc? module = GetModuleFromProvider(warningOrigin);
-            if (module is not EcmaAssembly ecmaAssembly)
-                return false;
-
-            // Only report the warnings if they were not reported already for this assembly
-            List<(DiagnosticId, string?[])>? generatedWarnings = null;
-            if (_assemblyWarningsReportedHashtable.TryAdd(ecmaAssembly))
-                generatedWarnings = new();
-
-            IEnumerable<Suppression>? moduleSuppressions = DecodeAssemblyAndModuleSuppressions(ecmaAssembly, generatedWarnings);
-
-            if (generatedWarnings is not null)
+            lock (_suppressions)
             {
-                foreach (var warning in generatedWarnings)
+                TypeSystemEntity? warningOriginMember = warningOrigin;
+                while (warningOriginMember != null)
                 {
-                    _logger.LogWarning(ecmaAssembly, warning.Item1, warning.Item2);
-                }
-            }
+                    if (IsSuppressedOnElement(id, warningOriginMember))
+                        return true;
 
-            TypeSystemEntity? warningOriginMember = warningOrigin;
-            while (warningOriginMember != null)
-            {
-                if (IsSuppressedOnElement(id, warningOriginMember, moduleSuppressions))
-                    return true;
+                    if (warningOriginMember is MethodDesc method)
+                    {
+                        if (method.GetPropertyForAccessor() is { } property)
+                        {
+                            Debug.Assert(property.OwningType == method.OwningType);
+                            warningOriginMember = property;
+                            continue;
+                        }
+                        else if (method.GetEventForAccessor() is { } @event)
+                        {
+                            Debug.Assert(@event.OwningType == method.OwningType);
+                            warningOriginMember = @event;
+                            continue;
+                        }
+                    }
 
-                if (warningOriginMember is MethodDesc method)
-                {
-                    if (method.GetPropertyForAccessor() is { } property)
-                    {
-                        Debug.Assert(property.OwningType == method.OwningType);
-                        warningOriginMember = property;
-                        continue;
-                    }
-                    else if (method.GetEventForAccessor() is { } @event)
-                    {
-                        Debug.Assert(@event.OwningType == method.OwningType);
-                        warningOriginMember = @event;
-                        continue;
-                    }
+                    warningOriginMember = warningOriginMember.GetOwningType();
                 }
 
-                warningOriginMember = warningOriginMember.GetOwningType();
+                ModuleDesc? module = GetModuleFromProvider(warningOrigin);
+                return module is EcmaAssembly ecmaAssembly && IsSuppressedOnElement(id, ecmaAssembly);
+            }
+        }
+
+        private void AddSuppression(Suppression suppression)
+        {
+            if (!_suppressions.TryGetValue(suppression.Provider, out Dictionary<int, Suppression>? suppressions))
+            {
+                suppressions = new Dictionary<int, Suppression>();
+                _suppressions.Add(suppression.Provider, suppressions);
+            }
+            else if (suppressions.TryGetValue(suppression.SuppressMessageInfo.Id, out Suppression? existing))
+            {
+                suppression.Used = existing.Used;
+                _logger.LogMessage($"Element '{suppression.Provider.GetDisplayName()}' has more than one unconditional suppression. Note that only the last one is used.");
             }
 
-            // Check if there's an assembly or module level suppression.
-            // Note that moduleSuppressions contains both assembly and module level suppressions all modified to target the module as the provider
-            if (IsSuppressedOnElement(id, module, moduleSuppressions))
+            suppressions[suppression.SuppressMessageInfo.Id] = suppression;
+        }
+
+        private bool IsSuppressedOnElement(int id, TypeSystemEntity provider)
+        {
+            if (TryGetSuppressionsForProvider(provider, out Dictionary<int, Suppression>? suppressions)
+                && suppressions is not null
+                && suppressions.TryGetValue(id, out Suppression? suppression))
+            {
+                suppression.Used = true;
                 return true;
+            }
 
             return false;
         }
 
-        private static bool IsSuppressedOnElement(int id, TypeSystemEntity provider, IEnumerable<Suppression>? moduleSuppressions)
+        private bool TryGetSuppressionsForProvider(TypeSystemEntity provider, out Dictionary<int, Suppression>? suppressions)
         {
-            if (provider is not ModuleDesc)
+            ModuleDesc? module = GetModuleFromProvider(provider);
+            if (module is EcmaAssembly ecmaAssembly && _initializedAssemblies.Add(ecmaAssembly))
             {
-                foreach (var suppression in DecodeSuppressions(provider))
+                List<(DiagnosticId, string?[])> generatedWarnings = new();
+                foreach (Suppression suppression in DecodeAssemblyAndModuleSuppressions(ecmaAssembly, generatedWarnings))
+                    AddSuppression(suppression);
+
+                foreach ((DiagnosticId id, string?[] args) in generatedWarnings)
                 {
-                    if (suppression.SuppressMessageInfo.Id == id)
-                        return true;
+                    _logger.LogWarning(ecmaAssembly, id, args);
                 }
             }
 
-            if (moduleSuppressions is not null)
+            if (provider is not ModuleDesc && _initializedProviders.Add(provider))
             {
-                foreach (var suppression in moduleSuppressions)
-                {
-                    if (suppression.Provider == provider && suppression.SuppressMessageInfo.Id == id)
-                        return true;
-                }
+                foreach (Suppression suppression in DecodeSuppressions(provider))
+                    AddSuppression(suppression);
             }
 
-            return false;
+            return _suppressions.TryGetValue(provider, out suppressions);
         }
 
         private static bool TryDecodeSuppressMessageAttributeData(CustomAttributeValue<TypeDesc> attribute, out SuppressMessageInfo info)
@@ -236,23 +275,23 @@ namespace ILCompiler.Logging
                 if (!TryDecodeSuppressMessageAttributeData(ca, out var info))
                     continue;
 
-                yield return new Suppression(info, originAttribute: ca, provider);
+                yield return new Suppression(info, new MessageOrigin(provider), provider);
             }
         }
 
-        private static List<Suppression>? DecodeAssemblyAndModuleSuppressions(EcmaAssembly ecmaAssembly, List<(DiagnosticId, string?[])>? warnings)
+        private static List<Suppression> DecodeAssemblyAndModuleSuppressions(EcmaAssembly ecmaAssembly, List<(DiagnosticId, string?[])> warnings)
         {
-            List<Suppression>? suppressions = null;
+            List<Suppression> suppressions = new();
             DecodeGlobalSuppressions(
                 ecmaAssembly,
                 ecmaAssembly.GetDecodedCustomAttributes(UnconditionalSuppressMessageAttributeNamespace, UnconditionalSuppressMessageAttributeName),
-                ref suppressions,
+                suppressions,
                 warnings);
 
             DecodeGlobalSuppressions(
                 ecmaAssembly,
                 ecmaAssembly.GetDecodedCustomAttributesForModule(UnconditionalSuppressMessageAttributeNamespace, UnconditionalSuppressMessageAttributeName),
-                ref suppressions,
+                suppressions,
                 warnings);
 
             return suppressions;
@@ -261,8 +300,8 @@ namespace ILCompiler.Logging
         private static void DecodeGlobalSuppressions(
             EcmaAssembly module,
             IEnumerable<CustomAttributeValue<TypeDesc>> attributes,
-            ref List<Suppression>? suppressions,
-            List<(DiagnosticId, string?[])>? warnings)
+            List<Suppression> suppressions,
+            List<(DiagnosticId, string?[])> warnings)
         {
             foreach (CustomAttributeValue<TypeDesc> instance in attributes)
             {
@@ -272,16 +311,14 @@ namespace ILCompiler.Logging
                 var scope = info.Scope?.ToLowerInvariant();
                 if (info.Target == null && (scope == "module" || scope == null))
                 {
-                    suppressions ??= new();
-                    suppressions.Add(new Suppression(info, originAttribute: instance, module));
+                    suppressions.Add(new Suppression(info, new MessageOrigin(module), module));
                     continue;
                 }
 
                 switch (scope)
                 {
                     case "module":
-                        suppressions ??= new();
-                        suppressions.Add(new Suppression(info, originAttribute: instance, module));
+                        suppressions.Add(new Suppression(info, new MessageOrigin(module), module));
                         break;
 
                     case "type":
@@ -291,13 +328,12 @@ namespace ILCompiler.Logging
 
                         foreach (var result in DocumentationSignatureParser.GetMembersForDocumentationSignature(info.Target, module))
                         {
-                            suppressions ??= new();
-                            suppressions.Add(new Suppression(info, originAttribute: instance, result));
+                            suppressions.Add(new Suppression(info, new MessageOrigin(result), result));
                         }
 
                         break;
                     default:
-                        warnings?.Add((DiagnosticId.InvalidScopeInUnconditionalSuppressMessage, new string?[] { info.Scope ?? "", module.GetName().Name, info.Target ?? "" }));
+                        warnings.Add((DiagnosticId.InvalidScopeInUnconditionalSuppressMessage, new string?[] { info.Scope ?? "", module.GetName().Name, info.Target ?? "" }));
                         break;
                 }
             }
