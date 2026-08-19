@@ -1,0 +1,85 @@
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. -->
+<Project>
+  <PropertyGroup>
+    <!-- This is an approximation to identify a standalone inner build. -->
+    <RunApiCompatValidateAssembliesInInnerBuild Condition="'$(TargetFrameworks)' == ''">true</RunApiCompatValidateAssembliesInInnerBuild>
+  </PropertyGroup>
+
+  <!-- ApiCompat Validate Assemblies main entry point that only runs for single targeting projects. -->
+  <Target Name="ApiCompatValidateAssemblies"
+          AfterTargets="CoreCompile"
+          BeforeTargets="PrepareForRun"
+          Condition="'$(ApiCompatValidateAssemblies)' == 'true' and '$(RunApiCompatValidateAssembliesInInnerBuild)' == 'true'"
+          DependsOnTargets="PrepareInputsForApiCompatValidateAssemblies;ApiCompatValidateAssembliesCore" />
+
+  <Target Name="PrepareInputsForApiCompatValidateAssemblies"
+          PrecomputeMerge="ApiCompatValidateAssembliesCore"
+          Deferred="Item:ApiCompatContractAssemblyReferences:r;Item:ApiCompatAssemblyReferences:r;Item:ApiCompatLeftAssembliesReferences:w;Item:ApiCompatRightAssembliesReferences:w"
+          DependsOnTargets="CoreCompile;GetApiCompatContractAssembly;GetExplicitReferencesForApiCompatValidateAssemblies;GetReferencesForApiCompatValidateAssemblies">
+    <ItemGroup>
+      <ApiCompatLeftAssemblies Include="$(ApiCompatContractAssembly)" />
+      <ApiCompatRightAssemblies Include="@(IntermediateAssembly)" />
+
+      <ApiCompatLeftAssembliesReferences Deferred="true" Include="@(ApiCompatContractAssemblyReferences, ',')" />
+      <ApiCompatRightAssembliesReferences Deferred="true" Include="@(ApiCompatAssemblyReferences, ',')" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Lazily retrieve api compat's contract assembly. If a ApiCompatContractItemName property is supplied,
+       it likely links to an item that isn't available before project references are resolved. -->
+  <Target Name="GetApiCompatContractAssembly"
+          Condition="'$(ApiCompatContractAssembly)' == ''"
+          Deferred="Property:ApiCompatContractAssembly:r"
+          DependsOnTargets="ResolveProjectReferences">
+    <PropertyGroup>
+      <ApiCompatContractAssembly Condition="'$(ApiCompatContractAssembly)' == '' and '$(ApiCompatContractItemName)' != ''">@($(ApiCompatContractItemName))</ApiCompatContractAssembly>
+    </PropertyGroup>
+
+    <Error Text="ApiCompatContractAssembly property must be provided to run assembly validation."
+           PrecomputationMode="Dynamic"
+           Condition="'$(ApiCompatContractAssembly)' == ''" />
+  </Target>
+
+  <Target Name="GetExplicitReferencesForApiCompatValidateAssemblies">
+    <ItemGroup>
+      <ApiCompatContractAssemblyReferencesStatic
+          Include="@(_ApiCompatUnflattenedRefDeps -> '$(MicrosoftNetCoreAppRefPackRefDir)unflattened/%(Identity)/%(Identity).dll')" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Retrieve the implementation and contract references. -->
+  <Target Name="GetReferencesForApiCompatValidateAssemblies"
+          Deferred="Item:ReferencePathWithRefAssemblies:r;Item:ApiCompatAssemblyReferences:w;Item:ApiCompatContractAssemblyReferencesStatic:r;Item:ApiCompatContractAssemblyReferences:w;Property:ApiCompatUseImplementationReferencesForContract:r;Item:_ApiCompatUnflattenedRefDeps:r;Property:MicrosoftNetCoreAppRefPackRefDir:r"
+          DependsOnTargets="FindReferenceAssembliesForReferences;GetExplicitReferencesForApiCompatValidateAssemblies">
+    <ItemGroup>
+      <ApiCompatAssemblyReferences Deferred="true" Include="@(ReferencePathWithRefAssemblies)" />
+      <ApiCompatContractAssemblyReferences Deferred="true" Include="@(ApiCompatContractAssemblyReferencesStatic)" />
+      <!-- Use the implementation's references if contract references aren't supplied. -->
+      <ApiCompatContractAssemblyReferences Deferred="true"
+                                           Include="@(ApiCompatAssemblyReferences)"
+                                           Condition="'$(ApiCompatUseImplementationReferencesForContract)' != 'false'" />
+      <ApiCompatContractAssemblyReferences Deferred="true"
+          Include="@(ReferencePathWithRefAssemblies -> '%(RootDir)%(Directory)unflattened/%(Filename)/%(Filename)%(Extension)')" />
+      <ApiCompatContractAssemblyReferences Deferred="true"
+          Condition="'$(MicrosoftNetCoreAppRefPackRefDir)' != '' and Exists('$(MicrosoftNetCoreAppRefPackRefDir)unflattened')"
+          Include="$([System.IO.Directory]::GetDirectories('$(MicrosoftNetCoreAppRefPackRefDir)unflattened'))" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Annotate the TargetPath item to make the ApiCompatContractAssembly property accessible in the the cross-targeting build. -->
+  <Target Name="ApiCompatAnnotateTargetPathWithTargetPlatformMoniker"
+          Condition="'$(ApiCompatValidateAssemblies)' == 'true'"
+          PrecomputeInputs="@(ApiCompatContractAssemblyReferencesStatic)"
+          Deferred="Property:ApiCompatContractAssembly:r;Item:TargetPathWithTargetPlatformMonikerApiCompat:w;Item:ApiCompatContractAssemblyReferences:r;Item:ApiCompatAssemblyReferences:r"
+          DependsOnTargets="GetApiCompatContractAssembly;GetReferencesForApiCompatValidateAssemblies;GetTargetPathWithTargetPlatformMoniker"
+          BeforeTargets="GetTargetPath">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMonikerApiCompat
+          Deferred="true"
+          ApiCompatContractAssembly="$(ApiCompatContractAssembly)"
+          ApiCompatAssemblyReferences="@(ApiCompatAssemblyReferences, ',')"
+          ApiCompatContractAssemblyReferences="@(ApiCompatContractAssemblyReferences, ',')"
+          ApiCompatValidateAssemblies="$(ApiCompatValidateAssemblies)" />
+    </ItemGroup>
+  </Target>
+</Project>
