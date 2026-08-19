@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RestorePackagesPath>$(NUGET_PACKAGES)</RestorePackagesPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageDownload Include="optimization.linux-x64.mibc.runtime"
+                     Version="[$(optimizationlinuxx64MIBCRuntimeVersion)]" />
+  </ItemGroup>
+</Project>
