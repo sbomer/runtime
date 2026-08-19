@@ -11,7 +11,8 @@
       <SysRoot Condition="'$(CrossBuild)' == 'true'">$(ROOTFS_DIR)</SysRoot>
     </PropertyGroup>
 
-    <Exec Command="sh -c 'build_arch=&quot;$(TargetArchitecture)&quot; compiler=&quot;$(CppCompilerAndLinker)&quot; . &quot;$(RepositoryEngineeringDir)/common/native/init-compiler.sh&quot; &amp;&amp; echo &quot;$CC;$LDFLAGS&quot;' 2>/dev/null"
+    <Exec PrecomputationMode="Static"
+          Command="sh -c 'build_arch=&quot;$(TargetArchitecture)&quot; compiler=&quot;$(CppCompilerAndLinker)&quot; . &quot;$(RepositoryEngineeringDir)/common/native/init-compiler.sh&quot; &amp;&amp; echo &quot;$CC;$LDFLAGS&quot;' 2>/dev/null"
           EchoOff="true"
           ConsoleToMsBuild="true"
           StandardOutputImportance="Low">
