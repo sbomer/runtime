@@ -237,15 +237,17 @@ The .NET Foundation licenses this file to you under the MIT license.
 
   <Target Name="WriteIlcRspFileForCompilation"
       Outputs="%(ManagedBinary.IlcRspFile)"
+      PrecomputeOutputs="%(ManagedBinary.IlcRspFile)"
+      Deferred="Item:TrimmerRootAssembly:r;Item:_IlcManagedInputAssemblies:r;Item:IlcCompileInput:r;Item:IlcReference:r;Item:IlcSatelliteAssembly:r;Item:MibcFile:r;Item:RdXmlFile:r;Item:TrimmerRootDescriptor:r;Item:AutoInitializedAssemblies:r;Item:DirectPInvoke:r;Item:DirectPInvokeList:r;Item:_TrimmerFeatureSettings:r;Item:RuntimeHostConfigurationOption:r;Item:UnmanagedEntryPointsAssembly:r;Item:_AggregateExecutableReferencePath:r;Item:_IlcRootedAssemblies:w;Item:_IlcConditionallyRootedAssemblies:w;Item:_IlcTrimmedAssemblies:w;Item:_IlcSingleWarnAssemblies:w;Item:_IlcNoSingleWarnAssemblies:w;Item:IlcArg:w"
       DependsOnTargets="$(IlcCompileDependsOn)">
 
     <ItemGroup>
-      <_IlcRootedAssemblies Include="@(TrimmerRootAssembly)" Condition="%(TrimmerRootAssembly.RootMode) != 'EntryPoint'" />
-      <_IlcRootedAssemblies Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimMode) == 'copy'" />
-      <_IlcConditionallyRootedAssemblies Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimMode) == 'copyused'" />
-      <_IlcTrimmedAssemblies Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimMode) == 'link'" />
-      <_IlcSingleWarnAssemblies Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimmerSingleWarn) == 'true'" />
-      <_IlcNoSingleWarnAssemblies Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimmerSingleWarn) == 'false'" />
+      <_IlcRootedAssemblies Deferred="true" Include="@(TrimmerRootAssembly)" Condition="%(TrimmerRootAssembly.RootMode) != 'EntryPoint'" />
+      <_IlcRootedAssemblies Deferred="true" Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimMode) == 'copy'" />
+      <_IlcConditionallyRootedAssemblies Deferred="true" Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimMode) == 'copyused'" />
+      <_IlcTrimmedAssemblies Deferred="true" Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimMode) == 'link'" />
+      <_IlcSingleWarnAssemblies Deferred="true" Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimmerSingleWarn) == 'true'" />
+      <_IlcNoSingleWarnAssemblies Deferred="true" Include="@(_IlcManagedInputAssemblies->'%(Filename)')" Condition="%(_IlcManagedInputAssemblies.TrimmerSingleWarn) == 'false'" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -255,93 +257,93 @@ The .NET Foundation licenses this file to you under the MIT license.
     </PropertyGroup>
 
     <ItemGroup>
-      <IlcArg Include="@(IlcCompileInput)" />
-      <IlcArg Include="-o:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename)$(IlcOutputFileExt)" />
-      <IlcArg Include="@(IlcReference->'-r:%(Identity)')" />
-      <IlcArg Include="@(IlcSatelliteAssembly->'--satellite:%(Identity)')" />
-      <IlcArg Include="@(MibcFile->'--mibc:%(Identity)')" />
-      <IlcArg Condition="$(IlcGenerateMetadataLog) == 'true'" Include="--metadatalog:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).metadata.csv" />
-      <IlcArg Condition="'$(_targetOS)' != ''" Include="--targetos:$(_targetOS)" />
-      <IlcArg Condition="$(_targetArchitectureWithAbi) != ''" Include="--targetarch:$(_targetArchitectureWithAbi)" />
-      <IlcArg Condition="$(IlcMultiModule) == 'true'" Include="--multifile" />
-      <IlcArg Condition="$(IlcMultiModule) != 'true' and '$(IlcDehydrate)' != 'false' and ($(_targetOS) != 'win' or '$(OptimizationPreference)' == 'Size' or '$(IlcDehydrate)' == 'true')" Include="--dehydrate" />
-      <IlcArg Condition="$(Optimize) == 'true'" Include="-O" />
-      <IlcArg Condition="$(NativeDebugSymbols) == 'true'" Include="-g" />
-      <IlcArg Condition="$(IlcDwarfVersion) == '5'" Include="--gdwarf-5" />
-      <IlcArg Condition="$(IlcGenerateMapFile) == 'true'" Include="--map:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).map.xml" />
-      <IlcArg Condition="$(IlcGenerateMstatFile) == 'true'" Include="--mstat:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).mstat" />
-      <IlcArg Condition="$(IlcGenerateDgmlFile) == 'true'" Include="--dgmllog:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).codegen.dgml.xml" />
-      <IlcArg Condition="$(IlcGenerateDgmlFile) == 'true'" Include="--scandgmllog:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).scan.dgml.xml" />
-      <IlcArg Condition="$(IlcMultiModule) != 'true' and $(NativeDebugSymbols) == 'true' and $(EnableSourceLink) == 'true' and $(_targetOS) == 'win'" Include="--sourcelink:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).sourcelink" />
-      <IlcArg Include="@(RdXmlFile->'--rdxml:%(FullPath)')" />
-      <IlcArg Include="@(TrimmerRootDescriptor->'--descriptor:%(FullPath)')" />
-      <IlcArg Condition="'$(NativeLib)' != ''" Include="--nativelib" />
-      <IlcArg Condition="'$(CustomNativeMain)' == 'true'" Include="--splitinit" />
-      <IlcArg Condition="'$(ExportsFile)' != ''" Include="--exportsfile:$(ExportsFile)" />
-      <IlcArg Condition="'$(_targetOS)' == 'win' and '$(DebuggerSupport)' != 'false'" Include="--export-dynamic-symbol:DotNetRuntimeContractDescriptor,DATA" />
-      <IlcArg Condition="'$(_targetOS)' != 'win' and '$(_targetOS)' != 'browser' and '$(DebuggerSupport)' != 'false'" Include="--export-dynamic-symbol:DotNetRuntimeContractDescriptor" />
-      <IlcArg Condition="'$(_targetOS)' == 'freebsd' and '$(IsNativeExecutable)' == 'true'" Include="--export-dynamic-symbol:__progname;--export-dynamic-symbol:environ" />
-      <IlcArg Condition="'$(IlcExportUnmanagedEntrypoints)' == 'true'" Include="--export-unmanaged-entrypoints" />
-      <IlcArg Include="@(AutoInitializedAssemblies->'--initassembly:%(Identity)')" />
-      <IlcArg Include="@(DirectPInvoke->'--directpinvoke:%(Identity)')" />
-      <IlcArg Include="@(DirectPInvokeList->'--directpinvokelist:%(Identity)')" />
-      <IlcArg Include="@(_TrimmerFeatureSettings->'--feature:%(Identity)=%(Value)')" />
-      <IlcArg Include="@(RuntimeHostConfigurationOption->'--runtimeknob:%(Identity)=%(Value)')" />
-      <IlcArg Include="--runtimeknob:RUNTIME_IDENTIFIER=$(RuntimeIdentifier)" />
-      <IlcArg Condition="$(ServerGarbageCollection) == 'true'" Include="--runtimeopt:gcServer=1" />
-      <IlcArg Condition="$(IlcGenerateCompleteTypeMetadata) == 'true'" Include="--completetypemetadata" />
-      <IlcArg Condition="$(StackTraceSupport) != 'false' and $(StackTraceLineNumberSupport) != 'true'" Include="--stacktracedata:frames" />
-      <IlcArg Condition="$(StackTraceSupport) != 'false' and $(StackTraceLineNumberSupport) == 'true'" Include="--stacktracedata:lines" />
-      <IlcArg Condition="$(IlcScanReflection) != 'false'" Include="--scanreflection" />
-      <IlcArg Include="--methodbodyfolding:$(_IlcMethodBodyFoldingValue)" />
-      <IlcArg Condition="$(Optimize) == 'true' and $(OptimizationPreference) == 'Size'" Include="--Os" />
-      <IlcArg Condition="$(Optimize) == 'true' and $(OptimizationPreference) == 'Speed'" Include="--Ot" />
-      <IlcArg Condition="'$(_linuxLibcFlavor)' == 'bionic'" Include="--noinlinetls" />
-      <IlcArg Condition="$(IlcInstructionSet) != ''" Include="--instruction-set:$(IlcInstructionSet)" />
-      <IlcArg Condition="$(IlcMaxVectorTBitWidth) != ''" Include="--max-vectort-bitwidth:$(IlcMaxVectorTBitWidth)" />
-      <IlcArg Condition="$(IlcSingleThreaded) == 'true'" Include="--parallelism:1" />
-      <IlcArg Condition="$(IlcSystemModule) != ''" Include="--systemmodule:$(IlcSystemModule)" />
-      <IlcArg Condition="$(TypeMapEntryAssembly) != ''" Include="--typemap-entry-assembly:$(TypeMapEntryAssembly)" />
-      <IlcArg Condition="'$(_targetOS)' == 'win' and $(IlcMultiModule) != 'true' and '$(IlcGenerateWin32Resources)' != 'false' and '$(NativeLib)' != 'Static'" Include="--win32resourcemodule:%(ManagedBinary.Filename)" />
-      <IlcArg Condition="$(IlcDumpIL) == 'true'" Include="--ildump:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).il" />
-      <IlcArg Condition="$(NoWarn) != ''" Include='--nowarn:"$([MSBuild]::Escape($(NoWarn)).Replace(`%0A`, ``).Replace(`%0D`, ``))"' />
-      <IlcArg Condition="$(IlcTreatWarningsAsErrors) == 'true'" Include="--warnaserror" />
-      <IlcArg Condition="$(WarningsAsErrors) != ''" Include='--warnaserr:"$([MSBuild]::Escape($(WarningsAsErrors)).Replace(`%0A`, ``).Replace(`%0D`, ``))"' />
-      <IlcArg Condition="$(WarningsNotAsErrors) != ''" Include='--nowarnaserr:"$([MSBuild]::Escape($(WarningsNotAsErrors)).Replace(`%0A`, ``).Replace(`%0D`, ``))"' />
-      <IlcArg Condition="$(TrimmerSingleWarn) == 'true'" Include="--singlewarn" />
-      <IlcArg Condition="$(SuppressTrimAnalysisWarnings) == 'true'" Include="--notrimwarn" />
-      <IlcArg Condition="$(SuppressAotAnalysisWarnings) == 'true'" Include="--noaotwarn" />
-      <IlcArg Condition="$(IlcVerboseLogging) == 'true'" Include="--verbose" />
-      <IlcArg Condition="$(IlcTrimMetadata) == 'false'" Include="--reflectiondata:all" />
-      <IlcArg Condition="'$(ControlFlowGuard)' == 'Guard' and '$(_targetOS)' == 'win'" Include="--guard:cf" />
-      <IlcArg Include="@(_IlcRootedAssemblies->'--root:%(Identity)')" />
-      <IlcArg Include="@(_IlcConditionallyRootedAssemblies->'--conditionalroot:%(Identity)')" />
-      <IlcArg Include="@(_IlcTrimmedAssemblies->'--trim:%(Identity)')" />
-      <IlcArg Include="@(_IlcSingleWarnAssemblies->'--singlewarnassembly:%(Identity)')" />
-      <IlcArg Include="@(_IlcNoSingleWarnAssemblies->'--nosinglewarnassembly:%(Identity)')" />
-      <IlcArg Condition="'$(TrimmerDefaultAction)' == 'copyused' or '$(TrimmerDefaultAction)' == 'copy' or '$(TrimMode)' == 'partial'" Include="--defaultrooting" />
-      <IlcArg Condition="$(IlcResilient) != 'false'" Include="--resilient" />
-      <IlcArg Include="@(UnmanagedEntryPointsAssembly->'--generateunmanagedentrypoints:%(Identity)')" />
-      <IlcArg Condition="$(IlcOrderFile) != ''" Include="--order:$(IlcOrderFile)" />
-      <IlcArg Condition="$(IlcOrderFile) != ''" Include="--method-layout:explicit" />
+      <IlcArg Deferred="true" Include="@(IlcCompileInput)" />
+      <IlcArg Deferred="true" Include="-o:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename)$(IlcOutputFileExt)" />
+      <IlcArg Deferred="true" Include="@(IlcReference->'-r:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(IlcSatelliteAssembly->'--satellite:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(MibcFile->'--mibc:%(Identity)')" />
+      <IlcArg Deferred="true" Condition="$(IlcGenerateMetadataLog) == 'true'" Include="--metadatalog:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).metadata.csv" />
+      <IlcArg Deferred="true" Condition="'$(_targetOS)' != ''" Include="--targetos:$(_targetOS)" />
+      <IlcArg Deferred="true" Condition="$(_targetArchitectureWithAbi) != ''" Include="--targetarch:$(_targetArchitectureWithAbi)" />
+      <IlcArg Deferred="true" Condition="$(IlcMultiModule) == 'true'" Include="--multifile" />
+      <IlcArg Deferred="true" Condition="$(IlcMultiModule) != 'true' and '$(IlcDehydrate)' != 'false' and ($(_targetOS) != 'win' or '$(OptimizationPreference)' == 'Size' or '$(IlcDehydrate)' == 'true')" Include="--dehydrate" />
+      <IlcArg Deferred="true" Condition="$(Optimize) == 'true'" Include="-O" />
+      <IlcArg Deferred="true" Condition="$(NativeDebugSymbols) == 'true'" Include="-g" />
+      <IlcArg Deferred="true" Condition="$(IlcDwarfVersion) == '5'" Include="--gdwarf-5" />
+      <IlcArg Deferred="true" Condition="$(IlcGenerateMapFile) == 'true'" Include="--map:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).map.xml" />
+      <IlcArg Deferred="true" Condition="$(IlcGenerateMstatFile) == 'true'" Include="--mstat:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).mstat" />
+      <IlcArg Deferred="true" Condition="$(IlcGenerateDgmlFile) == 'true'" Include="--dgmllog:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).codegen.dgml.xml" />
+      <IlcArg Deferred="true" Condition="$(IlcGenerateDgmlFile) == 'true'" Include="--scandgmllog:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).scan.dgml.xml" />
+      <IlcArg Deferred="true" Condition="$(IlcMultiModule) != 'true' and $(NativeDebugSymbols) == 'true' and $(EnableSourceLink) == 'true' and $(_targetOS) == 'win'" Include="--sourcelink:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).sourcelink" />
+      <IlcArg Deferred="true" Include="@(RdXmlFile->'--rdxml:%(FullPath)')" />
+      <IlcArg Deferred="true" Include="@(TrimmerRootDescriptor->'--descriptor:%(FullPath)')" />
+      <IlcArg Deferred="true" Condition="'$(NativeLib)' != ''" Include="--nativelib" />
+      <IlcArg Deferred="true" Condition="'$(CustomNativeMain)' == 'true'" Include="--splitinit" />
+      <IlcArg Deferred="true" Condition="'$(ExportsFile)' != ''" Include="--exportsfile:$(ExportsFile)" />
+      <IlcArg Deferred="true" Condition="'$(_targetOS)' == 'win' and '$(DebuggerSupport)' != 'false'" Include="--export-dynamic-symbol:DotNetRuntimeContractDescriptor,DATA" />
+      <IlcArg Deferred="true" Condition="'$(_targetOS)' != 'win' and '$(_targetOS)' != 'browser' and '$(DebuggerSupport)' != 'false'" Include="--export-dynamic-symbol:DotNetRuntimeContractDescriptor" />
+      <IlcArg Deferred="true" Condition="'$(_targetOS)' == 'freebsd' and '$(IsNativeExecutable)' == 'true'" Include="--export-dynamic-symbol:__progname;--export-dynamic-symbol:environ" />
+      <IlcArg Deferred="true" Condition="'$(IlcExportUnmanagedEntrypoints)' == 'true'" Include="--export-unmanaged-entrypoints" />
+      <IlcArg Deferred="true" Include="@(AutoInitializedAssemblies->'--initassembly:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(DirectPInvoke->'--directpinvoke:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(DirectPInvokeList->'--directpinvokelist:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(_TrimmerFeatureSettings->'--feature:%(Identity)=%(Value)')" />
+      <IlcArg Deferred="true" Include="@(RuntimeHostConfigurationOption->'--runtimeknob:%(Identity)=%(Value)')" />
+      <IlcArg Deferred="true" Include="--runtimeknob:RUNTIME_IDENTIFIER=$(RuntimeIdentifier)" />
+      <IlcArg Deferred="true" Condition="$(ServerGarbageCollection) == 'true'" Include="--runtimeopt:gcServer=1" />
+      <IlcArg Deferred="true" Condition="$(IlcGenerateCompleteTypeMetadata) == 'true'" Include="--completetypemetadata" />
+      <IlcArg Deferred="true" Condition="$(StackTraceSupport) != 'false' and $(StackTraceLineNumberSupport) != 'true'" Include="--stacktracedata:frames" />
+      <IlcArg Deferred="true" Condition="$(StackTraceSupport) != 'false' and $(StackTraceLineNumberSupport) == 'true'" Include="--stacktracedata:lines" />
+      <IlcArg Deferred="true" Condition="$(IlcScanReflection) != 'false'" Include="--scanreflection" />
+      <IlcArg Deferred="true" Include="--methodbodyfolding:$(_IlcMethodBodyFoldingValue)" />
+      <IlcArg Deferred="true" Condition="$(Optimize) == 'true' and $(OptimizationPreference) == 'Size'" Include="--Os" />
+      <IlcArg Deferred="true" Condition="$(Optimize) == 'true' and $(OptimizationPreference) == 'Speed'" Include="--Ot" />
+      <IlcArg Deferred="true" Condition="'$(_linuxLibcFlavor)' == 'bionic'" Include="--noinlinetls" />
+      <IlcArg Deferred="true" Condition="$(IlcInstructionSet) != ''" Include="--instruction-set:$(IlcInstructionSet)" />
+      <IlcArg Deferred="true" Condition="$(IlcMaxVectorTBitWidth) != ''" Include="--max-vectort-bitwidth:$(IlcMaxVectorTBitWidth)" />
+      <IlcArg Deferred="true" Condition="$(IlcSingleThreaded) == 'true'" Include="--parallelism:1" />
+      <IlcArg Deferred="true" Condition="$(IlcSystemModule) != ''" Include="--systemmodule:$(IlcSystemModule)" />
+      <IlcArg Deferred="true" Condition="$(TypeMapEntryAssembly) != ''" Include="--typemap-entry-assembly:$(TypeMapEntryAssembly)" />
+      <IlcArg Deferred="true" Condition="'$(_targetOS)' == 'win' and $(IlcMultiModule) != 'true' and '$(IlcGenerateWin32Resources)' != 'false' and '$(NativeLib)' != 'Static'" Include="--win32resourcemodule:%(ManagedBinary.Filename)" />
+      <IlcArg Deferred="true" Condition="$(IlcDumpIL) == 'true'" Include="--ildump:$(NativeIntermediateOutputPath)%(ManagedBinary.Filename).il" />
+      <IlcArg Deferred="true" Condition="$(NoWarn) != ''" Include='--nowarn:"$([MSBuild]::Escape($(NoWarn)).Replace(`%0A`, ``).Replace(`%0D`, ``))"' />
+      <IlcArg Deferred="true" Condition="$(IlcTreatWarningsAsErrors) == 'true'" Include="--warnaserror" />
+      <IlcArg Deferred="true" Condition="$(WarningsAsErrors) != ''" Include='--warnaserr:"$([MSBuild]::Escape($(WarningsAsErrors)).Replace(`%0A`, ``).Replace(`%0D`, ``))"' />
+      <IlcArg Deferred="true" Condition="$(WarningsNotAsErrors) != ''" Include='--nowarnaserr:"$([MSBuild]::Escape($(WarningsNotAsErrors)).Replace(`%0A`, ``).Replace(`%0D`, ``))"' />
+      <IlcArg Deferred="true" Condition="$(TrimmerSingleWarn) == 'true'" Include="--singlewarn" />
+      <IlcArg Deferred="true" Condition="$(SuppressTrimAnalysisWarnings) == 'true'" Include="--notrimwarn" />
+      <IlcArg Deferred="true" Condition="$(SuppressAotAnalysisWarnings) == 'true'" Include="--noaotwarn" />
+      <IlcArg Deferred="true" Condition="$(IlcVerboseLogging) == 'true'" Include="--verbose" />
+      <IlcArg Deferred="true" Condition="$(IlcTrimMetadata) == 'false'" Include="--reflectiondata:all" />
+      <IlcArg Deferred="true" Condition="'$(ControlFlowGuard)' == 'Guard' and '$(_targetOS)' == 'win'" Include="--guard:cf" />
+      <IlcArg Deferred="true" Include="@(_IlcRootedAssemblies->'--root:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(_IlcConditionallyRootedAssemblies->'--conditionalroot:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(_IlcTrimmedAssemblies->'--trim:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(_IlcSingleWarnAssemblies->'--singlewarnassembly:%(Identity)')" />
+      <IlcArg Deferred="true" Include="@(_IlcNoSingleWarnAssemblies->'--nosinglewarnassembly:%(Identity)')" />
+      <IlcArg Deferred="true" Condition="'$(TrimmerDefaultAction)' == 'copyused' or '$(TrimmerDefaultAction)' == 'copy' or '$(TrimMode)' == 'partial'" Include="--defaultrooting" />
+      <IlcArg Deferred="true" Condition="$(IlcResilient) != 'false'" Include="--resilient" />
+      <IlcArg Deferred="true" Include="@(UnmanagedEntryPointsAssembly->'--generateunmanagedentrypoints:%(Identity)')" />
+      <IlcArg Deferred="true" Condition="$(IlcOrderFile) != ''" Include="--order:$(IlcOrderFile)" />
+      <IlcArg Deferred="true" Condition="$(IlcOrderFile) != ''" Include="--method-layout:explicit" />
 
       <!-- The managed debugging support in libraries is unused - trim it -->
-      <IlcArg Condition="'$(DebuggerSupport)' != 'true'" Include="--feature:System.Diagnostics.Debugger.IsSupported=false" />
+      <IlcArg Deferred="true" Condition="'$(DebuggerSupport)' != 'true'" Include="--feature:System.Diagnostics.Debugger.IsSupported=false" />
 
       <!-- Export the managed entry point if building a native library in custom main mode -->
-      <IlcArg Condition="'$(NativeLib)' == 'Shared' and '$(CustomNativeMain)' == 'true'" Include="--export-dynamic-symbol:__managed__Main" />
-      <IlcArg Condition="'@(_AggregateExecutableReferencePath)' != ''" Include="@(_AggregateExecutableReferencePath->'--aggregateexe:%(AssemblyName)=%(EntryPointSymbol)')" />
-      <IlcArg Condition="'@(_AggregateExecutableReferencePath)' != ''" Include="@(_AggregateExecutableReferencePath->'--export-dynamic-symbol:%(EntryPointSymbol)')" />
+      <IlcArg Deferred="true" Condition="'$(NativeLib)' == 'Shared' and '$(CustomNativeMain)' == 'true'" Include="--export-dynamic-symbol:__managed__Main" />
+      <IlcArg Deferred="true" Condition="'@(_AggregateExecutableReferencePath)' != ''" Include="@(_AggregateExecutableReferencePath->'--aggregateexe:%(AssemblyName)=%(EntryPointSymbol)')" />
+      <IlcArg Deferred="true" Condition="'@(_AggregateExecutableReferencePath)' != ''" Include="@(_AggregateExecutableReferencePath->'--export-dynamic-symbol:%(EntryPointSymbol)')" />
 
-      <IlcArg Condition="'$(_InstrumentReachability)' == 'true'" Include="--reachabilityinstrument" />
-      <IlcArg Condition="'$(_InstrumentReachability)' == 'true'" Include="--feature:Internal.Runtime.CompilerHelpers.ReachabilityInstrumentationSupport=true" />
-      <IlcArg Condition="'$(_ReachabilityInstrumentationFile)' != ''" Include="--reachabilityuse:$(_ReachabilityInstrumentationFile)" />
-      <IlcArg Condition="'$(_InstrumentReachability)' == 'true' or '$(_ReachabilityInstrumentationFile)' != ''" Include="--noinlinetls" />
-      <IlcArg Condition="'$(_InstrumentReachability)' == 'true' or '$(_ReachabilityInstrumentationFile)' != ''" Include="--nopreinitstatics" />
+      <IlcArg Deferred="true" Condition="'$(_InstrumentReachability)' == 'true'" Include="--reachabilityinstrument" />
+      <IlcArg Deferred="true" Condition="'$(_InstrumentReachability)' == 'true'" Include="--feature:Internal.Runtime.CompilerHelpers.ReachabilityInstrumentationSupport=true" />
+      <IlcArg Deferred="true" Condition="'$(_ReachabilityInstrumentationFile)' != ''" Include="--reachabilityuse:$(_ReachabilityInstrumentationFile)" />
+      <IlcArg Deferred="true" Condition="'$(_InstrumentReachability)' == 'true' or '$(_ReachabilityInstrumentationFile)' != ''" Include="--noinlinetls" />
+      <IlcArg Deferred="true" Condition="'$(_InstrumentReachability)' == 'true' or '$(_ReachabilityInstrumentationFile)' != ''" Include="--nopreinitstatics" />
     </ItemGroup>
 
-    <MakeDir Directories="$(NativeIntermediateOutputPath)" />
-    <WriteLinesToFile File="%(ManagedBinary.IlcRspFile)" Lines="@(IlcArg)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <MakeDir PrecomputationMode="Dynamic" Directories="$(NativeIntermediateOutputPath)" />
+    <WriteLinesToFile PrecomputationMode="Dynamic" File="%(ManagedBinary.IlcRspFile)" Lines="@(IlcArg)" Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
   <Target Name="IlcCompile"
