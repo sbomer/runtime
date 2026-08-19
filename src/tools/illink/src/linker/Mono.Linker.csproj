@@ -35,18 +35,23 @@
        This will be the version used by the ILLink.Tasks package. -->
   <Target Name="GeneratePackageRuntimeConfig" AfterTargets="GenerateBuildRuntimeConfigurationFiles"
           DependsOnTargets="_ComputePackRuntimeConfigFilePath"
-          Condition="'$(TargetFramework)' == '$(NetCoreAppToolCurrent)'">
+          Condition="'$(TargetFramework)' == '$(NetCoreAppToolCurrent)'"
+          PrecomputationMode="Dynamic"
+          PrecomputeInputs="$(ProjectRuntimeConfigFilePath)"
+          PrecomputeOutputs="$(PackRuntimeConfigFilePath)"
+          Deferred="Property:_RuntimeConfigContents:w;Property:_NewRuntimeConfigContents:w">
     <PropertyGroup>
-      <_RuntimeConfigContents>$([System.IO.File]::ReadAllText('$(ProjectRuntimeConfigFilePath)'))</_RuntimeConfigContents>
+      <_RuntimeConfigContents Deferred="true">$([System.IO.File]::ReadAllText('$(ProjectRuntimeConfigFilePath)'))</_RuntimeConfigContents>
       <ReplacementPattern>"version": ".*"</ReplacementPattern>
       <ReplacementString>"version": "$(Version)"</ReplacementString>
-      <_NewRuntimeConfigContents>$([System.Text.RegularExpressions.Regex]::Replace($(_RuntimeConfigContents), $(ReplacementPattern), $(ReplacementString)))</_NewRuntimeConfigContents>
+      <_NewRuntimeConfigContents Deferred="true">$([System.Text.RegularExpressions.Regex]::Replace($(_RuntimeConfigContents), $(ReplacementPattern), $(ReplacementString)))</_NewRuntimeConfigContents>
     </PropertyGroup>
 
     <WriteLinesToFile File="$(PackRuntimeConfigFilePath)"
                       Lines="$(_NewRuntimeConfigContents)"
                       Overwrite="true"
-                      WriteOnlyWhenDifferent="true" />
+                      WriteOnlyWhenDifferent="true"
+                      PrecomputationMode="Dynamic" />
   </Target>
 
   <!-- Ensure that the pack.json file flows to ILLink.Tasks so that it can be included in the package.
