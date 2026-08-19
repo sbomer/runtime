@@ -312,10 +312,18 @@
       NotSupportedOnTargetFramework: contract should not be supported, use place holder for lib
       ExternalOnTargetFramework: contract implementation is provided by another package, use placeholders for both
   -->
+  <Target Name="_InitAddPlaceholdersOutputs"
+          BeforeTargets="AddPlaceholders"
+          PrecomputeMerge="AddPlaceholders">
+    <ItemGroup>
+      <_AddPlaceholdersOutputs Condition="'$(IsPrecomputePhase)' != 'true'" Include="fake_AddPlaceholders" />
+    </ItemGroup>
+  </Target>
+
   <Target Name="AddPlaceholders"
           DependsOnTargets="ExpandProjectReferences;PreventImplementationReference"
           Inputs="%(InboxOnTargetFramework.Identity);%(NotSupportedOnTargetFramework.Identity);%(ExternalOnTargetFramework.Identity)"
-          Outputs="fake">
+          Outputs="@(_AddPlaceholdersOutputs)">
     <ItemGroup>
       <_targetItem Include="@(InboxOnTargetFramework)"/>
       <_targetItem Include="@(NotSupportedOnTargetFramework)"/>
