@@ -32,13 +32,17 @@
   <UsingTask TaskName="CreateRuntimeRootILLinkDescriptorFile"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
+             PrecomputationMode="DynamicLoad"
              Condition="'$(ILLinkTasksAssembly)' != ''" />
   <Target Name="_CreateILLinkRuntimeRootDescriptorFile"
           DependsOnTargets="_CombineILLinkTrimXmlFilePaths;ResolveProjectReferences"
           Inputs="$(_NamespaceFilePath);$(_MscorlibFilePath);$(_CortypeFilePath);$(_RexcepFilePath);$(_ILLinkDescriptorsIntermediatePath)"
           Outputs="$(_ILLinkRuntimeRootDescriptorFilePath)">
     <Message Text="Generating ILLink roots file: $(_ILLinkRuntimeRootDescriptorFilePath)" />
-    <CreateRuntimeRootILLinkDescriptorFile NamespaceFilePath="$(_NamespaceFilePath)"
+    <CreateRuntimeRootILLinkDescriptorFile PrecomputationMode="DynamicLoad"
+                                           PrecomputeInputs="$(_NamespaceFilePath);$(_MscorlibFilePath);$(_CortypeFilePath);$(_RexcepFilePath);$(_ILLinkDescriptorsIntermediatePath)"
+                                           PrecomputeOutputs="$(_ILLinkRuntimeRootDescriptorFilePath)"
+                                           NamespaceFilePath="$(_NamespaceFilePath)"
                                            MscorlibFilePath="$(_MscorlibFilePath)"
                                            CortypeFilePath="$(_CortypeFilePath)"
                                            RexcepFilePath="$(_RexcepFilePath)"
@@ -50,12 +54,16 @@
   <UsingTask TaskName="CombineLinkerXmlFiles"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
+             PrecomputationMode="DynamicLoad"
              Condition="'$(ILLinkTasksAssembly)' != ''" />
   <Target Name="_CombineILLinkTrimXmlFilePaths"
           DependsOnTargets="ResolveProjectReferences"
           Inputs="@(_ILLinkDescriptorsFilePaths)"
           Outputs="$(_ILLinkDescriptorsIntermediatePath)">
-    <CombineLinkerXmlFiles LinkerXmlFiles="@(_ILLinkDescriptorsFilePaths)"
+    <CombineLinkerXmlFiles PrecomputationMode="DynamicLoad"
+                           PrecomputeInputs="@(_ILLinkDescriptorsFilePaths)"
+                           PrecomputeOutputs="$(_ILLinkDescriptorsIntermediatePath)"
+                           LinkerXmlFiles="@(_ILLinkDescriptorsFilePaths)"
                            CombinedLinkerXmlFile="$(_ILLinkDescriptorsIntermediatePath)" />
 
     <ItemGroup>

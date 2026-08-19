@@ -18,6 +18,7 @@
     <ILLinkTrimInputAssembly>$(ILLinkTrimInputPath)$(TargetName)$(TargetExt)</ILLinkTrimInputAssembly>
     <ILLinkTrimInputSymbols>$(ILLinkTrimInputPath)$(TargetName).pdb</ILLinkTrimInputSymbols>
     <ILLinkTrimOutputPath>$(IntermediateOutputPath)</ILLinkTrimOutputPath>
+    <ILLinkDependencyResponseFile>$(IntermediateOutputPath)illink.dependencies.rsp</ILLinkDependencyResponseFile>
 
     <ILLinkDescriptorsXml Condition="'$(ILLinkDescriptorsXml)' == '' and Exists('$(ILLinkDirectory)ILLink.Descriptors.xml')">$(ILLinkDirectory)ILLink.Descriptors.xml</ILLinkDescriptorsXml>
     <ILLinkDescriptorsXmlIntermediatePath>$(IntermediateOutputPath)ILLink.Descriptors.xml</ILLinkDescriptorsXmlIntermediatePath>
@@ -102,6 +103,7 @@
   <UsingTask TaskName="CombineLinkerXmlFiles"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
+             PrecomputationMode="DynamicLoad"
              Condition="'$(ILLinkTasksAssembly)' != ''" />
   <Target Name="_CombineILLinkDescriptorsXmls"
           Condition="'@(ILLinkDescriptorsXmls)' != ''"
@@ -111,7 +113,10 @@
       <ILLinkDescriptorsXml>$(ILLinkDescriptorsXmlIntermediatePath)</ILLinkDescriptorsXml>
     </PropertyGroup>
 
-    <CombineLinkerXmlFiles LinkerXmlFiles="@(ILLinkDescriptorsXmls)"
+    <CombineLinkerXmlFiles PrecomputationMode="DynamicLoad"
+                           PrecomputeInputs="@(ILLinkDescriptorsXmls)"
+                           PrecomputeOutputs="$(ILLinkDescriptorsXml)"
+                           LinkerXmlFiles="@(ILLinkDescriptorsXmls)"
                            CombinedLinkerXmlFile="$(ILLinkDescriptorsXml)" />
 
     <ItemGroup>
@@ -151,7 +156,10 @@
       <ILLinkSubstitutionsXml>$(ILLinkSubstitutionsXmlIntermediatePath)</ILLinkSubstitutionsXml>
     </PropertyGroup>
 
-    <CombineLinkerXmlFiles LinkerXmlFiles="@(ILLinkSubstitutionsXmls)"
+    <CombineLinkerXmlFiles PrecomputationMode="DynamicLoad"
+                           PrecomputeInputs="@(ILLinkSubstitutionsXmls)"
+                           PrecomputeOutputs="$(ILLinkSubstitutionsXml)"
+                           LinkerXmlFiles="@(ILLinkSubstitutionsXmls)"
                            CombinedLinkerXmlFile="$(ILLinkSubstitutionsXml)" />
 
     <ItemGroup>
@@ -167,7 +175,10 @@
       <ILLinkLinkAttributesXml>$(ILLinkLinkAttributesXmlIntermediatePath)</ILLinkLinkAttributesXml>
     </PropertyGroup>
 
-    <CombineLinkerXmlFiles LinkerXmlFiles="@(ILLinkLinkAttributesXmls)"
+    <CombineLinkerXmlFiles PrecomputationMode="DynamicLoad"
+                           PrecomputeInputs="@(ILLinkLinkAttributesXmls)"
+                           PrecomputeOutputs="$(ILLinkLinkAttributesXml)"
+                           LinkerXmlFiles="@(ILLinkLinkAttributesXmls)"
                            CombinedLinkerXmlFile="$(ILLinkLinkAttributesXml)" />
 
     <ItemGroup>
@@ -198,10 +209,41 @@
   <UsingTask TaskName="ILLink"
              AssemblyFile="$(ILLinkTasksAssembly)"
              TaskFactory="TaskHostFactory"
+             PrecomputationMode="DynamicLoad"
              Condition="'$(ILLinkTasksAssembly)' != ''" />
+  <Target Name="_WriteILLinkDependencyResponseFile"
+          DependsOnTargets="FindReferenceAssembliesForReferences"
+          Deferred="Item:ReferencePathWithRefAssemblies:r;Item:_DependencyDirectoriesTemp:w;Item:_DependencyDirectories:w;Item:_DependencyDirectoriesSlash:w;Item:_DependencyDirectoriesNoSlash:w;Item:_ILLinkDependencyArguments:w">
+    <ItemGroup>
+      <_DependencyDirectoriesTemp Deferred="true" Include="@(ReferencePathWithRefAssemblies->'%(RootDir)%(Directory)')" />
+      <!-- Add project references first to give precedence to project-specific files. -->
+      <_DependencyDirectories Deferred="true" Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'=='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
+      <_DependencyDirectories Deferred="true" Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'!='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
+      <!-- Remove trailing slashes to work around response file parsing behavior. -->
+      <_DependencyDirectoriesSlash Deferred="true" Include="@(_DependencyDirectories)">
+        <PathWithSlash>$([MSBuild]::EnsureTrailingSlash('%(Identity)'))</PathWithSlash>
+      </_DependencyDirectoriesSlash>
+      <_DependencyDirectoriesNoSlash Deferred="true" Include="@(_DependencyDirectoriesSlash)">
+        <PathWithoutSlash>$([System.String]::new('%(PathWithSlash)').TrimEnd($([System.IO.Path]::DirectorySeparatorChar)))</PathWithoutSlash>
+      </_DependencyDirectoriesNoSlash>
+      <_DependencyDirectories Deferred="true" Remove="@(_DependencyDirectories)" />
+      <_DependencyDirectories Deferred="true" Include="%(_DependencyDirectoriesNoSlash.PathWithoutSlash)" />
+      <_ILLinkDependencyArguments Deferred="true" Include="@(_DependencyDirectories->'-d &quot;%(Identity)&quot;')" />
+    </ItemGroup>
+
+    <WriteLinesToFile PrecomputationMode="Dynamic"
+                      PrecomputeOutputs="$(ILLinkDependencyResponseFile)"
+                      File="$(ILLinkDependencyResponseFile)"
+                      Lines="@(_ILLinkDependencyArguments)"
+                      Overwrite="true"
+                      WriteOnlyWhenDifferent="true" />
+  </Target>
+
   <Target Name="ILLinkTrimAssembly"
           Condition="'$(ILLinkTrimAssembly)' == 'true'"
-          DependsOnTargets="PrepareForAssembliesTrim">
+          DependsOnTargets="PrepareForAssembliesTrim;_WriteILLinkDependencyResponseFile"
+          PrecomputeMerge="CoreCompile"
+          PrecomputeInputs="$(ILLinkDependencyResponseFile)">
     <PropertyGroup>
       <!-- default action for assemblies with IsTrimmable attribute -->
       <ILLinkArgs>$(ILLinkArgs) --trim-mode skip</ILLinkArgs>
@@ -228,46 +270,38 @@
     </PropertyGroup>
 
     <!-- Move the assembly into a subdirectory for ILLink -->
-    <Move SourceFiles="$(ILLinkTrimAssemblyPath)"
+    <Move PrecomputationMode="Dynamic"
+          PrecomputeInputs="$(ILLinkTrimAssemblyPath)"
+          PrecomputeOutputs="$(ILLinkTrimInputAssembly)"
+          SourceFiles="$(ILLinkTrimAssemblyPath)"
           DestinationFolder="$(ILLinkTrimInputPath)">
       <Output TaskParameter="MovedFiles" ItemName="FileWrites" />
     </Move>
 
     <!-- Move the PDB into a subdirectory for ILLink if we are rewriting PDBs -->
-    <Move SourceFiles="$(ILLinkTrimAssemblySymbols)"
+    <Move PrecomputationMode="Dynamic"
+          PrecomputeInputs="$(ILLinkTrimAssemblySymbols)"
+          PrecomputeOutputs="$(ILLinkTrimInputSymbols)"
+          SourceFiles="$(ILLinkTrimAssemblySymbols)"
           DestinationFolder="$(ILLinkTrimInputPath)"
-          Condition="'$(ILLinkRewritePDBs)' == 'true' and Exists('$(ILLinkTrimAssemblySymbols)')">
+          Condition="'$(ILLinkRewritePDBs)' == 'true'"
+          DeferredCondition="Exists('$(ILLinkTrimAssemblySymbols)')">
       <Output TaskParameter="MovedFiles" ItemName="FileWrites" />
     </Move>
 
     <ItemGroup>
-      <_DependencyDirectoriesTemp Include="@(ReferencePathWithRefAssemblies->'%(RootDir)%(Directory)')" />
-      <!-- Remove duplicate directories by batching over them -->
-      <!-- Add project references first to give precedence to project-specific files -->
-      <_DependencyDirectories Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'=='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
-      <_DependencyDirectories Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'!='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
-      <!-- Remove trailing slash to work around response file parsing behavior -->
-      <_DependencyDirectoriesSlash Include="@(_DependencyDirectories)">
-        <PathWithSlash>$([MSBuild]::EnsureTrailingSlash('%(Identity)'))</PathWithSlash>
-      </_DependencyDirectoriesSlash>
-      <_DependencyDirectoriesNoSlash Include="@(_DependencyDirectoriesSlash)">
-        <PathWithoutSlash>$([System.String]::new('%(PathWithSlash)').TrimEnd($([System.IO.Path]::DirectorySeparatorChar)))</PathWithoutSlash>
-      </_DependencyDirectoriesNoSlash>
-      <_DependencyDirectories Remove="@(_DependencyDirectories)" />
-      <_DependencyDirectories Include="%(_DependencyDirectoriesNoSlash.PathWithoutSlash)" />
       <ILLinkTrimInputAssembly Include="$(TargetName)">
         <RootMode>library</RootMode>
       </ILLinkTrimInputAssembly>
     </ItemGroup>
 
-    <PropertyGroup>
-      <ILLinkArgs Condition="@(_DependencyDirectories->Count()) > 0">$(ILLinkArgs) -d @(_DependencyDirectories->'"%(Identity)"', ' -d ')</ILLinkArgs>
-    </PropertyGroup>
-
-    <ILLink AssemblyPaths="$(ILLinkTrimInputPath)$(TargetName)$(TargetExt)"
+    <ILLink PrecomputationMode="DynamicLoad"
+            PrecomputeInputs="$(ILLinkTrimInputPath)#dir;$(ILLinkDependencyResponseFile)"
+            PrecomputeOutputs="$(ILLinkTrimAssemblyPath)"
+            AssemblyPaths="$(ILLinkTrimInputPath)$(TargetName)$(TargetExt)"
             RootAssemblyNames="@(ILLinkTrimInputAssembly)"
             OutputDirectory="$(ILLinkTrimOutputPath)"
-            ExtraArgs="$(ILLinkArgs)"
+            ExtraArgs="$(ILLinkArgs) @&quot;$(ILLinkDependencyResponseFile)&quot;"
             ToolExe="$(_DotNetHostFileName)"
             ToolPath="$(_DotNetHostDirectory)" />
   </Target>
