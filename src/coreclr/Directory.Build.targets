@@ -12,6 +12,9 @@
     <_DebugSymbolToMove Update="@(_DebugSymbolToMoveToUpdate)"
                         FolderName="" />
     <_DebugSymbolToMove Update="@(_DebugSymbolToMove)"
+                        FolderName="$(CoreClrPdbStagingSubdirectory)"
+                        Condition="'$(CoreClrPdbStagingSubdirectory)' != ''" />
+    <_DebugSymbolToMove Update="@(_DebugSymbolToMove)"
                         Destination="$(RuntimeBinDir)PDB\%(FolderName)\%(Filename)%(Extension)" />
   </ItemGroup>
 
