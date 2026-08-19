@@ -124,12 +124,18 @@
   <Target Name="CreateMergedMibcFile"
           DependsOnTargets="ResolveProjectReferences;MergeMibcFiles" />
 
-  <Target Name="PrepareInvokeCrossgen2" DependsOnTargets="ResolveProjectReferences;CreateMergedMibcFile">
+  <Target Name="PrepareInvokeCrossgen2"
+          DependsOnTargets="ResolveProjectReferences;CreateMergedMibcFile"
+          Deferred="Item:Crossgen2Files:r;Item:Crossgen2Inputs:w">
     <ItemGroup>
-      <Crossgen2Inputs Include="@(CoreLib)" />
-      <Crossgen2Inputs Include="$(MergedMibcPath)" />
-      <Crossgen2Inputs Include="@(Crossgen2Files->Metadata('OutputPath'))" />
+      <Crossgen2Inputs Deferred="true" Include="@(CoreLib)" />
+      <Crossgen2Inputs Deferred="true" Include="$(MergedMibcPath)" />
+      <Crossgen2Inputs Deferred="true" Include="@(Crossgen2Files->Metadata('OutputPath'))" />
     </ItemGroup>
+
+    <PropertyGroup Condition="'$(IsPrecomputePhase)' != 'true'">
+      <InvokeCrossgen2Inputs>@(Crossgen2Inputs)</InvokeCrossgen2Inputs>
+    </PropertyGroup>
   </Target>
 
   <Target Name="CopyILCoreLib"
@@ -141,7 +147,8 @@
 
   <Target Name="InvokeCrossgen2"
           DependsOnTargets="PrepareInvokeCrossgen2;CreateMergedMibcFile"
-          Inputs="@(Crossgen2Inputs)"
+          Inputs="$(InvokeCrossgen2Inputs)"
+          Deferred="Item:Crossgen2Files:r;Item:Crossgen2Inputs:r;Property:CrossGenDllCmd:w"
           Outputs="$(CoreLibOutputPath);$(CoreLibNiPdbPath);$(CoreLibPerfMapPath);$(CrossgenCoreLibOutputPath);$(CrossgenCoreLibComponentOutputPath)">
 
     <MakeDir
@@ -177,9 +184,12 @@
       <CrossGenDllCmd>$(CrossGenDllCmd) --perfmap --perfmap-path:$(BinDir)</CrossGenDllCmd>
     </PropertyGroup>
 
-    <Message Importance="High" Text="$(CrossGenDllCmd)" />
+    <Message Importance="High"
+             Text="$(CrossGenDllCmd)"
+             PrecomputationMode="Dynamic" />
 
-    <Exec Command="$(CrossGenDllCmd)" />
+    <Exec Command="$(CrossGenDllCmd)"
+          PrecomputationMode="Dynamic" />
 
     <Message Importance="High" Text="Crossgenning of System.Private.CoreLib succeeded." />
     <Message Importance="High" Text="Product binaries are available at $(BinDir)" />
