@@ -11,7 +11,7 @@
     <CLSCompliant>false</CLSCompliant>
     <NoWarn>$(NoWarn);8002;NU1701</NoWarn>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
-    <OutputPath>$(RuntimeBinDir)</OutputPath>
+    <OutputPath>$(RuntimeBinDir)/ILCompiler.Reflection.ReadyToRun</OutputPath>
     <Platforms>AnyCPU;x64</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <RunAnalyzers>false</RunAnalyzers>

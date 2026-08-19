@@ -5,7 +5,7 @@
     <RuntimeFrameworkVersion>$(MicrosoftNETCoreAppVersion)</RuntimeFrameworkVersion>
     <UseAppHost>false</UseAppHost>
     <CLRTestKind>BuildOnly</CLRTestKind>
-    <OutputPath>$(RuntimeBinDir)</OutputPath>
+    <OutputPath>$(RuntimeBinDir)tieringtest\</OutputPath>
     <RunAnalyzers>false</RunAnalyzers>
   </PropertyGroup>
 </Project>
