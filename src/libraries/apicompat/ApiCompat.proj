@@ -72,21 +72,35 @@
     <PackageDownload Include="@(ApiCompatLeftTypeForwardDestinationPackage)" Version="[%(PackageVersion)]" />
   </ItemGroup>
 
+  <Target Name="_ComputeRunApiCompatInputs"
+          DependsOnTargets="FindReferenceAssembliesForReferences">
+    <ItemGroup>
+      <_RunApiCompatInputs Include="$(MSBuildThisFileFullPath);$(ApiCompatNetStandard20BaselineFile);$(ApiCompatNetStandard21BaselineFile);$(ApiCompatNetCoreAppLatestStableBaselineFile);@(ApiCompatExcludeAttributesFile)" />
+      <_RunApiCompatInputs Include="@(ReferencePathWithRefAssemblies)" Condition="'$(IsPrecomputePhase)' != 'true'" />
+    </ItemGroup>
+  </Target>
+
   <Target Name="RunApiCompat"
-          DependsOnTargets="FindReferenceAssembliesForReferences;CollectApiCompatInputs"
+          DependsOnTargets="_ComputeRunApiCompatInputs;CollectApiCompatInputs"
           AfterTargets="Build"
-          Inputs="$(MSBuildThisFileFullPath);@(ReferencePathWithRefAssemblies);$(ApiCompatNetStandard20BaselineFile);$(ApiCompatNetStandard21BaselineFile);$(ApiCompatNetCoreAppLatestStableBaselineFile);@(ApiCompatExcludeAttributesFile)"
-          Outputs="$(IntermediateOutputPath)$(TargetArchitecture)-marker.txt">
+          Inputs="@(_RunApiCompatInputs)"
+          Outputs="$(IntermediateOutputPath)$(TargetArchitecture)-marker.txt"
+          PrecomputeInputs="@(ReferencePathPrecomputeInputs)"
+          Deferred="Item:ReferencePathWithRefAssemblies:r;Item:ApiCompatRightAssembly:w;Item:ApiCompatRightAssemblyReference:w;Property:ApiCompatRightAssemblyReferences:r;Property:ApiCompatRightAssemblyReferences:w">
     <Message Text="ApiCompat -> Comparing $(NetCoreAppCurrent) reference assemblies against .NETStandard 2.x and .NETCoreApp $(ApiCompatNetCoreAppBaselineVersion)..." Importance="high"  />
 
     <ItemGroup>
       <ApiCompatNetCoreAppLatestStableAssemblyReference Include="@(ApiCompatLeftTypeForwardDestinationPackage->'$(NuGetPackageRoot)$([System.String]::new('%(ApiCompatLeftTypeForwardDestinationPackage.Identity)').ToLowerInvariant())\%(ApiCompatLeftTypeForwardDestinationPackage.PackageVersion)\lib\%(ApiCompatLeftTypeForwardDestinationPackage.TargetFramework)\%(ApiCompatLeftTypeForwardDestinationPackage.Identity).dll')" />
 
-      <ApiCompatRightAssembly Include="@(ReferencePathWithRefAssemblies->WithMetadataValue('IsPrivateAssembly', 'false')->WithMetadataValue('OutputItemType', 'SharedFrameworkAssembly'))" />
+      <ApiCompatRightAssembly Deferred="true" Include="@(ReferencePathWithRefAssemblies->WithMetadataValue('IsPrivateAssembly', 'false')->WithMetadataValue('OutputItemType', 'SharedFrameworkAssembly'))" />
       <ApiCompatRightAssemblyReferenceFromPackage Include="@(ApiCompatTypeForwardDestinationPackage->'$(NuGetPackageRoot)$([System.String]::new('%(ApiCompatTypeForwardDestinationPackage.Identity)').ToLowerInvariant())\%(ApiCompatTypeForwardDestinationPackage.PackageVersion)\lib\%(ApiCompatTypeForwardDestinationPackage.TargetFramework)\%(ApiCompatTypeForwardDestinationPackage.Identity).dll')" />
-      <ApiCompatRightAssemblyReference Include="@(ReferencePathWithRefAssemblies->WithMetadataValue('IsPrivateAssembly', 'false')->WithMetadataValue('OutputItemType', 'OOBAssembly'));
+      <ApiCompatRightAssemblyReference Deferred="true"
+                                       Include="@(ReferencePathWithRefAssemblies->WithMetadataValue('IsPrivateAssembly', 'false')->WithMetadataValue('OutputItemType', 'OOBAssembly'));
                                                 @(ApiCompatRightAssemblyReferenceFromPackage)" />
     </ItemGroup>
+    <PropertyGroup>
+      <ApiCompatRightAssemblyReferences Deferred="true">@(ApiCompatRightAssemblyReference, ',')</ApiCompatRightAssemblyReferences>
+    </PropertyGroup>
 
     <!-- ApiCompat: NetCoreAppCurrent <-> .NETCoreApp ApiCompatNetCoreAppBaselineVersion -->
     <Microsoft.DotNet.ApiCompat.Task.ValidateAssembliesTask
@@ -101,7 +115,7 @@
       LeftAssembliesTransformationPattern="@(ApiCompatNetCoreAppLatestStableLeftAssembliesTransformationPattern)"
       RightAssembliesTransformationPattern="@(ApiCompatNetCoreAppCurrentRightAssembliesTransformationPattern)"
       LeftAssembliesReferences="@(ApiCompatNetCoreAppLatestStableAssemblyReference, ',')"
-      RightAssembliesReferences="@(ApiCompatRightAssemblyReference, ',')" />
+      RightAssembliesReferences="$(ApiCompatRightAssemblyReferences)" />
 
     <!-- ApiCompat: NetCoreAppCurrent <-> netstandard2.1 -->
     <Microsoft.DotNet.ApiCompat.Task.ValidateAssembliesTask
@@ -114,7 +128,7 @@
       ExcludeAttributesFiles="@(ApiCompatExcludeAttributesFile)"
       LeftAssembliesTransformationPattern="@(ApiCompatNetStandard21LeftAssembliesTransformationPattern)"
       RightAssembliesTransformationPattern="@(ApiCompatNetCoreAppCurrentRightAssembliesTransformationPattern)"
-      RightAssembliesReferences="@(ApiCompatRightAssemblyReference, ',')" />
+      RightAssembliesReferences="$(ApiCompatRightAssemblyReferences)" />
 
     <!-- ApiCompat: NetCoreAppCurrent <-> netstandard2.0 -->
     <Microsoft.DotNet.ApiCompat.Task.ValidateAssembliesTask
@@ -127,7 +141,7 @@
       ExcludeAttributesFiles="@(ApiCompatExcludeAttributesFile)"
       LeftAssembliesTransformationPattern="@(ApiCompatNetStandard20LeftAssembliesTransformationPattern)"
       RightAssembliesTransformationPattern="@(ApiCompatNetCoreAppCurrentRightAssembliesTransformationPattern)"
-      RightAssembliesReferences="@(ApiCompatRightAssemblyReference, ',')" />
+      RightAssembliesReferences="$(ApiCompatRightAssemblyReferences)" />
 
     <!-- Create a marker file which serves as the target's output to enable incremental builds. -->
     <Touch Files="$(IntermediateOutputPath)$(TargetArchitecture)-marker.txt"
