@@ -165,9 +165,13 @@
   </Target>
 
   <Target Name="EnsureLocalArtifactsExist">
-    <Error Condition="!Exists('$(LibrariesSharedFrameworkRefArtifactsPath)')"
+    <Error DeferredCondition="!Exists('$(LibrariesSharedFrameworkRefArtifactsPath)')"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LibrariesSharedFrameworkRefArtifactsPath)#dir"
            Text="The 'libs' subset must be built before building this project. Missing artifacts: $(LibrariesSharedFrameworkRefArtifactsPath). Configuration: '$(LibrariesConfiguration)'. To use a different configuration, specify the 'LibrariesConfiguration' property." />
-    <Error Condition="'$(IncludeOOBLibraries)' == 'true' and !Exists('$(LibrariesAllRefArtifactsPath)')"
+    <Error DeferredCondition="'$(IncludeOOBLibraries)' == 'true' and !Exists('$(LibrariesAllRefArtifactsPath)')"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LibrariesAllRefArtifactsPath)#dir"
            Text="The 'libs' subset must be built before building this project. Missing artifacts: $(LibrariesAllRefArtifactsPath). Configuration: '$(LibrariesConfiguration)'. To use a different configuration, specify the 'LibrariesConfiguration' property." />
   </Target>
 
@@ -177,46 +181,59 @@
   -->
   <Target Name="EnsureLocalOSGroupConfigurationArchitectureSpecificArtifactsExist"
           Condition="'$(LibrariesTargetOSConfigurationArchitecture)' != '*'">
-    <Error Condition="!Exists('$(LibrariesSharedFrameworkBinArtifactsPath)')"
+    <Error DeferredCondition="!Exists('$(LibrariesSharedFrameworkBinArtifactsPath)')"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LibrariesSharedFrameworkBinArtifactsPath)#dir"
            Text="The 'libs' subset must be built before building this project. Missing artifacts: $(LibrariesSharedFrameworkBinArtifactsPath). Configuration: '$(LibrariesConfiguration)'. To use a different configuration, specify the 'LibrariesConfiguration' property." />
-    <Error Condition="'$(IncludeOOBLibraries)' == 'true' and !Exists('$(LibrariesAllBinArtifactsPath)')"
+    <Error DeferredCondition="'$(IncludeOOBLibraries)' == 'true' and !Exists('$(LibrariesAllBinArtifactsPath)')"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LibrariesAllBinArtifactsPath)#dir"
            Text="The 'libs' subset must be built before building this project. Missing artifacts: $(LibrariesAllBinArtifactsPath). Configuration: '$(LibrariesConfiguration)'. To use a different configuration, specify the 'LibrariesConfiguration' property." />
-    <Error Condition="!Exists('$(LibrariesNativeArtifactsPath)')"
+    <Error DeferredCondition="!Exists('$(LibrariesNativeArtifactsPath)')"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LibrariesNativeArtifactsPath)#dir"
            Text="The 'libs' subset must be built before building this project. Missing artifacts: $(LibrariesNativeArtifactsPath). Configuration: '$(LibrariesConfiguration)'. To use a different configuration, specify the 'LibrariesConfiguration' property." />
   </Target>
 
   <Target Name="ResolveLibrariesRefAssembliesFromLocalBuild"
-          DependsOnTargets="EnsureLocalArtifactsExist">
+          DependsOnTargets="EnsureLocalArtifactsExist"
+          PrecomputeInputs="$(LibrariesSharedFrameworkRefArtifactsPath)#dir;$(LibrariesAllRefArtifactsPath)#dir"
+          Deferred="Item:LibrariesRefAssemblies:w">
     <ItemGroup>
-      <LibrariesRefAssemblies Condition="'$(IncludeOOBLibraries)' != 'true'" Include="$(LibrariesSharedFrameworkRefArtifactsPath)*.dll;$(LibrariesSharedFrameworkRefArtifactsPath)*.pdb" />
-      <LibrariesRefAssemblies Condition="'$(IncludeOOBLibraries)' == 'true'" Include="$(LibrariesAllRefArtifactsPath)*.dll;$(LibrariesAllRefArtifactsPath)*.pdb" />
+      <LibrariesRefAssemblies Deferred="true" Condition="'$(IncludeOOBLibraries)' != 'true'" Include="$(LibrariesSharedFrameworkRefArtifactsPath)*.dll;$(LibrariesSharedFrameworkRefArtifactsPath)*.pdb" />
+      <LibrariesRefAssemblies Deferred="true" Condition="'$(IncludeOOBLibraries)' == 'true'" Include="$(LibrariesAllRefArtifactsPath)*.dll;$(LibrariesAllRefArtifactsPath)*.pdb" />
     </ItemGroup>
-    <Error Condition="'@(LibrariesRefAssemblies)' == ''" Text="The 'libs' subset must be built before building this project." />
+    <Error DeferredCondition="'@(LibrariesRefAssemblies)' == ''"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LibrariesSharedFrameworkRefArtifactsPath)#dir;$(LibrariesAllRefArtifactsPath)#dir"
+           Text="The 'libs' subset must be built before building this project." />
   </Target>
 
   <Target Name="ResolveLibrariesRuntimeFilesFromLocalBuild"
           DependsOnTargets="
             EnsureLocalArtifactsExist;
-            EnsureLocalOSGroupConfigurationArchitectureSpecificArtifactsExist">
+            EnsureLocalOSGroupConfigurationArchitectureSpecificArtifactsExist"
+          PrecomputeInputs="$(LibrariesSharedFrameworkBinArtifactsPath)#dir;$(LibrariesAllBinArtifactsPath)#dir;$(LibrariesNativeArtifactsPath)#dir;$(LibrariesSharedFrameworkDir)#dir;$(CoreCLRSharedFrameworkDir)#dir;$(HostSharedFrameworkDir)#dir"
+          Deferred="Item:LibrariesRuntimeFiles:w;Item:ExcludeNativeLibrariesRuntimeFiles:r;Item:ExcludeNativeLibrariesRuntimeFiles:w">
     <ItemGroup>
-      <LibrariesRuntimeFiles Condition="'$(IncludeOOBLibraries)' != 'true'" Include="
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(IncludeOOBLibraries)' != 'true'" Include="
         $(LibrariesSharedFrameworkBinArtifactsPath)*.dll;
         $(LibrariesSharedFrameworkBinArtifactsPath)*.pdb"
         IsNative="" />
-      <LibrariesRuntimeFiles Condition="'$(IncludeOOBLibraries)' == 'true'" Include="
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(IncludeOOBLibraries)' == 'true'" Include="
         $(LibrariesAllBinArtifactsPath)*.dll;
         $(LibrariesAllBinArtifactsPath)*.pdb"
         IsNative="" />
-      <ExcludeNativeLibrariesRuntimeFiles Condition="'$(IncludeOOBLibraries)' != 'true'"
+      <ExcludeNativeLibrariesRuntimeFiles Deferred="true" Condition="'$(IncludeOOBLibraries)' != 'true'"
                                           Include="$(LibrariesNativeArtifactsPath)libSystem.IO.Ports.Native.*" />
 
-      <ExcludeNativeLibrariesRuntimeFiles Condition="'$(RuntimeFlavor)' != 'Mono'"
+      <ExcludeNativeLibrariesRuntimeFiles Deferred="true" Condition="'$(RuntimeFlavor)' != 'Mono'"
                                           Include="$(LibrariesNativeArtifactsPath)System.Globalization.Native.dll;$(LibrariesNativeArtifactsPath)System.Globalization.Native.so;$(LibrariesNativeArtifactsPath)System.Globalization.Native.dylib" />
 
       <!-- For mobile CoreCLR, these native libs are already installed to the CoreCLR shared framework.
            Exclude them from LibrariesRuntimeFiles to avoid duplicate publish output files.
            This does not apply to NativeAOT because we do not reach back into CoreCLR sharedFramework artifacts. -->
-      <ExcludeNativeLibrariesRuntimeFiles Condition="('$(TargetsAppleMobile)' == 'true' or '$(TargetsAndroid)' == 'true') and '$(RuntimeFlavor)' == 'CoreCLR' and '$(BuildNativeAOTRuntimePack)' != 'true'"
+      <ExcludeNativeLibrariesRuntimeFiles Deferred="true" Condition="('$(TargetsAppleMobile)' == 'true' or '$(TargetsAndroid)' == 'true') and '$(RuntimeFlavor)' == 'CoreCLR' and '$(BuildNativeAOTRuntimePack)' != 'true'"
                                           Include="$(LibrariesNativeArtifactsPath)libSystem.Globalization.Native.a;
                                                    $(LibrariesNativeArtifactsPath)libSystem.IO.Compression.Native.a;
                                                    $(LibrariesNativeArtifactsPath)libSystem.Native.a;
@@ -224,17 +241,17 @@
                                                    $(LibrariesNativeArtifactsPath)libbrotlidec.a;
                                                    $(LibrariesNativeArtifactsPath)libbrotlienc.a" />
 
-      <ExcludeNativeLibrariesRuntimeFiles Condition="'$(TargetsAndroid)' == 'true' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(BuildNativeAOTRuntimePack)' != 'true'"
+      <ExcludeNativeLibrariesRuntimeFiles Deferred="true" Condition="'$(TargetsAndroid)' == 'true' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(BuildNativeAOTRuntimePack)' != 'true'"
                                           Include="$(LibrariesNativeArtifactsPath)libSystem.Security.Cryptography.Native.Android.a" />
 
       <!-- Same situation on WASI with CoreCLR: System.IO.Compression.Native/CMakeLists.txt
            installs libSystem.IO.Compression.Native.a and libz.a directly into the
            CoreCLR sharedFramework directory for CLR_CMAKE_TARGET_WASI, where they are
            picked up by RuntimeFiles. Exclude the libs.native copies to avoid duplicates. -->
-      <ExcludeNativeLibrariesRuntimeFiles Condition="'$(TargetsWasi)' == 'true' and '$(RuntimeFlavor)' == 'CoreCLR'"
+      <ExcludeNativeLibrariesRuntimeFiles Deferred="true" Condition="'$(TargetsWasi)' == 'true' and '$(RuntimeFlavor)' == 'CoreCLR'"
                                           Include="$(LibrariesNativeArtifactsPath)libSystem.IO.Compression.Native.a;
                                                    $(LibrariesNativeArtifactsPath)libz.a" />
-      <LibrariesRuntimeFiles Include="
+      <LibrariesRuntimeFiles Deferred="true" Include="
         $(LibrariesNativeArtifactsPath)*.dat;
         $(LibrariesNativeArtifactsPath)*.dll;
         $(LibrariesNativeArtifactsPath)*.dylib;
@@ -245,13 +262,13 @@
         $(LibrariesNativeArtifactsPath)*.pdb"
         IsNative="true"
         Exclude="@(ExcludeNativeLibrariesRuntimeFiles)" />
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'android'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'android'"
                              Include="
         $(LibrariesNativeArtifactsPath)*.dex;
         $(LibrariesNativeArtifactsPath)*.jar;"
         IsNative="true" />
 
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR'"
                              Include="
         $(CoreCLRSharedFrameworkDir)libcoreclr_static.a;
         $(CoreCLRSharedFrameworkDir)libcoreclrminipal.a;
@@ -271,7 +288,7 @@
         IsNative="true" />
 
       <!-- Runtime tests for Helix are built without the host subset, so browser host files are excluded from the runtime tests build -->
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(IsTestsCommonProject)' != 'true'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(IsTestsCommonProject)' != 'true'"
                              Include="
         $(HostSharedFrameworkDir)libBrowserHost.a;
         $(HostSharedFrameworkDir)dotnet.native.js;
@@ -281,18 +298,18 @@
 
       <!-- Headers included by the CoreCLR native relink generated sources (see BrowserWasmApp.CoreCLR.targets).
            The browserhost CMakeLists installs them into the host sharedFramework; mirrors the Mono include\wasm handling. -->
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(IsTestsCommonProject)' != 'true'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(IsTestsCommonProject)' != 'true'"
                              Include="$(HostSharedFrameworkDir)include\callhelpers.hpp"
                              NativeSubDirectory="include"
                              IsNative="true" />
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(IsTestsCommonProject)' != 'true'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(IsTestsCommonProject)' != 'true'"
                              Include="
         $(HostSharedFrameworkDir)include\minipal\entrypoints.h;
         $(HostSharedFrameworkDir)include\minipal\utils.h;"
                              NativeSubDirectory="include\minipal"
                              IsNative="true" />
 
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
                              Include="
         $(LibrariesNativeArtifactsPath)dotnet.d.ts;
         $(LibrariesNativeArtifactsPath)dotnet.js;
@@ -307,7 +324,7 @@
         $(LibrariesNativeArtifactsPath)dotnet.diagnostics.js.map;
         $(LibrariesNativeArtifactsPath)dotnet.native.js.symbols;"
         IsNative="true" />
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
                              Include="
         $(LibrariesNativeArtifactsPath)src\*.c;
         $(LibrariesNativeArtifactsPath)src\*.js;
@@ -316,12 +333,12 @@
         $(LibrariesNativeArtifactsPath)src\wasm-props.json;"
         NativeSubDirectory="src"
         IsNative="true" />
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
                              Include="$(LibrariesNativeArtifactsPath)src\es6\*.js"
                              NativeSubDirectory="src\es6"
                              IsNative="true" />
 
-      <LibrariesRuntimeFiles Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
+      <LibrariesRuntimeFiles Deferred="true" Condition="'$(TargetOS)' == 'browser' and '$(RuntimeFlavor)' == 'Mono'"
                              Include="
         $(LibrariesNativeArtifactsPath)include\wasm\*.h;"
         NativeSubDirectory="include\wasm"
@@ -329,14 +346,14 @@
     </ItemGroup>
 
     <ItemGroup Label="Wasi" Condition="'$(TargetOS)' == 'wasi' and '$(RuntimeFlavor)' == 'Mono'">
-      <LibrariesRuntimeFiles
+      <LibrariesRuntimeFiles Deferred="true"
                              Include="
         $(LibrariesNativeArtifactsPath)dotnet.wasm;
         $(LibrariesNativeArtifactsPath)*.wit;
         $(LibrariesNativeArtifactsPath)*.dat;"
         IsNative="true" />
 
-      <LibrariesRuntimeFiles Include="
+      <LibrariesRuntimeFiles Deferred="true" Include="
         $(LibrariesNativeArtifactsPath)src\wasi-default.rsp;
         $(LibrariesNativeArtifactsPath)src\wasi-link.rsp;
         $(LibrariesNativeArtifactsPath)src\wasm-props.json;
@@ -344,7 +361,7 @@
         NativeSubDirectory="src"
         IsNative="true" />
 
-      <LibrariesRuntimeFiles Include="
+      <LibrariesRuntimeFiles Deferred="true" Include="
         $(LibrariesNativeArtifactsPath)include\wasm\*.h;"
         NativeSubDirectory="include\wasm"
         IsNative="true" />
@@ -353,12 +370,15 @@
     <!-- WASI CoreCLR host archive, staged from the host subset. Excluded from the runtime-tests
          build (which omits the host subset), mirroring the browser libBrowserHost.a handling. -->
     <ItemGroup Condition="'$(TargetOS)' == 'wasi' and '$(RuntimeFlavor)' == 'CoreCLR' and '$(IsTestsCommonProject)' != 'true'">
-      <LibrariesRuntimeFiles Include="$(HostSharedFrameworkDir)libWasiHost.a"
+      <LibrariesRuntimeFiles Deferred="true" Include="$(HostSharedFrameworkDir)libWasiHost.a"
                              IsNative="true" />
     </ItemGroup>
 
 
-    <Error Condition="'@(LibrariesRuntimeFiles)' == ''" Text="The 'libs' subset must be built before building this project." />
+    <Error DeferredCondition="'@(LibrariesRuntimeFiles)' == ''"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LibrariesSharedFrameworkBinArtifactsPath)#dir;$(LibrariesAllBinArtifactsPath)#dir;$(LibrariesNativeArtifactsPath)#dir"
+           Text="The 'libs' subset must be built before building this project." />
   </Target>
 
   <Target Name="ResolveLibrariesFromLocalBuild"
