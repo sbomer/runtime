@@ -71,6 +71,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <CoreCLRPrecomputeBuildMarker Condition="'$(IsPrecomputePhase)' == 'true'">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'precompute', 'runtime-$(TargetOS)-$(TargetArchitecture)-$(CoreCLRConfiguration).complete'))</CoreCLRPrecomputeBuildMarker>
     <LocalAppHostPath>$([MSBuild]::NormalizePath('$(DotNetHostBinDir)', 'apphost$(ExeSuffix)'))</LocalAppHostPath>
     <LocalSingleFileHostPath>$([MSBuild]::NormalizePath('$(CoreCLRArtifactsPath)', 'corehost', 'singlefilehost$(ExeSuffix)'))</LocalSingleFileHostPath>
   </PropertyGroup>
@@ -81,7 +82,7 @@
   </PropertyGroup>
 
   <Target Name="ResolveRuntimeFilesFromLocalBuild"
-          PrecomputeInputs="$(CoreCLRArtifactsPath)#dir"
+          PrecomputeInputs="$(CoreCLRPrecomputeBuildMarker)"
           Deferred="Item:RuntimeFiles:r;Item:RuntimeFiles:w;Item:CoreCLRCrossTargetFiles:w;Item:_systemPrivateCoreLib:w;Property:CoreCLRArtifactsPath:r;Property:RuntimeFlavor:r;Property:CoreCLRConfiguration:r;Property:MonoArtifactsPath:r;Property:MonoConfiguration:r;Property:LibrariesNativeArtifactsPath:r;Property:HostArtifactsPath:r;Property:CoreCLRCrossTargetComponentDirName:r;Property:BuildNativeAOTRuntimePack:r;Property:CoreCLRAotSdkDir:r;Property:PgoInstrument:r;Property:TargetArchitecture:r;Property:TargetsMacCatalyst:r;Property:TargetsiOS:r;Property:TargetstvOS:r;Property:CoreCLRArtifactsPdbDir:r;Property:CoreCLRSharedFrameworkDir:r;Property:LibrariesSharedFrameworkDir:r;Property:HostSharedFrameworkDir:r;Property:CoreCLRSharedFrameworkPdbDir:r;Property:CoreCLRCrossTargetComponentDir:r">
     <Error DeferredCondition="!Exists('$(CoreCLRArtifactsPath)') and '$(RuntimeFlavor)' == 'CoreCLR'"
            PrecomputationMode="Dynamic"

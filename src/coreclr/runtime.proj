@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.Build.NoTargets">
 
   <PropertyGroup>
+    <CoreCLRPrecomputeBuildMarker Condition="'$(IsPrecomputePhase)' == 'true'">$([MSBuild]::NormalizePath('$(ArtifactsObjDir)', 'precompute', 'runtime-$(TargetOS)-$(TargetArchitecture)-$(CoreCLRConfiguration).complete'))</CoreCLRPrecomputeBuildMarker>
     <_BuildNativeTargetOS>$(TargetOS)</_BuildNativeTargetOS>
     <_BuildNativeTargetOS Condition="'$(TargetsLinuxBionic)' == 'true'">linux-bionic</_BuildNativeTargetOS>
     <HasCdacBuildTool Condition="'$(ClrFullNativeBuild)' == 'true' or '$(ClrRuntimeSubset)' == 'true' or '$(ClrDebugSubset)' == 'true' or '$(ClrCrossComponentsSubset)' == 'true' or '$(ClrNativeAotSubset)' == 'true'">true</HasCdacBuildTool>
@@ -20,6 +21,7 @@
   
   <Target Name="BuildRuntime"
           DependsOnTargets="$(BuildRuntimeDependsOnTargets)"
+          PrecomputeOutputs="$(CoreCLRPrecomputeBuildMarker)"
           BeforeTargets="Build">
     <ItemGroup>
       <_CMakeArgs Include="$(CMakeArgs)" />
@@ -124,6 +126,8 @@
           IgnoreStandardErrorWarningFormat="true"
           EnvironmentVariables="EMSDK_PATH=$(EMSDK_PATH)"
           />
+    <Touch Files="$(CoreCLRPrecomputeBuildMarker)"
+           Condition="'$(IsPrecomputePhase)' == 'true'" />
   </Target>
 
   <Target Name="CreateNativeAotBreadcrumbs"
