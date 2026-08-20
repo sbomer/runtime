@@ -82,7 +82,9 @@
           UseHardlinksIfPossible="true" />
   </Target>
 
-  <Target Name="ValidateSharedFramework" AfterTargets="Build">
+  <Target Name="ValidateSharedFramework"
+          AfterTargets="Build"
+          Deferred="Item:_missingSharedFrameworkFile:r;Item:_missingSharedFrameworkFile:w">
     <ItemGroup>
       <!-- exclude private assemblies from ref-->
       <_expectedRef Include="@(NetCoreAppLibrary)" Condition="!$([System.String]::new('%(Identity)').StartsWith('System.Private'))" />
@@ -96,10 +98,15 @@
       <_expectedLib Include="@(NetCoreAppLibrary)" Exclude="System.Private.CoreLib" />
       <_expectedSharedFrameworkFile Include="@(_expectedLib->'$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)%(Identity).dll')" />
 
-      <_missingSharedFrameworkFile Include="@(_expectedSharedFrameworkFile)" Exclude="@(_expectedSharedFrameworkFile->Exists())" />
+      <_missingSharedFrameworkFile Deferred="true"
+                                   Include="@(_expectedSharedFrameworkFile)"
+                                   Condition="!Exists('%(Identity)')" />
     </ItemGroup>
 
-    <Error Text="The shared framework files '@(_missingSharedFrameworkFile)' were missing." Condition="'@(_missingSharedFrameworkFile)' != ''" />
+    <Error Text="The shared framework files '@(_missingSharedFrameworkFile)' were missing."
+           DeferredCondition="'@(_missingSharedFrameworkFile)' != ''"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="@(_expectedSharedFrameworkFile)" />
   </Target>
 
   <Target Name="GetTrimSharedFrameworkAssembliesInputs" DependsOnTargets="ResolveProjectReferences">
