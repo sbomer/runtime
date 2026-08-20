@@ -244,6 +244,8 @@
       <ProjectRuntimeConfigDevFilePath></ProjectRuntimeConfigDevFilePath>
       <ProjectRuntimeConfigFilePath>$(IntermediateOutputPath)$(SharedFrameworkName).runtimeconfig.json</ProjectRuntimeConfigFilePath>
       <ProjectRuntimeConfigFilePath Condition="'$(SharedFrameworkHostFileNameOverride)' != ''">$(IntermediateOutputPath)$(SharedFrameworkHostFileNameOverride).runtimeconfig.json</ProjectRuntimeConfigFilePath>
+      <!-- OutputPath and NoBuild vary between package/publish projections, but do not affect this file. -->
+      <PrecomputeMergeProjectConfiguration Condition="'$(IsPrecomputePhase)' == 'true'">^$(ProjectRuntimeConfigIntermediateOutputPath)</PrecomputeMergeProjectConfiguration>
     </PropertyGroup>
 
     <!-- Remove all runtime config options. SDK sets some of these by default, but those defaults are meant
@@ -251,6 +253,14 @@
     <ItemGroup>
       <RuntimeHostConfigurationOption Remove="@(RuntimeHostConfigurationOption)" />
     </ItemGroup>
+  </Target>
+
+  <Target Name="_ClearRuntimeConfigPrecomputeMerge"
+          AfterTargets="GenerateBuildRuntimeConfigurationFiles"
+          Condition="'$(IsPrecomputePhase)' == 'true' and '$(PlatformPackageType)' == 'RuntimePack'">
+    <PropertyGroup>
+      <PrecomputeMergeProjectConfiguration></PrecomputeMergeProjectConfiguration>
+    </PropertyGroup>
   </Target>
 
   <Target Name="_GenerateSharedFrameworkRuntimeConfigFile"
