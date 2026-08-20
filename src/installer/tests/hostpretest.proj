@@ -19,6 +19,7 @@
     -->
     <MSBuild Projects="@(RuntimeSharedFrameworkProject)"
              Targets="Restore"
+             Condition="'$(IsPrecomputePhase)' != 'true'"
              Properties="MSBuildRestoreSessionId=$([System.Guid]::NewGuid())" />
     <MSBuild Projects="$(InstallerProjectRoot)pkg\sfx\bundle\Microsoft.NETCore.App.Bundle.bundleproj"
              Targets="PublishToDisk"
