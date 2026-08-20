@@ -6,6 +6,10 @@
 
     <!-- Libraries have always added a description set to assembly name so include that here. -->
     <Description Condition="'$(Description)' == ''">$(AssemblyName)</Description>
+
+    <!-- Runtime projects model RIDs through target platforms and supply their own OS attributes. -->
+    <GenerateTargetPlatformAttribute>false</GenerateTargetPlatformAttribute>
+    <GenerateSupportedOSPlatformAttribute Condition="'$(IsTestProject)' == 'true' or '$(AddOSPlatformAttributes)' == 'false'">false</GenerateSupportedOSPlatformAttribute>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(IsTestSupportProject)' != 'true'">
@@ -133,19 +137,6 @@
 
       <!-- Ensure this platform is included in the platforms enabled for the CA1416 analyzer -->
       <SupportedPlatform Include="@(_supportedOSPlatforms)" />
-    </ItemGroup>
-  </Target>
-
-  <!-- Remove assembly level attributes from certain projects.
-       Use a target for that until https://github.com/dotnet/sdk/issues/14836 is implemented. -->
-  <Target Name="RemoveSupportedOSTargetPlatformAttributeFromProjects"
-          AfterTargets="GetAssemblyAttributes"
-          BeforeTargets="CreateGeneratedAssemblyInfoInputsCacheFile">
-    <ItemGroup>
-      <AssemblyAttribute Remove="System.Runtime.Versioning.SupportedOSPlatformAttribute"
-                         Condition="'$(IsTestProject)' == 'true' or '$(AddOSPlatformAttributes)' == 'false'" />
-      <!-- Don't include target platform attributes, since we use the target platform to represent RIDs instead. -->
-      <AssemblyAttribute Remove="System.Runtime.Versioning.TargetPlatformAttribute" />
     </ItemGroup>
   </Target>
 
