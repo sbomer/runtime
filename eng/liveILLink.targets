@@ -35,7 +35,7 @@
                       PrivateAssets="all"
                       Private="false"
                       SetConfiguration="Configuration=$(ToolsConfiguration)"
-                      GlobalPropertiesToRemove="RuntimeIdentifier">
+                      GlobalPropertiesToRemove="RuntimeIdentifier;OutputPath">
         <!-- Keep TFMs in sync with ILLink.Tasks.csproj -->
         <SetTargetFramework Condition="'$(MSBuildRuntimeType)' == 'Core'">TargetFramework=$(NetCoreAppToolCurrent)</SetTargetFramework>
         <SetTargetFramework Condition="'$(MSBuildRuntimeType)' != 'Core'">TargetFramework=$(NetFrameworkToolCurrent)</SetTargetFramework>
@@ -46,14 +46,16 @@
                       ReferenceOutputAssembly="false"
                       Private="false"
                       OutputItemType="Analyzer"
-                      SetConfiguration="Configuration=$(ToolsConfiguration)" />
+                      SetConfiguration="Configuration=$(ToolsConfiguration)"
+                      GlobalPropertiesToRemove="OutputPath" />
 
     <!-- Add the code fix provider for IDE fix suggestions -->
     <ProjectReference Include="$(_ILLinkTasksSourceDir)..\ILLink.CodeFix\ILLink.CodeFixProvider.csproj"
                       ReferenceOutputAssembly="false"
                       Private="false"
                       OutputItemType="Analyzer"
-                      SetConfiguration="Configuration=$(ToolsConfiguration)" />
+                      SetConfiguration="Configuration=$(ToolsConfiguration)"
+                      GlobalPropertiesToRemove="OutputPath" />
   </ItemGroup>
 
 </Project>
