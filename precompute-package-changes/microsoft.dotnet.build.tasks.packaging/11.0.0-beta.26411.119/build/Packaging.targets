@@ -738,7 +738,8 @@
                        OriginalDependencies="@(FilePackageDependency)"
                        PackageIndexes="@(PackageIndex)"
                        SuppressMetaPackages="@(SuppressMetaPackage)"
-                       Apply="$(ApplyMetaPackages)">
+                       Apply="$(ApplyMetaPackages)"
+                       PrecomputationMode="Static">
       <Output TaskParameter="UpdatedDependencies" ItemName="_ConsolidatedDependencies" />
     </ApplyMetaPackages>
 
