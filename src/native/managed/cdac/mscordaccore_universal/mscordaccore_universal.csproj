@@ -41,7 +41,7 @@
           BeforeTargets="PrepareProjectReferences">
     <ItemGroup>
       <ProjectReference Update="@(ProjectReference)">
-        <GlobalPropertiesToRemove>%(GlobalPropertiesToRemove);$(NativeBuildPartitionPropertiesToRemove)</GlobalPropertiesToRemove>
+        <GlobalPropertiesToRemove>%(ProjectReference.GlobalPropertiesToRemove);$(NativeBuildPartitionPropertiesToRemove)</GlobalPropertiesToRemove>
       </ProjectReference>
     </ItemGroup>
   </Target>
