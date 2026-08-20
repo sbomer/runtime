@@ -105,7 +105,9 @@
     </PropertyGroup>
 
     <Error Text="The shared framework must be built before the local targeting pack can be consumed."
-           Condition="!Exists('$(LocalRefPackDir)\data\FrameworkList.xml') and '$(DesignTimeBuild)' != 'true'" />
+           DeferredCondition="!Exists('$(LocalRefPackDir)\data\FrameworkList.xml') and '$(DesignTimeBuild)' != 'true'"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(LocalRefPackDir)\data\FrameworkList.xml" />
 
     <ItemGroup>
       <ResolvedTargetingPack Path="$(LocalRefPackDir.TrimEnd('/\'))"
