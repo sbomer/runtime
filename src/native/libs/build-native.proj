@@ -3,19 +3,20 @@
   <Import Project="$(RepositoryEngineeringDir)native.wasm.targets" Condition="'$(TargetsBrowser)' == 'true' or '$(TargetsWasi)' == 'true'" />
 
   <PropertyGroup>
-    <!-- Hardcode version paths in a global location. -->
+    <_BuildNativeOutConfig>$(NetCoreAppCurrent)-$(TargetOS)-$(Configuration)-$(TargetArchitecture)</_BuildNativeOutConfig>
+    <_BuildNativeObjDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsObjDir)', 'native', '$(_BuildNativeOutConfig)'))</_BuildNativeObjDir>
     <NativeVersionFile Condition="'$(TargetOS)' == 'windows'">$(ArtifactsObjDir)_version.h</NativeVersionFile>
-    <NativeVersionFile Condition="'$(TargetOS)' != 'windows' or '$(TargetsMobile)' == 'true'">$(ArtifactsObjDir)_version.c</NativeVersionFile>
+    <NativeVersionFile Condition="'$(TargetOS)' != 'windows' or '$(TargetsMobile)' == 'true'">$(_BuildNativeObjDir)_version.c</NativeVersionFile>
     <AssemblyName>.NET Runtime</AssemblyName>
     <_BuildNativeTargetOS>$(TargetOS)</_BuildNativeTargetOS>
     <_BuildNativeTargetOS Condition="'$(TargetsLinuxBionic)' == 'true'">linux-bionic</_BuildNativeTargetOS>
-    <_BuildNativeOutConfig>$(NetCoreAppCurrent)-$(TargetOS)-$(Configuration)-$(TargetArchitecture)</_BuildNativeOutConfig>
     <_BuildNativeArgs>$(TargetArchitecture) $(Configuration) outconfig $(_BuildNativeOutConfig) -os $(_BuildNativeTargetOS)</_BuildNativeArgs>
     <_BuildNativeArgs Condition="'$(EnableNativeSanitizers)' != ''">$(_BuildNativeArgs) -fsanitize=$(EnableNativeSanitizers)</_BuildNativeArgs>
     <_BuildNativeArgs Condition="'$(OfficialBuildId)' != ''">$(_BuildNativeArgs) /p:OfficialBuildId="$(OfficialBuildId)"</_BuildNativeArgs>
 
     <_CMakeArgs Condition="'$(CMakeArgs)' != ''"> -cmakeargs "$(CMakeArgs)"</_CMakeArgs>
     <_CMakeArgs Condition="'$(WasmEnableThreads)' == 'true'">$(_CMakeArgs) -cmakeargs "-DCLR_CMAKE_WASM_ENABLE_THREADS=1"</_CMakeArgs>
+    <_CMakeArgs Condition="'$(TargetOS)' != 'windows' or '$(TargetsMobile)' == 'true'">$(_CMakeArgs) -cmakeargs "-DVERSION_FILE_PATH=$(NativeVersionFile)"</_CMakeArgs>
 
     <_BuildNativeArgs>$(_BuildNativeArgs)$(_CMakeArgs) @(NativeCMakeArg, ' ')</_BuildNativeArgs>
     <BuildNativeCommonDependsOnTargets>GenerateNativeVersionFile</BuildNativeCommonDependsOnTargets>
