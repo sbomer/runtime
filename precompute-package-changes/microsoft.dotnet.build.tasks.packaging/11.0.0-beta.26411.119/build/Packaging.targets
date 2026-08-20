@@ -1158,6 +1158,7 @@
 
   <Target Name="ValidateLibraryPackage"
           DependsOnTargets="GetPackageReport"
+          PrecomputeInputs="$(PackageReportPath)"
           Condition="'$(IsFrameworkPackage)' != 'true'">
 
     <ItemGroup>
@@ -1208,6 +1209,7 @@
 
   <Target Name="ValidateFrameworkPackage"
           DependsOnTargets="GetPackageReport"
+          PrecomputeInputs="$(PackageReportPath)"
           Condition="'$(IsFrameworkPackage)' == 'true'">
     <ValidateFrameworkPackage Framework="$(TargetFramework)"
                               Runtime="$(PackageTargetRuntime)"
