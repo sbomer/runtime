@@ -35,22 +35,22 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <PropertyGroup>
+    <AssemblyAttributeOrOperator Condition="'$(MSBuildProjectExtension)' == '.csproj'">|</AssemblyAttributeOrOperator>
+    <AssemblyAttributeOrOperator Condition="'$(MSBuildProjectExtension)' == '.vbproj'">Or</AssemblyAttributeOrOperator>
+  </PropertyGroup>
+
   <Target Name="CalculateIncludeDllSafeSearchPathAttribute"
           DependsOnTargets="ResolveReferences"
           BeforeTargets="GetAssemblyAttributes"
           Condition="'$(IsSourceProject)' == 'true'"
-          Deferred="Item:ReferencePath:r;Property:IncludeDllSafeSearchPathAttribute:r;Property:IncludeDllSafeSearchPathAttribute:w;Item:AssemblyAttribute:w">
+          Deferred="Item:ReferencePath:r;Property:IncludeDllSafeSearchPathAttribute:r;Property:IncludeDllSafeSearchPathAttribute:w;Property:TargetFrameworkIdentifier:r;Property:AssemblyAttributeOrOperator:r;Item:AssemblyAttribute:w">
     <!-- We want to apply the IncludeDllSafeSearchPathAttribute on all source assemblies that may contain DllImport -->
     <PropertyGroup>
       <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'System.Runtime.InteropServices'))">true</IncludeDllSafeSearchPathAttribute>
       <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'System.Private.CoreLib'))">true</IncludeDllSafeSearchPathAttribute>
       <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and '$(TargetFrameworkIdentifier)' == '.NETStandard' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'netstandard'))">true</IncludeDllSafeSearchPathAttribute>
       <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and '$(TargetFrameworkIdentifier)' == '.NETFramework' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'mscorlib'))">true</IncludeDllSafeSearchPathAttribute>
-    </PropertyGroup>
-
-    <PropertyGroup>
-      <AssemblyAttributeOrOperator Condition="'$(MSBuildProjectExtension)' == '.csproj'">|</AssemblyAttributeOrOperator>
-      <AssemblyAttributeOrOperator Condition="'$(MSBuildProjectExtension)' == '.vbproj'">Or</AssemblyAttributeOrOperator>
     </PropertyGroup>
 
     <ItemGroup>
