@@ -76,8 +76,12 @@
     <LocalSingleFileHostPath>$(BootstrapHostDir)/singlefilehost$(ExeSuffix)</LocalSingleFileHostPath>
   </PropertyGroup>
 
-  <Target Name="ResolveRuntimeFilesFromLocalBuild">
-    <Error Condition="!Exists('$(CoreCLRArtifactsPath)') and '$(RuntimeFlavor)' == 'CoreCLR'"
+  <Target Name="ResolveRuntimeFilesFromLocalBuild"
+          PrecomputeInputs="$(CoreCLRArtifactsPath)#dir"
+          Deferred="Item:RuntimeFiles:r;Item:RuntimeFiles:w;Item:CoreCLRCrossTargetFiles:w;Item:_systemPrivateCoreLib:w">
+    <Error DeferredCondition="!Exists('$(CoreCLRArtifactsPath)') and '$(RuntimeFlavor)' == 'CoreCLR'"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(CoreCLRArtifactsPath)#dir"
            Text="The CoreCLR artifacts path does not exist '$(CoreCLRArtifactsPath)'. The 'clr' subset must be built before building this project. Configuration: '$(CoreCLRConfiguration)'. To use a different configuration, specify the 'RuntimeConfiguration' property." />
     <Error Condition="!Exists('$(MonoArtifactsPath)') and '$(RuntimeFlavor)' == 'Mono'"
            Text="The Mono artifacts path does not exist '$(MonoArtifactsPath)'. The 'mono' subset must be built before building this project. Configuration: '$(MonoConfiguration)'. To use a different configuration, specify the 'RuntimeConfiguration' property." />
@@ -108,34 +112,36 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(RuntimeFlavor)' == 'CoreCLR' and '$(BuildNativeAOTRuntimePack)' != 'true'">
-      <RuntimeFiles Include="$(CoreCLRSharedFrameworkDir)*.*" />
-      <RuntimeFiles Condition="'$(PgoInstrument)' == 'true'" Include="$(CoreCLRSharedFrameworkDir)PGD/*" />
-      <CoreCLRCrossTargetFiles Condition="'$(CoreCLRCrossTargetComponentDir)' != ''" Include="$(CoreCLRCrossTargetComponentDir)*.*" IsNative="true" />
-      <RuntimeFiles>
+      <RuntimeFiles Deferred="true" Include="$(CoreCLRSharedFrameworkDir)*.*" />
+      <RuntimeFiles Deferred="true" Condition="'$(PgoInstrument)' == 'true'" Include="$(CoreCLRSharedFrameworkDir)PGD/*" />
+      <CoreCLRCrossTargetFiles Deferred="true" Condition="'$(CoreCLRCrossTargetComponentDir)' != ''" Include="$(CoreCLRCrossTargetComponentDir)*.*" IsNative="true" />
+      <RuntimeFiles Deferred="true">
         <IsNative>true</IsNative>
       </RuntimeFiles>
-      <_systemPrivateCoreLib Include="$(CoreCLRArtifactsPath)System.Private.CoreLib.dll"
+      <_systemPrivateCoreLib Deferred="true"
+                             Include="$(CoreCLRArtifactsPath)System.Private.CoreLib.dll"
                              Condition="Exists('$(CoreCLRArtifactsPath)System.Private.CoreLib.dll')" />
-      <_systemPrivateCoreLib Include="$(CoreCLRArtifactsPath)IL/System.Private.CoreLib.dll"
+      <_systemPrivateCoreLib Deferred="true"
+                             Include="$(CoreCLRArtifactsPath)IL/System.Private.CoreLib.dll"
                              Condition="Exists('$(CoreCLRArtifactsPath)IL/System.Private.CoreLib.dll') and '@(_systemPrivateCoreLib)' == ''" />
-      <RuntimeFiles Include="@(_systemPrivateCoreLib)" />
-      <RuntimeFiles
+      <RuntimeFiles Deferred="true" Include="@(_systemPrivateCoreLib)" />
+      <RuntimeFiles Deferred="true"
         Include="
           $(CoreCLRSharedFrameworkPdbDir)*.pdb;
           $(CoreCLRSharedFrameworkPdbDir)*.dbg;
           $(CoreCLRSharedFrameworkPdbDir)*.dwarf" IsNative="true" />
-      <RuntimeFiles Condition="Exists('$(CoreCLRArtifactsPdbDir)System.Private.CoreLib.pdb')"
+      <RuntimeFiles Deferred="true" Condition="Exists('$(CoreCLRArtifactsPdbDir)System.Private.CoreLib.pdb')"
         Include="$(CoreCLRArtifactsPdbDir)System.Private.CoreLib.pdb" />
-      <RuntimeFiles Condition="Exists('$(CoreCLRArtifactsPdbDir)System.Private.CoreLib.ni.pdb')"
+      <RuntimeFiles Deferred="true" Condition="Exists('$(CoreCLRArtifactsPdbDir)System.Private.CoreLib.ni.pdb')"
         Include="$(CoreCLRArtifactsPdbDir)System.Private.CoreLib.ni.pdb" />
 
-      <CoreCLRCrossTargetFiles Condition="'$(CoreCLRCrossTargetComponentDir)' != ''"
+      <CoreCLRCrossTargetFiles Deferred="true" Condition="'$(CoreCLRCrossTargetComponentDir)' != ''"
         Include="
           $(CoreCLRSharedFrameworkPdbDir)*.pdb;
           $(CoreCLRSharedFrameworkPdbDir)*.dbg;
           $(CoreCLRSharedFrameworkPdbDir)*.dwarf" />
 
-      <CoreCLRCrossTargetFiles>
+      <CoreCLRCrossTargetFiles Deferred="true">
         <TargetPath>runtime/$(CoreCLRCrossTargetComponentDirName)_$(TargetArchitecture)/native</TargetPath>
         <IsNative>true</IsNative>
       </CoreCLRCrossTargetFiles>
@@ -152,7 +158,10 @@
       <MonoBuildFiles Include="$(MonoArtifactsPath)\build\**\*.*" />
     </ItemGroup>
 
-    <Error Condition="'@(RuntimeFiles)' == ''" Text="The '$(RuntimeFlavor)' subset must be built before building this project." />
+    <Error DeferredCondition="'@(RuntimeFiles)' == ''"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(CoreCLRArtifactsPath)#dir"
+           Text="The '$(RuntimeFlavor)' subset must be built before building this project." />
   </Target>
 
   <Target Name="EnsureLocalArtifactsExist">

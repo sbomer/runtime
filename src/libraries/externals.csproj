@@ -84,19 +84,21 @@
   <Target Name="OverrideRuntimeCoreCLR"
           DependsOnTargets="ResolveRuntimeFilesFromLocalBuild"
           AfterTargets="AfterResolveReferences"
-          Condition="'$(RuntimeFlavor)' != 'Mono' and '$(UseNativeAotCoreLib)' != 'true'">
+          Condition="'$(RuntimeFlavor)' != 'Mono' and '$(UseNativeAotCoreLib)' != 'true'"
+          PrecomputeInputs="$(CoreCLRArtifactsPath)#dir"
+          Deferred="Item:RuntimeFiles:r;Item:RuntimeFiles:w;Item:ReferenceCopyLocalPaths:r;Item:ReferenceCopyLocalPaths:w;Item:CoreCLRILFiles:r;Item:CoreCLRILFiles:w">
     <ItemGroup>
-      <RuntimeFiles Include="@(HostFxrFile)" Condition="Exists('@(HostFxrFile)')" />
-      <RuntimeFiles Include="@(HostPolicyFile)" Condition="Exists('@(HostPolicyFile)')" />
-      <RuntimeFiles Include="@(_HostFxrSymbols)" Condition="Exists('%(Identity)')" IsNative="true" />
-      <RuntimeFiles Include="@(_HostPolicySymbols)" Condition="Exists('%(Identity)')" IsNative="true" />
+      <RuntimeFiles Deferred="true" Include="@(HostFxrFile)" Condition="Exists('@(HostFxrFile)')" />
+      <RuntimeFiles Deferred="true" Include="@(HostPolicyFile)" Condition="Exists('@(HostPolicyFile)')" />
+      <RuntimeFiles Deferred="true" Include="@(_HostFxrSymbols)" Condition="Exists('%(Identity)')" IsNative="true" />
+      <RuntimeFiles Deferred="true" Include="@(_HostPolicySymbols)" Condition="Exists('%(Identity)')" IsNative="true" />
       <!-- CoreRun is not used for testing anymore, but we still use it for benchmarking and profiling -->
-      <RuntimeFiles Include="$(CoreCLRArtifactsPath)\corerun*" Condition="'$(TargetsAndroid)' != 'true' and '$(TargetsBrowser)' != 'true'" />
-      <RuntimeFiles Include="$(CoreCLRArtifactsPath)\PDB\corerun*" Condition="'$(TargetsAndroid)' != 'true' and '$(TargetsBrowser)' != 'true'" />
+      <RuntimeFiles Deferred="true" Include="$(CoreCLRArtifactsPath)\corerun*" Condition="'$(TargetsAndroid)' != 'true' and '$(TargetsBrowser)' != 'true'" />
+      <RuntimeFiles Deferred="true" Include="$(CoreCLRArtifactsPath)\PDB\corerun*" Condition="'$(TargetsAndroid)' != 'true' and '$(TargetsBrowser)' != 'true'" />
       <!-- Include cDAC reader library
            TODO: [cdac] Remove once cdacreader is added to shipping shared framework -->
-      <RuntimeFiles Include="$(CoreCLRArtifactsPath)\*mscordaccore_universal*" />
-      <RuntimeFiles Include="$(CoreCLRArtifactsPath)\PDB\*mscordaccore_universal*" />
+      <RuntimeFiles Deferred="true" Include="$(CoreCLRArtifactsPath)\*mscordaccore_universal*" />
+      <RuntimeFiles Deferred="true" Include="$(CoreCLRArtifactsPath)\PDB\*mscordaccore_universal*" />
     </ItemGroup>
     <!-- If the build has native sanitizers, copy over the non-sanitized diagnostic binaries so they can be loaded by a debugger -->
     <ItemGroup Condition="'$(EnableNativeSanitizers)' != ''">
@@ -109,15 +111,18 @@
       <RuntimeFiles Include="$(CoreCLRArtifactsPath)\unsanitized\PDB\*mscordbi*" IsNative="true" />
     </ItemGroup>
     <ItemGroup>
-      <ReferenceCopyLocalPaths Include="@(RuntimeFiles)" />
+      <ReferenceCopyLocalPaths Deferred="true" Include="@(RuntimeFiles)" />
     </ItemGroup>
     <ItemGroup Condition="'$(SwapNativeForIL)' == 'true'">
-      <CoreCLRILFiles Include="$(CoreCLRArtifactsPath)\IL\*.*" />
-      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'@(CoreCLRILFiles->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
-      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'@(CoreCLRILFiles->'%(FileName).ni%(Extension)')' == '%(FileName)%(Extension)'" />
-      <ReferenceCopyLocalPaths Include="@(CoreCLRILFiles)" />
+      <CoreCLRILFiles Deferred="true" Include="$(CoreCLRArtifactsPath)\IL\*.*" />
+      <ReferenceCopyLocalPaths Deferred="true" Remove="@(ReferenceCopyLocalPaths)" Condition="'@(CoreCLRILFiles->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
+      <ReferenceCopyLocalPaths Deferred="true" Remove="@(ReferenceCopyLocalPaths)" Condition="'@(CoreCLRILFiles->'%(FileName).ni%(Extension)')' == '%(FileName)%(Extension)'" />
+      <ReferenceCopyLocalPaths Deferred="true" Include="@(CoreCLRILFiles)" />
     </ItemGroup>
-    <Error Condition="'$(SwapNativeForIL)' == 'true' and '@(CoreCLRILFiles)' == ''" Text="Could not locate CoreCLR IL files." />
+    <Error DeferredCondition="'$(SwapNativeForIL)' == 'true' and '@(CoreCLRILFiles)' == ''"
+           PrecomputationMode="Dynamic"
+           PrecomputeInputs="$(CoreCLRArtifactsPath)IL#dir"
+           Text="Could not locate CoreCLR IL files." />
   </Target>
 
   <Target Name="OverrideRuntimeMono"
