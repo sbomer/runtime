@@ -15,6 +15,8 @@
     <IncludeFallbacksInDepsFile Condition="'$(IncludeFallbacksInDepsFile)' == ''">false</IncludeFallbacksInDepsFile>
     <_GetFilesToPublishDependsOn Condition="'$(IsPrecomputePhase)' == 'true'">_GetAllSharedFrameworkFiles</_GetFilesToPublishDependsOn>
     <_GetFilesToPublishDependsOn Condition="'$(IsPrecomputePhase)' != 'true'">_GetFilesToPublishFromInnerBuild</_GetFilesToPublishDependsOn>
+    <_AddFilesToNuGetPackageDependsOn Condition="'$(IsPrecomputePhase)' == 'true'">_GetAllSharedFrameworkFiles</_AddFilesToNuGetPackageDependsOn>
+    <_AddFilesToNuGetPackageDependsOn Condition="'$(IsPrecomputePhase)' != 'true'">_GetFilesToPackageFromInnerBuild</_AddFilesToNuGetPackageDependsOn>
   </PropertyGroup>
 
 
@@ -392,20 +394,26 @@
   </Target>
 
   <Target Name="_CreatePlatformManifest" DependsOnTargets="_GenerateTemplatedPlatformManifest;_GeneratePlatformManifestFromRuntimePack"
-          Condition="'$(PlatformPackageType)' == 'TargetingPack' and '$(CreatePlatformManifest)' != 'false'">
+          Condition="'$(PlatformPackageType)' == 'TargetingPack' and '$(CreatePlatformManifest)' != 'false'"
+          PrecomputeMerge="^$(IntermediateOutputPath)PlatformManifest.txt"
+          Deferred="Item:_PlatformManifestEntry:r;Item:_PlatformManifestLine:r;Item:_PlatformManifestLine:w;Item:FileWrites:w;Item:FilesToPackage:w">
     <ItemGroup>
+      <_PlatformManifestLine Deferred="true"
+                             Include="%(_PlatformManifestEntry.Identity)|$(PackageId)|%(_PlatformManifestEntry.AssemblyVersion)|%(_PlatformManifestEntry.FileVersion)" />
       <_PlatformManifestFile Include="$(IntermediateOutputPath)PlatformManifest.txt" TargetPath="data" GeneratedBuildFile="true" />
     </ItemGroup>
 
     <WriteLinesToFile
-      Lines="@(_PlatformManifestEntry->'%(Identity)|$(PackageId)|%(AssemblyVersion)|%(FileVersion)')"
+      PrecomputationMode="Dynamic"
+      PrecomputeOutputs="$(IntermediateOutputPath)PlatformManifest.txt"
+      Lines="@(_PlatformManifestLine)"
       File="@(_PlatformManifestFile)"
       WriteOnlyWhenDifferent="true"
       Overwrite="true" />
 
     <ItemGroup>
-      <FileWrites Include="@(_PlatformManifestFile)" />
-      <FilesToPackage Include="@(_PlatformManifestFile)" />
+      <FileWrites Deferred="true" Include="@(_PlatformManifestFile)" />
+      <FilesToPackage Deferred="true" Include="@(_PlatformManifestFile)" />
     </ItemGroup>
   </Target>
 
@@ -455,7 +463,8 @@
 
   <Target Name="_CreateVersionsFile"
           DependsOnTargets="InitializeSourceControlInformationFromSourceControlManager"
-          Condition="'$(DisableSourceLink)' != 'true'">
+          Condition="'$(DisableSourceLink)' != 'true'"
+          PrecomputeMerge="^$(IntermediateOutputPath)$(SharedFrameworkName).versions.txt">
     <ItemGroup>
       <_VersionsFile Include="$(IntermediateOutputPath)$(SharedFrameworkName).versions.txt" TargetPath="" GeneratedBuildFile="true" />
       <!-- The presence of the .version file is used by VS to detect a valid installation of the shared framework into a .NET Runtime/SDK install. -->
@@ -559,31 +568,140 @@
           Deferred="Item:FilesToPackage:r"
           DeferredReturns="Item:FilesToPackage" />
 
-  <Target Name="_AddFilesToNuGetPackage" BeforeTargets="_GetPackageFiles">
-
+  <Target Name="_GetFilesToPackageFromInnerBuild"
+          Condition="'$(IsPrecomputePhase)' != 'true'">
     <MSBuild Projects="$(MSBuildProjectFullPath)"
-          Targets="_GetAllSharedFrameworkFiles"
-          RemoveProperties="NoBuild">
+             Targets="_GetAllSharedFrameworkFiles"
+             RemoveProperties="NoBuild">
       <Output TaskParameter="TargetOutputs" ItemName="_FilesToPackage" />
     </MSBuild>
+  </Target>
+
+  <Target Name="_AddFilesToNuGetPackage"
+          BeforeTargets="_GetPackageFiles"
+          DependsOnTargets="$(_AddFilesToNuGetPackageDependsOn)"
+          Deferred="Item:FilesToPackage:r;Item:_FilesToPackage:r;Item:_FilesToPackage:w;Item:_PackageFiles:w;Item:_TargetPathsToSymbols:w">
+    <RemoveDuplicates PrecomputationMode="Dynamic"
+                      Inputs="@(FilesToPackage)"
+                      Condition="'$(IsPrecomputePhase)' == 'true'">
+      <Output TaskParameter="Filtered" ItemName="_FilesToPackage" />
+    </RemoveDuplicates>
 
     <PropertyGroup>
       <BuildOutputTargetFolder>runtimes/$(RuntimeIdentifier)/lib</BuildOutputTargetFolder>
       <IncludeBuildOutput>true</IncludeBuildOutput>
     </PropertyGroup>
     <ItemGroup>
-      <_PackageFiles Include="@(_FilesToPackage)" PackagePath="%(_FilesToPackage.TargetPath)"
+      <_PackageFiles Deferred="true"
+                    Include="@(_FilesToPackage)" PackagePath="%(_FilesToPackage.TargetPath)"
                     Condition="('%(_FilesToPackage.IsSymbolFile)' != 'true' and '%(_FilesToPackage.PublishOnly)' != 'true') or '%(_FilesToPackage.IncludeAlways)' == 'true'" />
       <!--
            We need to handle symbol files specially so they get correctly filtered out of the implementation package.
            The base of the TargetPath attribute is $(BuildOutputTargetFolder)/%(TargetFramework), so we have to
            modify the TargetPath metadata with that base path in mind.
       -->
-      <_TargetPathsToSymbols Include="@(_FilesToPackage)"
+      <_TargetPathsToSymbols Deferred="true"
+                             Include="@(_FilesToPackage)"
                              Condition="'%(_FilesToPackage.IsSymbolFile)' == 'true' and '%(_FilesToPackage.PublishOnly)' != 'true' and '%(_FilesToPackage.IncludeAlways)' != 'true'"
                              TargetFramework="$(TargetFramework)"
                              TargetPath="$([MSBuild]::MakeRelative($([MSBuild]::NormalizePath('$(BuildOutputTargetFolder)/$(TargetFramework)')), $([MSBuild]::NormalizePath('%(_FilesToPackage.TargetPath)', '%(Filename)%(Extension)'))))"/>
     </ItemGroup>
+  </Target>
+
+  <Target Name="_CalculateInputsOutputsForPack"
+          DependsOnTargets="_GetOutputItemsFromPack"
+          Deferred="Item:_PackageFiles:r;Item:_PackageFilesToExclude:r;Item:_BuildOutputInPackage:r;Item:_TargetPathsToSymbols:r;Item:_SourceFiles:r;Item:_References:r;Item:_OutputPackItems:r;Item:NuGetPackInput:w;Item:NuGetPackOutput:w">
+    <PropertyGroup Condition="$(ContinuePackingAfterGeneratingNuspec) == '' ">
+      <ContinuePackingAfterGeneratingNuspec>false</ContinuePackingAfterGeneratingNuspec>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <NuGetPackInput Deferred="true" Include="$(MSBuildAllProjects)"/>
+      <NuGetPackInput Deferred="true" Include="@(_PackageFiles)"/>
+      <NuGetPackInput Deferred="true" Include="@(_PackageFilesToExclude)"/>
+      <NuGetPackInput Deferred="true" Include="@(_BuildOutputInPackage->'%(FinalOutputPath)')"/>
+      <NuGetPackInput Deferred="true" Include="@(_TargetPathsToSymbols->'%(FinalOutputPath)')"/>
+      <NuGetPackInput Deferred="true" Include="@(_SourceFiles)"/>
+      <NuGetPackInput Deferred="true" Include="@(_References)"/>
+      <NuGetPackOutput Deferred="true" Include="@(_OutputPackItems)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateNuspec"
+          Condition="'$(IsPackable)' == 'true' AND '$(PackageReferenceCompatibleProjectStyle)' == 'true'"
+          DependsOnTargets="$(GenerateNuspecDependsOn);_CalculateInputsOutputsForPack;_GetProjectReferenceVersions;_InitializeNuspecRepositoryInformationProperties"
+          Deferred="Item:_PackageFiles:r;Item:_PackageFilesToExclude:r;Item:_BuildOutputInPackage:r;Item:_ProjectReferencesWithVersions:r;Item:_TargetPathsToSymbols:r;Item:_TargetFrameworks:r;Item:_FrameworksWithSuppressedDependencies:r;Item:_SourceFiles:r;Item:_FrameworkAssemblyReferences:r">
+    <ConvertToAbsolutePath Condition="$(NuspecFile) != ''" Paths="$(NuspecFile)">
+      <Output TaskParameter="AbsolutePaths" PropertyName="NuspecFileAbsolutePath" />
+    </ConvertToAbsolutePath>
+
+    <PropertyGroup>
+      <DeterministicTimestamp Condition="'$(DeterministicTimestamp)' == '' AND '$(SOURCE_DATE_EPOCH)' != ''">$(SOURCE_DATE_EPOCH)</DeterministicTimestamp>
+    </PropertyGroup>
+
+    <PackTask PrecomputationMode="Dynamic"
+              PackItem="$(PackProjectInputFile)"
+              PackageFiles="@(_PackageFiles)"
+              PackageFilesToExclude="@(_PackageFilesToExclude)"
+              PackageVersion="$(PackageVersion)"
+              PackageId="$(PackageId)"
+              Title="$(Title)"
+              Authors="$(Authors)"
+              Description="$(PackageDescription)"
+              Copyright="$(Copyright)"
+              RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+              LicenseUrl="$(PackageLicenseUrl)"
+              ProjectUrl="$(PackageProjectUrl)"
+              IconUrl="$(PackageIconUrl)"
+              ReleaseNotes="$(PackageReleaseNotes)"
+              Tags="$(PackageTags)"
+              DevelopmentDependency="$(DevelopmentDependency)"
+              BuildOutputInPackage="@(_BuildOutputInPackage)"
+              ProjectReferencesWithVersions="@(_ProjectReferencesWithVersions)"
+              TargetPathsToSymbols="@(_TargetPathsToSymbols)"
+              TargetFrameworks="@(_TargetFrameworks)"
+              FrameworksWithSuppressedDependencies="@(_FrameworksWithSuppressedDependencies)"
+              AssemblyName="$(AssemblyName)"
+              PackageOutputPath="$(PackageOutputAbsolutePath)"
+              IncludeSymbols="$(IncludeSymbols)"
+              IncludeSource="$(IncludeSource)"
+              PackageTypes="$(PackageType)"
+              IsTool="$(IsTool)"
+              RepositoryUrl="$(RepositoryUrl)"
+              RepositoryType="$(RepositoryType)"
+              RepositoryBranch="$(RepositoryBranch)"
+              RepositoryCommit="$(RepositoryCommit)"
+              SourceFiles="@(_SourceFiles->Distinct())"
+              NoPackageAnalysis="$(NoPackageAnalysis)"
+              NoDefaultExcludes="$(NoDefaultExcludes)"
+              MinClientVersion="$(MinClientVersion)"
+              Serviceable="$(Serviceable)"
+              FrameworkAssemblyReferences="@(_FrameworkAssemblyReferences)"
+              ContinuePackingAfterGeneratingNuspec="$(ContinuePackingAfterGeneratingNuspec)"
+              NuspecOutputPath="$(NuspecOutputAbsolutePath)"
+              IncludeBuildOutput="$(IncludeBuildOutput)"
+              BuildOutputFolders="$(BuildOutputTargetFolder)"
+              ContentTargetFolders="$(ContentTargetFolders)"
+              RestoreOutputPath="$(RestoreOutputAbsolutePath)"
+              NuspecFile="$(NuspecFileAbsolutePath)"
+              NuspecBasePath="$(NuspecBasePath)"
+              NuspecProperties="$(NuspecProperties)"
+              AllowedOutputExtensionsInPackageBuildOutputFolder="$(AllowedOutputExtensionsInPackageBuildOutputFolder)"
+              AllowedOutputExtensionsInSymbolsPackageBuildOutputFolder="$(AllowedOutputExtensionsInSymbolsPackageBuildOutputFolder)"
+              NoWarn="$(NoWarn)"
+              WarningsAsErrors="$(WarningsAsErrors)"
+              WarningsNotAsErrors="$(WarningsNotAsErrors)"
+              TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
+              OutputFileNamesWithoutVersion="$(OutputFileNamesWithoutVersion)"
+              InstallPackageToOutputPath="$(InstallPackageToOutputPath)"
+              SymbolPackageFormat="$(SymbolPackageFormat)"
+              PackageLicenseFile="$(PackageLicenseFile)"
+              PackageLicenseExpression="$(PackageLicenseExpression)"
+              PackageLicenseExpressionVersion="$(PackageLicenseExpressionVersion)"
+              Readme="$(PackageReadmeFile)"
+              Deterministic="$(Deterministic)"
+              DeterministicTimestamp="$(DeterministicTimestamp)"
+              PackageIcon="$(PackageIcon)" />
   </Target>
 
   <Target Name="_CreateNuGetPackage" Condition="'$(SkipBuild)' != 'true'">
