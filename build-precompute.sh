@@ -61,7 +61,7 @@ if ! grep -Fq 'eng/precompute/ArcadeBuild.targets' "$arcade_build"; then
 fi
 
 PRECOMPUTE_WORK_DIR="$work_root/build" \
-PRECOMPUTE_META_SOURCE_DIRECTORIES="$script_dir/artifacts/obj;$script_dir/artifacts/bin/Crossgen2Tasks/Debug;$git_dir;$git_common_dir" \
+PRECOMPUTE_META_SOURCE_DIRECTORIES="$script_dir/artifacts/obj;$script_dir/artifacts/bin/Crossgen2Tasks/Debug;$script_dir/artifacts/bin/microsoft.netcore.app.ref/data;$git_dir;$git_common_dir" \
 exec "$script_dir/precompute.sh" \
   -- \
   "$arcade_build" \
