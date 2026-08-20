@@ -30,10 +30,6 @@
   <Import Project="$(RepositoryEngineeringDir)resolveContract.targets" Condition="'$(IsSourceProject)' == 'true'" />
   <Import Project="$(RepositoryEngineeringDir)packaging.targets" Condition="'$(IsPackable)' == 'true' and '$(MSBuildProjectExtension)' != '.pkgproj'" />
   <Import Project="$(RepositoryEngineeringDir)slngen.targets" Condition="'$(IsSlnGen)' == 'true'" />
-  <Import Project="$(RepositoryEngineeringDir)precompute\ArcadeBuild.targets"
-          Condition="'$(IsPrecomputePhase)' == 'true' and
-                     '$(MSBuildProjectName)' == 'Build' and
-                     $([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('artifacts/toolset'))" />
 
   <PropertyGroup>
     <NetCoreAppCurrentBuildSettings>$(NetCoreAppCurrent)-$(TargetOS)-$(Configuration)-$(TargetArchitecture)</NetCoreAppCurrentBuildSettings>

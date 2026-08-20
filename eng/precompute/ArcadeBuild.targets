@@ -1,8 +1,6 @@
 <Project>
 
   <Target Name="ExecuteBuildTargets"
-          Inputs="%(ProjectToBuild.BuildStep)"
-          Outputs="unused"
           DependsOnTargets="InitializeSolutionBuildInputs">
     <Message Text="Executing Arcade build step %(ProjectToBuild.BuildStep)" Importance="low" />
     <MSBuild Projects="@(ProjectToBuild)"

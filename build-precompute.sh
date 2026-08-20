@@ -55,6 +55,11 @@ PRECOMPUTE_ADDITIONAL_UNTRACKED_SCOPES="$NUGET_PACKAGES" \
 
 cp -a "$package_changes/." "$NUGET_PACKAGES/"
 
+arcade_precompute_import='  <Import Project="$(RepoRoot)eng/precompute/ArcadeBuild.targets" Condition="'"'"'$(IsPrecomputePhase)'"'"' == '"'"'true'"'"'" />'
+if ! grep -Fq 'eng/precompute/ArcadeBuild.targets' "$arcade_build"; then
+  sed -i "\|</Project>|i\\$arcade_precompute_import" "$arcade_build"
+fi
+
 PRECOMPUTE_WORK_DIR="$work_root/build" \
 PRECOMPUTE_META_SOURCE_DIRECTORIES="$script_dir/artifacts/obj;$script_dir/artifacts/bin/Crossgen2Tasks/Debug;$git_dir;$git_common_dir" \
 exec "$script_dir/precompute.sh" \
