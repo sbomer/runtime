@@ -34,13 +34,14 @@
   <Target Name="CalculateIncludeDllSafeSearchPathAttribute"
           DependsOnTargets="ResolveReferences"
           BeforeTargets="GetAssemblyAttributes"
-          Condition="'$(IsSourceProject)' == 'true'">
+          Condition="'$(IsSourceProject)' == 'true'"
+          Deferred="Item:ReferencePath:r;Property:IncludeDllSafeSearchPathAttribute:r;Property:IncludeDllSafeSearchPathAttribute:w;Item:AssemblyAttribute:w">
     <!-- We want to apply the IncludeDllSafeSearchPathAttribute on all source assemblies that may contain DllImport -->
-    <PropertyGroup Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != ''">
-      <IncludeDllSafeSearchPathAttribute Condition="@(ReferencePath->AnyHaveMetadataValue('Filename', 'System.Runtime.InteropServices'))">true</IncludeDllSafeSearchPathAttribute>
-      <IncludeDllSafeSearchPathAttribute Condition="@(ReferencePath->AnyHaveMetadataValue('Filename', 'System.Private.CoreLib'))">true</IncludeDllSafeSearchPathAttribute>
-      <IncludeDllSafeSearchPathAttribute Condition="'$(TargetFrameworkIdentifier)' == '.NETStandard' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'netstandard'))">true</IncludeDllSafeSearchPathAttribute>
-      <IncludeDllSafeSearchPathAttribute Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'mscorlib'))">true</IncludeDllSafeSearchPathAttribute>
+    <PropertyGroup>
+      <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'System.Runtime.InteropServices'))">true</IncludeDllSafeSearchPathAttribute>
+      <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'System.Private.CoreLib'))">true</IncludeDllSafeSearchPathAttribute>
+      <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and '$(TargetFrameworkIdentifier)' == '.NETStandard' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'netstandard'))">true</IncludeDllSafeSearchPathAttribute>
+      <IncludeDllSafeSearchPathAttribute Deferred="true" Condition="'$(IncludeDllSafeSearchPathAttribute)' == '' and '@(ReferencePath)' != '' and '$(TargetFrameworkIdentifier)' == '.NETFramework' and @(ReferencePath->AnyHaveMetadataValue('Filename', 'mscorlib'))">true</IncludeDllSafeSearchPathAttribute>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -48,8 +49,10 @@
       <AssemblyAttributeOrOperator Condition="'$(MSBuildProjectExtension)' == '.vbproj'">Or</AssemblyAttributeOrOperator>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(IncludeDllSafeSearchPathAttribute)' == 'true'">
-      <AssemblyAttribute Include="System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute">
+    <ItemGroup>
+      <AssemblyAttribute Deferred="true"
+                         Condition="'$(IncludeDllSafeSearchPathAttribute)' == 'true'"
+                         Include="System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute">
         <_Parameter1>System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory $(AssemblyAttributeOrOperator) System.Runtime.InteropServices.DllImportSearchPath.System32</_Parameter1>
         <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
       </AssemblyAttribute>
