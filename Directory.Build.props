@@ -58,6 +58,10 @@
   <!-- Import the Arcade SDK -->
   <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
 
+  <PropertyGroup Condition="'$(IsPrecomputePhase)' == 'true'">
+    <EmbedUntrackedSources>false</EmbedUntrackedSources>
+  </PropertyGroup>
+
   <!-- MSBuild parallelism settings for better build performance.
        See https://devblogs.microsoft.com/cppblog/cpp-build-throughput-investigation-and-tune-up/ -->
   <PropertyGroup>
