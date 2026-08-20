@@ -132,6 +132,7 @@
     <PropertyGroup>
       <SharedFrameworkAssembliesTrimDir>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'illink-$(TargetArchitecture)'))</SharedFrameworkAssembliesTrimDir>
       <SharedFrameworkAssembliesTrimMarkerFile>$(SharedFrameworkAssembliesTrimDir)linker-marker.txt</SharedFrameworkAssembliesTrimMarkerFile>
+      <SharedFrameworkSuppressionsResponseFile>$(SharedFrameworkAssembliesTrimDir)suppressions.rsp</SharedFrameworkSuppressionsResponseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -166,11 +167,17 @@
     </ItemGroup>
 
     <MakeDir Directories="$(SharedFrameworkAssembliesTrimDir)" />
+    <WriteLinesToFile PrecomputationMode="Dynamic"
+                      PrecomputeOutputs="$(SharedFrameworkSuppressionsResponseFile)"
+                      File="$(SharedFrameworkSuppressionsResponseFile)"
+                      Lines="@(_SharedFrameworkSuppressionArgument)"
+                      Overwrite="true"
+                      WriteOnlyWhenDifferent="true" />
     <ILLink PrecomputationMode="Dynamic"
             AssemblyPaths="@(SharedFrameworkAssembly)"
             RootAssemblyNames="@(_SharedFrameworkRootAssemblyName)"
             OutputDirectory="$(SharedFrameworkAssembliesTrimDir)"
-            ExtraArgs="$(SharedFrameworkILLinkArgs) @(_SharedFrameworkSuppressionArgument, ' ')"
+            ExtraArgs="$(SharedFrameworkILLinkArgs) @&quot;$(SharedFrameworkSuppressionsResponseFile)&quot;"
             ToolExe="$(_DotNetHostFileName)"
             ToolPath="$(_DotNetHostDirectory)" />
 

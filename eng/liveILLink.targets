@@ -17,7 +17,7 @@
   <PropertyGroup Condition="'$(_RequiresLiveILLink)' == 'true'">
     <_ILLinkTasksSourceDir>$(ToolsProjectRoot)illink\src\ILLink.Tasks\</_ILLinkTasksSourceDir>
     <ILLinkAnalyzersPropsPath>$(ToolsProjectRoot)illink\src\ILLink.RoslynAnalyzer\build\Microsoft.NET.ILLink.Analyzers.props</ILLinkAnalyzersPropsPath>
-    <_PrecomputeILLinkTasksAssembly Condition="'$(IsPrecomputePhase)' == 'true'">$(ILLinkTasksAssembly)</_PrecomputeILLinkTasksAssembly>
+    <_PrecomputeILLinkTasksAssembly Condition="'$(IsPrecomputePhase)' == 'true'">$([MSBuild]::NormalizePath('$(NUGET_PACKAGES)', 'microsoft.net.illink.tasks', '10.0.7', 'tools', 'net', 'ILLink.Tasks.dll'))</_PrecomputeILLinkTasksAssembly>
   </PropertyGroup>
 
   <Import Project="$(_ILLinkTasksSourceDir)build\Microsoft.NET.ILLink.Tasks.props" Condition="'$(_RequiresLiveILLink)' == 'true'" />

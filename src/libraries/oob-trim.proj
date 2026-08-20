@@ -17,6 +17,7 @@
     <PropertyGroup>
       <OOBAssembliesTrimDir>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'illink-$(TargetArchitecture)'))</OOBAssembliesTrimDir>
       <OOBAssembliesTrimMarkerFile>$(OOBAssembliesTrimDir)marker.txt</OOBAssembliesTrimMarkerFile>
+      <OOBSuppressionsResponseFile>$(OOBAssembliesTrimDir)suppressions.rsp</OOBSuppressionsResponseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -56,12 +57,18 @@
     </ItemGroup>
 
     <MakeDir Directories="$(OOBAssembliesTrimDir)" />
+    <WriteLinesToFile PrecomputationMode="Dynamic"
+                      PrecomputeOutputs="$(OOBSuppressionsResponseFile)"
+                      File="$(OOBSuppressionsResponseFile)"
+                      Lines="@(_OOBSuppressionArgument)"
+                      Overwrite="true"
+                      WriteOnlyWhenDifferent="true" />
     <ILLink PrecomputationMode="Dynamic"
             AssemblyPaths="@(OOBAssemblyToTrim)"
             RootAssemblyNames="@(_OOBRootAssemblyName)"
             ReferenceAssemblyPaths="@(OOBAssemblyReference)"
             OutputDirectory="$(OOBAssembliesTrimDir)"
-            ExtraArgs="$(OOBILLinkArgs) @(_OOBSuppressionArgument, ' ')"
+            ExtraArgs="$(OOBILLinkArgs) @&quot;$(OOBSuppressionsResponseFile)&quot;"
             ToolExe="$(_DotNetHostFileName)"
             ToolPath="$(_DotNetHostDirectory)" />
 
