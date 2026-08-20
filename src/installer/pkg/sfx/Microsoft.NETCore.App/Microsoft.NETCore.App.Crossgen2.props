@@ -22,33 +22,54 @@
   </ItemGroup>
 
   <Target Name="PublishCrossgen"
-          BeforeTargets="GetFilesToPackage">
+          BeforeTargets="GetFilesToPackage"
+          Deferred="Item:_RawCrossgenPublishFiles:r;Item:_CrossgenPublishFiles:w;Item:_CrossgenPublishFiles:r;Item:_DistinctCrossgenPublishFiles:w;Item:_DistinctCrossgenPublishFiles:r;Item:FilesToPackage:w">
     <ItemGroup>
-      <_CrossgenPublishFiles Include="@(_RawCrossgenPublishFiles->'%(OutputPath)')"
+      <_CrossgenPublishFiles Deferred="true"
+                             Include="%(_RawCrossgenPublishFiles.OutputPath)"
                              KeepMetadata="REMOVE_ALL" />
     </ItemGroup>
+    <RemoveDuplicates PrecomputationMode="Dynamic"
+                      Inputs="@(_CrossgenPublishFiles)">
+      <Output TaskParameter="Filtered" ItemName="_DistinctCrossgenPublishFiles" />
+    </RemoveDuplicates>
     <ItemGroup Condition="'$(NativeAotSupported)' != 'true'">
-      <FilesToPackage Include="@(_CrossgenPublishFiles)"
+      <FilesToPackage Deferred="true"
+                      Include="@(_CrossgenPublishFiles)"
                       Exclude="*.pdb;*.h;*.lib"
                       TargetPath="tools/" />
     </ItemGroup>
     <ItemGroup Condition="'$(NativeAotSupported)' == 'true'">
       <!-- Treat all native aot assets as native runtime assets -->
-      <FilesToPackage Include="@(_CrossgenPublishFiles->Distinct())"
-                          Condition="'%(Extension)' != '.pdb'"
-                          TargetPath="tools/" />
+      <FilesToPackage Deferred="true"
+                      Include="@(_DistinctCrossgenPublishFiles)"
+                      Condition="'%(Extension)' != '.pdb'"
+                      TargetPath="tools/" />
     </ItemGroup>
   </Target>
 
-  <Target Name="AddCrossgen2SymbolFilesToPackage" BeforeTargets="GetFilesToPackage" DependsOnTargets="PublishCrossgen">
+  <Target Name="AddCrossgen2SymbolFilesToPackage"
+          BeforeTargets="GetFilesToPackage"
+          DependsOnTargets="PublishCrossgen"
+          Deferred="Item:_CrossgenPublishFiles:r;Item:NativeRuntimeAsset:r;Item:_Crossgen2SymbolFilesToPackage:w;Item:_Crossgen2SymbolFilesToPackage:r;Item:_SymbolFilesToPackage:w">
     <ItemGroup>
-      <_Crossgen2SymbolFilesToPackage Include="@(_CrossgenPublishFiles)" Condition="'%(Extension)' == '.pdb'" />
+      <_Crossgen2SymbolFilesToPackage Deferred="true"
+                                      Include="@(_CrossgenPublishFiles)"
+                                      Condition="'%(Extension)' == '.pdb'" />
       <!-- Symbol files for JIT libraries are placed in a different location for Windows builds -->
-      <_Crossgen2SymbolFilesToPackage Include="@(NativeRuntimeAsset->'$(CoreCLRArtifactsPdbDir)%(FileName).pdb')" Condition="'$(TargetOS)' == 'windows' and '%(FileName)' != 'crossgen2'" />
-      <_Crossgen2SymbolFilesToPackage Include="@(NativeRuntimeAsset->'$(CoreCLRArtifactsPath)%(FileName)%(Extension)$(SymbolsSuffix)')" Condition="'$(TargetOS)' != 'windows' and '%(FileName)' != 'crossgen2'" />
-      <_Crossgen2SymbolFilesToPackage Remove="@(_Crossgen2SymbolFilesToPackage)" Condition="!Exists('%(Identity)')" />
+      <_Crossgen2SymbolFilesToPackage Deferred="true"
+                                      Include="$(CoreCLRArtifactsPdbDir)%(NativeRuntimeAsset.FileName).pdb"
+                                      Condition="'$(TargetOS)' == 'windows' and '%(NativeRuntimeAsset.FileName)' != 'crossgen2'" />
+      <_Crossgen2SymbolFilesToPackage Deferred="true"
+                                      Include="$(CoreCLRArtifactsPath)%(NativeRuntimeAsset.FileName)%(NativeRuntimeAsset.Extension)$(SymbolsSuffix)"
+                                      Condition="'$(TargetOS)' != 'windows' and '%(NativeRuntimeAsset.FileName)' != 'crossgen2'" />
+      <_Crossgen2SymbolFilesToPackage Deferred="true"
+                                      Remove="@(_Crossgen2SymbolFilesToPackage)"
+                                      Condition="!Exists('%(Identity)')" />
 
-      <_SymbolFilesToPackage Include="@(_Crossgen2SymbolFilesToPackage)" TargetPath="tools/" />
+      <_SymbolFilesToPackage Deferred="true"
+                             Include="@(_Crossgen2SymbolFilesToPackage)"
+                             TargetPath="tools/" />
     </ItemGroup>
   </Target>
 </Project>
