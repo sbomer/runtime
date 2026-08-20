@@ -828,10 +828,11 @@
   </Target>
 
   <PropertyGroup>
-    <!-- Hardcode version paths in a global location. Condition on running OS to generate the right files for the Mono WASM cross tools. -->
-    <NativeVersionFile Condition="'$(HostOS)' == 'windows'">$(ArtifactsObjDir)_version.h</NativeVersionFile>
-    <NativeVersionFile Condition="'$(HostOS)' != 'windows'">$(ArtifactsObjDir)_version.c</NativeVersionFile>
-    <NativeSourceLinkFile>$(ArtifactsObjDir)native.sourcelink.json</NativeSourceLinkFile>
+    <!-- Condition on running OS to generate the right files for the Mono WASM cross tools. -->
+    <NativeVersionFile Condition="'$(HostOS)' == 'windows'">$(MonoObjDir)_version.h</NativeVersionFile>
+    <NativeVersionFile Condition="'$(HostOS)' != 'windows'">$(MonoObjDir)_version.c</NativeVersionFile>
+    <RuntimeVersionFile>$(MonoObjDir)runtime_version.h</RuntimeVersionFile>
+    <NativeSourceLinkFile>$(MonoObjDir)native.sourcelink.json</NativeSourceLinkFile>
     <VerifySourceLinkFileExists>false</VerifySourceLinkFileExists>
     <VerifySourceLinkFileExists Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(EnableSourceControlManagerQueries)' == 'true'">true</VerifySourceLinkFileExists>
     <AssemblyName>.NET Runtime</AssemblyName>
