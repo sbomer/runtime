@@ -13,6 +13,8 @@
     <_DefaultHostJsonTargetPath>runtimes/$(RuntimeIdentifier)/lib/$(TargetFramework)</_DefaultHostJsonTargetPath>
     <HostJsonTargetPath Condition="'$(HostJsonTargetPath)' == ''">$(_DefaultHostJsonTargetPath)</HostJsonTargetPath>
     <IncludeFallbacksInDepsFile Condition="'$(IncludeFallbacksInDepsFile)' == ''">false</IncludeFallbacksInDepsFile>
+    <_GetFilesToPublishDependsOn Condition="'$(IsPrecomputePhase)' == 'true'">_GetAllSharedFrameworkFiles</_GetFilesToPublishDependsOn>
+    <_GetFilesToPublishDependsOn Condition="'$(IsPrecomputePhase)' != 'true'">_GetFilesToPublishFromInnerBuild</_GetFilesToPublishDependsOn>
   </PropertyGroup>
 
 
@@ -481,27 +483,28 @@
 
   <Target Name="_VerifyClosure"
           DependsOnTargets="GetFilesToPackage"
-          Condition="'$(SkipValidatePackage)' != 'true'">
+          Condition="'$(SkipValidatePackage)' != 'true'"
+          Deferred="Item:FilesToPackage:r;Item:_closureFiles:r;Item:_closureFiles:w;Item:_closureFileNames:r;Item:_closureFileNames:w;Item:_closureFileNamesFiltered:r;Item:_closureFileNamesFiltered:w;Item:_closureFileFiltered:r;Item:_closureFileFiltered:w;Item:ExcludeFromClosure:r;Item:IgnoredReference:r;Item:IgnoredReference:w;Item:RuntimePackAsset:r;Item:Reference:r">
     <ItemGroup>
-      <_closureFiles
+      <_closureFiles Deferred="true"
         Include="@(FilesToPackage)"
         Condition="('%(Extension)' == '.dll' or '%(Extension)' == '$(LibraryFileExtension)') and '%(FilesToPackage.Culture)' == '' and '%(FilesToPackage.ExcludeFromValidation)' != 'true'" />
-      <_closureFileNames Include="@(_closureFiles->'%(FileName)')" Original="%(Identity)" />
+      <_closureFileNames Deferred="true" Include="@(_closureFiles->'%(FileName)')" Original="%(Identity)" />
 
-      <_closureFileNamesFiltered Include="@(_closureFileNames)" Exclude="@(ExcludeFromClosure)"/>
-      <_closureFileFiltered Include="@(_closureFileNamesFiltered->'%(Original)')"/>
+      <_closureFileNamesFiltered Deferred="true" Include="@(_closureFileNames)" Exclude="@(ExcludeFromClosure)"/>
+      <_closureFileFiltered Deferred="true" Include="@(_closureFileNamesFiltered->'%(Original)')"/>
     </ItemGroup>
 
     <ItemGroup Condition="'$(PlatformPackageType)' == 'RuntimePack'">
-      <IgnoredReference Include="@(RuntimePackAsset->'%(FileName)')" />
+      <IgnoredReference Deferred="true" Include="@(RuntimePackAsset->'%(FileName)')" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(PlatformPackageType)' == 'TargetingPack'">
-      <IgnoredReference Include="@(Reference->'%(FileName)')" Condition="'%(Reference.FrameworkReferenceName)' != ''" />
+      <IgnoredReference Deferred="true" Include="@(Reference->'%(FileName)')" Condition="'%(Reference.FrameworkReferenceName)' != ''" />
     </ItemGroup>
 
     <Message Text="Verifying closure of $(PackageId) assemblies" />
-    <VerifyClosure
+    <VerifyClosure PrecomputationMode="Dynamic"
       Sources="@(_closureFileFiltered)"
       IgnoredReferences="@(IgnoredReference)"
       DependencyGraphFilePath="$(IntermediateOutputPath)assembly-graph.dgml" />
@@ -509,31 +512,33 @@
 
   <Target Name="_VerifyNoDuplicateTypes"
           DependsOnTargets="GetFilesToPackage"
-          Condition="'$(SkipValidatePackage)' != 'true'">
+          Condition="'$(SkipValidatePackage)' != 'true'"
+          Deferred="Item:FilesToPackage:r;Item:_dupTypeFiles:r;Item:_dupTypeFiles:w;Item:_dupTypeFileName:r;Item:_dupTypeFileName:w;Item:_dupTypeFileNamesFiltered:r;Item:_dupTypeFileNamesFiltered:w;Item:_dupTypeFileFiltered:r;Item:_dupTypeFileFiltered:w;Item:ExcludeFromDuplicateTypes:r;Item:IgnoredDuplicateType:r">
 
     <ItemGroup>
-      <_dupTypeFiles
+      <_dupTypeFiles Deferred="true"
          Include="@(FilesToPackage)"
          Condition="('%(Extension)' == '.dll' or '%(Extension)' == '$(LibraryFileExtension)') and '%(FilesToPackage.Culture)' == '' and '%(FilesToPackage.ExcludeFromValidation)' != 'true'" />
-      <_dupTypeFileName Include="@(_dupTypeFiles->'%(FileName)')" Original="%(Identity)" />
+      <_dupTypeFileName Deferred="true" Include="@(_dupTypeFiles->'%(FileName)')" Original="%(Identity)" />
 
-      <_dupTypeFileNamesFiltered Include="@(_dupTypeFileName)" Exclude="@(ExcludeFromDuplicateTypes)"/>
-      <_dupTypeFileFiltered Include="@(_dupTypeFileNamesFiltered->'%(Original)')"/>
+      <_dupTypeFileNamesFiltered Deferred="true" Include="@(_dupTypeFileName)" Exclude="@(ExcludeFromDuplicateTypes)"/>
+      <_dupTypeFileFiltered Deferred="true" Include="@(_dupTypeFileNamesFiltered->'%(Original)')"/>
     </ItemGroup>
 
     <Message Text="Verifying no duplicate types in $(PackageId) assemblies" />
-    <VerifyTypes
+    <VerifyTypes PrecomputationMode="Dynamic"
       Sources="@(_dupTypeFileFiltered)"
       IgnoredTypes="@(IgnoredDuplicateType)" />
   </Target>
 
   <Target Name="_ValidateFileVersions"
           DependsOnTargets="GetFilesToPackage"
-          Condition="'$(PermitDllAndExeFilesLackingFileVersion)' != 'true' and '$(PlatformPackageType)' == 'RuntimePack'">
+          Condition="'$(PermitDllAndExeFilesLackingFileVersion)' != 'true' and '$(PlatformPackageType)' == 'RuntimePack'"
+          Deferred="Item:FilesToPackage:r;Item:_filesToVerify:r;Item:_filesToVerify:w">
     <ItemGroup>
-      <_filesToVerify Include="@(FilesToPackage)" Condition="'%(Extension)' == '.dll' or '%(Extension)' == '.exe'" />
+      <_filesToVerify Deferred="true" Include="@(FilesToPackage)" Condition="'%(Extension)' == '.dll' or '%(Extension)' == '.exe'" />
     </ItemGroup>
-    <ValidateFileVersions Files="@(_filesToVerify)" />
+    <ValidateFileVersions PrecomputationMode="Dynamic" Files="@(_filesToVerify)" />
   </Target>
 
 
@@ -550,7 +555,9 @@
                             _VerifyClosure;
                             _VerifyNoDuplicateTypes;
                             _ValidateFileVersions"
-          Returns="@(FilesToPackage)" />
+          Returns="@(FilesToPackage)"
+          Deferred="Item:FilesToPackage:r"
+          DeferredReturns="Item:FilesToPackage" />
 
   <Target Name="_AddFilesToNuGetPackage" BeforeTargets="_GetPackageFiles">
 
@@ -585,38 +592,54 @@
              Properties="NoBuild=true" />
   </Target>
 
-  <Target Name="GetFilesToPublish">
-
+  <Target Name="_GetFilesToPublishFromInnerBuild"
+          Condition="'$(IsPrecomputePhase)' != 'true'">
     <MSBuild Projects="$(MSBuildProjectFullPath)"
-          Targets="_GetAllSharedFrameworkFiles"
-          RemoveProperties="OutputPath;SymbolsOutputPath">
+             Targets="_GetAllSharedFrameworkFiles"
+             RemoveProperties="OutputPath;SymbolsOutputPath">
       <Output TaskParameter="TargetOutputs" ItemName="_FilesToPackage" />
     </MSBuild>
+  </Target>
+
+  <Target Name="GetFilesToPublish"
+          DependsOnTargets="$(_GetFilesToPublishDependsOn)"
+          Deferred="Item:FilesToPackage:r;Item:_FilesToPackage:r;Item:_FilesToPackage:w;Item:_PackagedFilesToPublish:r;Item:_PackagedFilesToPublish:w;Item:FilesToPublish:w">
+    <RemoveDuplicates PrecomputationMode="Dynamic"
+                      Inputs="@(FilesToPackage)"
+                      Condition="'$(IsPrecomputePhase)' == 'true'">
+      <Output TaskParameter="Filtered" ItemName="_FilesToPackage" />
+    </RemoveDuplicates>
 
     <ItemGroup>
-      <_PackagedFilesToPublish Include="@(_FilesToPackage)" Condition="'%(_FilesToPackage.PackOnly)' != 'true'" />
+      <_PackagedFilesToPublish Deferred="true" Include="@(_FilesToPackage)" Condition="'%(_FilesToPackage.PackOnly)' != 'true'" />
     </ItemGroup>
     <ItemGroup Condition="'$(PlatformPackageType)' == 'RuntimePack'">
-      <FilesToPublish Include="@(_PackagedFilesToPublish)"
+      <FilesToPublish Deferred="true"
+                       Include="@(_PackagedFilesToPublish)"
                        Condition="$([System.String]::new('%(_PackagedFilesToPublish.TargetPath)').StartsWith('runtimes/')) or '%(_PackagedFilesToPublish.PublishOnly)' == 'true'"
                        TargetPath="shared/$(SharedFrameworkName)/$(Version)/" />
     </ItemGroup>
     <ItemGroup Condition="'$(PlatformPackageType)' == 'TargetingPack' or '$(PlatformPackageType)' == 'AppHostPack'">
-      <FilesToPublish Include="@(_PackagedFilesToPublish)"
+      <FilesToPublish Deferred="true"
+                      Include="@(_PackagedFilesToPublish)"
                       Condition="'%(_PackagedFilesToPublish.TargetPath)' != ''"
                       TargetPath="packs/$(PackageId)/$(Version)/%(_PackagedFilesToPublish.TargetPath)/"/>
     </ItemGroup>
     <ItemGroup Condition="'$(PlatformPackageType)' == 'ToolPack'">
-      <FilesToPublish Include="@(_PackagedFilesToPublish)"
+      <FilesToPublish Deferred="true"
+                      Include="@(_PackagedFilesToPublish)"
                       Condition="$([System.String]::new('%(_PackagedFilesToPublish.TargetPath)').StartsWith('tools/')) or '%(_PackagedFilesToPublish.PublishOnly)' == 'true'"
                       TargetPath="" />
     </ItemGroup>
   </Target>
 
   <Target Name="PublishToDisk"
-          DependsOnTargets="GetFilesToPublish">
+          DependsOnTargets="GetFilesToPublish"
+          Deferred="Item:FilesToPublish:r">
     <Error Condition="'$(OutputPath)' == ''" Text="Publishing a shared framework to disk requires the OutputPath to be set to the root of the path to write to." />
     <Copy
+      PrecomputationMode="Dynamic"
+      NoPredict="true"
       SourceFiles="@(FilesToPublish)"
       DestinationFolder="$(OutputPath)%(FilesToPublish.TargetPath)%(FilesToPublish.Culture)"
       Condition="('%(FilesToPublish.IsSymbolFile)' != 'true' or '%(FilesToPublish.IncludeAlways)' == 'true') and
@@ -645,9 +668,12 @@
   </Target>
 
   <Target Name="PublishSymbolsToDisk"
-          DependsOnTargets="GetFilesToPublish">
+          DependsOnTargets="GetFilesToPublish"
+          Deferred="Item:FilesToPublish:r">
     <Error Condition="'$(SymbolsOutputPath)' == ''" Text="Publishing a shared framework to disk requires the OutputPath to be set to the root of the path to write to." />
     <Copy
+      PrecomputationMode="Dynamic"
+      NoPredict="true"
       SourceFiles="@(FilesToPublish)"
       DestinationFolder="$(SymbolsOutputPath)%(FilesToPublish.Culture)"
       Condition="'%(FilesToPublish.IsSymbolFile)' == 'true' and
