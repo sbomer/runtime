@@ -18,7 +18,8 @@
     <ProjectReference Include="@(ExternalsProject)" Condition="'$(MSBuildRestoreSessionId)' != ''" />
 
     <!-- Task for building the PlatformManifest and the sfx deps.json -->
-    <ProjectReference Include="$(RepoTasksDir)installer.tasks\installer.tasks.csproj" Condition="'$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == ''" />
+    <ProjectReference Include="$(RepoTasksDir)installer.tasks\installer.tasks.csproj"
+                      Condition="('$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == '') and '$(IsPrecomputePhase)' != 'true'" />
 
     <!-- Hot reload delta generator tool, used by ApplyUpdate test projects -->
     <ProjectReference Include="$(ToolsProjectRoot)hotreload-delta-gen\Microsoft.DotNet.HotReload.Utils.Generator.BuildTool\Microsoft.DotNet.HotReload.Utils.Generator.BuildTool.csproj" />
@@ -80,14 +81,17 @@
   </Target>
 
   <!-- Generate the runtime pack's PlatformManifest -->
-  <UsingTask TaskName="GenerateFileVersionProps" AssemblyFile="$(InstallerTasksAssemblyPath)" Runtime="NET" TaskFactory="TaskHostFactory" />
+  <UsingTask TaskName="GenerateFileVersionProps" AssemblyFile="$(InstallerTasksAssemblyPath)" Runtime="NET" TaskFactory="TaskHostFactory" PrecomputationMode="DynamicLoad" />
   <Target Name="GenerateFileVersionPropsRuntimePack"
           DependsOnTargets="GetSharedFrameworkRuntimeFiles"
           AfterTargets="BuildExternalsProject"
           Inputs="@(SharedFrameworkRuntimeFile)"
           Outputs="$(MicrosoftNetCoreAppRuntimePackDir)data\PlatformManifest.txt"
           Condition="'$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == ''">
-    <GenerateFileVersionProps Files="@(SharedFrameworkRuntimeFile)"
+    <GenerateFileVersionProps PrecomputationMode="DynamicLoad"
+                              PrecomputeInputs="$(InstallerTasksAssemblyPath);@(SharedFrameworkRuntimeFile)"
+                              PrecomputeOutputs="$(MicrosoftNetCoreAppRuntimePackDir)data\PlatformManifest.txt"
+                              Files="@(SharedFrameworkRuntimeFile)"
                               PackageId="$(MicrosoftNetCoreAppFrameworkName).Runtime.$(TargetRid)"
                               PackageVersion="$(ProductVersion)"
                               PlatformManifestFile="$(MicrosoftNetCoreAppRuntimePackDir)data\PlatformManifest.txt"
@@ -102,7 +106,10 @@
           Inputs="@(SharedFrameworkRuntimeFile)"
           Outputs="$(MicrosoftNetCoreAppRefPackDataDir)PlatformManifest.txt"
           Condition="'$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == ''">
-    <GenerateFileVersionProps Files="@(SharedFrameworkRuntimeFile)"
+    <GenerateFileVersionProps PrecomputationMode="DynamicLoad"
+                              PrecomputeInputs="$(InstallerTasksAssemblyPath);@(SharedFrameworkRuntimeFile)"
+                              PrecomputeOutputs="$(MicrosoftNetCoreAppRefPackDataDir)PlatformManifest.txt"
+                              Files="@(SharedFrameworkRuntimeFile)"
                               PackageId="$(MicrosoftNetCoreAppFrameworkName).Ref"
                               PackageVersion="$(ProductVersion)"
                               PlatformManifestFile="$(MicrosoftNetCoreAppRefPackDataDir)PlatformManifest.txt"
@@ -111,14 +118,17 @@
   </Target>
 
   <!-- Generate the shared framework's deps.json -->
-  <UsingTask TaskName="GenerateTestSharedFrameworkDepsFile" AssemblyFile="$(InstallerTasksAssemblyPath)" Runtime="NET" TaskFactory="TaskHostFactory" />
+  <UsingTask TaskName="GenerateTestSharedFrameworkDepsFile" AssemblyFile="$(InstallerTasksAssemblyPath)" Runtime="NET" TaskFactory="TaskHostFactory" PrecomputationMode="DynamicLoad" />
   <Target Name="GenerateTestSharedFrameworkAssets"
           AfterTargets="BuildExternalsProject"
           Inputs="$(NetCoreAppCurrentTestHostSharedFrameworkPath)*.*"
           Outputs="$(NetCoreAppCurrentTestHostSharedFrameworkPath)$(MicrosoftNetCoreAppFrameworkName).deps.json"
           Condition="'$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == ''">
     <!-- Shared framework deps file generation. Produces a test shared-framework deps file. -->
-    <GenerateTestSharedFrameworkDepsFile SharedFrameworkDirectory="$(NetCoreAppCurrentTestHostSharedFrameworkPath)"
+    <GenerateTestSharedFrameworkDepsFile PrecomputationMode="DynamicLoad"
+                                         PrecomputeInputs="$(InstallerTasksAssemblyPath);$(NetCoreAppCurrentTestHostSharedFrameworkPath)#dir"
+                                         PrecomputeOutputs="$(NetCoreAppCurrentTestHostSharedFrameworkPath)$(MicrosoftNetCoreAppFrameworkName).deps.json"
+                                         SharedFrameworkDirectory="$(NetCoreAppCurrentTestHostSharedFrameworkPath)"
                                          RuntimeGraphFiles="$([MSBuild]::ValueOrDefault('$(RuntimeIdentifierGraphPath)', '$(BundledRuntimeIdentifierGraphFile)'))"
                                          TargetRuntimeIdentifier="$(TargetRid)" />
   </Target>
