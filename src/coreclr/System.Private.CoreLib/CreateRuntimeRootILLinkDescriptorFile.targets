@@ -59,7 +59,8 @@
   <Target Name="_CombineILLinkTrimXmlFilePaths"
           DependsOnTargets="ResolveProjectReferences"
           Inputs="@(_ILLinkDescriptorsFilePaths)"
-          Outputs="$(_ILLinkDescriptorsIntermediatePath)">
+          Outputs="$(_ILLinkDescriptorsIntermediatePath)"
+          Deferred="Item:_ILLinkDescriptorsFilePaths:r">
     <CombineLinkerXmlFiles PrecomputationMode="DynamicLoad"
                            PrecomputeInputs="@(_ILLinkDescriptorsFilePaths)"
                            PrecomputeOutputs="$(_ILLinkDescriptorsIntermediatePath)"

@@ -108,7 +108,8 @@
   <Target Name="_CombineILLinkDescriptorsXmls"
           Condition="'@(ILLinkDescriptorsXmls)' != ''"
           Inputs="@(ILLinkDescriptorsXmls)"
-          Outputs="$(ILLinkDescriptorsXmlIntermediatePath)">
+          Outputs="$(ILLinkDescriptorsXmlIntermediatePath)"
+          Deferred="Item:ILLinkDescriptorsXmls:r">
     <PropertyGroup>
       <ILLinkDescriptorsXml>$(ILLinkDescriptorsXmlIntermediatePath)</ILLinkDescriptorsXml>
     </PropertyGroup>
@@ -151,7 +152,8 @@
           DependsOnTargets="GenerateResourcesSubstitutionFile"
           Condition="'@(ILLinkSubstitutionsXmls)' != ''"
           Inputs="@(ILLinkSubstitutionsXmls)"
-          Outputs="$(ILLinkSubstitutionsXmlIntermediatePath)">
+          Outputs="$(ILLinkSubstitutionsXmlIntermediatePath)"
+          Deferred="Item:ILLinkSubstitutionsXmls:r">
     <PropertyGroup>
       <ILLinkSubstitutionsXml>$(ILLinkSubstitutionsXmlIntermediatePath)</ILLinkSubstitutionsXml>
     </PropertyGroup>
@@ -170,7 +172,8 @@
   <Target Name="_CombineILLinkLinkAttributesXmls"
           Condition="'@(ILLinkLinkAttributesXmls)' != ''"
           Inputs="@(ILLinkLinkAttributesXmls)"
-          Outputs="$(ILLinkLinkAttributesXmlIntermediatePath)">
+          Outputs="$(ILLinkLinkAttributesXmlIntermediatePath)"
+          Deferred="Item:ILLinkLinkAttributesXmls:r">
     <PropertyGroup>
       <ILLinkLinkAttributesXml>$(ILLinkLinkAttributesXmlIntermediatePath)</ILLinkLinkAttributesXml>
     </PropertyGroup>
