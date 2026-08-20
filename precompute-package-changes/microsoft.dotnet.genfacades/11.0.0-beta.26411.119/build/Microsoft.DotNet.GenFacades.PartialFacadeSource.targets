@@ -1,0 +1,56 @@
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. -->
+<Project>
+
+  <!-- TODO: Remove Architecture="*" on Runtime="NET" UsingTask declarations below when https://github.com/dotnet/msbuild/issues/13739 is fixed and a new msbuild is consumed with the fix. -->
+  <UsingTask TaskName="GenPartialFacadeSource" AssemblyFile="$(GenFacadesTargetAssemblyPath)" Runtime="NET" Architecture="*" PrecomputationMode="Dynamic" />
+
+  <PropertyGroup>
+    <GenFacadesReferencePathItemName Condition="'$(GenFacadesReferencePathItemName)' == ''">ReferencePath</GenFacadesReferencePathItemName>
+    <GenFacadesReferenceAssemblyItemName Condition="'$(GenFacadesReferenceAssemblyItemName)' == ''">ResolvedMatchingContract</GenFacadesReferenceAssemblyItemName>
+    <!-- Tell ResolveMatchingContract to run and resolve contract to project reference -->
+    <ResolveMatchingContract>true</ResolveMatchingContract>
+    <GeneratePartialFacadeSourceDependsOn>$(GeneratePartialFacadeSourceDependsOn);GeneratePartialFacadeSourceInputs;ResolveMatchingContract;GetGenFacadesRoslynAssembliesPath</GeneratePartialFacadeSourceDependsOn>
+    <CoreCompileDependsOn Condition="'$(DesignTimeBuild)' != 'true'">$(CoreCompileDependsOn);GeneratePartialFacadeSource</CoreCompileDependsOn>
+    <GenFacadesOutputSourcePath Condition="'$(GenFacadesOutputSourcePath)' == ''">$(IntermediateOutputPath)$(AssemblyTitle).Forwards.cs</GenFacadesOutputSourcePath>
+  </PropertyGroup>
+
+  <Target Name="GeneratePartialFacadeSourceInputs">
+    <ItemGroup>
+      <GeneratePartialFacadeSourceInputs Include="$(MSBuildAllProjects)" />
+      <GeneratePartialFacadeSourceInputs Include="@($(GenFacadesReferenceAssemblyItemName))" />
+      <GeneratePartialFacadeSourceInputs Include="@(Compile->WithMetadataValue('ExcludeFromGenFacades', ''))" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(IsPrecomputePhase)' != 'true'">
+      <GeneratePartialFacadeSourceInputs Include="@($(GenFacadesReferencePathItemName))" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GeneratePartialFacadeSource"
+          Inputs="@(GeneratePartialFacadeSourceInputs)"
+          Outputs="$(GenFacadesOutputSourcePath)"
+          PrecomputeMerge="PreCompileGeneration"
+          Deferred="Item:ReferencePathWithRefAssemblies:r;Item:ResolvedMatchingContract:r"
+          PrecomputeInputs="@($(GenFacadesReferenceAssemblyItemName));@(ReferencePathPrecomputeInputs);@(Compile)"
+          DependsOnTargets="$(GeneratePartialFacadeSourceDependsOn)">
+    <GenPartialFacadeSource
+      PrecomputationMode="Dynamic"
+      ReferencePaths="@($(GenFacadesReferencePathItemName))"
+      ReferenceAssembly="@($(GenFacadesReferenceAssemblyItemName))"
+      CompileFiles="@(Compile->WithMetadataValue('ExcludeFromGenFacades', ''))"
+      DefineConstants="$(DefineConstants)"
+      LangVersion="$(LangVersion)"
+      IgnoreMissingTypes="$(GenFacadesIgnoreMissingTypes)"
+      IgnoreMissingTypesList="@(GenFacadesIgnoreMissingType)"
+      OmitTypes="@(GenFacadesOmitType)"
+      OutputSourcePath="$(GenFacadesOutputSourcePath)"
+      SeedTypePreferences="@(SeedTypePreference)"
+      RoslynAssembliesPath="$(GenFacadesRoslynAssembliesPath)" />
+
+    <ItemGroup Condition="'$(GenFacadesAutoIncludeCompileItem)' != 'false'"
+               DeferredCondition="Exists('$(GenFacadesOutputSourcePath)')">
+      <Compile Include="$(GenFacadesOutputSourcePath)" />
+      <FileWrites Include="$(GenFacadesOutputSourcePath)" />
+    </ItemGroup>
+  </Target>
+
+</Project>
