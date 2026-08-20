@@ -19,9 +19,9 @@
     <CopyWasmNativeFilesDependsOn Condition="'$(TargetOS)' == 'windows'">BuildCoreHostOnWindows</CopyWasmNativeFilesDependsOn>
     <CopyWasmNativeFilesDependsOn Condition="'$(TargetOS)' != 'windows'">BuildCoreHostOnUnix</CopyWasmNativeFilesDependsOn>
     <IntermediateOutputRootPath>$(ArtifactsObjDir)$(TargetRid).$(Configuration)\</IntermediateOutputRootPath>
-    <!-- Global location for version files -->
     <NativeVersionFile Condition="$([MSBuild]::IsOsPlatform(Windows))">$(ArtifactsObjDir)_version.h</NativeVersionFile>
-    <NativeVersionFile Condition="!$([MSBuild]::IsOsPlatform(Windows)) or '$(TargetsMobile)' == 'true'">$(ArtifactsObjDir)_version.c</NativeVersionFile>
+    <NativeVersionFile Condition="!$([MSBuild]::IsOsPlatform(Windows)) or '$(TargetsMobile)' == 'true'">$(IntermediateOutputRootPath)_version.c</NativeVersionFile>
+    <RuntimeVersionFile>$(IntermediateOutputRootPath)runtime_version.h</RuntimeVersionFile>
   </PropertyGroup>
 
   <Target Name="CopySingleFileHost" AfterTargets="Build">
@@ -64,6 +64,7 @@
       <_CoreHostUnixTargetOS Condition="'$(TargetsLinuxBionic)' == 'true'">linux-bionic</_CoreHostUnixTargetOS>
       <BuildArgs>$(Configuration) $(TargetArchitecture) -commithash "$([MSBuild]::ValueOrDefault('$(SourceRevisionId)', 'N/A'))" -os $(_CoreHostUnixTargetOS)</BuildArgs>
       <BuildArgs>$(BuildArgs) -cmakeargs "-DVERSION_FILE_PATH=$(NativeVersionFile)"</BuildArgs>
+      <BuildArgs>$(BuildArgs) -cmakeargs "-DRUNTIME_VERSION_HEADER_PATH=$(RuntimeVersionFile)"</BuildArgs>
     </PropertyGroup>
     <PropertyGroup Condition="'$(CxxStandardLibrary)' != ''">
       <BuildArgs>$(BuildArgs) -cmakeargs -DCLR_CMAKE_CXX_STANDARD_LIBRARY=$(CxxStandardLibrary)</BuildArgs>
@@ -114,12 +115,12 @@
   -->
   <Target Name="_BeforeCrossTargetNativeVersionFile" BeforeTargets="GenerateNativeVersionFile" Condition="$([MSBuild]::IsOsPlatform(Windows)) and '$(TargetsMobile)' == 'true'">
     <PropertyGroup>
-      <NativeVersionFile>$(ArtifactsObjDir)_version.h</NativeVersionFile>
+      <NativeVersionFile>$(IntermediateOutputRootPath)_version.h</NativeVersionFile>
     </PropertyGroup>
   </Target>
   <Target Name="_AfterCrossTargetNativeVersionFile" AfterTargets="GenerateNativeVersionFile" Condition="$([MSBuild]::IsOsPlatform(Windows)) and '$(TargetsMobile)' == 'true'">
     <PropertyGroup>
-      <NativeVersionFile>$(ArtifactsObjDir)_version.c</NativeVersionFile>
+      <NativeVersionFile>$(IntermediateOutputRootPath)_version.c</NativeVersionFile>
     </PropertyGroup>
   </Target>
   
