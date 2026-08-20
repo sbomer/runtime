@@ -120,15 +120,18 @@
   <!-- Generate the shared framework's deps.json -->
   <UsingTask TaskName="GenerateTestSharedFrameworkDepsFile" AssemblyFile="$(InstallerTasksAssemblyPath)" Runtime="NET" TaskFactory="TaskHostFactory" PrecomputationMode="DynamicLoad" />
   <Target Name="GenerateTestSharedFrameworkAssets"
+          DependsOnTargets="GetSharedFrameworkRuntimeFiles"
           AfterTargets="BuildExternalsProject"
           Inputs="$(NetCoreAppCurrentTestHostSharedFrameworkPath)*.*"
           Outputs="$(NetCoreAppCurrentTestHostSharedFrameworkPath)$(MicrosoftNetCoreAppFrameworkName).deps.json"
-          Condition="'$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == ''">
+          Condition="'$(BuildTargetFramework)' == '$(NetCoreAppCurrent)' or '$(BuildTargetFramework)' == ''"
+          Deferred="Item:SharedFrameworkRuntimeFile:r">
     <!-- Shared framework deps file generation. Produces a test shared-framework deps file. -->
     <GenerateTestSharedFrameworkDepsFile PrecomputationMode="DynamicLoad"
-                                         PrecomputeInputs="$(InstallerTasksAssemblyPath);$(NetCoreAppCurrentTestHostSharedFrameworkPath)#dir"
+                                         PrecomputeInputs="$(InstallerTasksAssemblyPath);@(SharedFrameworkRuntimeFile)"
                                          PrecomputeOutputs="$(NetCoreAppCurrentTestHostSharedFrameworkPath)$(MicrosoftNetCoreAppFrameworkName).deps.json"
                                          SharedFrameworkDirectory="$(NetCoreAppCurrentTestHostSharedFrameworkPath)"
+                                         SharedFrameworkFiles="@(SharedFrameworkRuntimeFile)"
                                          RuntimeGraphFiles="$([MSBuild]::ValueOrDefault('$(RuntimeIdentifierGraphPath)', '$(BundledRuntimeIdentifierGraphFile)'))"
                                          TargetRuntimeIdentifier="$(TargetRid)" />
   </Target>

@@ -24,6 +24,9 @@ namespace Microsoft.DotNet.Build.Tasks
         public string SharedFrameworkDirectory { get; set; }
 
         [Required]
+        public ITaskItem[] SharedFrameworkFiles { get; set; }
+
+        [Required]
         public string[] RuntimeGraphFiles { get; set; }
 
         [Required]
@@ -53,7 +56,7 @@ namespace Microsoft.DotNet.Build.Tasks
             List<RuntimeFile> runtimeFiles = [];
             List<RuntimeFile> nativeFiles = [];
 
-            foreach (string filePath in Directory.EnumerateFiles(SharedFrameworkDirectory))
+            foreach (string filePath in SharedFrameworkFiles.Select(file => file.ItemSpec))
             {
                 if (ignoredExtensions.Contains(Path.GetExtension(filePath)))
                     continue;
