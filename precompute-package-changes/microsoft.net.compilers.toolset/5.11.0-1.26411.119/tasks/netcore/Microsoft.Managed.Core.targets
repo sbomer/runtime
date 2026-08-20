@@ -126,7 +126,9 @@
 
   <!-- We touch and create a semaphore file after build to indicate the time stamp for last build with skipAnalyzers flag. -->
   <Target Name="_TouchLastBuildWithSkipAnalyzers" Condition="'$(_SkipAnalyzers)' == 'true'" AfterTargets="CoreCompile">
-    <Touch AlwaysCreate="true" Files="$(_LastBuildWithSkipAnalyzers)"/>
+    <Touch AlwaysCreate="true"
+           Files="$(_LastBuildWithSkipAnalyzers)"
+           PrecomputeOutputs="$(_LastBuildWithSkipAnalyzers)"/>
   </Target>
 
   <!--
