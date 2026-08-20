@@ -588,6 +588,14 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="_InitGetFilePackageReferencesOutputs"
+          BeforeTargets="GetFilePackageReferences"
+          PrecomputeMerge="GetFilePackageReferences">
+    <ItemGroup>
+      <_GetFilePackageReferencesOutputs Condition="'$(IsPrecomputePhase)' != 'true'" Include="fake_GetFilePackageReferences" />
+    </ItemGroup>
+  </Target>
+
   <!-- Harvest dependencies from assembly references.
        Assume version of package dependency == assembly version of dependency (3-part).
        For prerelease (not stable) packages apply a pre-release suffix to the dependency -->
@@ -595,7 +603,8 @@
           DependsOnTargets="GetFiles"
           Condition="'$(OmitDependencies)' != 'true'"
           Inputs="%(File.Identity);%(File.TargetFramework)"
-          Outputs="fake">
+          Outputs="@(_GetFilePackageReferencesOutputs)"
+          Deferred="Item:_FilePackageReferenceUnfiltered:w;Item:_FilePackageReference:w">
 
     <PropertyGroup>
       <_TargetFramework>%(File.TargetFramework)</_TargetFramework>
@@ -625,7 +634,8 @@
     <FilterUnknownPackages Condition="'@(_FilePackageReferenceUnfiltered)' != ''"
                            OriginalDependencies="@(_FilePackageReferenceUnfiltered)"
                            BaseLinePackages="@(BaseLinePackage)"
-                           PackageIndexes="@(PackageIndex)">
+                           PackageIndexes="@(PackageIndex)"
+                           PrecomputationMode="Dynamic">
       <Output TaskParameter="FilteredDependencies" ItemName="_FilePackageReference" />
     </FilterUnknownPackages>
 
