@@ -60,6 +60,7 @@
 
   <PropertyGroup Condition="'$(IsPrecomputePhase)' == 'true'">
     <EmbedUntrackedSources>false</EmbedUntrackedSources>
+    <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
 
   <!-- MSBuild parallelism settings for better build performance.
