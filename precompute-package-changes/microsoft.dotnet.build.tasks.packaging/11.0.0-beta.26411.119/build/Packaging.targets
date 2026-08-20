@@ -862,7 +862,8 @@
                            OriginalPackages="@(_thisPackage)"
                            StablePackages="@(StablePackage)"
                            PackageIndexes="@(PackageIndex)"
-                           PreReleaseSuffix="-$(VersionSuffix)" >
+                           PreReleaseSuffix="-$(VersionSuffix)"
+                           PrecomputationMode="Static">
       <Output TaskParameter="UpdatedPackages" ItemName="_thisPackageFinal"/>
     </ApplyPreReleaseSuffix>
 
