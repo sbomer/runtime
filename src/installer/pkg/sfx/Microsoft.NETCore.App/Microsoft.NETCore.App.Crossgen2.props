@@ -17,7 +17,8 @@
     <ProjectReference
       Include="$(CrossgenPublishProject)"
       OutputItemType="_RawCrossgenPublishFiles"
-      ReferenceOutputAssembly="false" />
+      ReferenceOutputAssembly="false"
+      GlobalPropertiesToRemove="OutputPath" />
   </ItemGroup>
 
   <Target Name="PublishCrossgen"
