@@ -164,7 +164,8 @@
            Text="The '$(RuntimeFlavor)' subset must be built before building this project." />
   </Target>
 
-  <Target Name="EnsureLocalArtifactsExist">
+  <Target Name="EnsureLocalArtifactsExist"
+          Deferred="Property:LibrariesSharedFrameworkRefArtifactsPath:r;Property:IncludeOOBLibraries:r;Property:LibrariesAllRefArtifactsPath:r;Property:LibrariesConfiguration:r">
     <Error DeferredCondition="!Exists('$(LibrariesSharedFrameworkRefArtifactsPath)')"
            PrecomputationMode="Dynamic"
            PrecomputeInputs="$(LibrariesSharedFrameworkRefArtifactsPath)#dir"
