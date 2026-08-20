@@ -54,6 +54,7 @@
 
     <Copy
       DeferredCondition="'@(_FilesDiffer)' == 'true'"
+      PrecomputationMode="Dynamic"
       SourceFiles="@(AsnXml -> '$(_AsnIntermediatePath)%(filename).cs')"
       DestinationFiles="@(AsnXml -> '%(Identity).cs')" />
 
@@ -61,8 +62,12 @@
     if they were part of the build input.
     Otherwise, MSBuild will think the output from the target is still out of date, and it will continue to re-run the
     target for all inputs for incremental builds. -->
-    <Touch DeferredCondition="'@(_FilesDiffer)' != 'true'" Files="@(AsnXml -> '%(Identity).cs')" />
+    <Touch DeferredCondition="'@(_FilesDiffer)' != 'true'"
+           PrecomputationMode="Dynamic"
+           Files="@(AsnXml -> '%(Identity).cs')" />
 
-    <Warning DeferredCondition="'@(_FilesDiffer)' == 'true'" Text="AsnXml regenerated files, be sure to check them in: @(AsnXml -> '%(Identity).cs')" />
+    <Warning DeferredCondition="'@(_FilesDiffer)' == 'true'"
+             PrecomputationMode="Dynamic"
+             Text="AsnXml regenerated files, be sure to check them in: @(AsnXml -> '%(Identity).cs')" />
   </Target>
 </Project>
