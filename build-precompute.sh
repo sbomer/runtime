@@ -11,6 +11,9 @@ git_common_dir="$(git -C "$script_dir" rev-parse --path-format=absolute --git-co
 
 export NUGET_PACKAGES="$work_root/nuget-packages"
 mkdir -p "$NUGET_PACKAGES"
+rm -f \
+  "$script_dir/artifacts/bin/Crossgen2Tasks/Debug/Microsoft.NET.CrossGen.props" \
+  "$script_dir/artifacts/bin/Crossgen2Tasks/Debug/Microsoft.NET.CrossGen.targets"
 
 "$script_dir/.dotnet/dotnet" restore \
   "$script_dir/eng/precompute-restore-prerequisites.proj" \
@@ -26,6 +29,7 @@ PRECOMPUTE_ADDITIONAL_UNTRACKED_SCOPES="$NUGET_PACKAGES" \
   -- \
   "$script_dir/Build.proj" \
   "-t:Restore" \
+  "/p:DisableCrossgen2SdkOverride=true" \
   "/p:EmbedProjectAssetsFile=false" \
   "$@"
 
@@ -39,10 +43,20 @@ PRECOMPUTE_ADDITIONAL_UNTRACKED_SCOPES="$NUGET_PACKAGES" \
   "/p:EmbedProjectAssetsFile=false" \
   "$@"
 
+"$work_root/restore/DriverState/dotnet" \
+  "$precompute_msbuild" \
+  "$script_dir/src/tasks/Crossgen2Tasks/Crossgen2Tasks.csproj" \
+  "-t:Build" \
+  "/p:Configuration=Debug" \
+  "/p:Restore=false" \
+  "/p:EmbedProjectAssetsFile=false" \
+  "/p:EnableSourceLink=false" \
+  "$@"
+
 cp -a "$package_changes/." "$NUGET_PACKAGES/"
 
 PRECOMPUTE_WORK_DIR="$work_root/build" \
-PRECOMPUTE_META_SOURCE_DIRECTORIES="$script_dir/artifacts/obj;$git_dir;$git_common_dir" \
+PRECOMPUTE_META_SOURCE_DIRECTORIES="$script_dir/artifacts/obj;$script_dir/artifacts/bin/Crossgen2Tasks/Debug;$git_dir;$git_common_dir" \
 exec "$script_dir/precompute.sh" \
   -- \
   "$arcade_build" \
