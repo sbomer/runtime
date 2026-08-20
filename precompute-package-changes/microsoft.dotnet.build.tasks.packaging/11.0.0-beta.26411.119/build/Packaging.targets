@@ -391,6 +391,7 @@
 
     <!-- Calculate the package version to harvest -->
     <GetLastStablePackage Condition="'$(HarvestVersion)' == ''"
+                          PrecomputationMode="Static"
                           LatestPackages="@(_latestPackage)"
                           StablePackages="@(StablePackage)"
                           PackageIndexes="@(PackageIndex)"
@@ -404,6 +405,7 @@
 
     <!-- Calculate the runtime package versions to use for applicability evaluation -->
     <GetLastStablePackage Condition="'@(HarvestRuntimePackages)' == ''"
+                          PrecomputationMode="Static"
                           LatestPackages="@(_latestRuntimePackages)"
                           StablePackages="@(StablePackage)"
                           PackageIndexes="@(PackageIndex)"
@@ -412,6 +414,7 @@
     </GetLastStablePackage>
 
     <GetLastStablePackage Condition="'@(HarvestAdditionalPackageIds)' != ''"
+                          PrecomputationMode="Static"
                           LatestPackages="@(HarvestAdditionalPackageIds)"
                           StablePackages="@(StablePackage)"
                           PackageIndexes="@(PackageIndex)"
