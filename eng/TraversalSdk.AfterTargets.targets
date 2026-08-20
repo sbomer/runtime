@@ -24,4 +24,48 @@
                       SkipGetTargetFrameworkProperties="false"  />
   </ItemGroup>
 
+  <Target Name="Build"
+          DependsOnTargets="$(BuildDependsOn)"
+          Condition=" '$(IsGraphBuild)' != 'true' "
+          Returns="@(CollectedBuildOutput)"
+          Deferred="Item:CollectedBuildOutput:w"
+          DeferredReturns="Item:CollectedBuildOutput">
+    <MSBuild Projects="@(ProjectReference)"
+             Condition="'%(ProjectReference.Build)' != 'false'"
+             BuildInParallel="$([MSBuild]::ValueOrDefault('%(ProjectReference.BuildInParallel)', '$(BuildInParallel)'))"
+             Properties="%(ProjectReference.SetConfiguration); %(ProjectReference.SetPlatform); %(ProjectReference.SetTargetFramework)"
+             SkipNonexistentProjects="$(SkipNonexistentProjects)"
+             SkipNonexistentTargets="$(SkipNonexistentTargets)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="%(ProjectReference.Targets)"
+             ContinueOnError="$(ContinueOnError)">
+      <Output TaskParameter="TargetOutputs" ItemName="CollectedBuildOutput" />
+    </MSBuild>
+  </Target>
+
+  <Target Name="Rebuild"
+          DependsOnTargets="$(RebuildDependsOn)"
+          Condition=" '$(IsGraphBuild)' != 'true' "
+          Returns="@(CollectedBuildOutput)"
+          Deferred="Item:CollectedBuildOutput:r"
+          DeferredReturns="Item:CollectedBuildOutput" />
+
+  <Target Name="GetTargetPath"
+          DependsOnTargets="$(GetTargetPathDependsOn)"
+          Returns="@(CollectedBuildOutput)"
+          Deferred="Item:CollectedBuildOutput:w"
+          DeferredReturns="Item:CollectedBuildOutput">
+    <MSBuild Projects="@(ProjectReference)"
+             Condition="'%(ProjectReference.Build)' != 'false'"
+             Targets="GetTargetPath"
+             BuildInParallel="$([MSBuild]::ValueOrDefault('%(ProjectReference.BuildInParallel)', '$(BuildInParallel)'))"
+             SkipNonexistentProjects="$(SkipNonexistentProjects)"
+             SkipNonexistentTargets="$(SkipNonexistentTargets)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Properties="%(ProjectReference.SetConfiguration); %(ProjectReference.SetPlatform); %(ProjectReference.SetTargetFramework)"
+             ContinueOnError="$(ContinueOnError)">
+      <Output TaskParameter="TargetOutputs" ItemName="CollectedBuildOutput" />
+    </MSBuild>
+  </Target>
+
 </Project>
