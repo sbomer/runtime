@@ -748,7 +748,8 @@
     <ApplyBaseLine OriginalDependencies="@(_ConsolidatedDependencies)"
                    BaseLinePackages="@(BaseLinePackage)"
                    PackageIndexes="@(PackageIndex)"
-                   Apply="$(BaseLinePackageDependencies)">
+                   Apply="$(BaseLinePackageDependencies)"
+                   PrecomputationMode="Static">
       <Output TaskParameter="BaseLinedDependencies" ItemName="_BaseLinedDependencies" />
     </ApplyBaseLine>
 
