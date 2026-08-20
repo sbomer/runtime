@@ -17,6 +17,7 @@
   <PropertyGroup Condition="'$(_RequiresLiveILLink)' == 'true'">
     <_ILLinkTasksSourceDir>$(ToolsProjectRoot)illink\src\ILLink.Tasks\</_ILLinkTasksSourceDir>
     <ILLinkAnalyzersPropsPath>$(ToolsProjectRoot)illink\src\ILLink.RoslynAnalyzer\build\Microsoft.NET.ILLink.Analyzers.props</ILLinkAnalyzersPropsPath>
+    <_PrecomputeILLinkTasksAssembly Condition="'$(IsPrecomputePhase)' == 'true'">$(ILLinkTasksAssembly)</_PrecomputeILLinkTasksAssembly>
   </PropertyGroup>
 
   <Import Project="$(_ILLinkTasksSourceDir)build\Microsoft.NET.ILLink.Tasks.props" Condition="'$(_RequiresLiveILLink)' == 'true'" />
@@ -24,8 +25,9 @@
   <PropertyGroup Condition="'$(_RequiresLiveILLink)' == 'true'">
     <!-- Don't use SDK's trimming functionality. -->
     <_RequiresILLinkPack>false</_RequiresILLinkPack>
-    <ILLinkTasksAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(ToolsILLinkDir)net\ILLink.Tasks.dll</ILLinkTasksAssembly>
-    <ILLinkTasksAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(ToolsILLinkDir)netframework\ILLink.Tasks.dll</ILLinkTasksAssembly>
+    <ILLinkTasksAssembly Condition="'$(IsPrecomputePhase)' != 'true' and '$(MSBuildRuntimeType)' == 'Core'">$(ToolsILLinkDir)net\ILLink.Tasks.dll</ILLinkTasksAssembly>
+    <ILLinkTasksAssembly Condition="'$(IsPrecomputePhase)' != 'true' and '$(MSBuildRuntimeType)' != 'Core'">$(ToolsILLinkDir)netframework\ILLink.Tasks.dll</ILLinkTasksAssembly>
+    <ILLinkTasksAssembly Condition="'$(IsPrecomputePhase)' == 'true'">$(_PrecomputeILLinkTasksAssembly)</ILLinkTasksAssembly>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(_RequiresLiveILLink)' == 'true'">
