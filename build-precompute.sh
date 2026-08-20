@@ -3,6 +3,7 @@ set -euo pipefail
 
 script_dir="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 arcade_build="$script_dir/artifacts/toolset/11.0.0-beta.26411.119/Build.proj"
+precompute_msbuild="/home/sven/msbr/develop/msbuild/artifacts/bin/bootstrap/core/sdk/11.0.100-dev/MSBuild.dll"
 work_root="/home/sven/msbt/manual-precompute/$(basename "$script_dir")"
 package_changes="$script_dir/precompute-package-changes"
 git_dir="$(git -C "$script_dir" rev-parse --path-format=absolute --git-dir)"
@@ -25,6 +26,16 @@ PRECOMPUTE_ADDITIONAL_UNTRACKED_SCOPES="$NUGET_PACKAGES" \
   -- \
   "$script_dir/Build.proj" \
   "-t:Restore" \
+  "/p:EmbedProjectAssetsFile=false" \
+  "$@"
+
+"$work_root/restore/DriverState/dotnet" \
+  "$precompute_msbuild" \
+  "$script_dir/src/libraries/externals.csproj" \
+  "-t:Restore" \
+  "/p:RestorePackagesPath=$NUGET_PACKAGES" \
+  "/p:RestoreConfigFile=$script_dir/NuGet.config" \
+  "/p:NuGetAudit=false" \
   "/p:EmbedProjectAssetsFile=false" \
   "$@"
 
