@@ -15,6 +15,7 @@
     <DebugType>Portable</DebugType>
 
     <OutputPath Condition="$(MSBuildProjectName.StartsWith('System.Private.'))">$(RuntimeBinDir)/aotsdk/</OutputPath>
+    <UseCommonOutputDirectory Condition="$(MSBuildProjectName.StartsWith('System.Private.'))">true</UseCommonOutputDirectory>
     <Configurations>Debug;Release;Checked</Configurations>
     <Platforms>x64;x86;arm;arm64</Platforms>
 
