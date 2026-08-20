@@ -20,19 +20,28 @@
     <PackageReference Include="Microsoft.DotNet.Build.Tasks.Templating" Version="$(MicrosoftDotNetBuildTasksTemplatingVersion)" />
   </ItemGroup>
 
-  <Target Name="GetGenerateFrameworkListFileInputs">
+  <Target Name="GetGenerateFrameworkListFileInputs"
+          Deferred="Item:SharedFrameworkAssembly:r;Item:SharedFrameworkAnalyzerAssembly:r;Item:SharedFrameworkAssemblyWithReferenceAssembly:w;Item:SharedFrameworkAssemblyWithoutReferenceAssembly:w;Item:FrameworkListInputFile:w">
     <Error Text="Shared framework assemblies must be built before the framework list can be generated."
-           Condition="'@(SharedFrameworkAssembly)' == '' or '@(SharedFrameworkAnalyzerAssembly)' == ''" />
+           DeferredCondition="'@(SharedFrameworkAssembly)' == '' or '@(SharedFrameworkAnalyzerAssembly)' == ''"
+           PrecomputationMode="Dynamic" />
 
     <ItemGroup>
-      <SharedFrameworkAssemblyWithReferenceAssembly Include="@(SharedFrameworkAssembly->WithMetadataValue('IsPrivateAssembly', 'false')->HasMetadata('ReferenceAssembly'))" />
-      <SharedFrameworkAssemblyWithoutReferenceAssembly Include="@(SharedFrameworkAssembly->WithMetadataValue('IsPrivateAssembly', 'false'))"
-                                                       Exclude="@(SharedFrameworkAssemblyWithReferenceAssembly)" />
+      <SharedFrameworkAssemblyWithReferenceAssembly Deferred="true"
+                                                    Include="%(SharedFrameworkAssembly.Identity)"
+                                                    Condition="'%(SharedFrameworkAssembly.IsPrivateAssembly)' == 'false' and '%(SharedFrameworkAssembly.ReferenceAssembly)' != ''" />
+      <SharedFrameworkAssemblyWithoutReferenceAssembly Deferred="true"
+                                                       Include="%(SharedFrameworkAssembly.Identity)"
+                                                       Condition="'%(SharedFrameworkAssembly.IsPrivateAssembly)' == 'false' and '%(SharedFrameworkAssembly.ReferenceAssembly)' == ''" />
 
-      <FrameworkListInputFile Include="@(SharedFrameworkAssemblyWithReferenceAssembly->Metadata('ReferenceAssembly'));
-                                       @(SharedFrameworkAssemblyWithoutReferenceAssembly)"
+      <FrameworkListInputFile Deferred="true"
+                              Include="%(SharedFrameworkAssemblyWithReferenceAssembly.ReferenceAssembly)"
                               TargetPath="ref/$(NetCoreAppCurrent)" />
-      <FrameworkListInputFile Include="@(SharedFrameworkAnalyzerAssembly)"
+      <FrameworkListInputFile Deferred="true"
+                              Include="@(SharedFrameworkAssemblyWithoutReferenceAssembly)"
+                              TargetPath="ref/$(NetCoreAppCurrent)" />
+      <FrameworkListInputFile Deferred="true"
+                              Include="@(SharedFrameworkAnalyzerAssembly)"
                               TargetPath="%(SharedFrameworkAnalyzerAssembly.GeneratorProjectBaseTargetPath)" />
     </ItemGroup>
   </Target>
@@ -41,8 +50,8 @@
   <Target Name="GenerateFrameworkListFile"
           DependsOnTargets="GetGenerateFrameworkListFileInputs"
           AfterTargets="Build"
-          Inputs="@(FrameworkListInputFile)"
-          Outputs="$(FrameworkListOutputPath)">
+          Outputs="$(FrameworkListOutputPath)"
+          Deferred="Item:FrameworkListInputFile:r">
     <ItemGroup>
       <FrameworkListRootAttribute Include="Name" Value="$(NetCoreAppCurrentBrandName)" />
       <FrameworkListRootAttribute Include="TargetFrameworkIdentifier" Value="$(NetCoreAppCurrentIdentifier)" />
@@ -50,7 +59,9 @@
       <FrameworkListRootAttribute Include="FrameworkName" Value="$(MicrosoftNetCoreAppFrameworkName)" />
     </ItemGroup>
 
-    <CreateFrameworkListFile Files="@(FrameworkListInputFile)"
+    <CreateFrameworkListFile PrecomputationMode="Dynamic"
+                             PrecomputeOutputs="$(FrameworkListOutputPath)"
+                             Files="@(FrameworkListInputFile)"
                              TargetFile="$(FrameworkListOutputPath)"
                              TargetFilePrefixes="ref/;runtimes/;analyzers/"
                              RootAttributes="@(FrameworkListRootAttribute)" />
@@ -71,12 +82,18 @@
   </Target>
 
   <!-- Copy the intellisense file to the targeting pack directory. -->
-  <Target Name="CopyDocumentationFiles" AfterTargets="Build">
+  <Target Name="CopyDocumentationFiles"
+          AfterTargets="Build"
+          Deferred="Item:SharedFrameworkAssembly:r;Item:DocumentationFileToCopy:w">
     <ItemGroup>
-      <DocumentationFileToCopy Include="@(SharedFrameworkAssembly->WithMetadataValue('IsPrivateAssembly', 'false')->Metadata('DocFileItem'))" />
+      <DocumentationFileToCopy Deferred="true"
+                               Include="%(SharedFrameworkAssembly.DocFileItem)"
+                               Condition="'%(SharedFrameworkAssembly.IsPrivateAssembly)' == 'false' and '%(SharedFrameworkAssembly.DocFileItem)' != ''" />
     </ItemGroup>
 
-    <Copy SourceFiles="@(DocumentationFileToCopy)"
+    <Copy PrecomputationMode="Dynamic"
+          NoPredict="true"
+          SourceFiles="@(DocumentationFileToCopy)"
           DestinationFolder="$(MicrosoftNetCoreAppRefPackRefDir)"
           SkipUnchangedFiles="true"
           UseHardlinksIfPossible="true" />
@@ -109,46 +126,53 @@
            PrecomputeInputs="@(_expectedSharedFrameworkFile)" />
   </Target>
 
-  <Target Name="GetTrimSharedFrameworkAssembliesInputs" DependsOnTargets="ResolveProjectReferences">
+  <Target Name="GetTrimSharedFrameworkAssembliesInputs"
+          DependsOnTargets="ResolveProjectReferences"
+          Deferred="Item:SharedFrameworkAssembly:r;Item:SharedFrameworkSuppressionsXml:w">
     <PropertyGroup>
       <SharedFrameworkAssembliesTrimDir>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'illink-$(TargetArchitecture)'))</SharedFrameworkAssembliesTrimDir>
       <SharedFrameworkAssembliesTrimMarkerFile>$(SharedFrameworkAssembliesTrimDir)linker-marker.txt</SharedFrameworkAssembliesTrimMarkerFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <SharedFrameworkSuppressionsXml Include="@(SharedFrameworkAssembly->Metadata('ILLinkSuppressionsXmls'))" />
-      <SharedFrameworkSuppressionsXml Include="$(CoreLibSharedDir)ILLink\ILLink.Suppressions.LibraryBuild.xml" />
+      <SharedFrameworkSuppressionsXml Deferred="true"
+                                      Include="%(SharedFrameworkAssembly.ILLinkSuppressionsXmls)"
+                                      Condition="'%(SharedFrameworkAssembly.ILLinkSuppressionsXmls)' != ''" />
+      <SharedFrameworkSuppressionsXml Deferred="true"
+                                      Include="$(CoreLibSharedDir)ILLink\ILLink.Suppressions.LibraryBuild.xml" />
     </ItemGroup>
   </Target>
 
   <Target Name="TrimSharedFrameworkAssemblies"
           AfterTargets="Build"
           DependsOnTargets="ResolveProjectReferences;GetTrimSharedFrameworkAssembliesInputs;PrepareForAssembliesTrim"
-          Inputs="@(SharedFrameworkAssembly);@(SharedFrameworkSuppressionsXml);$(ILLinkTasksAssembly)"
-          Outputs="$(SharedFrameworkAssembliesTrimMarkerFile)">
+          Outputs="$(SharedFrameworkAssembliesTrimMarkerFile)"
+          Deferred="Item:SharedFrameworkAssembly:r;Item:SharedFrameworkAssembly:w;Item:SharedFrameworkSuppressionsXml:r;Item:_SharedFrameworkSuppressionArgument:w;Item:_SharedFrameworkSuppressionArgument:r;Item:_SharedFrameworkRootAssemblyName:w;Item:_SharedFrameworkRootAssemblyName:r">
     <Message Text="$(MSBuildProjectName) -> Trimming $(TargetRid) shared framework assemblies with ILLinker..." Importance="high" />
 
     <PropertyGroup>
       <SharedFrameworkILLinkArgs>$(ILLinkArgs)</SharedFrameworkILLinkArgs>
-      <!-- update debug symbols -->
       <SharedFrameworkILLinkArgs>$(SharedFrameworkILLinkArgs) -b true</SharedFrameworkILLinkArgs>
-      <SharedFrameworkILLinkArgs Condition="'@(SharedFrameworkSuppressionsXml)' != ''" >$(SharedFrameworkILLinkArgs) --link-attributes "@(SharedFrameworkSuppressionsXml, '" --link-attributes "')"</SharedFrameworkILLinkArgs>
     </PropertyGroup>
 
     <ItemGroup>
-      <SharedFrameworkAssembly RootMode="library" />
-      <_SharedFrameworkRootAssemblyName Include="@(SharedFrameworkAssembly->'%(Filename)')">
+      <SharedFrameworkAssembly Deferred="true" RootMode="library" />
+      <_SharedFrameworkSuppressionArgument Deferred="true"
+                                           Include="--link-attributes &quot;%(SharedFrameworkSuppressionsXml.Identity)&quot;" />
+      <_SharedFrameworkRootAssemblyName Deferred="true"
+                                        Include="%(SharedFrameworkAssembly.Filename)">
         <RootMode>library</RootMode>
       </_SharedFrameworkRootAssemblyName>
     </ItemGroup>
 
     <MakeDir Directories="$(SharedFrameworkAssembliesTrimDir)" />
-    <ILLink AssemblyPaths="@(SharedFrameworkAssembly)"
-        RootAssemblyNames="@(_SharedFrameworkRootAssemblyName)"
-        OutputDirectory="$(SharedFrameworkAssembliesTrimDir)"
-        ExtraArgs="$(SharedFrameworkILLinkArgs)"
-        ToolExe="$(_DotNetHostFileName)"
-        ToolPath="$(_DotNetHostDirectory)" />
+    <ILLink PrecomputationMode="Dynamic"
+            AssemblyPaths="@(SharedFrameworkAssembly)"
+            RootAssemblyNames="@(_SharedFrameworkRootAssemblyName)"
+            OutputDirectory="$(SharedFrameworkAssembliesTrimDir)"
+            ExtraArgs="$(SharedFrameworkILLinkArgs) @(_SharedFrameworkSuppressionArgument, ' ')"
+            ToolExe="$(_DotNetHostFileName)"
+            ToolPath="$(_DotNetHostDirectory)" />
 
     <!-- Create a marker file which serves as the target's output to enable incremental builds. -->  
     <Touch Files="$(SharedFrameworkAssembliesTrimMarkerFile)"
