@@ -12,47 +12,58 @@
   </ItemGroup>
 
   <Target Name="GetTrimOOBAssembliesInputs"
-          DependsOnTargets="ResolveProjectReferences">
+          DependsOnTargets="ResolveProjectReferences"
+          Deferred="Item:OOBAssembly:r;Item:SharedFrameworkAssembly:r;Item:OOBLibrarySuppressionsXml:w;Item:OOBAssemblyToTrim:w;Item:OOBAssemblyReference:w">
     <PropertyGroup>
       <OOBAssembliesTrimDir>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'illink-$(TargetArchitecture)'))</OOBAssembliesTrimDir>
       <OOBAssembliesTrimMarkerFile>$(OOBAssembliesTrimDir)marker.txt</OOBAssembliesTrimMarkerFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <OOBLibrarySuppressionsXml Include="@(OOBAssembly->Metadata('ILLinkSuppressionsXmls'))" />
+      <OOBLibrarySuppressionsXml Deferred="true"
+                                 Include="%(OOBAssembly.ILLinkSuppressionsXmls)"
+                                 Condition="'%(OOBAssembly.ILLinkSuppressionsXmls)' != ''" />
 
-      <OOBAssemblyToTrim Include="@(OOBAssembly->WithMetadataValue('IsTrimmable', 'true'))" />
-      <OOBAssemblyReference Include="@(OOBAssembly->WithMetadataValue('IsTrimmable', 'false'));
-                                     @(SharedFrameworkAssembly)" />
+      <OOBAssemblyToTrim Deferred="true"
+                         Include="%(OOBAssembly.Identity)"
+                         Condition="'%(OOBAssembly.IsTrimmable)' == 'true'" />
+      <OOBAssemblyReference Deferred="true"
+                            Include="%(OOBAssembly.Identity)"
+                            Condition="'%(OOBAssembly.IsTrimmable)' == 'false'" />
+      <OOBAssemblyReference Deferred="true"
+                            Include="@(SharedFrameworkAssembly)" />
     </ItemGroup>
   </Target>
 
   <Target Name="TrimOOBAssemblies"
           AfterTargets="Build"
           DependsOnTargets="GetTrimOOBAssembliesInputs;PrepareForAssembliesTrim"
-          Inputs="$(ILLinkTasksAssembly);@(OOBAssemblyToTrim);@(OOBAssemblyReference);@(OOBLibrarySuppressionsXml)"
-          Outputs="$(OOBAssembliesTrimMarkerFile)">
+          Outputs="$(OOBAssembliesTrimMarkerFile)"
+          Deferred="Item:OOBAssemblyToTrim:r;Item:OOBAssemblyReference:r;Item:OOBLibrarySuppressionsXml:r;Item:_OOBSuppressionArgument:w;Item:_OOBSuppressionArgument:r;Item:_OOBRootAssemblyName:w;Item:_OOBRootAssemblyName:r">
     <Message Text="$(MSBuildProjectName) -> Trimming $(TargetRid) out-of-band assemblies with ILLinker..." Importance="high" />
 
     <PropertyGroup>
       <OOBILLinkArgs>$(ILLinkArgs)</OOBILLinkArgs>
       <!-- Unnecessary suppressions - disable for now since we didn't clean the runtime yet -->
       <OOBILLinkArgs>$(ILLinkArgs) --nowarn IL2121</OOBILLinkArgs>
-      <OOBILLinkArgs Condition="'@(OOBLibrarySuppressionsXml)' != ''" >$(OOBILLinkArgs) --link-attributes "@(OOBLibrarySuppressionsXml->'%(FullPath)', '" --link-attributes "')"</OOBILLinkArgs>
     </PropertyGroup>
 
     <ItemGroup>
-      <_OOBRootAssemblyName Include="@(OOBAssemblyToTrim->'%(Filename)')" />
+      <_OOBSuppressionArgument Deferred="true"
+                               Include="--link-attributes &quot;%(OOBLibrarySuppressionsXml.FullPath)&quot;" />
+      <_OOBRootAssemblyName Deferred="true"
+                            Include="%(OOBAssemblyToTrim.Filename)" />
     </ItemGroup>
 
     <MakeDir Directories="$(OOBAssembliesTrimDir)" />
-    <ILLink AssemblyPaths="@(OOBAssemblyToTrim)"
-        RootAssemblyNames="@(_OOBRootAssemblyName)"
-        ReferenceAssemblyPaths="@(OOBAssemblyReference)"
-        OutputDirectory="$(OOBAssembliesTrimDir)"
-        ExtraArgs="$(OOBILLinkArgs)"
-        ToolExe="$(_DotNetHostFileName)"
-        ToolPath="$(_DotNetHostDirectory)" />
+    <ILLink PrecomputationMode="Dynamic"
+            AssemblyPaths="@(OOBAssemblyToTrim)"
+            RootAssemblyNames="@(_OOBRootAssemblyName)"
+            ReferenceAssemblyPaths="@(OOBAssemblyReference)"
+            OutputDirectory="$(OOBAssembliesTrimDir)"
+            ExtraArgs="$(OOBILLinkArgs) @(_OOBSuppressionArgument, ' ')"
+            ToolExe="$(_DotNetHostFileName)"
+            ToolPath="$(_DotNetHostDirectory)" />
 
     <!-- Create a marker file which serves as the target's output to enable incremental builds. -->
     <Touch Files="$(OOBAssembliesTrimMarkerFile)"
