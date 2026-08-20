@@ -882,7 +882,8 @@
     </ItemGroup>
 
     <GetMinimumNETStandard Condition="'$(MinimumNETStandard)' == ''"
-                           Frameworks="@(_referenceFrameworks)">
+                           Frameworks="@(_referenceFrameworks)"
+                           PrecomputationMode="Static">
       <Output TaskParameter="MinimumNETStandard" PropertyName="MinimumNETStandard"/>
     </GetMinimumNETStandard>
 
