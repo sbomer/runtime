@@ -1,0 +1,17 @@
+<Project>
+  <ItemGroup>
+    <ProjectReference Update="@(ProjectReference)">
+      <GlobalPropertiesToRemove>%(ProjectReference.GlobalPropertiesToRemove);$(NativeBuildPartitionPropertiesToRemove)</GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Target Name="RemoveNativeBuildPartitionPropertiesFromTransitiveProjectReferences"
+          AfterTargets="IncludeTransitiveProjectReferences"
+          BeforeTargets="_GetProjectReferenceTargetFrameworkProperties">
+    <ItemGroup>
+      <ProjectReference Update="@(ProjectReference)">
+        <GlobalPropertiesToRemove>%(ProjectReference.GlobalPropertiesToRemove);$(NativeBuildPartitionPropertiesToRemove)</GlobalPropertiesToRemove>
+      </ProjectReference>
+    </ItemGroup>
+  </Target>
+</Project>

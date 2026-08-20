@@ -37,14 +37,5 @@
     <ProjectReference Include="..\Microsoft.Diagnostics.DataContractReader.Legacy\Microsoft.Diagnostics.DataContractReader.Legacy.csproj" GlobalPropertiesToRemove="RuntimeIdentifier" />
   </ItemGroup>
 
-  <Target Name="RemoveNativeBuildPartitionPropertiesFromProjectReferences"
-          BeforeTargets="PrepareProjectReferences">
-    <ItemGroup>
-      <ProjectReference Update="@(ProjectReference)">
-        <GlobalPropertiesToRemove>%(ProjectReference.GlobalPropertiesToRemove);$(NativeBuildPartitionPropertiesToRemove)</GlobalPropertiesToRemove>
-      </ProjectReference>
-    </ItemGroup>
-  </Target>
-
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
