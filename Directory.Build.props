@@ -60,6 +60,7 @@
 
   <PropertyGroup Condition="'$(IsPrecomputePhase)' == 'true'">
     <EmbedUntrackedSources>false</EmbedUntrackedSources>
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
     <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
 
