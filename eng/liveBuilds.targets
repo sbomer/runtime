@@ -24,6 +24,8 @@
   <!-- Set up artifact subpaths. -->
   <PropertyGroup>
     <CoreCLRSharedFrameworkDir>$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)', 'sharedFramework'))</CoreCLRSharedFrameworkDir>
+    <CoreCLRArtifactsPdbDir>$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)', 'PDB'))</CoreCLRArtifactsPdbDir>
+    <CoreCLRSharedFrameworkPdbDir>$([MSBuild]::NormalizeDirectory('$(CoreCLRSharedFrameworkDir)', 'PDB'))</CoreCLRSharedFrameworkPdbDir>
     <HostSharedFrameworkDir>$([MSBuild]::NormalizeDirectory('$(HostArtifactsPath)','sharedFramework'))</HostSharedFrameworkDir>
     <CoreCLRCoreHostDir>$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)', 'corehost'))</CoreCLRCoreHostDir>
     <CoreCLRILCompilerDir>$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)', 'ilc-published'))</CoreCLRILCompilerDir>
@@ -56,6 +58,8 @@
     <CoreCLRCrossTargetComponentDirName Condition="'$(TargetArchitecture)' == 'arm' and '$(BuildArchitecture)' != 'arm' and '$(TargetsWindows)' == 'true'">x86</CoreCLRCrossTargetComponentDirName>
     <CoreCLRCrossTargetComponentDirName Condition="'$(TargetArchitecture)' == 'arm' and '$(BuildArchitecture)' != 'arm' and '$(TargetsLinux)' == 'true'">x64</CoreCLRCrossTargetComponentDirName>
     <CoreCLRCrossTargetComponentDirName Condition="'$(TargetArchitecture)' == 'armel' and '$(BuildArchitecture)' != 'armel' and '$(TargetsLinux)' == 'true'">x64</CoreCLRCrossTargetComponentDirName>
+    <CoreCLRCrossTargetComponentDir
+      Condition="'$(CoreCLRCrossTargetComponentDirName)' != ''">$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)','$(CoreCLRCrossTargetComponentDirName)','sharedFramework'))</CoreCLRCrossTargetComponentDir>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -78,7 +82,7 @@
 
   <Target Name="ResolveRuntimeFilesFromLocalBuild"
           PrecomputeInputs="$(CoreCLRArtifactsPath)#dir"
-          Deferred="Item:RuntimeFiles:r;Item:RuntimeFiles:w;Item:CoreCLRCrossTargetFiles:w;Item:_systemPrivateCoreLib:w">
+          Deferred="Item:RuntimeFiles:r;Item:RuntimeFiles:w;Item:CoreCLRCrossTargetFiles:w;Item:_systemPrivateCoreLib:w;Property:CoreCLRArtifactsPath:r;Property:RuntimeFlavor:r;Property:CoreCLRConfiguration:r;Property:MonoArtifactsPath:r;Property:MonoConfiguration:r;Property:LibrariesNativeArtifactsPath:r;Property:HostArtifactsPath:r;Property:CoreCLRCrossTargetComponentDirName:r;Property:BuildNativeAOTRuntimePack:r;Property:CoreCLRAotSdkDir:r;Property:PgoInstrument:r;Property:TargetArchitecture:r;Property:TargetsMacCatalyst:r;Property:TargetsiOS:r;Property:TargetstvOS:r;Property:CoreCLRArtifactsPdbDir:r;Property:CoreCLRSharedFrameworkDir:r;Property:LibrariesSharedFrameworkDir:r;Property:HostSharedFrameworkDir:r;Property:CoreCLRSharedFrameworkPdbDir:r;Property:CoreCLRCrossTargetComponentDir:r">
     <Error DeferredCondition="!Exists('$(CoreCLRArtifactsPath)') and '$(RuntimeFlavor)' == 'CoreCLR'"
            PrecomputationMode="Dynamic"
            PrecomputeInputs="$(CoreCLRArtifactsPath)#dir"
@@ -86,7 +90,7 @@
     <Error Condition="!Exists('$(MonoArtifactsPath)') and '$(RuntimeFlavor)' == 'Mono'"
            Text="The Mono artifacts path does not exist '$(MonoArtifactsPath)'. The 'mono' subset must be built before building this project. Configuration: '$(MonoConfiguration)'. To use a different configuration, specify the 'RuntimeConfiguration' property." />
 
-    <PropertyGroup Condition="'$(RuntimeFlavor)' == 'CoreCLR'">
+    <PropertyGroup Condition="'$(RuntimeFlavor)' == 'CoreCLR' and '$(IsPrecomputePhase)' != 'true'">
       <CoreCLRArtifactsPath>$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)'))</CoreCLRArtifactsPath>
       <CoreCLRArtifactsPdbDir>$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)','PDB'))</CoreCLRArtifactsPdbDir>
       <!--
@@ -100,7 +104,7 @@
       <CoreCLRCrossTargetComponentDir
         Condition="'$(CoreCLRCrossTargetComponentDirName)' != ''">$([MSBuild]::NormalizeDirectory('$(CoreCLRArtifactsPath)','$(CoreCLRCrossTargetComponentDirName)','sharedFramework'))</CoreCLRCrossTargetComponentDir>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(RuntimeFlavor)' == 'Mono'">
+    <PropertyGroup Condition="'$(RuntimeFlavor)' == 'Mono' and '$(IsPrecomputePhase)' != 'true'">
       <MonoArtifactsPath>$([MSBuild]::NormalizeDirectory('$(MonoArtifactsPath)'))</MonoArtifactsPath>
     </PropertyGroup>
 
