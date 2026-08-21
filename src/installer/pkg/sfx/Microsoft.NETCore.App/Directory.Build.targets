@@ -55,7 +55,8 @@
 
   <Target Name="ReturnProductVersion" Returns="$(Version)" />
 
-  <Target Name="CreatePackageOverrides">
+  <Target Name="CreatePackageOverrides"
+          PrecomputeMerge="^$(BaseOutputPath)PackageOverrides.txt">
     <PropertyGroup>
       <PackageOverridesInputPath>$(MSBuildThisFileDirectory)PackageOverrides.txt</PackageOverridesInputPath>
       <PackageOverridesOutputPath>$(BaseOutputPath)PackageOverrides.txt</PackageOverridesOutputPath>
@@ -66,6 +67,8 @@
     </ItemGroup>
 
     <GenerateFileFromTemplate
+      PrecomputeInputs="$(MSBuildThisFileDirectory)PackageOverrides.txt"
+      PrecomputeOutputs="$(BaseOutputPath)PackageOverrides.txt"
       TemplateFile="$(PackageOverridesInputPath)"
       Properties="@(CreatePackageOverridesTemplateProperty)"
       OutputPath="$(PackageOverridesOutputPath)" />
