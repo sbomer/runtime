@@ -47,7 +47,8 @@
 
   <Target Name="ReplaceCoreLibSrcWithRefAssemblyForCompilation"
           AfterTargets="FindReferenceAssembliesForReferences"
-          Condition="'$(CompileUsingReferenceAssemblies)' != 'true' and '@(_coreLibProjectReference)' != ''">
+          Condition="'$(CompileUsingReferenceAssemblies)' != 'true' and '@(_coreLibProjectReference)' != ''"
+          Deferred="Property:CompileUsingReferenceAssemblies:r;Property:CoreLibProject:r;Item:_coreLibProjectReference:r;Item:_ResolvedProjectReferencePaths:r;Item:_resolvedCoreLibProjectReference:w;Item:_resolvedCoreLibProjectReference:r;Item:ReferencePathWithRefAssemblies:r;Item:ReferencePathWithRefAssemblies:w">
     <ItemGroup>
       <_resolvedCoreLibProjectReference Include="@(_ResolvedProjectReferencePaths->WithMetadataValue('MSBuildSourceProjectFile','$(CoreLibProject)'))" />
       <ReferencePathWithRefAssemblies Remove="@(_resolvedCoreLibProjectReference)" />
