@@ -32,7 +32,7 @@
           Condition="'@(BinPlaceDir)' != ''"
           DependsOnTargets="GetBinPlaceItems;PrepBinPlaceFiles"
           Deferred="Item:BinPlaceItem:r;Item:BinPlaceDir:r;Item:FileWrites:w;Property:_MSBuildProjectName:r;Item:NativeBinPlaceItem:r"
-          PrecomputeInputs="@(NativeBinPlaceItem);$(OutDir)#dir;$(IntermediateOutputPath)#dir"
+          PrecomputeInputs="@(NativeBinPlaceItem);$(TargetPath);$(TargetDir)$(TargetName).pdb;$(TargetDir)$(TargetName).xml;$(OutDir)#dir;$(IntermediateOutputPath)#dir"
           PrecomputeOutputs="%(BinPlaceDir.Identity)\unflattened\$(MSBuildProjectName)#dir"
           PrecomputeMerge="BinPlaceFiles_%(BinPlaceDir.RelativeIdentity)"
           BatchBy="%(BinPlaceDir.ItemName);%(BinPlaceDir.Identity)">
