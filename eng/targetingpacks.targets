@@ -125,6 +125,31 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="UsePrecomputedLocalTargetingPackReferences"
+          AfterTargets="ResolveTargetingPackAssets"
+          Condition="'$(IsPrecomputePhase)' == 'true' and '$(UseLocalTargetingRuntimePack)' == 'true' and '$(UseBootstrapLayout)' != 'true'">
+    <ItemGroup>
+      <_PrecomputeLocalTargetingPackReference
+          Include="@(ReferencesToAdd)"
+          Condition="$([System.String]::new('%(ReferencesToAdd.Identity)').StartsWith('$(MicrosoftNetCoreAppRefPackDir)'))" />
+      <_PrecomputeUnflattenedTargetingPackReference
+          Include="@(_PrecomputeLocalTargetingPackReference -> '%(RootDir)%(Directory)unflattened/%(Filename)/%(Filename)%(Extension)')" />
+
+      <ReferencesToAdd Remove="@(_PrecomputeLocalTargetingPackReference)" />
+      <ReferencesToAdd Include="@(_PrecomputeUnflattenedTargetingPackReference)" />
+      <Reference Remove="@(_PrecomputeLocalTargetingPackReference)" />
+      <Reference Include="@(_PrecomputeUnflattenedTargetingPackReference)" />
+      <CoreCompileInputs Remove="@(_PrecomputeLocalTargetingPackReference)" />
+      <CoreCompileInputs Include="@(_PrecomputeUnflattenedTargetingPackReference)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="OrderPrecomputedLocalTargetingPackReferences"
+          BeforeTargets="CoreCompile"
+          PrecomputeMerge="CoreCompile"
+          PrecomputeInputs="@(_PrecomputeUnflattenedTargetingPackReference)"
+          Condition="'$(IsPrecomputePhase)' == 'true' and '$(UseLocalTargetingRuntimePack)' == 'true' and '$(UseBootstrapLayout)' != 'true'" />
+
   <!-- Use local Crossgen2 pack for NetCoreAppCurrent. -->
   <Target Name="UpdateLocalCrossgen2Pack"
           Condition="'$(UseLocalCrossgen2Pack)' == 'true' and '$(Crossgen2InBuildDir)' != ''"

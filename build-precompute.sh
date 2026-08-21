@@ -55,6 +55,16 @@ PRECOMPUTE_ADDITIONAL_UNTRACKED_SCOPES="$NUGET_PACKAGES" \
 
 cp -a "$package_changes/." "$NUGET_PACKAGES/"
 
+framework_lists=("$script_dir"/.dotnet/packs/Microsoft.NETCore.App.Ref/*/data/FrameworkList.xml)
+if [[ ! -f "${framework_lists[0]}" ]]; then
+  echo "Unable to locate a Microsoft.NETCore.App.Ref FrameworkList.xml in $script_dir/.dotnet/packs." >&2
+  exit 1
+fi
+framework_list_source="$(printf '%s\n' "${framework_lists[@]}" | sort -V | tail -n 1)"
+framework_list_destination="$script_dir/artifacts/bin/microsoft.netcore.app.ref/data/FrameworkList.xml"
+mkdir -p "$(dirname "$framework_list_destination")"
+cp "$framework_list_source" "$framework_list_destination"
+
 arcade_precompute_import='  <Import Project="$(RepoRoot)eng/precompute/ArcadeBuild.targets" Condition="'"'"'$(IsPrecomputePhase)'"'"' == '"'"'true'"'"'" />'
 if ! grep -Fq 'eng/precompute/ArcadeBuild.targets' "$arcade_build"; then
   sed -i "\|</Project>|i\\$arcade_precompute_import" "$arcade_build"
