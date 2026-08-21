@@ -62,6 +62,7 @@ import sys
 
 path = Path(sys.argv[1])
 text = path.read_text()
+changed = False
 original = '    <PackTask PackItem="$(PackProjectInputFile)"'
 previous = '    <PackTask PrecomputeInputs="@(NuGetPackInput);$(ProjectAssetsFile)"\n              PackItem="$(PackProjectInputFile)"'
 previous_explicit_outputs = (
@@ -94,6 +95,29 @@ if replacement not in text:
         text = text.replace(original, replacement, 1)
     else:
         raise SystemExit(f"Unable to patch {path}: PackTask invocation not found")
+    changed = True
+
+project_reference_versions = (
+    '  <Target Name="_GetProjectReferenceVersions"\n'
+    '          Condition="\'$(NuspecFile)\' == \'\'"\n'
+    '          DependsOnTargets="_GetAbsoluteOutputPathsForPack;$(GetPackageVersionDependsOn)">'
+)
+project_reference_versions_replacement = (
+    '  <Target Name="_GetProjectReferenceVersions"\n'
+    '          Condition="\'$(NuspecFile)\' == \'\'"\n'
+    '          PrecomputeInputs="$(ProjectAssetsFile)"\n'
+    '          DependsOnTargets="_GetAbsoluteOutputPathsForPack;$(GetPackageVersionDependsOn)">'
+)
+if project_reference_versions_replacement not in text:
+    if project_reference_versions not in text:
+        raise SystemExit(f"Unable to patch {path}: _GetProjectReferenceVersions target not found")
+    text = text.replace(
+        project_reference_versions,
+        project_reference_versions_replacement,
+        1)
+    changed = True
+
+if changed:
     path.write_text(text)
 PY
 
