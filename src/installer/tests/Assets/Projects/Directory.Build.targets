@@ -7,6 +7,12 @@
     <NETCoreAppMaximumVersion>$(NetCoreAppCurrentVersion)</NETCoreAppMaximumVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsPrecomputePhase)' == 'true' and '$(MSBuildProjectFile)' == 'HelloWorld_中文.csproj'">
+    <IntermediateOutputPath>$([MSBuild]::NormalizeDirectory('$(ArtifactsObjDir)', 'HelloWorld_Unicode', '$(Configuration)'))</IntermediateOutputPath>
+    <OutputPath>$([MSBuild]::NormalizeDirectory('$(ArtifactsBinDir)', 'HelloWorld_Unicode', '$(Configuration)', '$(TargetFramework)'))</OutputPath>
+    <TargetFrameworkMonikerAssemblyAttributesPath>$(IntermediateOutputPath)$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)</TargetFrameworkMonikerAssemblyAttributesPath>
+  </PropertyGroup>
+
   <!-- Override target from targetingpacks.targets. Use Version instead of ProductVersion (written into runtimeconfig.json).
        Host tests are run against the built shared framework that has the normal version (with suffixes)  -->
   <Target Name="UpdateRuntimeFrameworkVersion"
