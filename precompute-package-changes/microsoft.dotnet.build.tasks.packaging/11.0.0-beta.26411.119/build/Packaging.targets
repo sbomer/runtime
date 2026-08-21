@@ -1145,6 +1145,8 @@
 
   <Target Name="GetPackageReport"
           DependsOnTargets="GetPackageAssets"
+          PrecomputeOutputs="$(PackageReportPath)"
+          PrecomputeMerge="^$(PackageReportPath)"
           Returns="$(PackageReportPath)">
     <GeneratePackageReport
                      PackageId="$(Id)"
