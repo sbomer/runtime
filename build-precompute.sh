@@ -55,6 +55,48 @@ PRECOMPUTE_ADDITIONAL_UNTRACKED_SCOPES="$NUGET_PACKAGES" \
 
 cp -a "$package_changes/." "$NUGET_PACKAGES/"
 
+nuget_pack_targets="$(dirname "$precompute_msbuild")/NuGet.Build.Tasks.Pack.targets"
+python3 - "$nuget_pack_targets" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+text = path.read_text()
+original = '    <PackTask PackItem="$(PackProjectInputFile)"'
+previous = '    <PackTask PrecomputeInputs="@(NuGetPackInput);$(ProjectAssetsFile)"\n              PackItem="$(PackProjectInputFile)"'
+previous_explicit_outputs = (
+    '    <PackTask PrecomputeInputs="@(NuGetPackInput);$(ProjectAssetsFile);'
+    '$(BaseOutputPath)$(Configuration)/$(TargetFrameworks.Replace(\';\', '
+    '\'/$(AssemblyName).pdb;$(BaseOutputPath)$(Configuration)/\'))/$(AssemblyName).pdb;'
+    '$(BaseOutputPath)$(Configuration)/$(TargetFrameworks.Replace(\';\', '
+    '\'/$(AssemblyName).xml;$(BaseOutputPath)$(Configuration)/\'))/$(AssemblyName).xml"\n'
+    '              PackItem="$(PackProjectInputFile)"'
+)
+previous_output_directories = (
+    '    <PackTask PrecomputeInputs="@(NuGetPackInput);$(ProjectAssetsFile);'
+    '$(BaseOutputPath)$(Configuration)/$(TargetFrameworks.Replace(\';\', '
+    '\'#dir;$(BaseOutputPath)$(Configuration)/\'))#dir"\n'
+    '              PackItem="$(PackProjectInputFile)"'
+)
+replacement = (
+    '    <PackTask PrecomputeInputs="@(NuGetPackInput);$(ProjectAssetsFile);'
+    '@(_PrecomputePackTargetFramework->\'$(BaseOutputPath)$(Configuration)/%(Identity)#dir\')"\n'
+    '              PackItem="$(PackProjectInputFile)"'
+)
+if replacement not in text:
+    if previous_output_directories in text:
+        text = text.replace(previous_output_directories, replacement, 1)
+    elif previous_explicit_outputs in text:
+        text = text.replace(previous_explicit_outputs, replacement, 1)
+    elif previous in text:
+        text = text.replace(previous, replacement, 1)
+    elif original in text:
+        text = text.replace(original, replacement, 1)
+    else:
+        raise SystemExit(f"Unable to patch {path}: PackTask invocation not found")
+    path.write_text(text)
+PY
+
 framework_lists=("$script_dir"/.dotnet/packs/Microsoft.NETCore.App.Ref/*/data/FrameworkList.xml)
 if [[ ! -f "${framework_lists[0]}" ]]; then
   echo "Unable to locate a Microsoft.NETCore.App.Ref FrameworkList.xml in $script_dir/.dotnet/packs." >&2

@@ -7,6 +7,10 @@
     <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(IsPrecomputePhase)' == 'true' and '$(TargetFrameworks)' != ''">
+    <_PrecomputePackTargetFramework Include="$(TargetFrameworks)" />
+  </ItemGroup>
+
   <Import Project="$(RepositoryEngineeringDir)liveBuilds.targets" />
 
   <PropertyGroup Condition="'$(UseBootstrapLayout)' == 'true'">
