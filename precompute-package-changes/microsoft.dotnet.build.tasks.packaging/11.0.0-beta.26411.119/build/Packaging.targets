@@ -1316,6 +1316,7 @@
 
   <Target Name="CreatePackage"
           Inputs="$(NuSpecPath)"
+          PrecomputeInputs="@(PackageFile)"
           Outputs="$(PackageOutputPath)$(Id).$(PackageVersion).nupkg">
 
     <ItemGroup>
