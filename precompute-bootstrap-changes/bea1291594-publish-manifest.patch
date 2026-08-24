@@ -1,0 +1,233 @@
+diff --git a/Microsoft.NET.Publish.targets b/Microsoft.NET.Publish.targets
+index a1dff777a9..90f6eecd57 100644
+--- a/Microsoft.NET.Publish.targets
++++ b/Microsoft.NET.Publish.targets
+@@ -1223,7 +1223,8 @@ Copyright (c) .NET Foundation. All rights reserved.
+     -->
+   <Target Name="_ComputeFilesToBundle"
+         DependsOnTargets="_HandleFileConflictsForPublish"
+-        Condition="'$(PublishSingleFile)' == 'true'">
++        Condition="'$(PublishSingleFile)' == 'true'"
++        Deferred="Item:ResolvedFileToPublish:w;Item:_FilesToBundle:w;Item:_BundleExcludedFiles:w">
+ 
+     <PropertyGroup>
+       <PublishedSingleFileName>$(AssemblyName)$(_NativeExecutableExtension)</PublishedSingleFileName>
+@@ -1234,10 +1235,11 @@ Copyright (c) .NET Foundation. All rights reserved.
+     </PropertyGroup>
+ 
+     <ItemGroup>
+-      <_FilesToBundle Include="@(ResolvedFileToPublish)"
++      <_FilesToBundle Deferred="true"
++                      Include="@(ResolvedFileToPublish)"
+                       Condition="'%(ResolvedFileToPublish.ExcludeFromSingleFile)' != 'true'"/>
+ 
+-      <ResolvedFileToPublish Remove="@(_FilesToBundle)"/>
++      <ResolvedFileToPublish Deferred="true" Remove="@(_FilesToBundle)"/>
+     </ItemGroup>
+ 
+     <!-- Compute which files from _FilesToBundle will be excluded from the bundle.
+@@ -1250,31 +1252,36 @@ Copyright (c) .NET Foundation. All rights reserved.
+            * Unknown files: only if IncludeAllContentForSelfExtract=true -->
+     <ItemGroup>
+       <!-- Always exclude .runtimeconfig.dev.json -->
+-      <_BundleExcludedFiles Include="@(_FilesToBundle)"
++      <_BundleExcludedFiles Deferred="true"
++                            Include="@(_FilesToBundle)"
+                             Condition="$([MSBuild]::ValueOrDefault('%(_FilesToBundle.RelativePath)', '').EndsWith('.runtimeconfig.dev.json'))" />
+ 
+       <!-- Exclude hostfxr and hostpolicy for .NET 5+ (they are statically linked into the apphost)
+            In .NET Core 3.x, bundle processing happens in the AppHost, so these can be bundled.
+            In .NET 5+, bundle processing happens in HostFxr and HostPolicy, so they cannot be bundled.
+            See https://github.com/dotnet/runtime/issues/32823 -->
+-      <_BundleExcludedFiles Include="@(_FilesToBundle)"
++      <_BundleExcludedFiles Deferred="true"
++                            Include="@(_FilesToBundle)"
+                             Condition=" $([MSBuild]::VersionGreaterThan($(_TargetFrameworkVersionWithoutV), '3.1' )) and
+                                        (('%(_FilesToBundle.FileName)' == 'hostfxr' or '%(_FilesToBundle.FileName)' == 'libhostfxr' or '%(_FilesToBundle.FileName)' == 'hostpolicy' or '%(_FilesToBundle.FileName)' == 'libhostpolicy') and
+                                         ('%(_FilesToBundle.Extension)' == '.dll' or '%(_FilesToBundle.Extension)' == '.so' or '%(_FilesToBundle.Extension)' == '.dylib'))" />
+ 
+       <!-- Exclude native binaries unless IncludeNativeLibrariesForSelfExtract=true -->
+-      <_BundleExcludedFiles Include="@(_FilesToBundle)"
++      <_BundleExcludedFiles Deferred="true"
++                            Include="@(_FilesToBundle)"
+                             Condition="'%(_FilesToBundle.AssetType)' == 'native' and '$(IncludeNativeLibrariesForSelfExtract)' != 'true'" />
+ 
+       <!-- Exclude symbols (.pdb) unless IncludeSymbolsInSingleFile=true -->
+-      <_BundleExcludedFiles Include="@(_FilesToBundle)"
++      <_BundleExcludedFiles Deferred="true"
++                            Include="@(_FilesToBundle)"
+                             Condition="'%(_FilesToBundle.Extension)' == '.pdb' and '$(IncludeSymbolsInSingleFile)' != 'true'" />
+ 
+       <!-- Exclude unknown file types (not assemblies, not deps.json, not runtimeconfig.json, not native, not symbols)
+            unless IncludeAllContentForSelfExtract=true.
+            We also ensure that we always keep the 'key output' files (the main assembly and its primary dependencies), even if they have an unknown extension, because excluding them would break the app.
+            We identify "unknown" files as those that don't match the known patterns. -->
+-      <_BundleExcludedFiles Include="@(_FilesToBundle)"
++      <_BundleExcludedFiles Deferred="true"
++                            Include="@(_FilesToBundle)"
+                             Condition="'$(IncludeAllContentForSelfExtract)' != 'true' and
+                                        '%(_FilesToBundle.Extension)' != '.dll' and
+                                        '%(_FilesToBundle.Extension)' != '.exe' and
+@@ -1286,17 +1293,18 @@ Copyright (c) .NET Foundation. All rights reserved.
+                                        !$([MSBuild]::ValueOrDefault('%(_FilesToBundle.RelativePath)', '').EndsWith('.runtimeconfig.json'))" />
+ 
+                                        <!-- Add excluded files back to ResolvedFileToPublish so they get copied to the publish directory -->
+-      <ResolvedFileToPublish Include="@(_BundleExcludedFiles)"/>
++      <ResolvedFileToPublish Deferred="true" Include="@(_BundleExcludedFiles)"/>
+     </ItemGroup>
+   </Target>
+ 
+   <Target Name="PrepareForBundle"
+       DependsOnTargets="_ComputeFilesToBundle"
+-      Condition="'$(PublishSingleFile)' == 'true'">
++      Condition="'$(PublishSingleFile)' == 'true'"
++      Deferred="Item:_FilesToBundle:r;Item:_BundleExcludedFiles:r;Item:FilesToBundle:w">
+ 
+     <ItemGroup>
+       <!-- FilesToBundle contains only files that will actually be bundled (excluded files removed) -->
+-      <FilesToBundle Include="@(_FilesToBundle)" Exclude="@(_BundleExcludedFiles)" />
++      <FilesToBundle Deferred="true" Include="@(_FilesToBundle)" Exclude="@(_BundleExcludedFiles)" />
+     </ItemGroup>
+ 
+     <PropertyGroup>
+@@ -1304,26 +1312,27 @@ Copyright (c) .NET Foundation. All rights reserved.
+     </PropertyGroup>
+   </Target>
+ 
+-  <Target Name="_GenerateSingleFileBundleInputCache">
++  <Target Name="_GenerateSingleFileBundleInputCache"
++          Deferred="Item:FilesToBundle:r;Item:_GenerateSingleFileBundlePropertyInputsCacheToHash:w;Property:_GenerateSingleFileBundlePropertyInputsCacheHash:r">
+     <ItemGroup>
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(PublishedSingleFilePath)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(TraceSingleFileBundler)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(IncludeSymbolsInSingleFile)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(IncludeAllContentForSelfExtract)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(IncludeNativeLibrariesForSelfExtract)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(EnableCompressionInSingleFile)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(PublishedSingleFileName)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(RuntimeIdentifier)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(PublishDir)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="$(_TargetFrameworkVersionWithoutV)" />
+-      <_GenerateSingleFileBundlePropertyInputsCacheToHash Include="@(FilesToBundle)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(PublishedSingleFilePath)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(TraceSingleFileBundler)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(IncludeSymbolsInSingleFile)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(IncludeAllContentForSelfExtract)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(IncludeNativeLibrariesForSelfExtract)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(EnableCompressionInSingleFile)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(PublishedSingleFileName)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(RuntimeIdentifier)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(PublishDir)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="$(_TargetFrameworkVersionWithoutV)" />
++      <_GenerateSingleFileBundlePropertyInputsCacheToHash Deferred="true" Include="@(FilesToBundle)" />
+     </ItemGroup>
+ 
+-    <Hash ItemsToHash="@(_GenerateSingleFileBundlePropertyInputsCacheToHash)">
++    <Hash PrecomputationMode="Dynamic" ItemsToHash="@(_GenerateSingleFileBundlePropertyInputsCacheToHash)">
+       <Output TaskParameter="HashResult" PropertyName="_GenerateSingleFileBundlePropertyInputsCacheHash" />
+     </Hash>
+ 
+-    <WriteLinesToFile
++    <WriteLinesToFile PrecomputationMode="Dynamic"
+       Lines="$(_GenerateSingleFileBundlePropertyInputsCacheHash)"
+       File="$(_GenerateSingleFileBundlePropertyInputsCache)"
+       Overwrite="true"
+@@ -1332,11 +1341,20 @@ Copyright (c) .NET Foundation. All rights reserved.
+ 
+   <UsingTask TaskName="GenerateBundle" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
+ 
++  <Target Name="_ComputeSingleFileBundleIncrementalInputs"
++          DependsOnTargets="PrepareForBundle;_GenerateSingleFileBundleInputCache"
++          Deferred="Item:FilesToBundle:r">
++    <ItemGroup Condition="'$(IsPrecomputePhase)' != 'true'">
++      <_SingleFileBundleIncrementalInputs Include="@(FilesToBundle)" />
++    </ItemGroup>
++  </Target>
++
+   <Target Name="GenerateSingleFileBundle"
+           Condition="'$(PublishSingleFile)' == 'true' and '$(PublishAot)' != 'true'"
+-          DependsOnTargets="PrepareForBundle;_GenerateSingleFileBundleInputCache"
+-          Inputs="@(FilesToBundle);$(_GenerateSingleFileBundlePropertyInputsCache)"
+-          Outputs="$(PublishedSingleFilePath)">
++          DependsOnTargets="_ComputeSingleFileBundleIncrementalInputs"
++          Inputs="@(_SingleFileBundleIncrementalInputs);$(_GenerateSingleFileBundlePropertyInputsCache)"
++          Outputs="$(PublishedSingleFilePath)"
++          Deferred="Item:FilesToBundle:r;Item:_FilesExcludedFromBundleByTask:r">
+ 
+     <PropertyGroup>
+       <TraceSingleFileBundler Condition="'$(TraceSingleFileBundler)' == ''">false</TraceSingleFileBundler>
+@@ -1347,7 +1365,8 @@ Copyright (c) .NET Foundation. All rights reserved.
+                  ResourceName="CannotIncludeAllContentButNotNativeLibrariesInSingleFile" />
+ 
+     <!-- Bundle the files in FilesToBundle (excluded files were already filtered out by PrepareForBundle) -->
+-    <GenerateBundle FilesToBundle="@(FilesToBundle)"
++    <GenerateBundle PrecomputationMode="Dynamic"
++                    FilesToBundle="@(FilesToBundle)"
+                     AppHostName="$(PublishedSingleFileName)"
+                     IncludeSymbols="$(IncludeSymbolsInSingleFile)"
+                     EnableCompressionInSingleFile="$(EnableCompressionInSingleFile)"
+@@ -1364,10 +1383,16 @@ Copyright (c) .NET Foundation. All rights reserved.
+     <!-- Note: We don't add _FilesExcludedFromBundleByTask to ResolvedFileToPublish here because
+          those files should have already been added by _ComputeFilesToBundle.
+          This is a safety check to ensure the task's exclusion matches our pre-computation. -->
+-    <NETSdkWarning Condition="'@(_FilesExcludedFromBundleByTask)' != ''"
++    <NETSdkWarning Condition="'$(IsPrecomputePhase)' != 'true' and '@(_FilesExcludedFromBundleByTask)' != ''"
+                    ResourceName="SingleFileBundleUnexpectedExclusion"
+                    FormatArguments="@(_FilesExcludedFromBundleByTask, ', ')" />
+ 
++    <NETSdkWarning Condition="'$(IsPrecomputePhase)' == 'true'"
++                   PrecomputationMode="Dynamic"
++                   DeferredCondition="'@(_FilesExcludedFromBundleByTask)' != ''"
++                   ResourceName="SingleFileBundleUnexpectedExclusion"
++                   FormatArguments="@(_FilesExcludedFromBundleByTask)" />
++
+   </Target>
+ 
+   <Target Name="_ComputeIntermediateDepsFilePath">
+@@ -1433,7 +1458,8 @@ Copyright (c) .NET Foundation. All rights reserved.
+                             _GeneratePublishDependencyFileInputCache"
+           Condition="'$(GenerateDependencyFile)' == 'true' and '$(_UseBuildDependencyFile)' != 'true' and '$(PublishAot)' != 'true'"
+           Inputs="$(ProjectAssetsFile);$(ProjectAssetsCacheFile);$(MSBuildAllProjects);$(_GeneratePublishDependencyFilePropertyInputsCache)"
+-          Outputs="$(IntermediateDepsFilePath)">
++          Outputs="$(IntermediateDepsFilePath)"
++          Deferred="Item:_PublishConflictPackageFiles:r;Item:RuntimeCopyLocalItems:r;Item:UserRuntimeAssembly:r;Item:ResolvedCompileFileDefinitions:w;Item:RuntimeTargetsCopyLocalItems:w;Item:RuntimePackAsset:w;Item:_ResolvedNuGetFilesForPublish:w;Item:ResolvedFileToPublish:w">
+ 
+     <PropertyGroup>
+       <!-- PublishDepsFilePath is the location where the deps.json resides when published
+@@ -1444,18 +1470,19 @@ Copyright (c) .NET Foundation. All rights reserved.
+     </PropertyGroup>
+ 
+     <ItemGroup>
+-      <ResolvedCompileFileDefinitions Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' == 'Reference'" />
+-      <RuntimeTargetsCopyLocalItems Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' != 'Reference'" />
+-      <RuntimePackAsset Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' != 'Reference'" />
++      <ResolvedCompileFileDefinitions Deferred="true" Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' == 'Reference'" />
++      <RuntimeTargetsCopyLocalItems Deferred="true" Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' != 'Reference'" />
++      <RuntimePackAsset Deferred="true" Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' != 'Reference'" />
+ 
+-      <_ResolvedNuGetFilesForPublish Include="@(NativeCopyLocalItems)" Condition="'%(NativeCopyLocalItems.CopyToPublishDirectory)' != 'false'" />
+-      <_ResolvedNuGetFilesForPublish Include="@(ResourceCopyLocalItems)" Condition="'%(ResourceCopyLocalItems.CopyToPublishDirectory)' != 'false'" />
+-      <_ResolvedNuGetFilesForPublish Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.CopyToPublishDirectory)' != 'false'" />
+-      <_ResolvedNuGetFilesForPublish Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' != 'Reference'" />
++      <_ResolvedNuGetFilesForPublish Deferred="true" Include="@(NativeCopyLocalItems)" Condition="'%(NativeCopyLocalItems.CopyToPublishDirectory)' != 'false'" />
++      <_ResolvedNuGetFilesForPublish Deferred="true" Include="@(ResourceCopyLocalItems)" Condition="'%(ResourceCopyLocalItems.CopyToPublishDirectory)' != 'false'" />
++      <_ResolvedNuGetFilesForPublish Deferred="true" Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.CopyToPublishDirectory)' != 'false'" />
++      <_ResolvedNuGetFilesForPublish Deferred="true" Remove="@(_PublishConflictPackageFiles)" Condition="'%(_PublishConflictPackageFiles.ConflictItemType)' != 'Reference'" />
+ 
+     </ItemGroup>
+ 
+-    <GenerateDepsFile ProjectPath="$(MSBuildProjectFullPath)"
++    <GenerateDepsFile PrecomputationMode="Dynamic"
++                      ProjectPath="$(MSBuildProjectFullPath)"
+                       AssetsFilePath="$(ProjectAssetsFile)"
+                       DepsFilePath="$(IntermediateDepsFilePath)"
+                       TargetFramework="$(TargetFramework)"
+@@ -1486,7 +1513,7 @@ Copyright (c) .NET Foundation. All rights reserved.
+                       IncludeProjectsNotInAssetsFile="$(IncludeProjectsNotInAssetsFileInDepsFile)"/>
+ 
+     <ItemGroup>
+-      <ResolvedFileToPublish Include="$(IntermediateDepsFilePath)">
++      <ResolvedFileToPublish Deferred="true" Include="$(IntermediateDepsFilePath)">
+         <RelativePath>$(ProjectDepsFileName)</RelativePath>
+       </ResolvedFileToPublish>
+     </ItemGroup>
