@@ -1,0 +1,18 @@
+diff --git a/Microsoft.Build.Tasks.Git.targets b/Microsoft.Build.Tasks.Git.targets
+--- a/Microsoft.Build.Tasks.Git.targets
++++ b/Microsoft.Build.Tasks.Git.targets
+@@ -2,3 +2,3 @@
+ <Project>
+-  <UsingTask TaskName="Microsoft.Build.Tasks.Git.LocateRepository" AssemblyFile="$(MicrosoftBuildTasksGitAssemblyFile)"/>
++  <UsingTask TaskName="Microsoft.Build.Tasks.Git.LocateRepository" AssemblyFile="$(MicrosoftBuildTasksGitAssemblyFile)" PrecomputationMode="Static"/>
+   <UsingTask TaskName="Microsoft.Build.Tasks.Git.GetUntrackedFiles" AssemblyFile="$(MicrosoftBuildTasksGitAssemblyFile)"/>
+@@ -17,2 +17,4 @@
+     <GitRepositoryConfigurationScope Condition="'$(GitRepositoryConfigurationScope)' == '' and '$(ContinuousIntegrationBuild)' == 'true'">local</GitRepositoryConfigurationScope>
++    <_GitPrecomputeInputs>$(RepoRoot).git</_GitPrecomputeInputs>
++    <_GitPrecomputeInputs Condition="Exists('$(RepoRoot).git\HEAD')">$(RepoRoot).git\#dir</_GitPrecomputeInputs>
+   </PropertyGroup>
+@@ -20,2 +22,3 @@
+-  <Target Name="InitializeSourceControlInformationFromSourceControlManager">
++  <Target Name="InitializeSourceControlInformationFromSourceControlManager"
++          PrecomputeInputs="$(_GitPrecomputeInputs)">
+     <!--

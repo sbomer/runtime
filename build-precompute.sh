@@ -15,14 +15,23 @@ rm -rf "$toolchain_root"
 mkdir -p "$toolchain_root"
 cp -a "$toolchain_source/." "$toolchain_root/"
 
-publish_targets="$toolchain_root/sdk/11.0.100-dev/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Publish.targets"
-for publish_patch in "$bootstrap_changes"/*-publish-*.patch; do
-  if git apply --check --unsafe-paths --directory="$(dirname "$publish_targets")" "$publish_patch"; then
-    git apply --unsafe-paths --directory="$(dirname "$publish_targets")" "$publish_patch"
-  elif ! git apply --reverse --check --unsafe-paths --directory="$(dirname "$publish_targets")" "$publish_patch"; then
-    echo "Unable to apply bootstrap publish patch $publish_patch to $publish_targets." >&2
+apply_bootstrap_patch() {
+  local target="$1"
+  local patch="$2"
+  if git apply --check --unsafe-paths --directory="$(dirname "$target")" "$patch"; then
+    git apply --unsafe-paths --directory="$(dirname "$target")" "$patch"
+  elif ! git apply --reverse --check --unsafe-paths --directory="$(dirname "$target")" "$patch"; then
+    echo "Unable to apply bootstrap patch $patch to $target." >&2
     exit 1
   fi
+}
+
+git_targets="$toolchain_root/sdk/11.0.100-dev/Sdks/Microsoft.Build.Tasks.Git/build/Microsoft.Build.Tasks.Git.targets"
+apply_bootstrap_patch "$git_targets" "$bootstrap_changes/Microsoft.Build.Tasks.Git.targets.patch"
+
+publish_targets="$toolchain_root/sdk/11.0.100-dev/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Publish.targets"
+for publish_patch in "$bootstrap_changes"/*-publish-*.patch; do
+  apply_bootstrap_patch "$publish_targets" "$publish_patch"
 done
 
 export PRECOMPUTE_TOOLCHAIN_ROOT="$toolchain_root"
