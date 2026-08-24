@@ -164,7 +164,7 @@ Copyright (c) .NET Foundation. All rights reserved.
           Outputs="$(_LinkSemaphore)"
           PrecomputeInputs="$(ILLinkTasksAssembly);$([System.IO.Path]::GetDirectoryName('$(ILLinkTasksAssembly)'))#dir"
           PrecomputeOutputs="$(IntermediateLinkDir)#dir"
-          Deferred="Property:_ILLinkExitCode:r;Item:ManagedAssemblyToLink:r;Item:ReferencePath:r;Item:TrimmerRootAssembly:r;Item:TrimmerRootDescriptor:r;Item:_LinkedResolvedFileToPublishCandidate:r">
+          Deferred="Property:_ILLinkExitCode:r;Property:TrimMode:r;Property:TrimmerSingleWarn:r;Item:ManagedAssemblyToLink:r;Item:ReferencePath:r;Item:TrimmerRootAssembly:r;Item:TrimmerRootDescriptor:r;Item:_TrimmerFeatureSettings:r;Item:_LinkedResolvedFileToPublishCandidate:r">
     <NETSdkInformation ResourceName="ILLinkRunning" />
     <!-- When running from Desktop MSBuild, DOTNET_HOST_PATH is not set.
          In this case, explicitly specify the path to the dotnet host. -->
