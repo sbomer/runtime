@@ -84,7 +84,18 @@ replacement = (
     '@(_PrecomputePackTargetFramework->\'$(BaseOutputPath)$(Configuration)/%(Identity)#dir\')"\n'
     '              PackItem="$(PackProjectInputFile)"'
 )
-if replacement not in text:
+pack_task_inputs = '              PrecomputeInputs="@(_BuildOutputInPackage);@(NuGetPackInput)"'
+pack_task_inputs_replacement = (
+    '              PrecomputeInputs="@(_BuildOutputInPackage);@(NuGetPackInput);'
+    '$(ProjectAssetsFile);@(_PrecomputePackTargetFramework->'
+    '\'$(BaseOutputPath)$(Configuration)/%(Identity)#dir\')"'
+)
+if pack_task_inputs_replacement in text:
+    pass
+elif pack_task_inputs in text:
+    text = text.replace(pack_task_inputs, pack_task_inputs_replacement, 1)
+    changed = True
+elif replacement not in text:
     if previous_output_directories in text:
         text = text.replace(previous_output_directories, replacement, 1)
     elif previous_explicit_outputs in text:
