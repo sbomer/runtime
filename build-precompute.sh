@@ -34,6 +34,9 @@ for publish_patch in "$bootstrap_changes"/*-publish-*.patch; do
   apply_bootstrap_patch "$publish_targets" "$publish_patch"
 done
 
+crossgen_targets="$toolchain_root/sdk/11.0.100-dev/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.CrossGen.targets"
+apply_bootstrap_patch "$crossgen_targets" "$bootstrap_changes/75bfc5dec2-readytorun.patch"
+
 export PRECOMPUTE_TOOLCHAIN_ROOT="$toolchain_root"
 precompute_msbuild="$toolchain_root/sdk/11.0.100-dev/MSBuild.dll"
 
