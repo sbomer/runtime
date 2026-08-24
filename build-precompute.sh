@@ -3,11 +3,30 @@ set -euo pipefail
 
 script_dir="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 arcade_build="$script_dir/artifacts/toolset/11.0.0-beta.26411.119/Build.proj"
-precompute_msbuild="/home/sven/msbr/develop/msbuild/artifacts/bin/bootstrap/core/sdk/11.0.100-dev/MSBuild.dll"
 work_root="/home/sven/msbt/manual-precompute/$(basename "$script_dir")"
 package_changes="$script_dir/precompute-package-changes"
+bootstrap_changes="$script_dir/precompute-bootstrap-changes"
 git_dir="$(git -C "$script_dir" rev-parse --path-format=absolute --git-dir)"
 git_common_dir="$(git -C "$script_dir" rev-parse --path-format=absolute --git-common-dir)"
+
+toolchain_source="${PRECOMPUTE_TOOLCHAIN_SOURCE:-/home/sven/msbr/develop/msbuild/artifacts/bin/bootstrap/core}"
+toolchain_root="$work_root/toolchain/core"
+rm -rf "$toolchain_root"
+mkdir -p "$toolchain_root"
+cp -a "$toolchain_source/." "$toolchain_root/"
+
+publish_targets="$toolchain_root/sdk/11.0.100-dev/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Publish.targets"
+for publish_patch in "$bootstrap_changes"/*-publish-*.patch; do
+  if git apply --check --unsafe-paths --directory="$(dirname "$publish_targets")" "$publish_patch"; then
+    git apply --unsafe-paths --directory="$(dirname "$publish_targets")" "$publish_patch"
+  elif ! git apply --reverse --check --unsafe-paths --directory="$(dirname "$publish_targets")" "$publish_patch"; then
+    echo "Unable to apply bootstrap publish patch $publish_patch to $publish_targets." >&2
+    exit 1
+  fi
+done
+
+export PRECOMPUTE_TOOLCHAIN_ROOT="$toolchain_root"
+precompute_msbuild="$toolchain_root/sdk/11.0.100-dev/MSBuild.dll"
 
 export NUGET_PACKAGES="$work_root/nuget-packages"
 mkdir -p "$NUGET_PACKAGES"

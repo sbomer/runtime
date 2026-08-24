@@ -1,0 +1,127 @@
+diff --git a/Microsoft.NET.Publish.targets b/Microsoft.NET.Publish.targets
+index 378d3e162d..a1dff777a9 100644
+--- a/Microsoft.NET.Publish.targets
++++ b/Microsoft.NET.Publish.targets
+@@ -596,7 +596,8 @@ Copyright (c) .NET Foundation. All rights reserved.
+   <Target Name="ComputeResolvedFilesToPublishList"
+           DependsOnTargets="_ComputeResolvedCopyLocalPublishAssets;
+                             _ComputeCopyToPublishDirectoryItems;
+-                            ComputeRefAssembliesToPublish">
++                              ComputeRefAssembliesToPublish"
++            Deferred="Item:_ResolvedCopyLocalPublishAssets:r;Item:ResolvedFileToPublish:w;Item:_ResolvedCopyLocalPublishAssetsDistinct:w;Item:ResolvedFileToPublishDistinctForConflicts:w;Item:_ResolvedCopyLocalPublishAssetsRemoved:w;Item:ResolvedFileToPublishRemoved:w;Item:_FilesToDrop:w">
+     <ItemGroup>
+       <!-- Copy the build product (.dll or .exe). -->
+       <ResolvedFileToPublish Include="@(IntermediateAssembly)"
+@@ -649,19 +650,25 @@ Copyright (c) .NET Foundation. All rights reserved.
+ 
+     <!-- Remove conflicting items that appear in both _ResolvedCopyLocalPublishAssets and ResolvedFileToPublish
+          to ensure that we don't get duplicate files in the publish output. -->
+-    <ResolveOverlappingItemGroupConflicts ItemGroup1="@(_ResolvedCopyLocalPublishAssets->Distinct())"
+-                        ItemGroup2="@(ResolvedFileToPublish->Distinct())"
++    <ItemGroup>
++      <_ResolvedCopyLocalPublishAssetsDistinct Deferred="true" Include="@(_ResolvedCopyLocalPublishAssets->Distinct())" />
++      <ResolvedFileToPublishDistinctForConflicts Deferred="true" Include="@(ResolvedFileToPublish->Distinct())" />
++    </ItemGroup>
++
++    <ResolveOverlappingItemGroupConflicts PrecomputationMode="Dynamic"
++                        ItemGroup1="@(_ResolvedCopyLocalPublishAssetsDistinct)"
++                        ItemGroup2="@(ResolvedFileToPublishDistinctForConflicts)"
+                         PreferredPackages="$(PackageConflictPreferredPackages)">
+       <Output TaskParameter="RemovedItemGroup1" ItemName="_ResolvedCopyLocalPublishAssetsRemoved" />
+       <Output TaskParameter="RemovedItemGroup2" ItemName="ResolvedFileToPublishRemoved" />
+     </ResolveOverlappingItemGroupConflicts>
+ 
+     <ItemGroup>
+-      <_ResolvedCopyLocalPublishAssets Remove="@(_ResolvedCopyLocalPublishAssetsRemoved)"/>
+-      <ResolvedFileToPublish Remove="@(ResolvedFileToPublishRemoved)"/>
++      <_ResolvedCopyLocalPublishAssets Deferred="true" Remove="@(_ResolvedCopyLocalPublishAssetsRemoved)"/>
++      <ResolvedFileToPublish Deferred="true" Remove="@(ResolvedFileToPublishRemoved)"/>
+ 
+       <!-- Copy the resolved copy local publish assets. -->
+-      <ResolvedFileToPublish Include="@(_ResolvedCopyLocalPublishAssets)">
++      <ResolvedFileToPublish Deferred="true" Include="@(_ResolvedCopyLocalPublishAssets)">
+         <RelativePath>%(_ResolvedCopyLocalPublishAssets.DestinationSubDirectory)%(Filename)%(Extension)</RelativePath>
+         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+       </ResolvedFileToPublish>
+@@ -680,10 +687,11 @@ Copyright (c) .NET Foundation. All rights reserved.
+       </ResolvedFileToPublish>
+ 
+       <!-- Filter files for PublishSingleFiles scenario -->
+-      <_FilesToDrop Include="@(ResolvedFileToPublish)"
++      <_FilesToDrop Deferred="true"
++                    Include="@(ResolvedFileToPublish)"
+                     Condition="'$(PublishSingleFile)' == 'true' and
+                                '%(ResolvedFileToPublish.DropFromSingleFile)' == 'true'"/>
+-      <ResolvedFileToPublish Remove="@(_FilesToDrop)"/>
++      <ResolvedFileToPublish Deferred="true" Remove="@(_FilesToDrop)"/>
+     </ItemGroup>
+ 
+   </Target>
+@@ -790,10 +798,12 @@ Copyright (c) .NET Foundation. All rights reserved.
+   -->
+   <Target Name="_ComputeResolvedCopyLocalPublishAssets"
+           DependsOnTargets="_ResolveCopyLocalAssetsForPublish;
+-                            _FilterSatelliteResourcesForPublish">
++                            _FilterSatelliteResourcesForPublish"
++          Deferred="Item:ReferenceCopyLocalPaths:r;Item:_ResolvedCopyLocalBuildAssets:r;Item:RuntimePackAsset:r;Item:_ResolvedCopyLocalPublishAssets:w">
+ 
+     <ItemGroup>
+-      <_ResolvedCopyLocalPublishAssets Include="@(ReferenceCopyLocalPaths)"
++      <_ResolvedCopyLocalPublishAssets Deferred="true"
++                                       Include="@(ReferenceCopyLocalPaths)"
+                                        Exclude="@(_ResolvedCopyLocalBuildAssets);@(RuntimePackAsset)"
+                                        Condition="(('$(PublishReferencesDocumentationFiles)' == 'true' and '%(ReferenceCopyLocalPaths.Extension)' == '.xml')
+                                                   or ('$(PublishReferencesSymbols)' == 'true' and '%(ReferenceCopyLocalPaths.Extension)' == '.pdb')
+@@ -1128,7 +1138,8 @@ Copyright (c) .NET Foundation. All rights reserved.
+ 
+   <!-- Determine the managed assembly subset of ResolvedFileToPublish that should be post-processed by linker, and ready to run compilation -->
+   <Target Name="_ComputeAssembliesToPostprocessOnPublish"
+-          DependsOnTargets="_ComputeUserRuntimeAssemblies;$(_ComputeManagedRuntimePackAssembliesIfSelfContained)">
++          DependsOnTargets="_ComputeUserRuntimeAssemblies;$(_ComputeManagedRuntimePackAssembliesIfSelfContained)"
++          Deferred="Item:RuntimeCopyLocalItems:r;Item:UserRuntimeAssembly:r;Item:IntermediateAssembly:r;Item:_ManagedRuntimePackAssembly:r;Item:_ManagedRuntimeAssembly:w;Item:ResolvedFileToPublish:w;Item:_AssemblyToPostprocessOnPublish:w">
+ 
+     <!--
+       Default set of files to post-process correspond to the items that would be designated
+@@ -1140,18 +1151,18 @@ Copyright (c) .NET Foundation. All rights reserved.
+     -->
+     <ItemGroup>
+       <!-- Assemblies from packages -->
+-      <_ManagedRuntimeAssembly Include="@(RuntimeCopyLocalItems)" />
++      <_ManagedRuntimeAssembly Deferred="true" Include="@(RuntimeCopyLocalItems)" />
+ 
+       <!-- Assemblies from other references -->
+-      <_ManagedRuntimeAssembly Include="@(UserRuntimeAssembly)" />
++      <_ManagedRuntimeAssembly Deferred="true" Include="@(UserRuntimeAssembly)" />
+ 
+       <!-- Assembly produced by this project -->
+-      <_ManagedRuntimeAssembly Include="@(IntermediateAssembly)" />
++      <_ManagedRuntimeAssembly Deferred="true" Include="@(IntermediateAssembly)" />
+     </ItemGroup>
+ 
+     <!-- Assemblies from runtime packs for self-contained apps -->
+     <ItemGroup Condition="'$(SelfContained)' == 'true'">
+-      <_ManagedRuntimeAssembly Include="@(_ManagedRuntimePackAssembly)" />
++      <_ManagedRuntimeAssembly Deferred="true" Include="@(_ManagedRuntimePackAssembly)" />
+     </ItemGroup>
+ 
+     <!--
+@@ -1160,7 +1171,7 @@ Copyright (c) .NET Foundation. All rights reserved.
+       the metadata must match ResolvedFileToPublish as the tools modify or remove these items in that
+       list to implement their post-processing.
+     -->
+-    <JoinItems Left="@(_ManagedRuntimeAssembly)" Right="@(ResolvedFileToPublish)" RightMetadata="*">
++    <JoinItems PrecomputationMode="Dynamic" Left="@(_ManagedRuntimeAssembly)" Right="@(ResolvedFileToPublish)" RightMetadata="*">
+       <Output TaskParameter="JoinResult" ItemName="_AssemblyToPostprocessOnPublish" />
+     </JoinItems>
+ 
+@@ -1172,8 +1183,8 @@ Copyright (c) .NET Foundation. All rights reserved.
+       responsible for setting this metadata to opt in to post-processing.
+     -->
+     <ItemGroup>
+-      <ResolvedFileToPublish Remove="@(_AssemblyToPostprocessOnPublish)" />
+-      <ResolvedFileToPublish Include="@(_AssemblyToPostprocessOnPublish)" PostprocessAssembly="true" />
++      <ResolvedFileToPublish Deferred="true" Remove="@(_AssemblyToPostprocessOnPublish)" />
++      <ResolvedFileToPublish Deferred="true" Include="@(_AssemblyToPostprocessOnPublish)" PostprocessAssembly="true" />
+     </ItemGroup>
+   </Target>
+ 
