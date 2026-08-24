@@ -1,0 +1,16 @@
+diff --git a/Microsoft.NET.ApiCompat.ValidatePackage.targets b/Microsoft.NET.ApiCompat.ValidatePackage.targets
+--- a/Microsoft.NET.ApiCompat.ValidatePackage.targets
++++ b/Microsoft.NET.ApiCompat.ValidatePackage.targets
+@@ -65,7 +65,10 @@
+   <Target Name="GetReferencesForApiCompatValidatePackage"
+           DependsOnTargets="FindReferenceAssembliesForReferences"
+-          Returns="@(ApiCompatAssemblyReferencesWithTargetFramework)">
++          Returns="@(ApiCompatAssemblyReferencesWithTargetFramework)"
++          DeferredReturns="Item:ApiCompatAssemblyReferencesWithTargetFramework"
++          Deferred="Item:ReferencePathWithRefAssemblies:r;Item:ApiCompatAssemblyReferencesWithTargetFramework:w">
+     <ItemGroup>
+-      <ApiCompatAssemblyReferencesWithTargetFramework Include="$(TargetFramework)"
++      <ApiCompatAssemblyReferencesWithTargetFramework Deferred="true"
++                                                      Include="$(TargetFramework)"
+                                                       TargetFrameworkMoniker="$(TargetFrameworkMoniker)"
+                                                       ReferencePath="@(ReferencePathWithRefAssemblies, ',')">

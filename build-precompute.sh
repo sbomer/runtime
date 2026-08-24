@@ -37,6 +37,9 @@ done
 crossgen_targets="$toolchain_root/sdk/11.0.100-dev/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.CrossGen.targets"
 apply_bootstrap_patch "$crossgen_targets" "$bootstrap_changes/75bfc5dec2-readytorun.patch"
 
+api_compat_targets="$toolchain_root/sdk/11.0.100-dev/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ApiCompat.ValidatePackage.targets"
+apply_bootstrap_patch "$api_compat_targets" "$bootstrap_changes/Microsoft.NET.ApiCompat.ValidatePackage.targets.patch"
+
 export PRECOMPUTE_TOOLCHAIN_ROOT="$toolchain_root"
 precompute_msbuild="$toolchain_root/sdk/11.0.100-dev/MSBuild.dll"
 
