@@ -38,6 +38,8 @@
   <Target Name="BuildNativeUnix"
           DependsOnTargets="BuildNativeCommon"
           BeforeTargets="Build"
+          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)runtime_version.h"
+          PrecomputeOutputs="$(_BuildNativeObjDir)#dir"
           Condition="!$([MSBuild]::IsOsPlatform(Windows))">
     <PropertyGroup>
       <_BuildNativeArgs Condition="'$(Ninja)' == 'true'">$(_BuildNativeArgs) ninja</_BuildNativeArgs>
