@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 return StaticGraphDriver.Run(args);
 
@@ -17,6 +18,7 @@ internal static partial class StaticGraphDriver
 {
     public static int Run(string[] args)
     {
+        ValidationRun? run = null;
         try
         {
             string repoRoot = FindRepoRoot();
@@ -30,8 +32,14 @@ internal static partial class StaticGraphDriver
             }
 
             ValidationTarget validationTarget = ValidationTarget.Create(target);
-            using ValidationRun run = new(repoRoot, validationTarget);
-            return run.Execute();
+            run = new ValidationRun(repoRoot, validationTarget);
+            int exitCode = run.Execute();
+            run.Dispose();
+            return run.InterruptedExitCode ?? exitCode;
+        }
+        catch (ValidationInterruptedException ex)
+        {
+            return ex.ExitCode;
         }
         catch (ValidationException ex)
         {
@@ -42,6 +50,10 @@ internal static partial class StaticGraphDriver
         {
             Console.Error.WriteLine(ex);
             return 1;
+        }
+        finally
+        {
+            run?.Dispose();
         }
     }
 
@@ -94,7 +106,10 @@ internal sealed partial class ValidationRun : IDisposable
     private string? _prerequisiteArtifactsSnapshot;
     private bool _succeeded;
     private bool _disposed;
-    private bool _handlingSignal;
+    private int _signalExitCode;
+
+    public int? InterruptedExitCode =>
+        Volatile.Read(ref _signalExitCode) is int exitCode and not 0 ? exitCode : null;
 
     public ValidationRun(string repoRoot, ValidationTarget target)
     {
@@ -216,7 +231,20 @@ internal sealed partial class ValidationRun : IDisposable
 
     public int Execute()
     {
+        try
+        {
+            return ExecuteCore();
+        }
+        catch (Exception) when (InterruptedExitCode is int exitCode)
+        {
+            throw new ValidationInterruptedException(exitCode);
+        }
+    }
+
+    private int ExecuteCore()
+    {
         Directory.SetCurrentDirectory(_repoRoot);
+        ThrowIfInterrupted();
 
         Log("Removing artifacts for a clean validation run");
         CleanBuildArtifacts();
@@ -365,6 +393,7 @@ internal sealed partial class ValidationRun : IDisposable
         ValidateStaticGraphSize();
         CompareGraphs(dynamicBinlog, staticGraphProperties);
 
+        ThrowIfInterrupted();
         _succeeded = true;
         return 0;
     }
@@ -391,24 +420,21 @@ internal sealed partial class ValidationRun : IDisposable
                     throw;
                 }
             }
-            finally
-            {
-                if (!_handlingSignal)
-                {
-                    _sigintRegistration?.Dispose();
-                    _sigtermRegistration?.Dispose();
-                }
-            }
         }
     }
 
     private void HandleSignal(PosixSignalContext context, int exitCode)
     {
         context.Cancel = true;
-        _handlingSignal = true;
-        ProcessRunner.TerminateCurrentProcessTree();
-        Dispose();
-        Environment.Exit(exitCode);
+        Interlocked.CompareExchange(ref _signalExitCode, exitCode, comparand: 0);
+        try
+        {
+            ProcessRunner.TerminateCurrentProcessTree();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Failed to terminate the active validation command: {ex.Message}");
+        }
     }
 
     private void CompareGraphs(string dynamicBinlog, List<string> staticGraphProperties)
@@ -498,6 +524,7 @@ internal sealed partial class ValidationRun : IDisposable
 
     private void BuildPrerequisites(string phase)
     {
+        ThrowIfInterrupted();
         if (_target.PrerequisiteSubsets.Count > 0)
         {
             Log($"Building {string.Join(' ', _target.PrerequisiteSubsets)} artifact prerequisites for the {phase} build");
@@ -521,6 +548,7 @@ internal sealed partial class ValidationRun : IDisposable
 
         foreach (string prerequisiteProject in _target.PrerequisiteProjects)
         {
+            ThrowIfInterrupted();
             string prerequisiteName = Path.GetFileName(prerequisiteProject);
             Log($"Restoring {prerequisiteProject} for the {phase} build");
             RunTimed(
@@ -621,6 +649,7 @@ internal sealed partial class ValidationRun : IDisposable
 
     private void CleanBuildArtifacts()
     {
+        ThrowIfInterrupted();
         string artifacts = Path.Combine(_repoRoot, "artifacts");
         if (!Directory.Exists(artifacts))
         {
@@ -635,10 +664,11 @@ internal sealed partial class ValidationRun : IDisposable
         }
     }
 
-    private static void DeleteChildrenExcept(string directory, string exceptName)
+    private void DeleteChildrenExcept(string directory, string exceptName)
     {
         foreach (string path in Directory.EnumerateFileSystemEntries(directory))
         {
+            ThrowIfInterrupted();
             if (string.Equals(Path.GetFileName(path), exceptName, StringComparison.Ordinal))
             {
                 continue;
@@ -648,11 +678,12 @@ internal sealed partial class ValidationRun : IDisposable
         }
     }
 
-    private static void CopyBuildArtifacts(string sourceRoot, string destinationRoot)
+    private void CopyBuildArtifacts(string sourceRoot, string destinationRoot)
     {
         Directory.CreateDirectory(destinationRoot);
         foreach (string source in Directory.EnumerateFileSystemEntries(sourceRoot))
         {
+            ThrowIfInterrupted();
             if (string.Equals(Path.GetFileName(source), "log", StringComparison.Ordinal))
             {
                 continue;
@@ -671,6 +702,7 @@ internal sealed partial class ValidationRun : IDisposable
         Directory.CreateDirectory(destinationLog);
         foreach (string source in Directory.EnumerateFileSystemEntries(sourceLog))
         {
+            ThrowIfInterrupted();
             if (string.Equals(
                     Path.GetFileName(source),
                     "static-graph-validation",
@@ -683,11 +715,12 @@ internal sealed partial class ValidationRun : IDisposable
         }
     }
 
-    private static void MoveBuildArtifacts(string sourceRoot, string destinationRoot)
+    private void MoveBuildArtifacts(string sourceRoot, string destinationRoot)
     {
         Directory.CreateDirectory(destinationRoot);
         foreach (string source in Directory.EnumerateFileSystemEntries(sourceRoot).ToArray())
         {
+            ThrowIfInterrupted();
             if (string.Equals(Path.GetFileName(source), "log", StringComparison.Ordinal))
             {
                 continue;
@@ -706,6 +739,7 @@ internal sealed partial class ValidationRun : IDisposable
         Directory.CreateDirectory(destinationLog);
         foreach (string source in Directory.EnumerateFileSystemEntries(sourceLog).ToArray())
         {
+            ThrowIfInterrupted();
             MovePath(source, Path.Combine(destinationLog, Path.GetFileName(source)));
         }
     }
@@ -773,8 +807,10 @@ internal sealed partial class ValidationRun : IDisposable
 
     private void RunTimed(string label, Action action)
     {
+        ThrowIfInterrupted();
         Stopwatch stopwatch = Stopwatch.StartNew();
         action();
+        ThrowIfInterrupted();
         stopwatch.Stop();
 
         string timing = $"{label}: {stopwatch.Elapsed:hh\\:mm\\:ss}";
@@ -888,6 +924,14 @@ internal sealed partial class ValidationRun : IDisposable
 
     private static string GetEnvironmentValue(string name, string defaultValue) =>
         Environment.GetEnvironmentVariable(name) is { Length: > 0 } value ? value : defaultValue;
+
+    private void ThrowIfInterrupted()
+    {
+        if (InterruptedExitCode is int exitCode)
+        {
+            throw new ValidationInterruptedException(exitCode);
+        }
+    }
 
     private static void Log(string message)
     {
@@ -1220,3 +1264,8 @@ internal static class ProcessRunner
 }
 
 internal sealed class ValidationException(string message) : Exception(message);
+
+internal sealed class ValidationInterruptedException(int exitCode) : Exception
+{
+    public int ExitCode { get; } = exitCode;
+}
