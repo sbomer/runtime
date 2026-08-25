@@ -38,7 +38,7 @@
   <Target Name="BuildNativeUnix"
           DependsOnTargets="BuildNativeCommon"
           BeforeTargets="Build"
-          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)runtime_version.h"
+          PrecomputeInputs="@(_SbinPrecomputeInput);/usr/sbin#dir;/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)runtime_version.h"
           PrecomputeOutputs="$(_BuildNativeObjDir)#dir"
           Condition="!$([MSBuild]::IsOsPlatform(Windows))">
     <PropertyGroup>
@@ -66,6 +66,10 @@
     <Message Text="$(_BuildNativeBuildCommand)" Importance="High"/>
     <Exec Command="$(_BuildNativeBuildCommand)" EnvironmentVariables="$(_BuildNativeEnvironmentVariables)" IgnoreStandardErrorWarningFormat="true" />
   </Target>
+
+  <ItemGroup Condition="!$([MSBuild]::IsOsPlatform(Windows))">
+    <_SbinPrecomputeInput Include="/sbin" IsFile="true" />
+  </ItemGroup>
 
   <!-- 
     This is a workaround when cross-compiling on Windows for non-windows (Mobile for now) targets.

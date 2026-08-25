@@ -55,7 +55,7 @@
   <Target Name="BuildCoreHostOnUnix"
           Condition="'$(HostOS)' != 'windows'"
           AfterTargets="Build"
-          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h"
+          PrecomputeInputs="@(_SbinPrecomputeInput);/usr/sbin#dir;/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h"
           PrecomputeOutputs="$(IntermediateOutputRootPath)#dir"
           DependsOnTargets="$(BuildCoreHostDependsOn)">
     <PropertyGroup>
@@ -109,6 +109,10 @@
     <Message Text="&quot;$(BuildScript)&quot; $(BuildArgs) @(NativeCMakeArg, ' ')" Importance="High"/>
     <Exec Command="&quot;$(BuildScript)&quot; $(BuildArgs) @(NativeCMakeArg, ' ')" IgnoreStandardErrorWarningFormat="true" EnvironmentVariables="$(_CoreHostBuildEnvironmentVariables)"/>
   </Target>
+
+  <ItemGroup Condition="'$(HostOS)' != 'windows'">
+    <_SbinPrecomputeInput Include="/sbin" IsFile="true" />
+  </ItemGroup>
 
   <!-- 
     This is a workaround when cross-compiling on Windows for non-windows (Mobile for now) targets.

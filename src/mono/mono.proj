@@ -189,7 +189,7 @@
 
   <!-- Mono runtime build -->
   <Target Name="BuildMonoRuntime"
-          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h">
+          PrecomputeInputs="@(_SbinPrecomputeInput);/usr/sbin#dir;/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h">
     <PropertyGroup Condition="'$(MonoUseLLVMPackage)' == 'true'">
       <_MonoLLVMTargetArchitecture Condition="'$(TargetArchitecture)' == 'wasm'">$(BuildArchitecture)</_MonoLLVMTargetArchitecture>
       <_MonoLLVMTargetArchitecture Condition="'$(TargetArchitecture)' != 'wasm'">$(TargetArchitecture)</_MonoLLVMTargetArchitecture>
@@ -576,6 +576,10 @@
       IgnoreStandardErrorWarningFormat="true"
       WorkingDirectory="$(MonoObjDir)"/>
   </Target>
+
+  <ItemGroup Condition="!$([MSBuild]::IsOsPlatform(Windows))">
+    <_SbinPrecomputeInput Include="/sbin" IsFile="true" />
+  </ItemGroup>
 
   <!-- Build AOT cross compiler (if available) -->
   <Target Name="BuildMonoCross" Condition="'$(BuildMonoAOTCrossCompiler)' == 'true'" DependsOnTargets="BuildMonoRuntime">
