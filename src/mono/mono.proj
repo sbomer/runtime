@@ -189,7 +189,7 @@
 
   <!-- Mono runtime build -->
   <Target Name="BuildMonoRuntime"
-          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)runtime_version.h">
+          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h">
     <PropertyGroup Condition="'$(MonoUseLLVMPackage)' == 'true'">
       <_MonoLLVMTargetArchitecture Condition="'$(TargetArchitecture)' == 'wasm'">$(BuildArchitecture)</_MonoLLVMTargetArchitecture>
       <_MonoLLVMTargetArchitecture Condition="'$(TargetArchitecture)' != 'wasm'">$(TargetArchitecture)</_MonoLLVMTargetArchitecture>

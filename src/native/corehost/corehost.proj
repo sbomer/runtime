@@ -55,7 +55,7 @@
   <Target Name="BuildCoreHostOnUnix"
           Condition="'$(HostOS)' != 'windows'"
           AfterTargets="Build"
-          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)runtime_version.h"
+          PrecomputeInputs="/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h"
           PrecomputeOutputs="$(IntermediateOutputRootPath)#dir"
           DependsOnTargets="$(BuildCoreHostDependsOn)">
     <PropertyGroup>
