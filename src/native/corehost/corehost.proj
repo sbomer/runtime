@@ -22,6 +22,7 @@
     <NativeVersionFile Condition="$([MSBuild]::IsOsPlatform(Windows))">$(ArtifactsObjDir)_version.h</NativeVersionFile>
     <NativeVersionFile Condition="!$([MSBuild]::IsOsPlatform(Windows)) or '$(TargetsMobile)' == 'true'">$(IntermediateOutputRootPath)_version.c</NativeVersionFile>
     <RuntimeVersionFile>$(IntermediateOutputRootPath)runtime_version.h</RuntimeVersionFile>
+    <DotNetHostTestBinDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsBinDir)', '$(TargetRid).$(HostConfiguration)', 'corehost_test'))</DotNetHostTestBinDir>
   </PropertyGroup>
 
   <Target Name="CopySingleFileHost" AfterTargets="Build">
@@ -55,8 +56,8 @@
   <Target Name="BuildCoreHostOnUnix"
           Condition="'$(HostOS)' != 'windows'"
           AfterTargets="Build"
-          PrecomputeInputs="@(_SbinPrecomputeInput);/usr/sbin#dir;/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h"
-          PrecomputeOutputs="$(IntermediateOutputRootPath)#dir"
+          PrecomputeInputs="@(_SbinPrecomputeInput);/usr/sbin#dir;/usr/include#dir;$(NativeVersionFile);$(RuntimeVersionFile);$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h"
+          PrecomputeOutputs="$(IntermediateOutputRootPath)#dir;$(DotNetHostBinDir)#dir;$(DotNetHostTestBinDir)#dir"
           DependsOnTargets="$(BuildCoreHostDependsOn)">
     <PropertyGroup>
       <CMakeBuildDir>$(IntermediateOutputRootPath)corehost\cmake\</CMakeBuildDir>
