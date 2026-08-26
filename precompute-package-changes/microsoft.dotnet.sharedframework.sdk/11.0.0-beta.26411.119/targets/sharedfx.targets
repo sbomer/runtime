@@ -789,10 +789,12 @@
   <Target Name="_SetInstallerOnlyPublishedFilePermissions"
           AfterTargets="_PublishInstallerOnlyFilesToDisk"
           Condition="!$([MSBuild]::IsOsPlatform(Windows))">
-    <Exec Command='find "$(OutputPath)" -type f -name "*" -exec chmod 644 {} \;' />
-    <Exec Command='find "$(OutputPath)" -type f -name "*.dylib" -exec chmod 755 {} \;' />
-    <Exec Command='find "$(OutputPath)" -type f -name "*.so" -exec chmod 755 {} \;' />
-    <Exec Command='find "$(OutputPath)" -type f ! -name "*.*" -exec chmod 755 {} \;' />
+    <!-- OutputPath is the installer layout root. Skip when the inner publish
+         produced no layout directory, otherwise find fails with DX0064. -->
+    <Exec Command='test ! -d "$(OutputPath)" || find "$(OutputPath)" -type f -name "*" -exec chmod 644 {} \;' />
+    <Exec Command='test ! -d "$(OutputPath)" || find "$(OutputPath)" -type f -name "*.dylib" -exec chmod 755 {} \;' />
+    <Exec Command='test ! -d "$(OutputPath)" || find "$(OutputPath)" -type f -name "*.so" -exec chmod 755 {} \;' />
+    <Exec Command='test ! -d "$(OutputPath)" || find "$(OutputPath)" -type f ! -name "*.*" -exec chmod 755 {} \;' />
   </Target>
 
   <Target Name="PublishSymbolsToDisk"
