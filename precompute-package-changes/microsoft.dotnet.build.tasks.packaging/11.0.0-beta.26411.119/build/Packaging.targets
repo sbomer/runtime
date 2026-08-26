@@ -773,9 +773,19 @@
   <!-- END dependencies-->
 
   <!-- Generates a runtime.json file containing all dependencies with TargetRuntime -->
+  <Target Name="_GetRuntimeJsonPrecomputeOutputs"
+          DependsOnTargets="DetermineRuntimeDependencies">
+    <PropertyGroup>
+      <_RuntimeJsonPrecomputeOutputs Condition="'@(RuntimeDependency)' != '' or '$(IsLineupPackage)' == 'true'">$(RuntimeFilePath)</_RuntimeJsonPrecomputeOutputs>
+      <_RuntimeJsonPrecomputeOutputs Condition="('@(RuntimeDependency)' != '' or '$(IsLineupPackage)' == 'true') and '$(CreatePackedPackage)' == 'true'">$(RuntimeFilePath);$(PackedPackageRuntimeFilePath)</_RuntimeJsonPrecomputeOutputs>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="GenerateRuntimeDependencies"
-          DependsOnTargets="DetermineRuntimeDependencies"
-          PrecomputeOutputs="$(RuntimeFilePath);$(PackedPackageRuntimeFilePath)">
+          DependsOnTargets="DetermineRuntimeDependencies;_GetRuntimeJsonPrecomputeOutputs"
+          PrecomputeMerge="GenerateNuSpec"
+          PrecomputeOutputs="$(_RuntimeJsonPrecomputeOutputs)">
+    <Message Text="Runtime dependency files: $(_RuntimeJsonPrecomputeOutputs)" Importance="Low" />
     <ItemGroup>
       <LineupProjectReference Include="@(ProjectReference)" />
     </ItemGroup>
