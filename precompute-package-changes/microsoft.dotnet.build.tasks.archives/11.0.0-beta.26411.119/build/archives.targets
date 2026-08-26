@@ -54,6 +54,12 @@
   <PropertyGroup>
     <ArchiveName Condition="'$(ArchiveName)' == ''">$([System.IO.Path]::GetFileNameWithoutExtension($(MSBuildProjectFile)))</ArchiveName>
     <SymbolsArchiveName Condition="'$(SymbolsArchiveName)' == ''">$(ArchiveName)-symbols</SymbolsArchiveName>
+    <_ArchiveFileName>$(ArchiveName)-$(Version)</_ArchiveFileName>
+    <_ArchiveFileName Condition="'$(RuntimeIdentifier)' != ''">$(ArchiveName)-$(Version)-$(RuntimeIdentifier)</_ArchiveFileName>
+    <_DestinationFileName Condition="'$(_CurrentArchiveFormat)' != ''">$([MSBuild]::NormalizePath($(PackageOutputPath), '$(_ArchiveFileName).$(_CurrentArchiveFormat)'))</_DestinationFileName>
+    <_SymbolsArchiveFileName>$(SymbolsArchiveName)-$(Version)</_SymbolsArchiveFileName>
+    <_SymbolsArchiveFileName Condition="'$(RuntimeIdentifier)' != ''">$(SymbolsArchiveName)-$(RuntimeIdentifier)-$(Version)</_SymbolsArchiveFileName>
+    <_SymbolsDestinationFileName Condition="'$(_CurrentArchiveFormat)' != ''">$([MSBuild]::NormalizePath($(PackageOutputPath), '$(_SymbolsArchiveFileName).$(_CurrentArchiveFormat)'))</_SymbolsDestinationFileName>
   </PropertyGroup>
 
   <Target Name="_CheckPigzAvailability"
@@ -91,7 +97,8 @@
   </Target>
 
   <Target Name="_CreateSingleArchive"
-          DependsOnTargets="_CheckPigzAvailability">
+          DependsOnTargets="_CheckPigzAvailability"
+          PrecomputeOutputs="$(_DestinationFileName)">
     <PropertyGroup>
       <_ArchiveFileName>$(ArchiveName)-$(Version)</_ArchiveFileName>
       <_ArchiveFileName Condition="'$(RuntimeIdentifier)' != ''">$(ArchiveName)-$(Version)-$(RuntimeIdentifier)</_ArchiveFileName>
@@ -140,7 +147,8 @@
   </Target>
 
   <Target Name="_CreateSingleSymbolsArchive"
-          DependsOnTargets="_CheckPigzAvailability">
+          DependsOnTargets="_CheckPigzAvailability"
+          PrecomputeOutputs="$(_SymbolsDestinationFileName)">
     <PropertyGroup>
       <_ArchiveFileName>$(SymbolsArchiveName)-$(Version)</_ArchiveFileName>
       <_ArchiveFileName Condition="'$(RuntimeIdentifier)' != ''">$(SymbolsArchiveName)-$(RuntimeIdentifier)-$(Version)</_ArchiveFileName>
