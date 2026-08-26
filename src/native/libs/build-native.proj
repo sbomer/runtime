@@ -38,8 +38,8 @@
   <Target Name="BuildNativeUnix"
           DependsOnTargets="BuildNativeCommon"
           BeforeTargets="Build"
-          PrecomputeInputs="@(_SbinPrecomputeInput);/usr/sbin#dir;/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)runtime_version.h"
-          PrecomputeOutputs="$(_BuildNativeObjDir)#dir"
+          PrecomputeInputs="@(_SbinPrecomputeInput);/usr/sbin#dir;/usr/include#dir;$(ArtifactsObjDir)_version.c;$(ArtifactsObjDir)_version.h;$(ArtifactsObjDir)runtime_version.h"
+          PrecomputeOutputs="$(_BuildNativeObjDir)#dir;$(ArtifactsBinDir)native/$(_BuildNativeOutConfig)#dir"
           Condition="!$([MSBuild]::IsOsPlatform(Windows))">
     <PropertyGroup>
       <_BuildNativeArgs Condition="'$(Ninja)' == 'true'">$(_BuildNativeArgs) ninja</_BuildNativeArgs>
@@ -69,6 +69,7 @@
 
   <ItemGroup Condition="!$([MSBuild]::IsOsPlatform(Windows))">
     <_SbinPrecomputeInput Include="/sbin" IsFile="true" />
+    <_SbinPrecomputeInput Include="/usr/lib32/ld-linux.so.2" IsFile="true" />
   </ItemGroup>
 
   <!-- 
