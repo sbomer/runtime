@@ -774,7 +774,8 @@
 
   <!-- Generates a runtime.json file containing all dependencies with TargetRuntime -->
   <Target Name="GenerateRuntimeDependencies"
-          DependsOnTargets="DetermineRuntimeDependencies">
+          DependsOnTargets="DetermineRuntimeDependencies"
+          PrecomputeOutputs="$(RuntimeFilePath);$(PackedPackageRuntimeFilePath)">
     <ItemGroup>
       <LineupProjectReference Include="@(ProjectReference)" />
     </ItemGroup>
@@ -1261,7 +1262,8 @@
   </Target>
 
   <Target Name="GenerateNuSpec"
-          DependsOnTargets="GetPackageDependencies;GetPackageFiles;GetPackageMetadata;GenerateRuntimeDependencies;EnsureEmptyPackage;_InitializeNuspecRepositoryInformationProperties">
+          DependsOnTargets="GetPackageDependencies;GetPackageFiles;GetPackageMetadata;GenerateRuntimeDependencies;EnsureEmptyPackage;_InitializeNuspecRepositoryInformationProperties"
+          PrecomputeOutputs="$(NuSpecPath)">
 
     <ItemGroup>
       <_packageFile Include="@(PackageFile)" />
