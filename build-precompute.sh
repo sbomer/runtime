@@ -18,9 +18,11 @@ cp -a "$toolchain_source/." "$toolchain_root/"
 apply_bootstrap_patch() {
   local target="$1"
   local patch="$2"
-  if git apply --check --unsafe-paths --directory="$(dirname "$target")" "$patch"; then
-    git apply --unsafe-paths --directory="$(dirname "$target")" "$patch"
-  elif ! git apply --reverse --check --unsafe-paths --directory="$(dirname "$target")" "$patch"; then
+  # Bootstrap SDK files may be CRLF (with BOM). Ignore whitespace so the
+  # repo-owned patches still apply to those files.
+  if git apply --check --ignore-whitespace --unsafe-paths --directory="$(dirname "$target")" "$patch"; then
+    git apply --ignore-whitespace --unsafe-paths --directory="$(dirname "$target")" "$patch"
+  elif ! git apply --reverse --check --ignore-whitespace --unsafe-paths --directory="$(dirname "$target")" "$patch"; then
     echo "Unable to apply bootstrap patch $patch to $target." >&2
     exit 1
   fi
