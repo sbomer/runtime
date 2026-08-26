@@ -24,7 +24,7 @@
           DependsOnTargets="_CheckForCompileOutputs"
           Inputs="@(_DebugSymbolToMove)"
           Outputs="@(_DebugSymbolToMove->Metadata('Destination'))"
-          PrecomputeMerge="CopyFilesToOutputDirectory"
+          PrecomputeMerge="GenerateOutDir"
           Condition="'$(_DebugSymbolsProduced)' == 'true'">
     <Copy SourceFiles="@(_DebugSymbolToMove)"
           DestinationFiles="@(_DebugSymbolToMove->Metadata('Destination'))"
