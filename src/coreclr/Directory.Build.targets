@@ -57,20 +57,14 @@
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
     </MSBuild>
-    <!-- ItemGroups in merged targets are replayed without Condition. CreateItem Conditions are. -->
-    <CreateItem Include="@(_ReferencedDebugSymbolObjPdbsRaw)"
-                AdditionalMetadata="ObjPdb=%(Identity)"
-                Condition="'$(IsPrecomputePhase)' == 'true'">
-      <Output TaskParameter="Include" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
-    </CreateItem>
-    <CreateItem Include="@(_ReferencedDebugSymbolObjPdbsRaw->'%(FinalOutputPath)')"
-                Condition="'$(IsPrecomputePhase)' == 'true'">
-      <Output TaskParameter="Include" ItemName="_OutDirPdbToObj" />
-    </CreateItem>
-    <CreateItem Include="@(_ReferencedDebugSymbolObjPdbsRaw)"
-                Condition="'$(IsPrecomputePhase)' == 'true'">
-      <Output TaskParameter="Include" ItemName="ReferenceCopyLocalPathsDeps" />
-    </CreateItem>
+    <!-- Condition on ItemGroup is evaluated at meta and stripped. DeferredCondition is replayed. -->
+    <ItemGroup DeferredCondition="'$(IsPrecomputePhase)' == 'true'">
+      <_ReferencedDebugSymbolObjPdbsRaw>
+        <ObjPdb>%(Identity)</ObjPdb>
+      </_ReferencedDebugSymbolObjPdbsRaw>
+      <_OutDirPdbToObj Deferred="true" Include="@(_ReferencedDebugSymbolObjPdbsRaw->'%(FinalOutputPath)')" />
+      <ReferenceCopyLocalPathsDeps Include="@(_ReferencedDebugSymbolObjPdbsRaw)" />
+    </ItemGroup>
   </Target>
 
   <Target Name="_CopyLocalFromReferencedObjPdbs"
