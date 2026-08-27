@@ -57,19 +57,20 @@
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
     </MSBuild>
-    <!-- Product replay still runs ItemGroups in merged targets (task Conditions are honored).
-         Seed the item so the transform below is defined when MSBuild did not run. -->
-    <ItemGroup>
-      <_ReferencedDebugSymbolObjPdbsRaw Include="__precompute_empty_referenced_obj_pdb__" />
-      <_ReferencedDebugSymbolObjPdbsRaw Remove="__precompute_empty_referenced_obj_pdb__" />
-    </ItemGroup>
-    <ItemGroup>
-      <_ReferencedDebugSymbolObjPdbsRaw>
-        <ObjPdb>%(Identity)</ObjPdb>
-      </_ReferencedDebugSymbolObjPdbsRaw>
-      <_OutDirPdbToObj Deferred="true" Include="@(_ReferencedDebugSymbolObjPdbsRaw->'%(FinalOutputPath)')" />
-      <ReferenceCopyLocalPathsDeps Include="@(_ReferencedDebugSymbolObjPdbsRaw)" />
-    </ItemGroup>
+    <!-- ItemGroups in merged targets are replayed without Condition. CreateItem Conditions are. -->
+    <CreateItem Include="@(_ReferencedDebugSymbolObjPdbsRaw)"
+                AdditionalMetadata="ObjPdb=%(Identity)"
+                Condition="'$(IsPrecomputePhase)' == 'true'">
+      <Output TaskParameter="Include" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
+    </CreateItem>
+    <CreateItem Include="@(_ReferencedDebugSymbolObjPdbsRaw->'%(FinalOutputPath)')"
+                Condition="'$(IsPrecomputePhase)' == 'true'">
+      <Output TaskParameter="Include" ItemName="_OutDirPdbToObj" />
+    </CreateItem>
+    <CreateItem Include="@(_ReferencedDebugSymbolObjPdbsRaw)"
+                Condition="'$(IsPrecomputePhase)' == 'true'">
+      <Output TaskParameter="Include" ItemName="ReferenceCopyLocalPathsDeps" />
+    </CreateItem>
   </Target>
 
   <Target Name="_CopyLocalFromReferencedObjPdbs"
