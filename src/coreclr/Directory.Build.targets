@@ -57,8 +57,8 @@
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
     </MSBuild>
-    <!-- Condition on ItemGroup is evaluated at meta and stripped. DeferredCondition is replayed. -->
-    <ItemGroup DeferredCondition="'$(IsPrecomputePhase)' == 'true'">
+    <!-- Replay cannot see IsPrecomputePhase. Literal false skips this at product; meta already ran it. -->
+    <ItemGroup DeferredCondition="false">
       <_ReferencedDebugSymbolObjPdbsRaw>
         <ObjPdb>%(Identity)</ObjPdb>
       </_ReferencedDebugSymbolObjPdbsRaw>
