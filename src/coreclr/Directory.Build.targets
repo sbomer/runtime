@@ -66,7 +66,7 @@
       <ReferenceCopyLocalPathsDeps Include="@(_ReferencedDebugSymbolObjPdbsRaw)" />
     </ItemGroup>
     <PropertyGroup>
-      <_ObjPdbMapRecorded Deferred="true">true</_ObjPdbMapRecorded>
+      <_ObjPdbMapRecorded>true</_ObjPdbMapRecorded>
     </PropertyGroup>
   </Target>
 
