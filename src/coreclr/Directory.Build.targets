@@ -69,8 +69,9 @@
              SkipNonexistentTargets="true"
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
       <Output TaskParameter="TargetOutputs" ItemName="_OutDirPdbToObj" />
+      <Output TaskParameter="TargetOutputs" ItemName="_OutDirPdbMapFromRef" />
     </MSBuild>
-    <CreateItem Include="@(_OutDirPdbToObj->'%(ObjPdb)')"
+    <CreateItem Include="@(_OutDirPdbMapFromRef->'%(ObjPdb)')"
                 Condition="'$(IsPrecomputePhase)' == 'true'">
       <Output TaskParameter="Include" ItemName="ReferenceCopyLocalPathsDeps" />
     </CreateItem>
