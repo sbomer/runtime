@@ -18,13 +18,18 @@
                         Destination="$(RuntimeBinDir)PDB\%(FolderName)\%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <!-- Record each OutDir PDB as a GenerateOutDir file output so leftovers are scrubbed and producer-owned. -->
+  <PropertyGroup Condition="'$(_DebugSymbolsProduced)' == 'true'">
+    <CopyFilesToOutputDirectoryPrecomputeOutputs>$(CopyFilesToOutputDirectoryPrecomputeOutputs);@(_DebugSymbolToMove)</CopyFilesToOutputDirectoryPrecomputeOutputs>
+  </PropertyGroup>
+
   <!-- Consolidate all PDBs into a single location, except the aotsdk PDBs, as S.P.C will overwrite the coreclr PDBs. -->
   <Target Name="MoveSymbolFiles"
           AfterTargets="CopyFilesToOutputDirectory"
           DependsOnTargets="_CheckForCompileOutputs"
           Inputs="@(_DebugSymbolToMove)"
           Outputs="@(_DebugSymbolToMove->Metadata('Destination'))"
-          PrecomputeInputs="$(OutDir)#dir"
+          PrecomputeInputs="@(_DebugSymbolToMove);$(OutDir)#dir"
           Condition="'$(_DebugSymbolsProduced)' == 'true'">
     <Copy SourceFiles="@(_DebugSymbolToMove)"
           DestinationFiles="@(_DebugSymbolToMove->Metadata('Destination'))"
