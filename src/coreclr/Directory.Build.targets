@@ -47,7 +47,7 @@
       <_DebugSymbolsObjPdbWithPath Include="@(DebugSymbolsProjectOutputGroupOutput)">
         <ObjPdb>%(Identity)</ObjPdb>
       </_DebugSymbolsObjPdbWithPath>
-      <_OutDirPdbToObjMap Include="@(_DebugSymbolsObjPdbWithPath->'%(FinalOutputPath)')" />
+      <_OutDirPdbToObjMap Deferred="true" Include="@(_DebugSymbolsObjPdbWithPath->'%(FinalOutputPath)')" />
     </ItemGroup>
   </Target>
 
@@ -71,6 +71,9 @@
       <Output TaskParameter="TargetOutputs" ItemName="_OutDirPdbToObj" />
       <Output TaskParameter="TargetOutputs" ItemName="_OutDirPdbMapFromRef" />
     </MSBuild>
+    <ItemGroup>
+      <_OutDirPdbToObj Deferred="true" />
+    </ItemGroup>
     <CreateItem Include="@(_OutDirPdbMapFromRef->'%(ObjPdb)')"
                 Condition="'$(IsPrecomputePhase)' == 'true'">
       <Output TaskParameter="Include" ItemName="ReferenceCopyLocalPathsDeps" />
