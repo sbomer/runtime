@@ -23,15 +23,18 @@
     <CopyFilesToOutputDirectoryPrecomputeOutputs>$(CopyFilesToOutputDirectoryPrecomputeOutputs);@(_DebugSymbolToMove)</CopyFilesToOutputDirectoryPrecomputeOutputs>
   </PropertyGroup>
 
-  <!-- Consolidate all PDBs into a single location, except the aotsdk PDBs, as S.P.C will overwrite the coreclr PDBs. -->
+  <!-- Consolidate all PDBs into a single location, except the aotsdk PDBs, as S.P.C will overwrite the coreclr PDBs.
+       Stage from DebugSymbolsProjectOutputGroupOutput (obj PDB, CoreCompile file output). OutDir PDB inputs are
+       flattened onto $(OutDir)#dir because .pdb is treated as an auxiliary sidecar, and exclusive file outputs
+       are not members of that sealed directory view. -->
   <Target Name="MoveSymbolFiles"
           AfterTargets="CopyFilesToOutputDirectory"
           DependsOnTargets="_CheckForCompileOutputs"
-          Inputs="@(_DebugSymbolToMove)"
+          Inputs="@(DebugSymbolsProjectOutputGroupOutput)"
           Outputs="@(_DebugSymbolToMove->Metadata('Destination'))"
-          PrecomputeInputs="@(_DebugSymbolToMove);$(OutDir)#dir"
+          PrecomputeInputs="@(DebugSymbolsProjectOutputGroupOutput)"
           Condition="'$(_DebugSymbolsProduced)' == 'true'">
-    <Copy SourceFiles="@(_DebugSymbolToMove)"
+    <Copy SourceFiles="@(DebugSymbolsProjectOutputGroupOutput)"
           DestinationFiles="@(_DebugSymbolToMove->Metadata('Destination'))"
           UseHardlinksIfPossible="false" />
   </Target>
