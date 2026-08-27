@@ -39,6 +39,46 @@
           UseHardlinksIfPossible="false" />
   </Target>
 
+  <!-- CopyLocal related .pdb items are OutDir paths. Those are exclusive GenerateOutDir file
+       outputs, so the referenced OutDir directory view does not contain them. Consume each
+       referenced DebugSymbolsProjectOutputGroup obj PDB (CoreCompile file output) instead. -->
+  <Target Name="_CaptureReferencedObjPdbsForCopyLocal"
+          AfterTargets="ResolveAssemblyReferences"
+          PrecomputeMerge="ResolveReferences"
+          Condition="'$(IsPrecomputePhase)' == 'true' and '@(_MSBuildProjectReferenceExistent)' != ''"
+          Deferred="Item:_OutDirPdbToObj:w">
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+             Targets="DebugSymbolsProjectOutputGroup"
+             BuildInParallel="$(BuildInParallel)"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform); %(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+             Condition="'$(IsPrecomputePhase)' == 'true' and '%(_MSBuildProjectReferenceExistent.BuildReference)' == 'true' and '%(_MSBuildProjectReferenceExistent.ReferenceOutputAssembly)' != 'false'"
+             ContinueOnError="!$(BuildingProject)"
+             SkipNonexistentTargets="true"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
+      <Output TaskParameter="TargetOutputs" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
+    </MSBuild>
+    <ItemGroup Condition="'$(IsPrecomputePhase)' == 'true'">
+      <_ReferencedDebugSymbolObjPdbsRaw>
+        <ObjPdb>%(Identity)</ObjPdb>
+      </_ReferencedDebugSymbolObjPdbsRaw>
+      <_OutDirPdbToObj Deferred="true" Include="@(_ReferencedDebugSymbolObjPdbsRaw->'%(FinalOutputPath)')" />
+      <ReferenceCopyLocalPathsDeps Include="@(_ReferencedDebugSymbolObjPdbsRaw)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_CopyLocalFromReferencedObjPdbs"
+          BeforeTargets="_CopyFilesMarkedCopyLocal;_Compute_CopyFilesMarkedCopyLocal_ReferencesCopiedInThisBuild"
+          PrecomputeMerge="GenerateOutDir"
+          Condition="'$(IsPrecomputePhase)' != 'true' and '$(TL_DEFERRED_PATH)' != ''"
+          Deferred="Item:_OutDirPdbToObj:r;Item:ReferenceCopyLocalPaths:r;Item:ReferenceCopyLocalPaths:w">
+    <ItemGroup>
+      <_CopyLocalPdbReplace Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.pdb'" />
+      <_CopyLocalPdbReplace Update="@(_OutDirPdbToObj)" ObjPdb="%(_OutDirPdbToObj.ObjPdb)" />
+      <ReferenceCopyLocalPaths Remove="@(_CopyLocalPdbReplace)" Condition="'%(ObjPdb)' != ''" />
+      <ReferenceCopyLocalPaths Include="@(_CopyLocalPdbReplace->'%(ObjPdb)')" Condition="'%(ObjPdb)' != ''" />
+    </ItemGroup>
+  </Target>
+
   <!-- Import targets here to have TargetPath and other macros defined. Limit to CoreLib. -->
   <Import Condition="'$(MSBuildProjectName)' == 'System.Private.CoreLib' or '$(IsNativeAotProject)' == 'true'" Project="$(RepositoryEngineeringDir)illink.targets" />
   <Import Project="$(RepositoryEngineeringDir)liveILLink.targets" />
