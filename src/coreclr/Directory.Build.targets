@@ -24,9 +24,7 @@
   </PropertyGroup>
 
   <!-- Consolidate all PDBs into a single location, except the aotsdk PDBs, as S.P.C will overwrite the coreclr PDBs.
-       Stage from DebugSymbolsProjectOutputGroupOutput (obj PDB, CoreCompile file output). OutDir PDB inputs are
-       flattened onto $(OutDir)#dir because .pdb is treated as an auxiliary sidecar, and exclusive file outputs
-       are not members of that sealed directory view. -->
+       Stage from DebugSymbolsProjectOutputGroupOutput (obj PDB, CoreCompile file output). -->
   <Target Name="MoveSymbolFiles"
           AfterTargets="CopyFilesToOutputDirectory"
           DependsOnTargets="_CheckForCompileOutputs"
@@ -37,60 +35,6 @@
     <Copy SourceFiles="@(DebugSymbolsProjectOutputGroupOutput)"
           DestinationFiles="@(_DebugSymbolToMove->Metadata('Destination'))"
           UseHardlinksIfPossible="false" />
-  </Target>
-
-  <!-- Query-only: OutDir PDB identity + ObjPdb metadata. Invoked from capture, not ordinary Build. -->
-  <Target Name="_MapDebugSymbolsObjPdbsForCopyLocal"
-          DependsOnTargets="DebugSymbolsProjectOutputGroup"
-          Returns="@(_OutDirPdbToObjMap)">
-    <ItemGroup>
-      <_DebugSymbolsObjPdbWithPath Include="@(DebugSymbolsProjectOutputGroupOutput)">
-        <ObjPdb>%(Identity)</ObjPdb>
-      </_DebugSymbolsObjPdbWithPath>
-      <_OutDirPdbToObjMap Include="@(_DebugSymbolsObjPdbWithPath->'%(FinalOutputPath)')" />
-    </ItemGroup>
-  </Target>
-
-  <!-- CopyLocal related .pdb items are OutDir paths. Those are exclusive GenerateOutDir file
-       outputs, so the referenced OutDir directory view does not contain them. Consume each
-       referenced DebugSymbolsProjectOutputGroup obj PDB (CoreCompile file output) instead.
-       Mapping is produced by the referenced project so this target has no conversion ItemGroup. -->
-  <Target Name="_CaptureReferencedObjPdbsForCopyLocal"
-          AfterTargets="ResolveAssemblyReferences"
-          PrecomputeMerge="ResolveReferences"
-          Condition="'$(IsPrecomputePhase)' == 'true' and '@(_MSBuildProjectReferenceExistent)' != ''"
-          Deferred="Item:_OutDirPdbToObj:w">
-    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
-             Targets="_MapDebugSymbolsObjPdbsForCopyLocal"
-             BuildInParallel="$(BuildInParallel)"
-             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform); %(_MSBuildProjectReferenceExistent.SetTargetFramework)"
-             Condition="'$(IsPrecomputePhase)' == 'true' and '%(_MSBuildProjectReferenceExistent.BuildReference)' == 'true' and '%(_MSBuildProjectReferenceExistent.ReferenceOutputAssembly)' != 'false'"
-             ContinueOnError="!$(BuildingProject)"
-             SkipNonexistentTargets="true"
-             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
-      <Output TaskParameter="TargetOutputs" ItemName="_OutDirPdbToObj" />
-      <Output TaskParameter="TargetOutputs" ItemName="_OutDirPdbMapFromRef" />
-    </MSBuild>
-    <ItemGroup>
-      <_OutDirPdbToObj Deferred="true" />
-    </ItemGroup>
-    <CreateItem Include="@(_OutDirPdbMapFromRef->'%(ObjPdb)')"
-                Condition="'$(IsPrecomputePhase)' == 'true'">
-      <Output TaskParameter="Include" ItemName="ReferenceCopyLocalPathsDeps" />
-    </CreateItem>
-  </Target>
-
-  <Target Name="_CopyLocalFromReferencedObjPdbs"
-          BeforeTargets="_CopyFilesMarkedCopyLocal;_Compute_CopyFilesMarkedCopyLocal_ReferencesCopiedInThisBuild"
-          PrecomputeMerge="GenerateOutDir"
-          Condition="'$(IsPrecomputePhase)' != 'true' and '$(TL_DEFERRED_PATH)' != ''"
-          Deferred="Item:_OutDirPdbToObj:r;Item:ReferenceCopyLocalPaths:r;Item:ReferenceCopyLocalPaths:w">
-    <ItemGroup>
-      <_CopyLocalPdbReplace Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.pdb'" />
-      <_CopyLocalPdbReplace Update="@(_OutDirPdbToObj)" ObjPdb="%(_OutDirPdbToObj.ObjPdb)" />
-      <ReferenceCopyLocalPaths Remove="@(_CopyLocalPdbReplace)" Condition="'%(ObjPdb)' != ''" />
-      <ReferenceCopyLocalPaths Include="@(_CopyLocalPdbReplace->'%(ObjPdb)')" Condition="'%(ObjPdb)' != ''" />
-    </ItemGroup>
   </Target>
 
   <!-- Import targets here to have TargetPath and other macros defined. Limit to CoreLib. -->
