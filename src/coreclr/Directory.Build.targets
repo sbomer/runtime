@@ -46,7 +46,7 @@
           AfterTargets="ResolveAssemblyReferences"
           PrecomputeMerge="ResolveReferences"
           Condition="'$(IsPrecomputePhase)' == 'true' and '@(_MSBuildProjectReferenceExistent)' != ''"
-          Deferred="Item:_OutDirPdbToObj:w;Property:_ObjPdbMapRecorded:w;Property:_ObjPdbMapRecorded:r">
+          Deferred="Item:_OutDirPdbToObj:w">
     <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
              Targets="DebugSymbolsProjectOutputGroup"
              BuildInParallel="$(BuildInParallel)"
@@ -57,17 +57,14 @@
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
     </MSBuild>
-    <!-- Meta: _ObjPdbMapRecorded is empty, so this runs. Product: deferred read is true, so skip. -->
-    <ItemGroup DeferredCondition="'$(_ObjPdbMapRecorded)' != 'true'">
+    <!-- Meta has no TL_DEFERRED_PATH (conversion runs). Product replay sets it (skip). -->
+    <ItemGroup DeferredCondition="'$(TL_DEFERRED_PATH)' == ''">
       <_ReferencedDebugSymbolObjPdbsRaw>
         <ObjPdb>%(Identity)</ObjPdb>
       </_ReferencedDebugSymbolObjPdbsRaw>
       <_OutDirPdbToObj Deferred="true" Include="@(_ReferencedDebugSymbolObjPdbsRaw->'%(FinalOutputPath)')" />
       <ReferenceCopyLocalPathsDeps Include="@(_ReferencedDebugSymbolObjPdbsRaw)" />
     </ItemGroup>
-    <PropertyGroup>
-      <_ObjPdbMapRecorded>true</_ObjPdbMapRecorded>
-    </PropertyGroup>
   </Target>
 
   <Target Name="_CopyLocalFromReferencedObjPdbs"
