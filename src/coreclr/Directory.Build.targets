@@ -47,7 +47,7 @@
       <_DebugSymbolsObjPdbWithPath Include="@(DebugSymbolsProjectOutputGroupOutput)">
         <ObjPdb>%(Identity)</ObjPdb>
       </_DebugSymbolsObjPdbWithPath>
-      <_OutDirPdbToObjMap Deferred="true" Include="@(_DebugSymbolsObjPdbWithPath->'%(FinalOutputPath)')" />
+      <_OutDirPdbToObjMap Include="@(_DebugSymbolsObjPdbWithPath->'%(FinalOutputPath)')" />
     </ItemGroup>
   </Target>
 
