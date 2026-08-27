@@ -57,7 +57,13 @@
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedDebugSymbolObjPdbsRaw" />
     </MSBuild>
-    <ItemGroup Condition="'$(IsPrecomputePhase)' == 'true'">
+    <!-- Product replay still runs ItemGroups in merged targets (task Conditions are honored).
+         Seed the item so the transform below is defined when MSBuild did not run. -->
+    <ItemGroup>
+      <_ReferencedDebugSymbolObjPdbsRaw Include="__precompute_empty_referenced_obj_pdb__" />
+      <_ReferencedDebugSymbolObjPdbsRaw Remove="__precompute_empty_referenced_obj_pdb__" />
+    </ItemGroup>
+    <ItemGroup>
       <_ReferencedDebugSymbolObjPdbsRaw>
         <ObjPdb>%(Identity)</ObjPdb>
       </_ReferencedDebugSymbolObjPdbsRaw>
