@@ -97,26 +97,11 @@
           Condition="'$(IsPrecomputePhase)' == 'true'"
           DependsOnTargets="GetSharedFrameworkLayoutInputs"
           PrecomputeInputs="@(_SharedFrameworkLayoutRefDir);@(_SharedFrameworkLayoutRuntimeDir)"
-          PrecomputeOutputs="$(MicrosoftNetCoreAppRefPackRefDir)#dir;$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)#dir"
-          Deferred="Property:MicrosoftNetCoreAppRefPackRefStagingDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir:r;Property:MicrosoftNetCoreAppRefPackRefDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmDir:r;Item:_StagedRefFile:r;Item:_StagedRefFile:w;Item:_StagedRuntimeLibFile:r;Item:_StagedRuntimeLibFile:w">
-    <ItemGroup>
-      <_StagedRefFile Deferred="true"
-                      Include="$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened\**\*.*"
-                      DestinationFile="$(MicrosoftNetCoreAppRefPackRefDir)%(Filename)%(Extension)" />
-      <_StagedRuntimeLibFile Deferred="true"
-                             Include="$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened\**\*.*"
-                             DestinationFile="$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)%(Filename)%(Extension)" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(_StagedRefFile)"
-          DestinationFiles="%(DestinationFile)"
-          SkipUnchangedFiles="true"
-          UseHardlinksIfPossible="true"
+          PrecomputeOutputs="$(MicrosoftNetCoreAppRefPackRefDir)#dir;$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)#dir">
+    <!-- Copy cannot flatten deferred globs (no item transforms / DestinationFiles batching). -->
+    <Exec Command="mkdir -p '$(MicrosoftNetCoreAppRefPackRefDir)' &amp;&amp; if [ -d '$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened' ]; then find '$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened' -type f -exec cp -f {} '$(MicrosoftNetCoreAppRefPackRefDir)' \;; fi"
           PrecomputationMode="Dynamic" />
-    <Copy SourceFiles="@(_StagedRuntimeLibFile)"
-          DestinationFiles="%(DestinationFile)"
-          SkipUnchangedFiles="true"
-          UseHardlinksIfPossible="true"
+    <Exec Command="mkdir -p '$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)' &amp;&amp; if [ -d '$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened' ]; then find '$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened' -type f -exec cp -f {} '$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)' \;; fi"
           PrecomputationMode="Dynamic" />
   </Target>
 
