@@ -109,12 +109,12 @@
     </CreateItem>
 
     <Copy SourceFiles="@(_StagedRefFile)"
-          DestinationFiles="@(_StagedRefFile->'$(MicrosoftNetCoreAppRefPackRefDir)%(Filename)%(Extension)')"
+          DestinationFiles="$(MicrosoftNetCoreAppRefPackRefDir)%(Filename)%(Extension)"
           SkipUnchangedFiles="true"
           UseHardlinksIfPossible="true"
           PrecomputationMode="Dynamic" />
     <Copy SourceFiles="@(_StagedRuntimeLibFile)"
-          DestinationFiles="@(_StagedRuntimeLibFile->'$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)%(Filename)%(Extension)')"
+          DestinationFiles="$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)%(Filename)%(Extension)"
           SkipUnchangedFiles="true"
           UseHardlinksIfPossible="true"
           PrecomputationMode="Dynamic" />
