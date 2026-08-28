@@ -217,7 +217,7 @@
           Condition="'$(ILLinkTrimAssembly)' == 'true'"
           DependsOnTargets="PrepareForAssembliesTrim;FindReferenceAssembliesForReferences"
           PrecomputeMerge="CoreCompile"
-          Deferred="Property:ILLinkTrimAssemblySymbols:r;Item:ILLinkTrimInputAssembly:r;Item:ReferencePathWithRefAssemblies:r;Item:_DependencyDirectoriesTemp:w;Item:_DependencyDirectories:w;Item:_DependencyDirectoriesSlash:w;Item:_DependencyDirectoriesNoSlash:w;Item:_ILLinkDependencyArguments:w">
+          Deferred="Property:ILLinkTrimAssemblySymbols:r;Item:ILLinkTrimInputAssembly:r;Item:ReferencePathWithRefAssemblies:r">
     <PropertyGroup>
       <!-- default action for assemblies with IsTrimmable attribute -->
       <ILLinkArgs>$(ILLinkArgs) --trim-mode skip</ILLinkArgs>
@@ -264,24 +264,27 @@
     </Move>
 
     <ItemGroup>
-      <_DependencyDirectoriesTemp Deferred="true" Include="@(ReferencePathWithRefAssemblies->'%(RootDir)%(Directory)')" />
+      <_DependencyDirectoriesTemp Include="@(ReferencePathWithRefAssemblies->'%(RootDir)%(Directory)')" />
       <!-- Add project references first to give precedence to project-specific files. -->
-      <_DependencyDirectories Deferred="true" Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'=='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
-      <_DependencyDirectories Deferred="true" Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'!='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
+      <_DependencyDirectories Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'=='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
+      <_DependencyDirectories Condition="'%(_DependencyDirectoriesTemp.ReferenceSourceTarget)'!='ProjectReference'" Include="%(_DependencyDirectoriesTemp.Identity)" />
       <!-- Remove trailing slashes to work around response file parsing behavior. -->
-      <_DependencyDirectoriesSlash Deferred="true" Include="@(_DependencyDirectories)">
+      <_DependencyDirectoriesSlash Include="@(_DependencyDirectories)">
         <PathWithSlash>$([MSBuild]::EnsureTrailingSlash('%(Identity)'))</PathWithSlash>
       </_DependencyDirectoriesSlash>
-      <_DependencyDirectoriesNoSlash Deferred="true" Include="@(_DependencyDirectoriesSlash)">
+      <_DependencyDirectoriesNoSlash Include="@(_DependencyDirectoriesSlash)">
         <PathWithoutSlash>$([System.String]::new('%(PathWithSlash)').TrimEnd($([System.IO.Path]::DirectorySeparatorChar)))</PathWithoutSlash>
       </_DependencyDirectoriesNoSlash>
-      <_DependencyDirectories Deferred="true" Remove="@(_DependencyDirectories)" />
-      <_DependencyDirectories Deferred="true" Include="%(_DependencyDirectoriesNoSlash.PathWithoutSlash)" />
-      <_ILLinkDependencyArguments Deferred="true" Include="@(_DependencyDirectories->'-d &quot;%(Identity)&quot;')" />
+      <_DependencyDirectories Remove="@(_DependencyDirectories)" />
+      <_DependencyDirectories Include="%(_DependencyDirectoriesNoSlash.PathWithoutSlash)" />
       <ILLinkTrimInputAssembly Include="$(TargetName)">
         <RootMode>library</RootMode>
       </ILLinkTrimInputAssembly>
     </ItemGroup>
+
+    <PropertyGroup>
+      <ILLinkArgs Condition="@(_DependencyDirectories->Count()) > 0">$(ILLinkArgs) -d @(_DependencyDirectories->'"%(Identity)"', ' -d ')</ILLinkArgs>
+    </PropertyGroup>
 
     <ILLink PrecomputationMode="DynamicLoad"
             PrecomputeInputs="$(ILLinkTrimInputPath)#dir"
@@ -289,7 +292,7 @@
             AssemblyPaths="$(ILLinkTrimInputPath)$(TargetName)$(TargetExt)"
             RootAssemblyNames="@(ILLinkTrimInputAssembly)"
             OutputDirectory="$(ILLinkTrimOutputPath)"
-            ExtraArgs="$(ILLinkArgs) @(_ILLinkDependencyArguments, ' ')"
+            ExtraArgs="$(ILLinkArgs)"
             ToolExe="$(_DotNetHostFileName)"
             ToolPath="$(_DotNetHostDirectory)" />
   </Target>
