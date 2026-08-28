@@ -247,7 +247,7 @@
           DependsOnTargets="PrepareForAssembliesTrim;_WriteILLinkDependencyResponseFile"
           PrecomputeMerge="CoreCompile"
           PrecomputeInputs="$(ILLinkDependencyResponseFile)"
-          Deferred="Property:ILLinkTrimAssemblySymbols:r">
+          Deferred="Property:ILLinkTrimAssemblySymbols:r;Item:ILLinkTrimInputAssembly:r">
     <PropertyGroup>
       <!-- default action for assemblies with IsTrimmable attribute -->
       <ILLinkArgs>$(ILLinkArgs) --trim-mode skip</ILLinkArgs>
