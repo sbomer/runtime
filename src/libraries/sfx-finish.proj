@@ -98,13 +98,15 @@
           DependsOnTargets="GetSharedFrameworkLayoutInputs"
           PrecomputeInputs="@(_SharedFrameworkLayoutRefDir);@(_SharedFrameworkLayoutRuntimeDir)"
           PrecomputeOutputs="$(MicrosoftNetCoreAppRefPackRefDir)#dir;$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)#dir"
-          Deferred="Property:MicrosoftNetCoreAppRefPackRefStagingDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir:r;Property:MicrosoftNetCoreAppRefPackRefDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmDir:r;Item:_StagedRefFile:r;Item:_StagedRefFile:w;Item:_StagedRuntimeLibFile:r;Item:_StagedRuntimeLibFile:w">
-    <ItemGroup>
-      <_StagedRefFile Deferred="true"
-                      Include="$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened\**\*.*" />
-      <_StagedRuntimeLibFile Deferred="true"
-                             Include="$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened\**\*.*" />
-    </ItemGroup>
+          Deferred="Property:MicrosoftNetCoreAppRefPackRefStagingDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir:r;Property:MicrosoftNetCoreAppRefPackRefDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmDir:r">
+    <CreateItem Include="$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened\**\*.*"
+                PrecomputationMode="Dynamic">
+      <Output TaskParameter="Include" ItemName="_StagedRefFile" />
+    </CreateItem>
+    <CreateItem Include="$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened\**\*.*"
+                PrecomputationMode="Dynamic">
+      <Output TaskParameter="Include" ItemName="_StagedRuntimeLibFile" />
+    </CreateItem>
 
     <Copy SourceFiles="@(_StagedRefFile)"
           DestinationFiles="@(_StagedRefFile->'$(MicrosoftNetCoreAppRefPackRefDir)%(Filename)%(Extension)')"
