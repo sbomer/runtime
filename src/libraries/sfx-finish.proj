@@ -165,7 +165,6 @@
     <PropertyGroup>
       <SharedFrameworkAssembliesTrimDir>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'illink-$(TargetArchitecture)'))</SharedFrameworkAssembliesTrimDir>
       <SharedFrameworkAssembliesTrimMarkerFile>$(SharedFrameworkAssembliesTrimDir)linker-marker.txt</SharedFrameworkAssembliesTrimMarkerFile>
-      <SharedFrameworkSuppressionsResponseFile>$(SharedFrameworkAssembliesTrimDir)suppressions.rsp</SharedFrameworkSuppressionsResponseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -181,7 +180,7 @@
           AfterTargets="Build"
           DependsOnTargets="ResolveProjectReferences;GetTrimSharedFrameworkAssembliesInputs;PrepareForAssembliesTrim"
           Outputs="$(SharedFrameworkAssembliesTrimMarkerFile)"
-          Deferred="Item:SharedFrameworkAssembly:r;Item:SharedFrameworkAssembly:w;Item:SharedFrameworkSuppressionsXml:r;Item:_SharedFrameworkSuppressionArgument:w;Item:_SharedFrameworkSuppressionArgument:r;Item:_SharedFrameworkRootAssemblyName:w;Item:_SharedFrameworkRootAssemblyName:r">
+          Deferred="Item:SharedFrameworkAssembly:r;Item:SharedFrameworkAssembly:w;Item:SharedFrameworkSuppressionsXml:r;Item:_SharedFrameworkRootAssemblyName:w;Item:_SharedFrameworkRootAssemblyName:r">
     <Message Text="$(MSBuildProjectName) -> Trimming $(TargetRid) shared framework assemblies with ILLinker..." Importance="high" />
 
     <PropertyGroup>
@@ -191,8 +190,6 @@
 
     <ItemGroup>
       <SharedFrameworkAssembly Deferred="true" RootMode="library" />
-      <_SharedFrameworkSuppressionArgument Deferred="true"
-                                           Include="--link-attributes &quot;%(SharedFrameworkSuppressionsXml.Identity)&quot;" />
       <_SharedFrameworkRootAssemblyName Deferred="true"
                                         Include="%(SharedFrameworkAssembly.Filename)">
         <RootMode>library</RootMode>
@@ -200,17 +197,12 @@
     </ItemGroup>
 
     <MakeDir Directories="$(SharedFrameworkAssembliesTrimDir)" />
-    <WriteLinesToFile PrecomputationMode="Dynamic"
-                      PrecomputeOutputs="$(SharedFrameworkSuppressionsResponseFile)"
-                      File="$(SharedFrameworkSuppressionsResponseFile)"
-                      Lines="@(_SharedFrameworkSuppressionArgument)"
-                      Overwrite="true"
-                      WriteOnlyWhenDifferent="true" />
-    <ILLink PrecomputationMode="Dynamic"
+    <ILLink PrecomputationMode="DynamicLoad"
             AssemblyPaths="@(SharedFrameworkAssembly)"
             RootAssemblyNames="@(_SharedFrameworkRootAssemblyName)"
+            LinkAttributesFiles="@(SharedFrameworkSuppressionsXml)"
             OutputDirectory="$(SharedFrameworkAssembliesTrimDir)"
-            ExtraArgs="$(SharedFrameworkILLinkArgs) @&quot;$(SharedFrameworkSuppressionsResponseFile)&quot;"
+            ExtraArgs="$(SharedFrameworkILLinkArgs)"
             ToolExe="$(_DotNetHostFileName)"
             ToolPath="$(_DotNetHostDirectory)" />
 

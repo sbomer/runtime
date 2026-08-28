@@ -17,7 +17,6 @@
     <PropertyGroup>
       <OOBAssembliesTrimDir>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'illink-$(TargetArchitecture)'))</OOBAssembliesTrimDir>
       <OOBAssembliesTrimMarkerFile>$(OOBAssembliesTrimDir)marker.txt</OOBAssembliesTrimMarkerFile>
-      <OOBSuppressionsResponseFile>$(OOBAssembliesTrimDir)suppressions.rsp</OOBSuppressionsResponseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,7 +39,7 @@
           AfterTargets="Build"
           DependsOnTargets="GetTrimOOBAssembliesInputs;PrepareForAssembliesTrim"
           Outputs="$(OOBAssembliesTrimMarkerFile)"
-          Deferred="Item:OOBAssemblyToTrim:r;Item:OOBAssemblyReference:r;Item:OOBLibrarySuppressionsXml:r;Item:_OOBSuppressionArgument:w;Item:_OOBSuppressionArgument:r;Item:_OOBRootAssemblyName:w;Item:_OOBRootAssemblyName:r">
+          Deferred="Item:OOBAssemblyToTrim:r;Item:OOBAssemblyReference:r;Item:OOBLibrarySuppressionsXml:r;Item:_OOBRootAssemblyName:w;Item:_OOBRootAssemblyName:r">
     <Message Text="$(MSBuildProjectName) -> Trimming $(TargetRid) out-of-band assemblies with ILLinker..." Importance="high" />
 
     <PropertyGroup>
@@ -50,25 +49,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <_OOBSuppressionArgument Deferred="true"
-                               Include="--link-attributes &quot;%(OOBLibrarySuppressionsXml.FullPath)&quot;" />
       <_OOBRootAssemblyName Deferred="true"
                             Include="%(OOBAssemblyToTrim.Filename)" />
     </ItemGroup>
 
     <MakeDir Directories="$(OOBAssembliesTrimDir)" />
-    <WriteLinesToFile PrecomputationMode="Dynamic"
-                      PrecomputeOutputs="$(OOBSuppressionsResponseFile)"
-                      File="$(OOBSuppressionsResponseFile)"
-                      Lines="@(_OOBSuppressionArgument)"
-                      Overwrite="true"
-                      WriteOnlyWhenDifferent="true" />
-    <ILLink PrecomputationMode="Dynamic"
+    <ILLink PrecomputationMode="DynamicLoad"
             AssemblyPaths="@(OOBAssemblyToTrim)"
             RootAssemblyNames="@(_OOBRootAssemblyName)"
             ReferenceAssemblyPaths="@(OOBAssemblyReference)"
+            LinkAttributesFiles="@(OOBLibrarySuppressionsXml)"
             OutputDirectory="$(OOBAssembliesTrimDir)"
-            ExtraArgs="$(OOBILLinkArgs) @&quot;$(OOBSuppressionsResponseFile)&quot;"
+            ExtraArgs="$(OOBILLinkArgs)"
             ToolExe="$(_DotNetHostFileName)"
             ToolPath="$(_DotNetHostDirectory)" />
 

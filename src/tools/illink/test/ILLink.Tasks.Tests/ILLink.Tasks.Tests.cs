@@ -553,6 +553,23 @@ namespace ILLink.Tasks.Tests
         }
 
         [Fact]
+        public void TestLinkAttributesFiles()
+        {
+            var files = new ITaskItem[] {
+                new TaskItem("/tmp/ILLink.Suppressions.LibraryBuild.xml"),
+                new TaskItem("/tmp/path with/spaces/suppressions.xml"),
+            };
+            var task = new MockTask()
+            {
+                LinkAttributesFiles = files
+            };
+            string responseFileCommands = task.GetResponseFileCommands();
+            Assert.Contains("--link-attributes \"/tmp/ILLink.Suppressions.LibraryBuild.xml\"", responseFileCommands);
+            Assert.Contains("--link-attributes \"/tmp/path with/spaces/suppressions.xml\"", responseFileCommands);
+            Assert.DoesNotContain("@", responseFileCommands);
+        }
+
+        [Fact]
         public void TestExtraArgs()
         {
             var task = new MockTask()

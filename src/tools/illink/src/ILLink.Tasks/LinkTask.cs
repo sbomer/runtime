@@ -103,6 +103,12 @@ namespace ILLink.Tasks
         public ITaskItem[] RootDescriptorFiles { get; set; }
 
         /// <summary>
+        ///   XML files with UnconditionalSuppressMessage / link attributes.
+        ///   Maps to '--link-attributes'. Written into ToolTask's single response file.
+        /// </summary>
+        public ITaskItem[] LinkAttributesFiles { get; set; }
+
+        /// <summary>
         ///   Boolean specifying whether to enable beforefieldinit optimization globally.
         ///   Maps to '--enable-opt beforefieldinit' or '--disable-opt beforefieldinit'.
         /// </summary>
@@ -314,6 +320,12 @@ namespace ILLink.Tasks
             {
                 foreach (var rootFile in RootDescriptorFiles)
                     args.Append("-x ").AppendLine(Quote(rootFile.ItemSpec));
+            }
+
+            if (LinkAttributesFiles != null)
+            {
+                foreach (var attributesFile in LinkAttributesFiles)
+                    args.Append("--link-attributes ").AppendLine(Quote(attributesFile.ItemSpec));
             }
 
             foreach (var assemblyItem in RootAssemblyNames)
