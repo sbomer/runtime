@@ -17,6 +17,8 @@
   <PropertyGroup Condition="'$(_RequiresLiveILLink)' == 'true'">
     <_ILLinkTasksSourceDir>$(ToolsProjectRoot)illink\src\ILLink.Tasks\</_ILLinkTasksSourceDir>
     <ILLinkAnalyzersPropsPath>$(ToolsProjectRoot)illink\src\ILLink.RoslynAnalyzer\build\Microsoft.NET.ILLink.Analyzers.props</ILLinkAnalyzersPropsPath>
+    <!-- Precompute loads restored Microsoft.NET.ILLink.Tasks 10.0.7. build-precompute.sh
+         replaces tools/net/ILLink.Tasks.dll with a live-built copy so LinkAttributesFiles exists. -->
     <_PrecomputeILLinkTasksAssembly Condition="'$(IsPrecomputePhase)' == 'true'">$([MSBuild]::NormalizePath('$(NUGET_PACKAGES)', 'microsoft.net.illink.tasks', '10.0.7', 'tools', 'net', 'ILLink.Tasks.dll'))</_PrecomputeILLinkTasksAssembly>
   </PropertyGroup>
 

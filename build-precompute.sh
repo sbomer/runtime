@@ -91,6 +91,31 @@ PRECOMPUTE_ADDITIONAL_UNTRACKED_SCOPES="$NUGET_PACKAGES" \
 
 cp -a "$package_changes/." "$NUGET_PACKAGES/"
 
+# Live-built ILLink.Tasks (LinkAttributesFiles) replaces restored 10.0.7 tools/net DLL.
+# Source overlays stay in precompute-package-changes; do not check in the binary.
+"$work_root/restore/DriverState/dotnet" \
+  "$precompute_msbuild" \
+  "$script_dir/src/tools/illink/src/ILLink.Tasks/ILLink.Tasks.csproj" \
+  "-t:Build" \
+  "/p:Configuration=Debug" \
+  "/p:TargetFramework=net11.0" \
+  "/p:Restore=false" \
+  "/p:EmbedProjectAssetsFile=false" \
+  "/p:EnableSourceLink=false" \
+  "$@"
+
+illink_tasks_dll="$script_dir/artifacts/bin/ILLink.Tasks/Debug/net/ILLink.Tasks.dll"
+illink_pkg_dll="$NUGET_PACKAGES/microsoft.net.illink.tasks/10.0.7/tools/net/ILLink.Tasks.dll"
+if [[ ! -f "$illink_tasks_dll" ]]; then
+  echo "Unable to locate live-built ILLink.Tasks.dll at $illink_tasks_dll." >&2
+  exit 1
+fi
+if [[ ! -f "$illink_pkg_dll" ]]; then
+  echo "Unable to locate restored Microsoft.NET.ILLink.Tasks 10.0.7 at $illink_pkg_dll." >&2
+  exit 1
+fi
+cp "$illink_tasks_dll" "$illink_pkg_dll"
+
 nuget_pack_targets="$(dirname "$precompute_msbuild")/NuGet.Build.Tasks.Pack.targets"
 python3 - "$nuget_pack_targets" <<'PY'
 from pathlib import Path
