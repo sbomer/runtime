@@ -217,7 +217,7 @@
           Condition="'$(ILLinkTrimAssembly)' == 'true'"
           DependsOnTargets="PrepareForAssembliesTrim;FindReferenceAssembliesForReferences"
           PrecomputeMerge="CoreCompile"
-          Deferred="Property:ILLinkTrimAssemblySymbols:r;Item:ILLinkTrimInputAssembly:r;Item:_DependencyDirectoriesTemp:w;Item:_DependencyDirectories:w;Item:_DependencyDirectoriesSlash:w;Item:_DependencyDirectoriesNoSlash:w;Item:_ILLinkDependencyArguments:w">
+          Deferred="Property:ILLinkTrimAssemblySymbols:r;Item:ILLinkTrimInputAssembly:r;Item:ReferencePathWithRefAssemblies:r;Item:_DependencyDirectoriesTemp:w;Item:_DependencyDirectories:w;Item:_DependencyDirectoriesSlash:w;Item:_DependencyDirectoriesNoSlash:w;Item:_ILLinkDependencyArguments:w">
     <PropertyGroup>
       <!-- default action for assemblies with IsTrimmable attribute -->
       <ILLinkArgs>$(ILLinkArgs) --trim-mode skip</ILLinkArgs>
