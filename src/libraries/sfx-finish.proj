@@ -81,9 +81,49 @@
       OutputPath="$(PackageOverridesOutputPath)" />
   </Target>
 
+  <Target Name="GetSharedFrameworkLayoutInputs"
+          Condition="'$(IsPrecomputePhase)' == 'true'"
+          DependsOnTargets="ResolveProjectReferences">
+    <ItemGroup>
+      <_SharedFrameworkLayoutProducer Include="@(SharedFrameworkAssembly)"
+                                      Condition="'%(Filename)' != 'System.Private.CoreLib'" />
+      <_SharedFrameworkLayoutRefDir Include="@(_SharedFrameworkLayoutProducer->'$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened\%(Filename)#dir')" />
+      <_SharedFrameworkLayoutRuntimeDir Include="@(_SharedFrameworkLayoutProducer->'$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened\%(Filename)#dir')" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Consume per-project BinPlace unflattened dirs and copy recorded members into the final pack layout. -->
+  <Target Name="CreateSharedFrameworkLayout"
+          AfterTargets="Build"
+          Condition="'$(IsPrecomputePhase)' == 'true'"
+          DependsOnTargets="GetSharedFrameworkLayoutInputs"
+          PrecomputeInputs="@(_SharedFrameworkLayoutRefDir);@(_SharedFrameworkLayoutRuntimeDir)"
+          PrecomputeOutputs="$(MicrosoftNetCoreAppRefPackRefDir)#dir;$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)#dir"
+          Deferred="Property:MicrosoftNetCoreAppRefPackRefStagingDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir:r;Property:MicrosoftNetCoreAppRefPackRefDir:r;Property:MicrosoftNetCoreAppRuntimePackRidLibTfmDir:r;Item:_StagedRefFile:r;Item:_StagedRefFile:w;Item:_StagedRuntimeLibFile:r;Item:_StagedRuntimeLibFile:w">
+    <ItemGroup>
+      <_StagedRefFile Deferred="true"
+                      Include="$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened\**\*.*" />
+      <_StagedRuntimeLibFile Deferred="true"
+                             Include="$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_StagedRefFile)"
+          DestinationFiles="@(_StagedRefFile->'$(MicrosoftNetCoreAppRefPackRefDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"
+          UseHardlinksIfPossible="true"
+          PrecomputationMode="Dynamic" />
+    <Copy SourceFiles="@(_StagedRuntimeLibFile)"
+          DestinationFiles="@(_StagedRuntimeLibFile->'$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"
+          UseHardlinksIfPossible="true"
+          PrecomputationMode="Dynamic" />
+  </Target>
+
   <!-- Copy the intellisense file to the targeting pack directory. -->
   <Target Name="CopyDocumentationFiles"
           AfterTargets="Build"
+          DependsOnTargets="CreateSharedFrameworkLayout"
+          PrecomputeMerge="CreateSharedFrameworkLayout"
           Deferred="Item:SharedFrameworkAssembly:r;Item:DocumentationFileToCopy:w">
     <ItemGroup>
       <DocumentationFileToCopy Deferred="true"
@@ -101,6 +141,8 @@
 
   <Target Name="ValidateSharedFramework"
           AfterTargets="Build"
+          DependsOnTargets="CreateSharedFrameworkLayout"
+          PrecomputeInputs="$(MicrosoftNetCoreAppRefPackRefDir)#dir;$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)#dir"
           Deferred="Item:_missingSharedFrameworkFile:r;Item:_missingSharedFrameworkFile:w">
     <ItemGroup>
       <!-- exclude private assemblies from ref-->

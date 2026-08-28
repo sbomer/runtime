@@ -200,6 +200,13 @@
     <MicrosoftNetCoreAppRuntimePackRidDir>$([MSBuild]::NormalizeDirectory('$(MicrosoftNetCoreAppRuntimePackDir)', 'runtimes', '$(TargetRid)'))</MicrosoftNetCoreAppRuntimePackRidDir>
     <MicrosoftNetCoreAppRuntimePackRidLibTfmDir>$([MSBuild]::NormalizeDirectory('$(MicrosoftNetCoreAppRuntimePackRidDir)', 'lib', '$(NetCoreAppCurrent)'))</MicrosoftNetCoreAppRuntimePackRidLibTfmDir>
     <MicrosoftNetCoreAppRuntimePackNativeDir>$([MSBuild]::NormalizeDirectory('$(MicrosoftNetCoreAppRuntimePackRidDir)', 'native'))</MicrosoftNetCoreAppRuntimePackNativeDir>
+
+    <!-- Precompute BinPlace writes per-project unflattened dirs here; sfx-finish copies members to the final pack dirs. -->
+    <MicrosoftNetCoreAppRefPackStagingDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsBinDir)', 'microsoft.netcore.app.ref.staging'))</MicrosoftNetCoreAppRefPackStagingDir>
+    <MicrosoftNetCoreAppRefPackRefStagingDir>$([MSBuild]::NormalizeDirectory('$(MicrosoftNetCoreAppRefPackStagingDir)', 'ref', '$(NetCoreAppCurrent)'))</MicrosoftNetCoreAppRefPackRefStagingDir>
+    <MicrosoftNetCoreAppRuntimePackStagingDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsBinDir)', 'microsoft.netcore.app.runtime.$(TargetRid).staging', '$(LibrariesConfiguration)'))</MicrosoftNetCoreAppRuntimePackStagingDir>
+    <MicrosoftNetCoreAppRuntimePackRidStagingDir>$([MSBuild]::NormalizeDirectory('$(MicrosoftNetCoreAppRuntimePackStagingDir)', 'runtimes', '$(TargetRid)'))</MicrosoftNetCoreAppRuntimePackRidStagingDir>
+    <MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir>$([MSBuild]::NormalizeDirectory('$(MicrosoftNetCoreAppRuntimePackRidStagingDir)', 'lib', '$(NetCoreAppCurrent)'))</MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir>
   </PropertyGroup>
 
   <PropertyGroup>

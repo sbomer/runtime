@@ -109,11 +109,14 @@
       <RuntimePath Condition="'$(IsNETCoreAppSrc)' == 'true'">$(NetCoreAppCurrentTestHostSharedFrameworkPath)</RuntimePath>
     </BinPlaceTargetFrameworks>
 
-    <!-- Microsoft.NetCore.App.Ref and Microsoft.NetCore.App.Runtime targeting packs -->
+    <!-- Microsoft.NetCore.App.Ref and Microsoft.NetCore.App.Runtime targeting packs.
+         Precompute stages per-project unflattened dirs; ordinary builds still binplace to the final pack dirs. -->
     <BinPlaceTargetFrameworks Include="$(NetCoreAppCurrent)-$(TargetOS)">
       <NativePath>$(MicrosoftNetCoreAppRuntimePackNativeDir)</NativePath>
-      <RefPath Condition="'$(IsNETCoreAppRef)' == 'true'">$(MicrosoftNetCoreAppRefPackRefDir)</RefPath>
-      <RuntimePath Condition="'$(IsNETCoreAppSrc)' == 'true'">$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)</RuntimePath>
+      <RefPath Condition="'$(IsNETCoreAppRef)' == 'true' and '$(IsPrecomputePhase)' == 'true'">$(MicrosoftNetCoreAppRefPackRefStagingDir)</RefPath>
+      <RefPath Condition="'$(IsNETCoreAppRef)' == 'true' and '$(IsPrecomputePhase)' != 'true'">$(MicrosoftNetCoreAppRefPackRefDir)</RefPath>
+      <RuntimePath Condition="'$(IsNETCoreAppSrc)' == 'true' and '$(IsPrecomputePhase)' == 'true'">$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)</RuntimePath>
+      <RuntimePath Condition="'$(IsNETCoreAppSrc)' == 'true' and '$(IsPrecomputePhase)' != 'true'">$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)</RuntimePath>
     </BinPlaceTargetFrameworks>
   </ItemGroup>
 
