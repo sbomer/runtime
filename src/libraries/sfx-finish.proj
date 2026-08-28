@@ -82,13 +82,12 @@
   </Target>
 
   <Target Name="GetSharedFrameworkLayoutInputs"
-          Condition="'$(IsPrecomputePhase)' == 'true'"
-          DependsOnTargets="ResolveProjectReferences">
+          Condition="'$(IsPrecomputePhase)' == 'true'">
     <ItemGroup>
-      <_SharedFrameworkLayoutProducer Include="@(SharedFrameworkAssembly)"
-                                      Condition="'%(Filename)' != 'System.Private.CoreLib'" />
-      <_SharedFrameworkLayoutRefDir Include="@(_SharedFrameworkLayoutProducer->'$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened\%(Filename)#dir')" />
-      <_SharedFrameworkLayoutRuntimeDir Include="@(_SharedFrameworkLayoutProducer->'$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened\%(Filename)#dir')" />
+      <_SharedFrameworkLayoutProducer Include="@(NetCoreAppLibrary)"
+                                      Condition="!$([System.String]::new('%(Identity)').StartsWith('System.Private'))" />
+      <_SharedFrameworkLayoutRefDir Include="@(_SharedFrameworkLayoutProducer->'$(MicrosoftNetCoreAppRefPackRefStagingDir)unflattened\%(Identity)#dir')" />
+      <_SharedFrameworkLayoutRuntimeDir Include="@(_SharedFrameworkLayoutProducer->'$(MicrosoftNetCoreAppRuntimePackRidLibTfmStagingDir)unflattened\%(Identity)#dir')" />
     </ItemGroup>
   </Target>
 
