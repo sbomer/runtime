@@ -284,7 +284,7 @@
     </ItemGroup>
 
     <ILLink PrecomputationMode="DynamicLoad"
-            PrecomputeInputs="$(ILLinkTrimInputPath)#dir;@(ReferencePathWithRefAssemblies)"
+            PrecomputeInputs="$(ILLinkTrimInputPath)#dir"
             PrecomputeOutputs="$(ILLinkTrimAssemblyPath)"
             AssemblyPaths="$(ILLinkTrimInputPath)$(TargetName)$(TargetExt)"
             RootAssemblyNames="@(ILLinkTrimInputAssembly)"
