@@ -26,6 +26,8 @@ namespace ILLink.Tasks.Tests
             ILLinkPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "illink.dll");
         }
 
+        public string GetResponseFileCommands() => GenerateResponseFileCommands();
+
         public MockDriver CreateDriver()
         {
             using (var responseFileText = new StringReader(GenerateResponseFileCommands()))

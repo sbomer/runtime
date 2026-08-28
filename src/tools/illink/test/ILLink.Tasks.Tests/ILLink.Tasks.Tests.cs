@@ -558,8 +558,11 @@ namespace ILLink.Tasks.Tests
             var task = new MockTask()
             {
                 TrimMode = "copy",
-                ExtraArgs = "--trim-mode copyused"
+                ExtraArgs = "--trim-mode copyused -d \"/tmp/illink-refs\""
             };
+            string responseFileCommands = task.GetResponseFileCommands();
+            Assert.Contains("-d \"/tmp/illink-refs\"", responseFileCommands);
+            Assert.DoesNotContain("@", responseFileCommands);
             using (var driver = task.CreateDriver())
             {
                 Assert.Equal(AssemblyAction.Link, driver.Context.DefaultAction);
