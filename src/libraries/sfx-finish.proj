@@ -115,8 +115,10 @@
       <_expectedLib Include="@(NetCoreAppLibrary)" Exclude="System.Private.CoreLib" />
       <_expectedSharedFrameworkFile Include="@(_expectedLib->'$(MicrosoftNetCoreAppRuntimePackRidLibTfmDir)%(Identity).dll')" />
 
-      <!-- Capture the expected list; product replay only sees Deferred items and Exists checks. -->
-      <_expectedSharedFrameworkFile Deferred="true" Include="@(_expectedSharedFrameworkFile)" />
+      <!-- Non-deferred clone for Error PrecomputeInputs; deferred items are not expandable there. -->
+      <_expectedSharedFrameworkFileInputs Include="@(_expectedSharedFrameworkFile)" />
+      <!-- Snapshot lookup into InitItems / :w without replaying a transform at product. -->
+      <_expectedSharedFrameworkFile Deferred="true" />
 
       <_missingSharedFrameworkFile Deferred="true"
                                    Include="@(_expectedSharedFrameworkFile)"
@@ -126,7 +128,7 @@
     <Error Text="The shared framework files '@(_missingSharedFrameworkFile)' were missing."
            DeferredCondition="'@(_missingSharedFrameworkFile)' != ''"
            PrecomputationMode="Dynamic"
-           PrecomputeInputs="@(_expectedSharedFrameworkFile)" />
+           PrecomputeInputs="@(_expectedSharedFrameworkFileInputs)" />
   </Target>
 
   <Target Name="GetTrimSharedFrameworkAssembliesInputs"
