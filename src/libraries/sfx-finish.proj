@@ -101,7 +101,7 @@
 
   <Target Name="ValidateSharedFramework"
           AfterTargets="Build"
-          Deferred="Item:_expectedSharedFrameworkFile:r;Item:_expectedSharedFrameworkFile:w;Item:_missingSharedFrameworkFile:r;Item:_missingSharedFrameworkFile:w">
+          Deferred="Item:_missingSharedFrameworkFile:r;Item:_missingSharedFrameworkFile:w">
     <ItemGroup>
       <!-- exclude private assemblies from ref-->
       <_expectedRef Include="@(NetCoreAppLibrary)" Condition="!$([System.String]::new('%(Identity)').StartsWith('System.Private'))" />
