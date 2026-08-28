@@ -241,6 +241,10 @@
       <LinkerNoWarn>$(LinkerNoWarn);IL2008;IL2009;IL2121;IL2025;IL2035</LinkerNoWarn>
       <ILLinkArgs>$(ILLinkArgs) --nowarn $(LinkerNoWarn)</ILLinkArgs>
       <ILLinkArgs Condition="'$(ILLinkDisableIPConstProp)' == 'true'">$(ILLinkArgs) --disable-opt ipconstprop</ILLinkArgs>
+      <!-- Product RootAssemblyNames='@(ILLinkTrimInputAssembly)' is TaskItems against an empty
+           :r snapshot, so -a never reaches illink. Bake the ordinary RootMode=library root
+           into ExtraArgs only during precompute capture. -->
+      <ILLinkArgs Condition="'$(IsPrecomputePhase)' == 'true'">$(ILLinkArgs) -a $(TargetName) library</ILLinkArgs>
     </PropertyGroup>
 
     <!-- Move the assembly into a subdirectory for ILLink -->
