@@ -161,7 +161,7 @@
 
   <Target Name="GetTrimSharedFrameworkAssembliesInputs"
           DependsOnTargets="ResolveProjectReferences"
-          Deferred="Item:SharedFrameworkAssembly:r;Item:SharedFrameworkSuppressionsXml:w">
+          Deferred="Item:SharedFrameworkAssembly:r;Item:SharedFrameworkSuppressionsXml:w;Property:CoreLibSharedDir:r">
     <PropertyGroup>
       <SharedFrameworkAssembliesTrimDir>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'illink-$(TargetArchitecture)'))</SharedFrameworkAssembliesTrimDir>
       <SharedFrameworkAssembliesTrimMarkerFile>$(SharedFrameworkAssembliesTrimDir)linker-marker.txt</SharedFrameworkAssembliesTrimMarkerFile>
