@@ -227,6 +227,10 @@
       <ILLinkArgs>$(ILLinkArgs) --action link $(TargetName)</ILLinkArgs>
       <ILLinkArgs Condition="'$(ILLinkRewritePDBs)' == 'true' and Exists('$(ILLinkTrimAssemblySymbols)')">$(ILLinkArgs) -b true</ILLinkArgs>
       <ILLinkArgs Condition="'$(ILLinkRewritePDBs)' == 'true' and Exists('$(ILLinkTrimAssemblySymbols)') and '$(DeterministicSourcePaths)' == 'true'">$(ILLinkArgs) --preserve-symbol-paths</ILLinkArgs>
+      <!-- Capture Exists(obj pdb) is false, so the ordinary -b true ExtraArgs never bake.
+           Product then leaves the pdb in PreTrim and MoveSymbolFiles cannot copy it. -->
+      <ILLinkArgs Condition="'$(IsPrecomputePhase)' == 'true' and '$(ILLinkRewritePDBs)' == 'true'">$(ILLinkArgs) -b true</ILLinkArgs>
+      <ILLinkArgs Condition="'$(IsPrecomputePhase)' == 'true' and '$(ILLinkRewritePDBs)' == 'true' and '$(DeterministicSourcePaths)' == 'true'">$(ILLinkArgs) --preserve-symbol-paths</ILLinkArgs>
       <!-- pass the non-embedded descriptors xml file on the command line -->
       <ILLinkArgs Condition="'@(ILLinkDescriptorsLibraryBuildXml)' != ''">$(ILLinkArgs) -x "@(ILLinkDescriptorsLibraryBuildXml->'%(FullPath)', '" -x "')"</ILLinkArgs>
       <ILLinkArgs Condition="'$(ILLinkSubstitutionsLibraryBuildXml)' != ''">$(ILLinkArgs) --substitutions "$(ILLinkSubstitutionsLibraryBuildXml)"</ILLinkArgs>
@@ -288,7 +292,7 @@
 
     <ILLink PrecomputationMode="DynamicLoad"
             PrecomputeInputs="$(ILLinkTrimInputPath)#dir"
-            PrecomputeOutputs="$(ILLinkTrimAssemblyPath)"
+            PrecomputeOutputs="$(ILLinkTrimAssemblyPath);$(ILLinkTrimAssemblySymbols)"
             AssemblyPaths="$(ILLinkTrimInputPath)$(TargetName)$(TargetExt)"
             RootAssemblyNames="@(ILLinkTrimInputAssembly)"
             OutputDirectory="$(ILLinkTrimOutputPath)"
