@@ -59,10 +59,13 @@ produces the declared result rather than accepting stale files.
 
 ## Storage and failures
 
-The internal filesystem backend uses immutable SHA-256 blobs and atomically
-created fingerprint-to-content-list entries, safe for cooperating concurrent
-processes. It has no BuildXL dependencies, database, or shutdown-time index
-snapshot. Publish all referenced blobs before the memoization entry. Equivalent
+Storage uses BuildXL's `ConcurrentLocalCache` through its combined `ICache` and
+`ICacheSession` content/memoization interfaces. The package owns the filesystem
+implementation; there are no parallel runtime store contracts or native helpers.
+It uses immutable blobs and atomically created fingerprint-to-content-list entries,
+safe for cooperating concurrent processes, without a database or shutdown-time
+index snapshot. Use SHA-256 hashes and `CacheDeterminism.Tool`. Publish all
+referenced blobs before the memoization entry. Equivalent
 publishers succeed without replacing the winner; conflicting results fail.
 Entries preserve ordered hashes and exact optional payload bytes, matching
 BuildXL content hash list equality. Callers own canonical ordering, manifest
@@ -71,23 +74,31 @@ Restored files must not permit modification of cached blobs.
 
 Short-lived sessions hold a shared cross-process maintenance lock through lookup
 and restoration or through publication, but not through task execution. Session
-disposal waits for outstanding operations. Returned streams own independent
+shutdown cancels and drains outstanding operations; operations within one session
+are serialized. Returned streams own independent
 shared leases and can outlive their sessions. Future maintenance must acquire the
 exclusive side of the same lock. Eviction and size configuration
 are not implemented; growth is unbounded. Remote storage, asynchronous publication,
 and diagnostic replay are out of scope initially. Atomic visibility is required,
 but losing recent entries on a machine crash is acceptable.
 
-Only an absent memoization entry is a cache miss. Missing referenced blobs,
+BuildXL operations return result objects that callers must check. Only a
+successful lookup with a null content hash list is a cache miss. Missing referenced blobs,
 corruption, and publication conflicts are hard errors, with no automatic execution
 fallback. Lookup and publication check content availability without hashing;
-placement hashes while copying, and stream opening verifies before returning
-bytes. Readers do not delete stale entries. Restoration copies directly to
+verified copy placement hashes the destination after copying. Stream opening
+does not verify hashes, so the task layer must verify manifest bytes before
+deserializing them. Readers do not delete stale entries. Restoration copies directly to
 destinations rather than staging the entire result; a failure may leave partial
 or corrupt outputs. Cancellation is honored rather than treated as a miss.
 Manifest paths are validated against declared destinations before writing.
 Binlog messages distinguish hits, misses, bypasses, and cache failures without
 exposing secrets. Those task-level integrations are not yet implemented.
+
+The package version is an unpublished prototype placeholder. The backend supports
+Windows and Linux local filesystems and uses its own cache format; it does not
+reuse or migrate the earlier runtime implementation's data. See the README for
+lifecycle, platform restrictions, and local package-feed wiring.
 
 ## Prior art
 

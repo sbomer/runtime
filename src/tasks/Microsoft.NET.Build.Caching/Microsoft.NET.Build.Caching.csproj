@@ -8,15 +8,15 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReadmeFilePath>README.md</PackageReadmeFilePath>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <GenerateResxSourceOmitGetResourceString>true</GenerateResxSourceOmitGetResourceString>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="*.cs" />
-    <Compile Include="../../libraries/Common/src/System/SR.cs" Link="Resources/SR.cs" />
-    <EmbeddedResource Update="Resources/Strings.resx" GenerateSource="true" ClassName="System.SR" ManifestResourceName="FxResources.Microsoft.NET.Build.Caching.SR" />
     <InternalsVisibleTo Include="Microsoft.NET.Build.Caching.Tests" />
+    <PackageReference Include="Microsoft.BuildXL.Cache.MemoizationStore.Library" Version="[$(MicrosoftBuildXLVersion)]" />
+    <!-- Keep BuildXL's transitive dependencies above known vulnerable versions. -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="$(SystemSecurityCryptographyXmlVersion)" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="$(SystemTextRegularExpressionsVersion)" />
   </ItemGroup>
 
 </Project>
