@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="**\*.csproj" />
+    <ProjectReference Remove="Microsoft.NET.Build.Caching.Tests\Microsoft.NET.Build.Caching.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetsMobile)' != 'true'">

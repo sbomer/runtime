@@ -174,6 +174,9 @@ durability.
 
 ## Building
 
+The test project is excluded from the repository's task bootstrap. Build the
+product or explicitly run its tests with:
+
 ```sh
 ./build.sh tasks --projects "$PWD/src/tasks/Microsoft.NET.Build.Caching/Microsoft.NET.Build.Caching.csproj"
 ./build.sh tasks --projects "$PWD/src/tasks/Microsoft.NET.Build.Caching.Tests/Microsoft.NET.Build.Caching.Tests.csproj" --test

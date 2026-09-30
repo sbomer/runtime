@@ -15,5 +15,6 @@
     <PackageReference Include="Microsoft.DotNet.XUnitExtensions" Version="$(MicrosoftDotNetXUnitExtensionsVersion)" />
     <ProjectReference Include="../Microsoft.NET.Build.Caching/Microsoft.NET.Build.Caching.csproj" />
     <None Include="../Microsoft.NET.Build.Caching/buildTransitive/Microsoft.NET.Build.Caching.props" Link="Microsoft.NET.Build.Caching.props" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../tasks.proj" Link="TaskBootstrap.proj" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

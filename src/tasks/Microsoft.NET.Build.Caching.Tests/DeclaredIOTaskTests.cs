@@ -788,6 +788,39 @@ public sealed class DeclaredIOTaskTests : IDisposable
         Assert.False(Directory.Exists(_root));
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void TaskBootstrapExcludesCacheTests(bool targetsMobile, bool sourceOnly)
+    {
+        foreach (string name in new[] { "Microsoft.NET.Build.Caching", "Microsoft.NET.Build.Caching.Tests", "OtherTask" })
+        {
+            string directory = Path.Combine(_root, name);
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(Path.Combine(directory, name + ".csproj"), "<Project />");
+        }
+
+        string traversalPath = Path.Combine(_root, "tasks.proj");
+        File.Copy(Path.Combine(AppContext.BaseDirectory, "TaskBootstrap.proj"), traversalPath);
+        using var collection = new ProjectCollection();
+        ProjectRootElement root = ProjectRootElement.Open(traversalPath, collection);
+        // Evaluate the traversal items without requiring SDK resolution in the unit-test host.
+        root.Sdk = "";
+        var properties = new Dictionary<string, string>
+        {
+            ["TargetsMobile"] = targetsMobile ? "true" : "false",
+            ["DotNetBuildSourceOnly"] = sourceOnly ? "true" : "false"
+        };
+        var project = new Project(root, properties, null, collection);
+        string[] references = project.GetItems("ProjectReference")
+            .Select(item => Path.GetFileNameWithoutExtension(item.GetMetadataValue("FullPath")))
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(new[] { "Microsoft.NET.Build.Caching", "OtherTask" }, references);
+    }
+
     [Fact]
     public void MSBuildBindsFloatAndReplaysOutputs()
     {
