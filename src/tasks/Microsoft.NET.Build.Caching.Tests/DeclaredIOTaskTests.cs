@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -121,6 +125,95 @@ public sealed class DeclaredIOTaskTests : IDisposable
         Assert.True(second.Execute());
         Assert.Equal(1, second.Executions);
         Assert.Equal(2, Directory.GetFiles(first.CacheDirectory, "*.entry", SearchOption.AllDirectories).Length);
+    }
+
+    [ConditionalFact(typeof(RuntimeFeature), nameof(RuntimeFeature.IsDynamicCodeSupported))]
+    public void LoadedModuleIdentityDistinguishesTaskImplementations()
+    {
+        Type first = CreateTaskType();
+        Type second = CreateTaskType();
+        Assert.Equal(first.FullName, second.FullName);
+        Assert.Equal(first.Assembly.FullName, second.Assembly.FullName);
+        Assert.NotEqual(first.Module.ModuleVersionId, second.Module.ModuleVersionId);
+
+        foreach ((Type type, int executions) in new[] { (first, 1), (first, 0), (second, 1), (second, 0) })
+        {
+            var engine = new TestEngine();
+            var task = (DeclaredIOTask)Activator.CreateInstance(type)!;
+            task.BuildEngine = engine;
+            task.CacheDirectory = Path.Combine(_root, "cache");
+            task.CacheEnabled = true;
+            Assert.True(task.Execute(), string.Join(Environment.NewLine, engine.Errors));
+            Assert.Equal(executions, (int)type.GetField(nameof(DeclaredIOTestTask.Executions))!.GetValue(task)!);
+        }
+
+        Assert.Equal(2, Directory.GetFiles(Path.Combine(_root, "cache"), "*.entry", SearchOption.AllDirectories).Length);
+
+        static Type CreateTaskType()
+        {
+            AssemblyBuilder assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("TaskIdentity"), AssemblyBuilderAccess.RunAndCollect);
+            TypeBuilder type = assembly.DefineDynamicModule("TaskIdentity").DefineType("TaskIdentity.Task", TypeAttributes.Public, typeof(DeclaredIOTask));
+            type.DefineDefaultConstructor(MethodAttributes.Public);
+            FieldBuilder executions = type.DefineField(nameof(DeclaredIOTestTask.Executions), typeof(int), FieldAttributes.Public);
+            MethodBuilder describe = type.DefineMethod("DescribeOperation", MethodAttributes.Family | MethodAttributes.Virtual, typeof(void), new[] { typeof(TaskDeclaration) });
+            describe.GetILGenerator().Emit(OpCodes.Ret);
+            MethodBuilder execute = type.DefineMethod("ExecuteCore", MethodAttributes.Family | MethodAttributes.Virtual, typeof(bool), new[] { typeof(CancellationToken) });
+            ILGenerator il = execute.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Dup);
+            il.Emit(OpCodes.Ldfld, executions);
+            il.Emit(OpCodes.Ldc_I4_1);
+            il.Emit(OpCodes.Add);
+            il.Emit(OpCodes.Stfld, executions);
+            il.Emit(OpCodes.Ldc_I4_1);
+            il.Emit(OpCodes.Ret);
+            return type.CreateType()!;
+        }
+    }
+
+    [Theory]
+    [PlatformSpecific(TestPlatforms.Linux)]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void LoadedModuleIdentityDoesNotReadReplacedFiles(bool replaceBaseLibrary)
+    {
+        DeclaredIOTestTask paths = Create();
+        string taskPath = Path.Combine(_root, "tasks.dll");
+        string basePath = Path.Combine(_root, "base.dll");
+        File.Copy(Path.Combine(AppContext.BaseDirectory, "Microsoft.NET.Build.Caching.Tests.dll"), taskPath);
+        File.Copy(Path.Combine(AppContext.BaseDirectory, "Microsoft.NET.Build.Caching.dll"), basePath);
+        var context = new TaskLoadContext(basePath);
+        try
+        {
+            Type type = context.LoadFromAssemblyPath(taskPath).GetType(typeof(DeclaredIOTestTask).FullName!)!;
+            Assert.Equal(basePath, type.BaseType!.Assembly.Location);
+            Assert.Equal(1, Execute());
+
+            string replacedPath = replaceBaseLibrary ? basePath : taskPath;
+            File.Copy(typeof(IBuildEngine).Assembly.Location, replacedPath + ".new");
+            File.Move(replacedPath + ".new", replacedPath, overwrite: true);
+            Assert.Equal(0, Execute());
+            File.Delete(replacedPath);
+            Assert.Equal(0, Execute());
+            Assert.Single(Directory.GetFiles(paths.CacheDirectory, "*.entry", SearchOption.AllDirectories));
+
+            int Execute()
+            {
+                var engine = new TestEngine();
+                var task = (ITask)Activator.CreateInstance(type)!;
+                task.BuildEngine = engine;
+                type.GetProperty(nameof(DeclaredIOTask.CacheDirectory))!.SetValue(task, paths.CacheDirectory);
+                type.GetProperty(nameof(DeclaredIOTask.CacheEnabled))!.SetValue(task, true);
+                type.GetProperty(nameof(DeclaredIOTestTask.Source))!.SetValue(task, paths.Source);
+                type.GetProperty(nameof(DeclaredIOTestTask.Destination))!.SetValue(task, paths.Destination);
+                Assert.True(task.Execute(), string.Join(Environment.NewLine, engine.Errors));
+                return (int)type.GetProperty(nameof(DeclaredIOTestTask.Executions))!.GetValue(task)!;
+            }
+        }
+        finally
+        {
+            context.Unload();
+        }
     }
 
     [Theory]
@@ -415,6 +508,12 @@ public sealed class DeclaredIOTaskTests : IDisposable
 
             Directory.Delete(_root, recursive: true);
         }
+    }
+
+    private sealed class TaskLoadContext(string basePath) : AssemblyLoadContext(isCollectible: true)
+    {
+        protected override Assembly? Load(AssemblyName assemblyName) =>
+            assemblyName.Name == typeof(DeclaredIOTask).Assembly.GetName().Name ? LoadFromAssemblyPath(basePath) : null;
     }
 
     private sealed class TestEngine : IBuildEngine

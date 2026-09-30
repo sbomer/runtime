@@ -67,13 +67,16 @@ characters round-trip. Every output property that needs replay must be registere
 
 Fingerprints include normalized input paths and SHA-256 content hashes, output
 destinations, named input values, output value schemas, the full task type name,
-and hashes of the task and base-library assemblies. They also include the working
+and the loaded module version IDs (MVIDs) of the task and base library. They also include the working
 directory, runtime, OS/architecture, culture names, and serialized local time-zone
 rules (which affect `DateTime` binary round-tripping).
-Assembly identities require on-disk assemblies; changing either assembly
-invalidates results even if its version number is unchanged. Task authors must
+MVIDs identify the loaded code without rereading assembly files, so replacing a
+DLL on disk cannot misidentify code already loaded by MSBuild. Post-build rewriting
+that changes task behavior must regenerate the affected MVIDs. Task authors must
 declare helper assemblies, toolchains, environment values, and any other
-execution-affecting dependencies. Assembly dependency discovery is not performed.
+execution-affecting dependencies. Declared files, including explicitly declared
+helper assemblies and tools, still use SHA-256 content hashes. Assembly dependency
+discovery is not performed.
 
 On a miss, execution runs synchronously on the calling thread, outside cache
 sessions. Successful execution must produce every declared output. Errors,

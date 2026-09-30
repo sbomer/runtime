@@ -19,7 +19,7 @@
   <data name="TaskCancelled" xml:space="preserve"><value>Declared-I/O task was cancelled.</value></data>
   <data name="InvalidOutputFile" xml:space="preserve"><value>Declared output '{0}' must be an existing regular file, not a directory or symbolic link.</value></data>
   <data name="OutputInsideCache" xml:space="preserve"><value>Declared output '{0}' must be outside the cache directory.</value></data>
-  <data name="AssemblyLocationRequired" xml:space="preserve"><value>Task caching requires an on-disk assembly for '{0}'.</value></data>
+  <data name="TaskTypeNameRequired" xml:space="preserve"><value>Task type '{0}' must have a full name to use caching.</value></data>
   <data name="ConcurrentExecution" xml:space="preserve"><value>A task instance cannot execute concurrently.</value></data>
   <data name="UnsupportedFrameworkPlatform" xml:space="preserve"><value>The .NET Framework task build supports caching on Windows only; use the modern .NET build on Linux.</value></data>
 </root>

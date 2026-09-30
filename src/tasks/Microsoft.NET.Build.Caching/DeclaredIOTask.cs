@@ -4,7 +4,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
@@ -26,7 +25,7 @@ namespace Microsoft.NET.Build.Caching;
 /// <remarks>This prototype requires task authors to declare every dependency and replayable output property.</remarks>
 public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelableTask
 {
-    private const int FormatVersion = 1;
+    private const int FormatVersion = 2;
     private const int HashSize = 32;
     private static readonly Context s_context = new(NullLogger.Instance);
     private readonly object _cancellationGate = new();
@@ -243,9 +242,9 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
         using var data = new MemoryStream();
         using var writer = new BinaryWriter(data);
         writer.Write(FormatVersion);
-        TaskValueCodec.WriteString(writer, GetType().FullName ?? throw new NotSupportedException(SR.Format(SR.AssemblyLocationRequired, GetType())));
-        WriteAssembly(GetType().Assembly);
-        WriteAssembly(typeof(DeclaredIOTask).Assembly);
+        TaskValueCodec.WriteString(writer, GetType().FullName ?? throw new NotSupportedException(SR.Format(SR.TaskTypeNameRequired, GetType())));
+        writer.Write(GetType().Module.ModuleVersionId.ToByteArray());
+        writer.Write(typeof(DeclaredIOTask).Module.ModuleVersionId.ToByteArray());
         TaskValueCodec.WriteString(writer, workingDirectory);
         TaskValueCodec.WriteString(writer, RuntimeInformation.FrameworkDescription);
         TaskValueCodec.WriteString(writer, RuntimeInformation.OSDescription);
@@ -285,20 +284,6 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
 
         data.Position = 0;
         return new StrongFingerprint(new Fingerprint(Hash(data, token)), new Selector(HashInfoLookup.Find(HashType.SHA256).EmptyHash));
-
-        void WriteAssembly(Assembly assembly)
-        {
-#pragma warning disable IL3000 // Cache identity intentionally requires an on-disk assembly and rejects bundled assemblies.
-            string location = assembly.Location;
-#pragma warning restore IL3000
-            if (string.IsNullOrEmpty(location))
-            {
-                throw new NotSupportedException(SR.Format(SR.AssemblyLocationRequired, assembly.FullName));
-            }
-
-            using var source = File.OpenRead(location);
-            writer.Write(Hash(source, token));
-        }
     }
 
     private static byte[] Hash(Stream stream, CancellationToken token)

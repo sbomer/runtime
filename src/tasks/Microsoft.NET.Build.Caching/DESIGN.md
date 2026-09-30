@@ -57,9 +57,11 @@ cache hit differing from live execution.
 per-user `DeclaredIOCacheDirectory` property, which each task invocation binds.
 `CacheEnabled` defaults to false and is independent of the fingerprint.
 
-Task identity includes the full derived type name and SHA-256 hashes of its
-assembly and the base library. Helper assemblies still require explicit
-declarations. The fingerprint also includes working directory, runtime,
+Task identity includes the full derived type name and the loaded module version
+IDs (MVIDs) of the task and base library, not their current on-disk file contents.
+Post-build rewriting that changes task behavior must regenerate the affected MVIDs.
+Helper assemblies still require explicit declarations and are content-hashed,
+as are other declared files. The fingerprint also includes working directory, runtime,
 OS/architecture, culture names, and local time-zone rules. Floating-point values
 are encoded as exact bits rather than culture-dependent strings.
 
