@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="UnsupportedValueType" xml:space="preserve"><value>The declared value type '{0}' is not supported.</value></data>
+  <data name="InvalidManifest" xml:space="preserve"><value>The cached task result has an invalid or incompatible format.</value></data>
+  <data name="DeclarationSealed" xml:space="preserve"><value>Task declarations cannot be changed after DescribeOperation returns.</value></data>
+  <data name="EmptyDeclarationName" xml:space="preserve"><value>A declaration name or file path must not be empty.</value></data>
+  <data name="OverlappingPaths" xml:space="preserve"><value>A file cannot be declared as both an input and an output.</value></data>
+  <data name="DuplicatePaths" xml:space="preserve"><value>A file path cannot be declared more than once.</value></data>
+  <data name="CacheDirectoryRequired" xml:space="preserve"><value>CacheDirectory is required, including when caching is disabled.</value></data>
+  <data name="CacheFailure" xml:space="preserve"><value>Declared-I/O cache operation failed: {0}</value></data>
+  <data name="CacheHit" xml:space="preserve"><value>Declared-I/O cache hit.</value></data>
+  <data name="CacheMiss" xml:space="preserve"><value>Declared-I/O cache miss.</value></data>
+  <data name="CacheDisabled" xml:space="preserve"><value>Declared-I/O caching is disabled.</value></data>
+  <data name="CacheWarningBypass" xml:space="preserve"><value>Declared-I/O result was not cached because execution logged warnings.</value></data>
+  <data name="TaskCancelled" xml:space="preserve"><value>Declared-I/O task was cancelled.</value></data>
+  <data name="InvalidOutputFile" xml:space="preserve"><value>Declared output '{0}' must be an existing regular file, not a directory or symbolic link.</value></data>
+  <data name="OutputInsideCache" xml:space="preserve"><value>Declared output '{0}' must be outside the cache directory.</value></data>
+  <data name="AssemblyLocationRequired" xml:space="preserve"><value>Task caching requires an on-disk assembly for '{0}'.</value></data>
+  <data name="ConcurrentExecution" xml:space="preserve"><value>A task instance cannot execute concurrently.</value></data>
+  <data name="UnsupportedFrameworkPlatform" xml:space="preserve"><value>The .NET Framework task build supports caching on Windows only; use the modern .NET build on Linux.</value></data>
+</root>

@@ -1,8 +1,95 @@
 # Microsoft.NET.Build.Caching
 
-This project provides internal filesystem caching infrastructure for a future
-library of reusable MSBuild task base classes. It does not yet contain task
-execution, output-property replay, or public task-authoring APIs.
+This project prototypes `DeclaredIOTask`, a reusable deterministic MSBuild task
+base with optional caching. Its public surface is experimental and has not been
+approved for submission or shipping.
+
+## Declaring a task
+
+```csharp
+public sealed class TransformFile : DeclaredIOTask
+{
+    [Required]
+    public string Source { get; set; } = "";
+
+    [Required]
+    public string Destination { get; set; } = "";
+
+    public float Factor { get; set; }
+
+    [Output]
+    public ITaskItem? Result { get; private set; }
+
+    protected override void DescribeOperation(TaskDeclaration declaration)
+    {
+        declaration.AddInputFile(Source);
+        declaration.AddOutputFile(Destination);
+        declaration.AddValue(nameof(Factor), Factor);
+        declaration.AddOutputItem(nameof(Result), () => Result, value => Result = value);
+    }
+
+    protected override bool ExecuteCore(CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        File.WriteAllText(Destination, File.ReadAllText(Source) +
+            Factor.ToString("R", CultureInfo.InvariantCulture));
+        Result = new TaskItem(Destination);
+        return true;
+    }
+}
+```
+
+After registering the derived task with `UsingTask`, bind the inherited required
+parameter on **every** invocation:
+
+```xml
+<TransformFile Source="input.txt" Destination="output.txt" Factor="1.25"
+               CacheDirectory="$(DeclaredIOCacheDirectory)" CacheEnabled="true">
+  <Output TaskParameter="Result" ItemName="TransformedFiles" />
+</TransformFile>
+```
+
+The package's `build`/`buildTransitive` props supply an overridable per-user
+`DeclaredIOCacheDirectory`. There is no C# directory fallback or private
+environment variable. `CacheEnabled` defaults to false; disabled execution still
+validates the declarations and output files, but never opens or creates the cache.
+
+`AddValue<T>` snapshots an input value at declaration time.
+`AddOutputValue<T>` registers a getter and setter; the getter captures successful
+execution and the setter replays a hit. There is no property reflection. Supported
+types are `string`, `bool`, `char`, the eight fixed-width integer types, `float`,
+`double`, `decimal`, `DateTime`, `ITaskItem`, and their one-dimensional arrays.
+Null reference values, null arrays, and null string/item array elements are
+preserved. Enums, nullable value types, arbitrary objects, and jagged or
+multidimensional arrays are rejected. Floating-point bits and decimal scale are
+preserved; item specs, custom metadata, defining-project information, and escaped
+characters round-trip. Every output property that needs replay must be registered.
+
+Fingerprints include normalized input paths and SHA-256 content hashes, output
+destinations, named input values, output value schemas, the full task type name,
+and hashes of the task and base-library assemblies. They also include the working
+directory, runtime, OS/architecture, culture names, and serialized local time-zone
+rules (which affect `DateTime` binary round-tripping).
+Assembly identities require on-disk assemblies; changing either assembly
+invalidates results even if its version number is unchanged. Task authors must
+declare helper assemblies, toolchains, environment values, and any other
+execution-affecting dependencies. Assembly dependency discovery is not performed.
+
+On a miss, execution runs synchronously on the calling thread, outside cache
+sessions. Successful execution must produce every declared output. Errors,
+cancellation, and warnings observed through the task's build engine prevent
+publication, including diagnostics from output getters. Warning/error tracking
+forwards the host's supported `IBuildEngine` interfaces. Diagnostics are not
+replayed. Cancellation is cooperative; it is passed to execution and cache
+operations, while startup/shutdown follow the backend's lifetime APIs.
+
+Cached outputs preserve bytes, the read-only flag, and Unix permission bits.
+Restoration gives files fresh modification times; ownership, ACLs, and other
+filesystem-specific metadata are not replayed. Symlink outputs and linked output
+ancestors are rejected, including during uncached execution, so a hit cannot
+silently change a produced link into a regular file. Inputs must remain stable,
+outputs must be exclusively owned, and input/output aliases must not overlap.
+These are author/caller contracts, not filesystem sandboxing.
 
 ## Filesystem backend
 
@@ -87,9 +174,12 @@ validation package is not an official BuildXL release and must not be published.
 Integration tests exercise the package boundary: lazy construction, lifecycle,
 persistent content/memoization round trips, ordered/payload equality and conflicts,
 missing/corrupt content errors, independent streams, and concurrent process
-publication. Detailed storage/locking/format tests belong to BuildXL's
+publication, plus actual MSBuild float binding and output replay, typed value
+serialization, cancellation, diagnostics, corruption, and file metadata.
+Detailed storage/locking/format tests belong to BuildXL's
 `ConcurrentCacheTestTool`. Tests run on the repository's current tooling .NET;
-.NET Framework builds do not constitute Windows execution coverage.
+.NET Framework builds do not constitute Windows execution coverage. The task's
+.NET Framework target is Windows-only; use the modern .NET target on Linux.
 
 ## Packaging
 
@@ -103,7 +193,7 @@ deploy the resolved dependency closure alongside their task assemblies; this is
 substantially larger than the former dependency-free backend. Direct references
 raise two transitive dependencies above their known vulnerable versions. Task
 authors also need their own MSBuild references. There are no automatic `UsingTask`
-registrations because this package will provide base classes rather than tasks.
+registrations because this package provides a base class rather than concrete tasks.
 
 The project is automatically included by `src/tasks/tasks.proj`. It is packable
 but non-shipping until its API, dependency version, and distribution contract are

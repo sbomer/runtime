@@ -8,10 +8,15 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReadmeFilePath>README.md</PackageReadmeFilePath>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateResxSourceOmitGetResourceString>true</GenerateResxSourceOmitGetResourceString>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="*.cs" />
+    <Compile Include="../../libraries/Common/src/System/SR.cs" Link="Resources/SR.cs" />
+    <EmbeddedResource Update="Resources/Strings.resx" GenerateSource="true" ClassName="System.SR" ManifestResourceName="FxResources.Microsoft.NET.Build.Caching.SR" />
+    <None Include="buildTransitive/Microsoft.NET.Build.Caching.props" Pack="true" PackagePath="buildTransitive/" />
+    <None Include="buildTransitive/Microsoft.NET.Build.Caching.props" Pack="true" PackagePath="build/" />
     <InternalsVisibleTo Include="Microsoft.NET.Build.Caching.Tests" />
     <PackageReference Include="Microsoft.BuildXL.Cache.MemoizationStore.Library" Version="[$(MicrosoftBuildXLVersion)]" />
     <!-- Keep BuildXL's transitive dependencies above known vulnerable versions. -->

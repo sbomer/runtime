@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`Microsoft.NET.Build.Caching` will provide a `DeclaredIOTask` base class derived
+`Microsoft.NET.Build.Caching` prototypes a `DeclaredIOTask` base class derived
 from `Microsoft.Build.Utilities.Task`. It represents a deterministic managed-task
 operation with explicitly declared inputs and outputs. Caching is an independently
 configurable optimization, not the meaning of deriving from the base class.
@@ -11,7 +11,7 @@ inputs and execution settings must produce the same declared result, without
 undeclared dependencies or side effects. Declarations are the task author's
 promise, not sandbox-enforced proof of determinism.
 
-This is a proposed design, not an implemented or approved public API. It requires
+This is an implemented prototype, not an approved public API. It requires
 neither a project-cache plugin nor a graph build. The base does not launch tools;
 tool invocation is one possible derived implementation. A separate `ToolTask`
 adapter is outside this design.
@@ -38,8 +38,9 @@ two-phase fingerprinting.
 ## Execution and replay
 
 The base owns lookup, execution, result capture, and replay. Derived tasks supply
-the operation and explicit MSBuild output-value serialization hooks; exact API
-signatures remain undecided. Both cached and uncached execution use the same
+`DescribeOperation(TaskDeclaration)` and synchronous `ExecuteCore(CancellationToken)`.
+Declarations register supported typed values and output getter/setter delegates;
+the base owns serialization without inspecting task properties. Both cached and uncached execution use the same
 declarations and operation. Disabling caching bypasses cache lookup and
 publication, not the deterministic execution contract.
 
@@ -48,6 +49,19 @@ result manifest. A hit restores all declared output files and serialized MSBuild
 output values, including item metadata, before returning success. Restoration
 preserves required file attributes, such as executable permissions, and makes
 output timestamps suitable for subsequent timestamp-based incremental checks.
+The captured metadata is the read-only flag and Unix permission bits. Ownership
+and ACLs are not replayed. Produced symlinks are rejected to avoid a regular-file
+cache hit differing from live execution.
+
+`CacheDirectory` is unconditionally required. Package props supply the overridable
+per-user `DeclaredIOCacheDirectory` property, which each task invocation binds.
+`CacheEnabled` defaults to false and is independent of the fingerprint.
+
+Task identity includes the full derived type name and SHA-256 hashes of its
+assembly and the base library. Helper assemblies still require explicit
+declarations. The fingerprint also includes working directory, runtime,
+OS/architecture, culture names, and local time-zone rules. Floating-point values
+are encoded as exact bits rather than culture-dependent strings.
 
 On a miss, the operation executes normally. Only successful, uncancelled,
 warning-free executions with all declared outputs present are eligible for
@@ -88,12 +102,14 @@ corruption, and publication conflicts are hard errors, with no automatic executi
 fallback. Lookup and publication check content availability without hashing;
 verified copy placement hashes the destination after copying. Stream opening
 does not verify hashes, so the task layer must verify manifest bytes before
-deserializing them. Readers do not delete stale entries. Restoration copies directly to
+deserializing them. The prototype verifies the manifest hash and validates its
+paths, content references, and typed output values before placement.
+Readers do not delete stale entries. Restoration copies directly to
 destinations rather than staging the entire result; a failure may leave partial
 or corrupt outputs. Cancellation is honored rather than treated as a miss.
 Manifest paths are validated against declared destinations before writing.
 Binlog messages distinguish hits, misses, bypasses, and cache failures without
-exposing secrets. Those task-level integrations are not yet implemented.
+exposing declared setting values.
 
 The package version is an unpublished prototype placeholder. The backend supports
 Windows and Linux local filesystems and uses its own cache format; it does not
