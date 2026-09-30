@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetCoreAppToolCurrent);$(NetFrameworkToolCurrent)</TargetFrameworks>
+    <Description>Reusable caching infrastructure for third-party MSBuild task authors.</Description>
+    <IsPackable>true</IsPackable>
+    <IsShipping>false</IsShipping>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFilePath>README.md</PackageReadmeFilePath>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateResxSourceOmitGetResourceString>true</GenerateResxSourceOmitGetResourceString>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="*.cs" />
+    <Compile Include="../../libraries/Common/src/System/SR.cs" Link="Resources/SR.cs" />
+    <EmbeddedResource Update="Resources/Strings.resx" GenerateSource="true" ClassName="System.SR" ManifestResourceName="FxResources.Microsoft.NET.Build.Caching.SR" />
+    <InternalsVisibleTo Include="Microsoft.NET.Build.Caching.Tests" />
+  </ItemGroup>
+
+</Project>

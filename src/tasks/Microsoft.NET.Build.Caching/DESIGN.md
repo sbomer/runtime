@@ -1,0 +1,100 @@
+# Task-level caching
+
+## Purpose
+
+`Microsoft.NET.Build.Caching` will provide a `DeclaredIOTask` base class derived
+from `Microsoft.Build.Utilities.Task`. It represents a deterministic managed-task
+operation with explicitly declared inputs and outputs. Caching is an independently
+configurable optimization, not the meaning of deriving from the base class.
+The contract applies whether caching is enabled or disabled: the same declared
+inputs and execution settings must produce the same declared result, without
+undeclared dependencies or side effects. Declarations are the task author's
+promise, not sandbox-enforced proof of determinism.
+
+This is a proposed design, not an implemented or approved public API. It requires
+neither a project-cache plugin nor a graph build. The base does not launch tools;
+tool invocation is one possible derived implementation. A separate `ToolTask`
+adapter is outside this design.
+
+## Explicit cache contract
+
+Derived tasks declare every input file, expected output file, and value that
+affects execution. A single fingerprint covers input paths and content hashes,
+declared output paths, task implementation/cache-format identity, and declared
+execution settings. Toolchain identity, arguments, response-file contents,
+working directory, environment values, and platform distinctions are included
+when they affect the operation. Toolchain identity must account for supporting
+files that affect results, not just the executable's name or version string.
+Collections with set semantics are sorted; meaningful ordering is preserved.
+
+Existing output contents and timestamps are not fingerprint inputs: a clean build
+must still find cached results. Paths remain location-sensitive initially;
+cross-checkout reuse is out of scope. Inputs must remain stable during execution.
+Tasks with undeclared dependencies, in-place input modification, variable
+undeclared outputs, or side effects beyond the declared result do not satisfy
+the contract. There is no file-access monitoring, dependency discovery, or
+two-phase fingerprinting.
+
+## Execution and replay
+
+The base owns lookup, execution, result capture, and replay. Derived tasks supply
+the operation and explicit MSBuild output-value serialization hooks; exact API
+signatures remain undecided. Both cached and uncached execution use the same
+declarations and operation. Disabling caching bypasses cache lookup and
+publication, not the deterministic execution contract.
+
+With caching enabled, the base computes the fingerprint and looks up a versioned
+result manifest. A hit restores all declared output files and serialized MSBuild
+output values, including item metadata, before returning success. Restoration
+preserves required file attributes, such as executable permissions, and makes
+output timestamps suitable for subsequent timestamp-based incremental checks.
+
+On a miss, the operation executes normally. Only successful, uncancelled,
+warning-free executions with all declared outputs present are eligible for
+publication. Outputs are captured into immutable storage before the task returns,
+so later build steps cannot change the cached result. An entry becomes visible
+only after its blobs and manifest are complete. Existing outputs do not
+themselves count as a hit; derived tasks must ensure successful execution
+produces the declared result rather than accepting stale files.
+
+## Storage and failures
+
+The internal filesystem backend uses immutable SHA-256 blobs and atomically
+created fingerprint-to-content-list entries, safe for cooperating concurrent
+processes. It has no BuildXL dependencies, database, or shutdown-time index
+snapshot. Publish all referenced blobs before the memoization entry. Equivalent
+publishers succeed without replacing the winner; conflicting results fail.
+Entries preserve ordered hashes and exact optional payload bytes, matching
+BuildXL content hash list equality. Callers own canonical ordering, manifest
+serialization, and explicitly listing the manifest and all referenced blobs.
+Restored files must not permit modification of cached blobs.
+
+Short-lived sessions hold a shared cross-process maintenance lock through lookup
+and restoration or through publication, but not through task execution. Session
+disposal waits for outstanding operations. Returned streams own independent
+shared leases and can outlive their sessions. Future maintenance must acquire the
+exclusive side of the same lock. Eviction and size configuration
+are not implemented; growth is unbounded. Remote storage, asynchronous publication,
+and diagnostic replay are out of scope initially. Atomic visibility is required,
+but losing recent entries on a machine crash is acceptable.
+
+Only an absent memoization entry is a cache miss. Missing referenced blobs,
+corruption, and publication conflicts are hard errors, with no automatic execution
+fallback. Lookup and publication check content availability without hashing;
+placement hashes while copying, and stream opening verifies before returning
+bytes. Readers do not delete stale entries. Restoration copies directly to
+destinations rather than staging the entire result; a failure may leave partial
+or corrupt outputs. Cancellation is honored rather than treated as a miss.
+Manifest paths are validated against declared destinations before writing.
+Binlog messages distinguish hits, misses, bypasses, and cache failures without
+exposing secrets. Those task-level integrations are not yet implemented.
+
+## Prior art
+
+The design borrows MSBuildCache's separation of
+[fingerprinting](https://github.com/microsoft/MSBuildCache/blob/54bcfb23a927bead6622eee0cd3f109ae66c9931/src/Common/Fingerprinting/IFingerprintFactory.cs),
+[content storage](https://github.com/microsoft/MSBuildCache/blob/54bcfb23a927bead6622eee0cd3f109ae66c9931/src/Common/Caching/CacheClient.cs),
+and [result replay](https://github.com/microsoft/MSBuildCache/blob/54bcfb23a927bead6622eee0cd3f109ae66c9931/src/Common/NodeBuildResult.cs),
+plus its requirement to capture output content before downstream work can
+overwrite it. It deliberately does not adopt project-level integration or
+weak/strong fingerprint lookup.
