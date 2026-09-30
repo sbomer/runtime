@@ -9,5 +9,5 @@ namespace Microsoft.NET.Build.Caching;
 
 internal static class CacheStore
 {
-    internal static ICache Create(string directory) => new ConcurrentLocalCache(new AbsolutePath(directory));
+    internal static ICache Create(string directory) => new ConcurrentLocalCache(new AbsolutePath(directory), useOwnerOnlyFilePlacement: true);
 }

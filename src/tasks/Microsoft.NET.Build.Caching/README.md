@@ -90,6 +90,9 @@ replayed. Cancellation is cooperative; it is passed to execution and cache
 operations, while startup/shutdown follow the backend's lifetime APIs.
 
 Cached outputs preserve bytes, the read-only flag, and Unix permission bits.
+On Linux, replay creates files with owner-only read/write permissions (0600)
+before copying any bytes, then applies the recorded permissions after successful
+verification. Failed or cancelled placement does not broaden those permissions.
 Restoration gives files fresh modification times; ownership, ACLs, and other
 filesystem-specific metadata are not replayed. Symlink outputs and linked output
 ancestors are rejected, including during uncached execution, so a hit cannot
@@ -99,7 +102,8 @@ These are author/caller contracts, not filesystem sandboxing.
 
 ## Filesystem backend
 
-`CacheStore.Create` constructs BuildXL's `ConcurrentLocalCache`, exposed through
+`CacheStore.Create` constructs BuildXL's `ConcurrentLocalCache` with
+`useOwnerOnlyFilePlacement: true`, exposed through
 its `ICache` and `ICacheSession` interfaces. Storage, locking, content hashes,
 memoization records, and result types come from the
 `Microsoft.BuildXL.Cache.MemoizationStore.Library` package, not a parallel runtime

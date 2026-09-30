@@ -95,6 +95,40 @@ public sealed class CacheStoreTests : IDisposable
     }
 
     [Theory]
+    [PlatformSpecific(TestPlatforms.Linux)]
+    [InlineData("", false)]
+    [InlineData("content", false)]
+    [InlineData("content", true)]
+    public async Task PlacementUsesOwnerOnlyPermissions(string text, bool corrupt)
+    {
+        using ICache cache = await OpenAsync(_root);
+        using ICacheSession session = await OpenSessionAsync(cache);
+        ContentHash hash = await PutAsync(session, text);
+        if (corrupt)
+        {
+            string blob = Directory.GetFiles(_root, "*.blob", SearchOption.AllDirectories).Single();
+            File.WriteAllText(blob, "corrupt");
+        }
+
+        string output = Path.Combine(_root, "output");
+        File.WriteAllText(output, "old output");
+        File.SetUnixFileMode(output, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.GroupRead | UnixFileMode.OtherRead);
+        PlaceFileResult placed = await session.PlaceFileAsync(s_context, hash, new AbsolutePath(output),
+            FileAccessMode.Write, FileReplacementMode.ReplaceExisting, FileRealizationMode.Copy, default);
+        if (corrupt)
+        {
+            Assert.Equal(PlaceFileResult.ResultCode.NotPlacedContentHashMismatch, placed.Code);
+        }
+        else
+        {
+            Succeeded(placed);
+        }
+
+        Assert.Equal(UnixFileMode.UserRead | UnixFileMode.UserWrite, File.GetUnixFileMode(output));
+        Assert.Equal(corrupt ? "corrupt" : text, File.ReadAllText(output));
+    }
+
+    [Theory]
     [InlineData("content")]
     [InlineData("order")]
     [InlineData("duplicates")]

@@ -301,20 +301,23 @@ public sealed class DeclaredIOTaskTests : IDisposable
         Assert.Equal("input", File.ReadAllText(task.Source));
     }
 
-    [Fact]
+    [Theory]
     [PlatformSpecific(TestPlatforms.Linux)]
-    public void UnixPermissionsAreReplayed()
+    [InlineData(UnixFileMode.UserRead)]
+    [InlineData(UnixFileMode.UserRead | UnixFileMode.UserWrite)]
+    [InlineData(UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.GroupRead | UnixFileMode.OtherRead)]
+    [InlineData(UnixFileMode.UserRead | UnixFileMode.UserExecute | UnixFileMode.GroupRead)]
+    public void UnixPermissionsAreReplayed(UnixFileMode mode)
     {
-        const UnixFileMode Mode = UnixFileMode.UserRead | UnixFileMode.UserExecute | UnixFileMode.GroupRead;
         DeclaredIOTestTask first = Create();
-        first.UnixMode = (int)Mode;
+        first.UnixMode = (int)mode;
         Assert.True(first.Execute());
         File.Delete(first.Destination);
         DeclaredIOTestTask second = Create();
-        second.UnixMode = (int)Mode;
+        second.UnixMode = (int)mode;
         Assert.True(second.Execute());
         Assert.Equal(0, second.Executions);
-        Assert.Equal(Mode, File.GetUnixFileMode(second.Destination));
+        Assert.Equal(mode, File.GetUnixFileMode(second.Destination));
     }
 
     [Fact]

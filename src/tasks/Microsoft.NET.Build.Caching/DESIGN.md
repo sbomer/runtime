@@ -89,7 +89,10 @@ publishers succeed without replacing the winner; conflicting results fail.
 Entries preserve ordered hashes and exact optional payload bytes, matching
 BuildXL content hash list equality. Callers own canonical ordering, manifest
 serialization, and explicitly listing the manifest and all referenced blobs.
-Restored files must not permit modification of cached blobs.
+Restored files must not permit modification of cached blobs. The cache enables
+owner-only file placement: Linux destinations start with mode 0600 before any
+bytes are copied. The task applies recorded Unix permissions only after placement
+and verification succeed, so partial or corrupt copies remain owner-only.
 
 Short-lived sessions hold a shared cross-process maintenance lock through lookup
 and restoration or through publication, but not through task execution. Session
