@@ -68,6 +68,11 @@ parameter discovery. Task authors must declare helper/tool files and every other
 dependency, keep inputs stable, and exclusively own outputs without filesystem
 aliases. Hidden dependencies and side effects cannot be replayed.
 
+The time-zone component is a digest of the complete serialized rules and names,
+reused for each immutable `TimeZoneInfo` snapshot. Calling
+`TimeZoneInfo.ClearCachedData()` allows an updated local snapshot to be fingerprinted;
+obsolete snapshots are not kept alive by this memoization.
+
 Caching is intended for expensive deterministic operations, not as an optimization
 for the copy example itself. A hit still hashes every input, verifies cached
 content, and copies outputs. For cheap tasks, this can cost much more than running

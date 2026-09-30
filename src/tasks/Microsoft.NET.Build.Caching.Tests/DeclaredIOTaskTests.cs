@@ -12,6 +12,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using System.Security;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -20,6 +21,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Microsoft.DotNet.RemoteExecutor;
 using Xunit;
 using Task = System.Threading.Tasks.Task;
 
@@ -173,6 +175,78 @@ public sealed class DeclaredIOTaskTests : IDisposable
         Assert.True(second.Execute());
         Assert.Equal(1, second.Executions);
         Assert.Equal(2, Directory.GetFiles(first.CacheDirectory, "*.entry", SearchOption.AllDirectories).Length);
+    }
+
+    [Theory]
+    [InlineData("offset")]
+    [InlineData("display")]
+    [InlineData("rules")]
+    public async Task TimeZoneFingerprintRetainsFullIdentity(string change)
+    {
+        TimeZoneInfo first = TimeZoneInfo.CreateCustomTimeZone("Test", TimeSpan.Zero, "Display", "Standard", "Daylight",
+            Array.Empty<TimeZoneInfo.AdjustmentRule>());
+        TimeZoneInfo.AdjustmentRule[] rules = change == "rules" ? new[]
+        {
+            TimeZoneInfo.AdjustmentRule.CreateAdjustmentRule(new DateTime(2000, 1, 1), new DateTime(2099, 12, 31), TimeSpan.FromHours(1),
+                TimeZoneInfo.TransitionTime.CreateFixedDateRule(new DateTime(1, 1, 1), 3, 1),
+                TimeZoneInfo.TransitionTime.CreateFixedDateRule(new DateTime(1, 1, 1), 10, 1))
+        } : Array.Empty<TimeZoneInfo.AdjustmentRule>();
+        TimeZoneInfo second = TimeZoneInfo.CreateCustomTimeZone("Test", change == "offset" ? TimeSpan.FromHours(1) : TimeSpan.Zero,
+            change == "display" ? "Different display" : "Display", "Standard", "Daylight", rules);
+        Assert.Equal(first.Id, second.Id);
+        byte[] firstHash = ExpectedHash(first);
+        byte[] secondHash = ExpectedHash(second);
+        Assert.NotEqual(firstHash, secondHash);
+
+        await Task.WhenAll(Enumerable.Range(0, 16).Select(i => Task.Run(() =>
+        {
+            bool original = i % 2 == 0;
+            TimeZoneInfo zone = original ? first : second;
+            using var data = new MemoryStream();
+            using var writer = new BinaryWriter(data);
+            DeclaredIOTask.WriteTimeZoneFingerprint(writer, zone);
+            Assert.Equal(SHA256.HashSizeInBytes, data.Length);
+            Assert.Equal(original ? firstHash : secondHash, data.ToArray());
+            data.Position = 0;
+            DeclaredIOTask.WriteTimeZoneFingerprint(writer, zone);
+            Assert.Equal(original ? firstHash : secondHash, data.ToArray());
+            data.Position = 0;
+            DeclaredIOTask.WriteTimeZoneFingerprint(writer, TimeZoneInfo.FromSerializedString(zone.ToSerializedString()));
+            Assert.Equal(original ? firstHash : secondHash, data.ToArray());
+        })));
+
+        static byte[] ExpectedHash(TimeZoneInfo zone)
+        {
+            using var data = new MemoryStream();
+            using var writer = new BinaryWriter(data);
+            TaskValueCodec.WriteString(writer, zone.ToSerializedString());
+            return SHA256.HashData(data.ToArray());
+        }
+    }
+
+    [ConditionalFact(typeof(RemoteExecutor), nameof(RemoteExecutor.IsSupported))]
+    [PlatformSpecific(TestPlatforms.Linux)]
+    public void LocalTimeZoneChangesInvalidateTaskCache()
+    {
+        using RemoteInvokeHandle process = RemoteExecutor.Invoke(static () =>
+        {
+            using var tests = new DeclaredIOTaskTests();
+            foreach ((string zone, int executions) in new[]
+            {
+                ("UTC", 1), ("UTC", 0), ("America/Los_Angeles", 1), ("America/Los_Angeles", 0), ("UTC", 0)
+            })
+            {
+                Environment.SetEnvironmentVariable("TZ", zone);
+                TimeZoneInfo.ClearCachedData();
+                Assert.Equal(zone, TimeZoneInfo.Local.Id);
+                DeclaredIOTestTask task = tests.Create();
+                Assert.True(task.Execute(), string.Join(Environment.NewLine, ((TestEngine)task.BuildEngine).Errors));
+                Assert.Equal(executions, task.Executions);
+                Assert.Equal(2.5f, task.Result);
+            }
+
+            Assert.Equal(2, Directory.GetFiles(tests._root, "*.entry", SearchOption.AllDirectories).Length);
+        });
     }
 
     [ConditionalFact(typeof(RuntimeFeature), nameof(RuntimeFeature.IsDynamicCodeSupported))]

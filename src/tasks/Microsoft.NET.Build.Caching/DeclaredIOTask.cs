@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
@@ -18,6 +19,8 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
 {
     private const int FormatVersion = 1;
     private const int HashSize = 32;
+    // Identity-keyed entries follow ClearCachedData without retaining obsolete time-zone snapshots.
+    private static readonly ConditionalWeakTable<TimeZoneInfo, byte[]> s_timeZoneFingerprints = new();
     private readonly object _cancellationGate = new();
     private CancellationTokenSource? _cancellation;
     private int _cancellers;
@@ -245,7 +248,7 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
         TaskValueCodec.WriteString(writer, RuntimeInformation.ProcessArchitecture.ToString());
         TaskValueCodec.WriteString(writer, CultureInfo.CurrentCulture.Name);
         TaskValueCodec.WriteString(writer, CultureInfo.CurrentUICulture.Name);
-        TaskValueCodec.WriteString(writer, TimeZoneInfo.Local.ToSerializedString());
+        WriteTimeZoneFingerprint(writer, TimeZoneInfo.Local);
         writer.Write(declaration.Inputs.Length);
         foreach (string input in declaration.Inputs)
         {
@@ -279,6 +282,16 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
         data.Position = 0;
         return new CacheKey(Hash(data, token));
     }
+
+    internal static void WriteTimeZoneFingerprint(BinaryWriter writer, TimeZoneInfo timeZone) =>
+        writer.Write(s_timeZoneFingerprints.GetValue(timeZone, static zone =>
+        {
+            using var data = new MemoryStream();
+            using var valueWriter = new BinaryWriter(data);
+            TaskValueCodec.WriteString(valueWriter, zone.ToSerializedString());
+            data.Position = 0;
+            return Hash(data, CancellationToken.None);
+        }));
 
     private static byte[] Hash(Stream stream, CancellationToken token)
     {
