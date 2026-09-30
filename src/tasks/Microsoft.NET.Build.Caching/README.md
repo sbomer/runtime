@@ -10,6 +10,11 @@ Derive from `DeclaredIOTask`, describe every dependency in `DescribeOperation`,
 and implement `ExecuteCore(CancellationToken)`. The sealed `Execute()` method
 performs lookup, execution on a miss, and publication.
 
+The intended use is `ToolTask`-like wrappers around tool executables with declared
+inputs and outputs, not general MSBuild orchestration. Nested MSBuild builds are
+outside the caching contract: their diagnostics and side effects are not tracked
+or replayed. Tool diagnostics must be logged through the task's own logging APIs.
+
 ```csharp
 public sealed class CopyTask : DeclaredIOTask
 {
@@ -70,10 +75,10 @@ the operation with caching disabled.
 
 An index value identifies a manifest in CAS, containing output content hashes,
 file metadata, and serialized output values. Output getters run before any puts;
-warnings, errors, unsuccessful execution, and observed cancellation prevent
-publication. Competing publishers must produce identical manifest hashes.
-Corruption, missing referenced blobs, and conflicting results fail the task,
-never silently fall back to execution. Diagnostics are not cached.
+warnings and errors logged through the task, unsuccessful execution, and observed
+cancellation prevent publication. Competing publishers must produce identical
+manifest hashes. Corruption, missing referenced blobs, and conflicting results
+fail the task, never silently fall back to execution. Diagnostics are not cached.
 
 Hits restore bytes, read-only attributes/Unix modes, and fresh timestamps, then
 invoke output setters. Replay unlinks existing outputs and copies into newly
