@@ -16,9 +16,10 @@ public sealed class TaskDeclaration
     private readonly List<string> _outputs = new();
     private readonly Dictionary<string, byte[]> _values = new(StringComparer.Ordinal);
     private readonly Dictionary<string, OutputValue> _outputValues = new(StringComparer.Ordinal);
+    private readonly bool _cacheEnabled;
     private bool _sealed;
 
-    internal TaskDeclaration() { }
+    internal TaskDeclaration(bool cacheEnabled) => _cacheEnabled = cacheEnabled;
 
     internal string[] Inputs { get; private set; } = Array.Empty<string>();
     internal string[] Outputs { get; private set; } = Array.Empty<string>();
@@ -41,14 +42,16 @@ public sealed class TaskDeclaration
         _outputs.Add(path);
     }
 
-    /// <summary>Snapshots a named execution-affecting value.</summary>
+    /// <summary>Declares a named execution-affecting value.</summary>
+    /// <remarks>The value is snapshotted immediately when caching is enabled; otherwise, only its name and type are validated.</remarks>
     /// <typeparam name="T">A supported MSBuild scalar type, task item, or one-dimensional array.</typeparam>
     /// <param name="name">The unique value name.</param>
     /// <param name="value">The value to include in the fingerprint.</param>
     public void AddValue<T>(string name, T? value)
     {
         CheckName(name);
-        _values.Add(name, new TaskValueCodec(typeof(T)).Serialize(value));
+        var codec = new TaskValueCodec(typeof(T));
+        _values.Add(name, _cacheEnabled ? codec.Serialize(value) : Array.Empty<byte>());
     }
 
     /// <summary>Registers typed accessors for capturing and replaying an output property.</summary>

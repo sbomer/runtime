@@ -42,7 +42,11 @@ The base owns lookup, execution, result capture, and replay. Derived tasks suppl
 Declarations register supported typed values and output getter/setter delegates;
 the base owns serialization without inspecting task properties. Both cached and uncached execution use the same
 declarations and operation. Disabling caching bypasses cache lookup and
-publication, not the deterministic execution contract.
+publication, not the deterministic execution contract. Each execution captures
+its cache mode before declaration. Disabled declarations retain name, type,
+duplicate, and path validation but do not serialize input values. Enabled
+declarations snapshot values at registration time, before later task code can
+mutate arrays or item metadata.
 
 With caching enabled, the base computes the fingerprint and looks up a versioned
 result manifest. A hit restores all declared output files and serialized MSBuild

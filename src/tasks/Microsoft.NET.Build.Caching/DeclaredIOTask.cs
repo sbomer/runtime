@@ -40,6 +40,7 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
     public string CacheDirectory { get; set; } = string.Empty;
 
     /// <summary>Gets or sets a value that indicates whether cache lookup and publication are enabled.</summary>
+    /// <remarks>Each execution captures this setting before calling <see cref="DescribeOperation"/>.</remarks>
     /// <value><see langword="true"/> to use the cache; otherwise, <see langword="false"/>. The default is <see langword="false"/>.</value>
     public bool CacheEnabled { get; set; }
 
@@ -86,7 +87,8 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
 
             string workingDirectory = Environment.CurrentDirectory;
             string cacheDirectory = Path.GetFullPath(Path.Combine(workingDirectory, CacheDirectory));
-            var declaration = new TaskDeclaration();
+            bool cacheEnabled = CacheEnabled;
+            var declaration = new TaskDeclaration(cacheEnabled);
             DescribeOperation(declaration);
             declaration.Seal(workingDirectory);
             if (engine.HasErrors || Log.HasLoggedErrors)
@@ -102,7 +104,7 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
                 }
             }
 
-            if (!CacheEnabled)
+            if (!cacheEnabled)
             {
                 Log.LogMessage(MessageImportance.Low, SR.CacheDisabled);
                 return RunOperation(declaration, engine, token);

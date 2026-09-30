@@ -54,7 +54,11 @@ The package's `build`/`buildTransitive` props supply an overridable per-user
 environment variable. `CacheEnabled` defaults to false; disabled execution still
 validates the declarations and output files, but never opens or creates the cache.
 
-`AddValue<T>` snapshots an input value at declaration time.
+`AddValue<T>` snapshots an input value at declaration time when caching is enabled.
+With caching disabled, it validates the name and supported type without traversing
+or serializing the value. Each execution captures `CacheEnabled` before calling
+`DescribeOperation`; changing the property during execution does not change that
+execution's cache mode.
 `AddOutputValue<T>` registers a getter and setter; the getter captures successful
 execution and the setter replays a hit. There is no property reflection. Supported
 types are `string`, `bool`, `char`, the eight fixed-width integer types, `float`,

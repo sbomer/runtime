@@ -69,6 +69,54 @@ public sealed class DeclaredIOTaskTests : IDisposable
     }
 
     [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void ValueSerializationUsesExecutionScopedCacheMode(bool enabled, bool changeMode)
+    {
+        DeclaredIOTestTask task = Create(enabled);
+        var item = new SourceItem(new TaskItem("input item"), "");
+        task.AdditionalDeclarations = declaration =>
+        {
+            if (changeMode)
+            {
+                task.CacheEnabled = !enabled;
+            }
+
+            declaration.AddValue<ITaskItem>("setting", item);
+        };
+
+        Assert.True(task.Execute());
+        Assert.Equal(1, task.Executions);
+        Assert.Equal(enabled ? 1 : 0, item.SnapshotCount);
+        Assert.Equal(enabled, Directory.Exists(task.CacheDirectory));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ValueDeclarationsValidateEvenWithoutCaching(bool enabled)
+    {
+        DeclaredIOTestTask task = Create(enabled);
+        task.AdditionalDeclarations = declaration =>
+        {
+            Assert.Throws<ArgumentException>(() => declaration.AddValue("unsupported", new object()));
+            Assert.Throws<ArgumentException>(() => declaration.AddValue("nullable", (int?)1));
+            Assert.Throws<ArgumentException>(() => declaration.AddValue("", 1));
+            declaration.AddValue("unique", 1);
+            Assert.Throws<ArgumentException>(() => declaration.AddValue("unique", 2));
+            Assert.Throws<ArgumentException>(() => declaration.AddOutputValue("unsupported", () => new object(), _ => { }));
+            Assert.Throws<ArgumentException>(() => declaration.AddOutputValue("", () => 1, _ => { }));
+            declaration.AddOutputValue("unique", () => 1, _ => { });
+            Assert.Throws<ArgumentException>(() => declaration.AddOutputValue("unique", () => 2, _ => { }));
+        };
+
+        Assert.True(task.Execute());
+        Assert.Equal(1, task.Executions);
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void HitReplaysFilesValuesAndMetadata(bool readOnly)
@@ -323,18 +371,29 @@ public sealed class DeclaredIOTaskTests : IDisposable
     [Fact]
     public void DeclarationSnapshotsInputsAndRejectsUnsupportedTypesAndMutation()
     {
-        var declaration = new TaskDeclaration();
+        var declaration = new TaskDeclaration(cacheEnabled: true);
         var array = new[] { "before" };
         declaration.AddValue("setting", array);
         array[0] = "after";
+        var item = new TaskItem("before");
+        item.SetMetadata("Custom", "before");
+        ITaskItem[] items = { item };
+        declaration.AddValue("items", items);
+        item.ItemSpec = "after";
+        item.SetMetadata("Custom", "after");
+        items[0] = new TaskItem("replacement");
         Assert.Throws<ArgumentException>(() => declaration.AddValue("unsupported", new object()));
         Assert.Throws<ArgumentException>(() => declaration.AddValue("nullable", (int?)1));
         declaration.Seal(_root);
         var codec = new TaskValueCodec(typeof(string[]));
-        Assert.Equal(new[] { "before" }, Assert.IsType<string[]>(codec.Deserialize(declaration.Values.Single().Value)));
+        Assert.Equal(new[] { "before" }, Assert.IsType<string[]>(codec.Deserialize(declaration.Values.Single(value => value.Key == "setting").Value)));
+        var itemCodec = new TaskValueCodec(typeof(ITaskItem[]));
+        ITaskItem restored = Assert.Single(Assert.IsType<ITaskItem[]>(itemCodec.Deserialize(declaration.Values.Single(value => value.Key == "items").Value)));
+        Assert.Equal("before", restored.ItemSpec);
+        Assert.Equal("before", restored.GetMetadata("Custom"));
         Assert.Throws<InvalidOperationException>(() => declaration.AddValue("late", 1));
 
-        var overlap = new TaskDeclaration();
+        var overlap = new TaskDeclaration(cacheEnabled: true);
         overlap.AddInputFile("same");
         overlap.AddOutputFile("same");
         Assert.Throws<ArgumentException>(() => overlap.Seal(_root));
@@ -590,13 +649,18 @@ public sealed class DeclaredIOTaskTests : IDisposable
 
     private sealed class SourceItem(TaskItem item, string definingProject) : ITaskItem
     {
+        internal int SnapshotCount { get; private set; }
         public string ItemSpec { get => item.ItemSpec; set => item.ItemSpec = value; }
         public int MetadataCount => item.MetadataCount;
         public ICollection MetadataNames => item.MetadataNames;
         public string GetMetadata(string name) => name.Equals("DefiningProjectFullPath", StringComparison.OrdinalIgnoreCase) ? definingProject : item.GetMetadata(name);
         public void SetMetadata(string name, string value) => item.SetMetadata(name, value);
         public void RemoveMetadata(string name) => item.RemoveMetadata(name);
-        public IDictionary CloneCustomMetadata() => item.CloneCustomMetadata();
+        public IDictionary CloneCustomMetadata()
+        {
+            SnapshotCount++;
+            return item.CloneCustomMetadata();
+        }
         public void CopyMetadataTo(ITaskItem destinationItem)
         {
             foreach (DictionaryEntry entry in item.CloneCustomMetadata())
@@ -617,6 +681,7 @@ public sealed class DeclaredIOTestTask : DeclaredIOTask
     public int UnixMode { get; set; } = -1;
     public string Behavior { get; set; } = "";
     public ManualResetEventSlim? Started { get; set; }
+    public Action<TaskDeclaration>? AdditionalDeclarations { get; set; }
     [Output] public float Result { get; private set; }
     [Output] public string?[]? Values { get; private set; }
     [Output] public ITaskItem? Item { get; private set; }
@@ -641,6 +706,7 @@ public sealed class DeclaredIOTestTask : DeclaredIOTask
         }, value => Result = value);
         declaration.AddOutputValue(nameof(Values), () => Values, value => Values = value);
         declaration.AddOutputItem(nameof(Item), () => Item, value => Item = value);
+        AdditionalDeclarations?.Invoke(declaration);
     }
 
     protected override bool ExecuteCore(CancellationToken cancellationToken)
