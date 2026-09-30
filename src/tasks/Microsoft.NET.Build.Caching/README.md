@@ -63,12 +63,15 @@ Null reference values, null arrays, and null string/item array elements are
 preserved. Enums, nullable value types, arbitrary objects, and jagged or
 multidimensional arrays are rejected. Floating-point bits and decimal scale are
 preserved; item specs, custom metadata, defining-project information, and escaped
-characters round-trip. Every output property that needs replay must be registered.
+characters round-trip. `ITaskItem2` item specs and metadata retain their escaped
+representation, including the distinction between lists and literal semicolons;
+plain `ITaskItem` values are escaped as literals. Every output property that needs
+replay must be registered.
 
 Fingerprints include normalized input paths and SHA-256 content hashes, output
 destinations, named input values, output value schemas, the full task type name,
-and the loaded module version IDs (MVIDs) of the task and base library. They also include the working
-directory, runtime, OS/architecture, culture names, and serialized local time-zone
+and the loaded module version IDs (MVIDs) of the task and base library. They also
+include the working directory, runtime, OS/architecture, culture names, and serialized local time-zone
 rules (which affect `DateTime` binary round-tripping).
 MVIDs identify the loaded code without rereading assembly files, so replacing a
 DLL on disk cannot misidentify code already loaded by MSBuild. Post-build rewriting

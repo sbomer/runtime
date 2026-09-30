@@ -410,25 +410,65 @@ public sealed class DeclaredIOTaskTests : IDisposable
         }
     }
 
-    [Fact]
-    public void ItemAndItemArrayPreserveDefiningProjectAndLiteralMetadata()
+    [Theory]
+    [InlineData("literal%253B%3Bitem", false)]
+    [InlineData("literal%253B%3Bitem", true)]
+    [InlineData("a%5Cb", false)]
+    [InlineData("a%5Cb", true)]
+    [InlineData("a%3Bb%3bc", false)]
+    [InlineData("a%3Bb%3bc", true)]
+    [InlineData("", false)]
+    [InlineData("", true)]
+    public void ItemAndItemArrayPreserveEscapingAndDefiningProject(string escapedItemSpec, bool supportsEscaping)
     {
-        string definingProject = Path.Combine(_root, "source.proj");
-        var original = new TaskItem(ProjectCollection.Escape("literal%3B;item"));
+        string definingProject = Path.Combine(_root, "literal%3B;directory", "source.proj");
+        var original = new TaskItem(escapedItemSpec);
         ((ITaskItem2)original).SetMetadataValueLiteral("Custom", "literal%3B;metadata");
-        var source = new SourceItem(original, definingProject);
+        var literalSource = new SourceItem(original, definingProject);
+        ITaskItem source = supportsEscaping ? new TaskItem(literalSource) : literalSource;
+        if (source is ITaskItem2 escapedSource)
+        {
+            escapedSource.EvaluatedIncludeEscaped = escapedItemSpec;
+        }
+
+        source.SetMetadata("List", "A;B");
+        source.SetMetadata("Escaped", "a%3Bb%3bc");
         var scalarCodec = new TaskValueCodec(typeof(ITaskItem));
         var arrayCodec = new TaskValueCodec(typeof(ITaskItem[]));
-        ITaskItem item = Assert.IsAssignableFrom<ITaskItem>(scalarCodec.Deserialize(scalarCodec.Serialize(source)));
+        byte[] encoded = scalarCodec.Serialize(source);
+        ITaskItem item = Assert.IsAssignableFrom<ITaskItem>(scalarCodec.Deserialize(encoded));
         ITaskItem?[] items = Assert.IsType<ITaskItem[]>(arrayCodec.Deserialize(arrayCodec.Serialize(new ITaskItem?[] { source, null })));
         Assert.Null(items[1]);
         foreach (ITaskItem value in new[] { item, Assert.IsAssignableFrom<ITaskItem>(items[0]) })
         {
-            Assert.Equal(original.ItemSpec, value.ItemSpec);
-            Assert.Equal(original.GetMetadata("Custom"), value.GetMetadata("Custom"));
+            var escapedValue = Assert.IsAssignableFrom<ITaskItem2>(value);
+            string expectedSpec = source is ITaskItem2 source2 ? source2.EvaluatedIncludeEscaped : ProjectCollection.Escape(source.ItemSpec);
+            Assert.Equal(source.ItemSpec, value.ItemSpec);
+            Assert.Equal(expectedSpec, escapedValue.EvaluatedIncludeEscaped);
+            Assert.Equal(source.CloneCustomMetadata().Count, value.CloneCustomMetadata().Count);
+            foreach (string name in new[] { "Custom", "List", "Escaped" })
+            {
+                string expectedMetadata = source is ITaskItem2 sourceWithEscaping ? sourceWithEscaping.GetMetadataValueEscaped(name) : ProjectCollection.Escape(source.GetMetadata(name));
+                Assert.Equal(source.GetMetadata(name), value.GetMetadata(name));
+                Assert.Equal(expectedMetadata, escapedValue.GetMetadataValueEscaped(name));
+            }
+
             Assert.Equal("", value.GetMetadata("OriginalItemSpec"));
             Assert.Equal(definingProject, value.GetMetadata("DefiningProjectFullPath"));
             Assert.Equal("source", value.GetMetadata("DefiningProjectName"));
+            Assert.Equal(encoded, scalarCodec.Serialize(value));
+        }
+
+        if (supportsEscaping)
+        {
+            ((ITaskItem2)item).SetMetadataValueLiteral("List", "A;B");
+            Assert.NotEqual(encoded, scalarCodec.Serialize(item));
+        }
+
+        for (int length = 0; length < encoded.Length; length++)
+        {
+            Exception? failure = Record.Exception(() => scalarCodec.Deserialize(encoded.AsSpan(0, length).ToArray()));
+            Assert.True(failure is EndOfStreamException or InvalidDataException, failure?.ToString());
         }
     }
 
@@ -463,6 +503,10 @@ public sealed class DeclaredIOTaskTests : IDisposable
                   <Output TaskParameter="Executions" PropertyName="ActualExecutions" />
                   <Output TaskParameter="Item" ItemName="ResultItem" />
                 </DeclaredIOTestTask>
+                <ItemGroup>
+                  <ExpandedList Include="%(ResultItem.List)" />
+                  <LiteralList Include="%(ResultItem.LiteralList)" />
+                </ItemGroup>
               </Target>
             </Project>
             """;
@@ -478,6 +522,8 @@ public sealed class DeclaredIOTaskTests : IDisposable
             Assert.Equal("2.5", result.ProjectStateAfterBuild.GetPropertyValue("ScaledValue"));
             Assert.Equal(executions, result.ProjectStateAfterBuild.GetPropertyValue("ActualExecutions"));
             Assert.Equal("value%3B;literal", result.ProjectStateAfterBuild.GetItems("ResultItem").Single().GetMetadataValue("Literal"));
+            Assert.Equal(new[] { "A", "B" }, result.ProjectStateAfterBuild.GetItems("ExpandedList").Select(item => item.EvaluatedInclude));
+            Assert.Equal("A;B", Assert.Single(result.ProjectStateAfterBuild.GetItems("LiteralList")).EvaluatedInclude);
         }
     }
 
@@ -548,7 +594,13 @@ public sealed class DeclaredIOTaskTests : IDisposable
         public void SetMetadata(string name, string value) => item.SetMetadata(name, value);
         public void RemoveMetadata(string name) => item.RemoveMetadata(name);
         public IDictionary CloneCustomMetadata() => item.CloneCustomMetadata();
-        public void CopyMetadataTo(ITaskItem destinationItem) => item.CopyMetadataTo(destinationItem);
+        public void CopyMetadataTo(ITaskItem destinationItem)
+        {
+            foreach (DictionaryEntry entry in item.CloneCustomMetadata())
+            {
+                destinationItem.SetMetadata((string)entry.Key, ProjectCollection.Escape((string)entry.Value!));
+            }
+        }
     }
 }
 
@@ -622,6 +674,8 @@ public sealed class DeclaredIOTestTask : DeclaredIOTask
         Values = new string?[] { "", null, "literal%3B;value" };
         Item = new TaskItem(ProjectCollection.Escape("item%3B;name"));
         ((ITaskItem2)Item).SetMetadataValueLiteral("Literal", "value%3B;literal");
+        Item.SetMetadata("List", "A;B");
+        ((ITaskItem2)Item).SetMetadataValueLiteral("LiteralList", "A;B");
         if (Behavior == "symlink")
         {
             File.CreateSymbolicLink(Destination, Source);

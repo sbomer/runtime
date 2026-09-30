@@ -25,7 +25,7 @@ namespace Microsoft.NET.Build.Caching;
 /// <remarks>This prototype requires task authors to declare every dependency and replayable output property.</remarks>
 public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelableTask
 {
-    private const int FormatVersion = 2;
+    private const int FormatVersion = 3;
     private const int HashSize = 32;
     private static readonly Context s_context = new(NullLogger.Instance);
     private readonly object _cancellationGate = new();

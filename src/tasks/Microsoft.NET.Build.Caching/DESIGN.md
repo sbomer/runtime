@@ -46,7 +46,10 @@ publication, not the deterministic execution contract.
 
 With caching enabled, the base computes the fingerprint and looks up a versioned
 result manifest. A hit restores all declared output files and serialized MSBuild
-output values, including item metadata, before returning success. Restoration
+output values, including item metadata, before returning success. `ITaskItem2`
+item specs and metadata preserve their escaped representation; plain `ITaskItem`
+values are escaped as literals. Reconstruction does not normalize item-spec
+backslashes as path separators. Restoration
 preserves required file attributes, such as executable permissions, and makes
 output timestamps suitable for subsequent timestamp-based incremental checks.
 The captured metadata is the read-only flag and Unix permission bits. Ownership

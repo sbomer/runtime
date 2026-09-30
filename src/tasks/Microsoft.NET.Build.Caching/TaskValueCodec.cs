@@ -163,15 +163,17 @@ internal sealed class TaskValueCodec
             case Kind.DateTime: writer.Write(((DateTime)value!).ToBinary()); break;
             case Kind.Item:
                 var item = (ITaskItem)value!;
-                WriteString(writer, item.ItemSpec);
-                WriteString(writer, item.GetMetadata("DefiningProjectFullPath"));
-                IDictionary metadata = item.CloneCustomMetadata();
+                ITaskItem2? escapedItem = item as ITaskItem2;
+                WriteString(writer, escapedItem is null ? ProjectCollection.Escape(item.ItemSpec) : escapedItem.EvaluatedIncludeEscaped);
+                WriteString(writer, escapedItem is null ? ProjectCollection.Escape(item.GetMetadata("DefiningProjectFullPath")) : escapedItem.GetMetadataValueEscaped("DefiningProjectFullPath"));
+                IDictionary metadata = escapedItem is null ? item.CloneCustomMetadata() : escapedItem.CloneCustomMetadataEscaped();
                 string[] names = metadata.Keys.Cast<string>().OrderBy(name => name, StringComparer.Ordinal).ToArray();
                 writer.Write(names.Length);
                 foreach (string name in names)
                 {
                     WriteString(writer, name);
-                    WriteString(writer, (string)metadata[name]!);
+                    string metadataValue = (string)metadata[name]!;
+                    WriteString(writer, escapedItem is null ? ProjectCollection.Escape(metadataValue) : metadataValue);
                 }
 
                 break;
@@ -209,7 +211,8 @@ internal sealed class TaskValueCodec
 
     private static TaskItem ReadItem(BinaryReader reader)
     {
-        var item = new TaskItem(ProjectCollection.Escape(ReadString(reader)));
+        var item = new TaskItem();
+        string itemSpec = ReadString(reader);
         string definingProject = ReadString(reader);
         int count = ReadCount(reader, minimumBytes: 8);
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -221,10 +224,10 @@ internal sealed class TaskValueCodec
                 throw new InvalidDataException(SR.InvalidManifest);
             }
 
-            ((ITaskItem2)item).SetMetadataValueLiteral(name, ReadString(reader));
+            item.SetMetadata(name, ReadString(reader));
         }
 
-        return new TaskItem(new ItemSnapshot(item, definingProject));
+        return new TaskItem(new ItemSnapshot(item, itemSpec, definingProject));
     }
 
     internal static void WriteString(BinaryWriter writer, string value)
@@ -267,21 +270,26 @@ internal sealed class TaskValueCodec
         _ => throw new InvalidDataException(SR.InvalidManifest)
     };
 
-    private sealed class ItemSnapshot(TaskItem item, string definingProject) : ITaskItem
+    private sealed class ItemSnapshot(TaskItem item, string itemSpec, string definingProject) : ITaskItem2
     {
-        public string ItemSpec { get => item.ItemSpec; set => item.ItemSpec = value; }
+        // TaskItem's copy constructor preserves this verbatim; its string constructor normalizes paths.
+        public string EvaluatedIncludeEscaped { get; set; } = itemSpec;
+        public string ItemSpec { get => ProjectCollection.Unescape(EvaluatedIncludeEscaped); set => EvaluatedIncludeEscaped = value; }
         public int MetadataCount => item.MetadataCount;
         public ICollection MetadataNames => item.MetadataNames;
-        public string GetMetadata(string name) => name.Equals("DefiningProjectFullPath", StringComparison.OrdinalIgnoreCase) ? definingProject : item.GetMetadata(name);
+        public string GetMetadata(string name) => ProjectCollection.Unescape(GetMetadataValueEscaped(name));
+        public string GetMetadataValueEscaped(string name) => name.Equals("DefiningProjectFullPath", StringComparison.OrdinalIgnoreCase) ? definingProject : ((ITaskItem2)item).GetMetadataValueEscaped(name);
         public void SetMetadata(string name, string value) => item.SetMetadata(name, value);
+        public void SetMetadataValueLiteral(string name, string value) => ((ITaskItem2)item).SetMetadataValueLiteral(name, value);
         public void RemoveMetadata(string name) => item.RemoveMetadata(name);
         public IDictionary CloneCustomMetadata() => item.CloneCustomMetadata();
+        public IDictionary CloneCustomMetadataEscaped() => ((ITaskItem2)item).CloneCustomMetadataEscaped();
         public void CopyMetadataTo(ITaskItem destinationItem)
         {
             // TaskItem.CopyMetadataTo would add OriginalItemSpec, changing the captured output.
-            foreach (DictionaryEntry entry in item.CloneCustomMetadata())
+            foreach (DictionaryEntry entry in CloneCustomMetadataEscaped())
             {
-                destinationItem.SetMetadata((string)entry.Key, ProjectCollection.Escape((string)entry.Value!));
+                destinationItem.SetMetadata((string)entry.Key, (string)entry.Value!);
             }
         }
     }
