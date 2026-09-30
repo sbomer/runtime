@@ -85,6 +85,16 @@ internal sealed partial class ValidationRun : IDisposable
     private readonly string _buildArchitecture;
     private readonly string _tasksConfiguration;
     private readonly string _validationToolRoot;
+    private readonly string _msBuildHost;
+    private readonly string _msBuildAssembly;
+    private readonly string _msBuildDepsFile;
+    private readonly string _runtimeSdkDirectory;
+    private readonly string _nugetPackageRoot;
+    private readonly string _msBuildCacheRoot;
+    private readonly string _msBuildCacheConfiguration;
+    private readonly string _msBuildCacheNativeDirectory;
+    private readonly bool _msBuildCacheEnabled;
+    private readonly IReadOnlyDictionary<string, string?> _msBuildEnvironment;
     private readonly string _outputDirectory;
     private readonly string _validationOutputDirectory;
     private readonly string _diffOutputDirectory;
@@ -123,9 +133,77 @@ internal sealed partial class ValidationRun : IDisposable
         _validationToolRoot = GetEnvironmentValue(
             "MSBUILD_GRAPH_VALIDATION_ROOT",
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "src", "msbuild-graph-validation"));
+        string msBuildRoot = GetEnvironmentValue(
+            "MSBUILD_ROOT",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "src", "msbuild"));
+        string msBuildConfiguration = GetEnvironmentValue("MSBUILD_CONFIGURATION", "Release");
+        string msBuildBootstrapRoot = Path.Combine(msBuildRoot, "artifacts", "bin", "bootstrap", "core");
+        _msBuildHost = Path.Combine(msBuildBootstrapRoot, "dotnet");
+        _msBuildDepsFile = Path.Combine(
+            msBuildRoot,
+            "artifacts",
+            "bin",
+            "MSBuild.Bootstrap",
+            msBuildConfiguration,
+            "net11.0",
+            "MSBuild.deps.json");
+        string msBuildSdkRoot = Path.Combine(msBuildBootstrapRoot, "sdk");
+        _msBuildAssembly = Directory.Exists(msBuildSdkRoot)
+            ? Directory.EnumerateDirectories(msBuildSdkRoot)
+                .Select(directory => Path.Combine(directory, "MSBuild.dll"))
+                .Where(File.Exists)
+                .Order()
+                .LastOrDefault() ?? ""
+            : "";
+        string runtimeSdkRoot = Path.Combine(_repoRoot, ".dotnet", "sdk");
+        _runtimeSdkDirectory = Directory.Exists(runtimeSdkRoot)
+            ? Directory.EnumerateDirectories(runtimeSdkRoot)
+                .Where(directory => Directory.Exists(Path.Combine(directory, "Sdks")))
+                .Order()
+                .LastOrDefault() ?? ""
+            : "";
+        _nugetPackageRoot = GetEnvironmentValue(
+            "NUGET_PACKAGES",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages"));
+        _msBuildCacheRoot = GetEnvironmentValue(
+            "MSBUILD_CACHE_ROOT",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "src", "MSBuildCache"));
+        _msBuildCacheConfiguration = GetEnvironmentValue("MSBUILD_CACHE_CONFIGURATION", "Debug");
+        _msBuildCacheEnabled = !string.Equals(
+            Environment.GetEnvironmentVariable("MSBUILD_CACHE_ENABLED"),
+            "false",
+            StringComparison.OrdinalIgnoreCase);
+        _msBuildCacheNativeDirectory = Path.Combine(
+            _msBuildCacheRoot,
+            "src",
+            "Local",
+            "bin",
+            "x64",
+            _msBuildCacheConfiguration,
+            "net9.0",
+            "native",
+            "amd64");
+        Dictionary<string, string?> msBuildEnvironment = new()
+        {
+            ["DOTNET_HOST_PATH"] = _msBuildHost,
+            ["DOTNET_MSBUILD_SDK_RESOLVER_CLI_DIR"] = Path.Combine(_repoRoot, ".dotnet"),
+            ["MSBUILD_EXE_PATH"] = _msBuildAssembly,
+            ["MSBuildExtensionsPath"] = _runtimeSdkDirectory,
+            ["MSBuildSDKsPath"] = Path.Combine(_runtimeSdkDirectory, "Sdks"),
+        };
+        if (_msBuildCacheEnabled)
+        {
+            string nativeSearchPathVariable = OperatingSystem.IsWindows() ? "PATH" : "LD_LIBRARY_PATH";
+            string? nativeSearchPath = Environment.GetEnvironmentVariable(nativeSearchPathVariable);
+            msBuildEnvironment[nativeSearchPathVariable] = string.IsNullOrEmpty(nativeSearchPath)
+                ? _msBuildCacheNativeDirectory
+                : $"{_msBuildCacheNativeDirectory}{Path.PathSeparator}{nativeSearchPath}";
+        }
+
+        _msBuildEnvironment = msBuildEnvironment;
 
         _outputDirectory = Path.Combine(_repoRoot, "artifacts", "log", "static-graph-validation", _target.Name);
-        _validationOutputDirectory = Path.Combine(_repoRoot, "static-graph-validation");
+        _validationOutputDirectory = Path.Combine(_repoRoot, "artifacts", "log", "static-graph-validation");
         _diffOutputDirectory = Path.Combine(_validationOutputDirectory, "diffs");
         _nodesOutputDirectory = Path.Combine(_validationOutputDirectory, "nodes");
         _targetsOutputDirectory = Path.Combine(_validationOutputDirectory, "targets", _target.Name);
@@ -156,6 +234,7 @@ internal sealed partial class ValidationRun : IDisposable
         }
 
         _reuseDynamicBinlog = reuseDynamicBinlog;
+        ValidateExternalTools();
 
         try
         {
@@ -294,22 +373,20 @@ internal sealed partial class ValidationRun : IDisposable
                 ]);
 
             Log("Capturing the negotiated dynamic project graph");
-            RunTimed(
+            RunMsBuildTimed(
                 "capture dynamic graph",
-                "./dotnet.sh",
-                BuildMsBuildArguments(
-                    _target.EntryProject,
-                    [
-                        "/t:CaptureProjectReferencesRecursive",
-                        "/nr:false",
-                        .. _target.CaptureParallelism,
-                        $"/bl:{Path.Combine(_workDirectory, $"capture-{_target.Name}.binlog")}",
-                        MsBuildLogArgument("capture-dynamic-graph"),
-                        "/p:CaptureProjectReferences=true",
-                        $"/p:CaptureProjectReferencesFile={captureFile}",
-                        $"/p:StaticGraphTasksAssemblyPath={staticGraphTasks}",
-                        .. _commonProperties,
-                    ]));
+                _target.EntryProject,
+                [
+                    "/t:CaptureProjectReferencesRecursive",
+                    "/nr:false",
+                    .. _target.CaptureParallelism,
+                    $"/bl:{Path.Combine(_workDirectory, $"capture-{_target.Name}.binlog")}",
+                    MsBuildLogArgument("capture-dynamic-graph"),
+                    "/p:CaptureProjectReferences=true",
+                    $"/p:CaptureProjectReferencesFile={captureFile}",
+                    $"/p:StaticGraphTasksAssemblyPath={staticGraphTasks}",
+                    .. _commonProperties,
+                ]);
 
             File.Copy(staticGraphTasks, replayGeneratorTasks, overwrite: true);
             staticGraphProperties.Add("/p:UseProjectReferenceReplay=true");
@@ -324,18 +401,16 @@ internal sealed partial class ValidationRun : IDisposable
         else
         {
             Log($"Capturing dynamic non-graph {_target.Name} build");
-            RunTimed(
+            RunMsBuildTimed(
                 "dynamic build",
-                "./dotnet.sh",
-                BuildMsBuildArguments(
-                    _target.EntryProject,
-                    [
-                        "/nr:false",
-                        .. _target.DynamicBuildParallelism,
-                        $"/bl:{dynamicBinlog}",
-                        MsBuildLogArgument("dynamic-build"),
-                        .. _commonProperties,
-                    ]));
+                _target.EntryProject,
+                [
+                    "/nr:false",
+                    .. _target.DynamicBuildParallelism,
+                    $"/bl:{dynamicBinlog}",
+                    MsBuildLogArgument("dynamic-build"),
+                    .. _commonProperties,
+                ]);
         }
 
         Log("Removing artifacts before the isolated static graph build");
@@ -344,19 +419,17 @@ internal sealed partial class ValidationRun : IDisposable
         if (_target.UseProjectReferenceReplay)
         {
             Log("Generating project reference replay targets");
-            RunTimed(
+            RunMsBuildTimed(
                 "generate project reference replay",
-                "./dotnet.sh",
-                BuildMsBuildArguments(
-                    "eng/projectReferenceReplay.targets",
-                    [
-                        "/t:GenerateProjectReferenceReplay",
-                        "/nr:false",
-                        MsBuildLogArgument("generate-project-reference-replay"),
-                        $"/p:CaptureProjectReferencesFile={captureFile}",
-                        $"/p:ProjectReferenceReplayTargets={replayFile}",
-                        $"/p:StaticGraphTasksAssemblyPath={replayGeneratorTasks}",
-                    ]));
+                "eng/projectReferenceReplay.targets",
+                [
+                    "/t:GenerateProjectReferenceReplay",
+                    "/nr:false",
+                    MsBuildLogArgument("generate-project-reference-replay"),
+                    $"/p:CaptureProjectReferencesFile={captureFile}",
+                    $"/p:ProjectReferenceReplayTargets={replayFile}",
+                    $"/p:StaticGraphTasksAssemblyPath={replayGeneratorTasks}",
+                ]);
             File.Delete(replayGeneratorTasks!);
         }
 
@@ -374,21 +447,40 @@ internal sealed partial class ValidationRun : IDisposable
 
         Log($"Running isolated static graph {_target.Name} build");
         string staticBinlog = Path.Combine(_workDirectory, $"static-{_target.Name}.binlog");
-        RunTimed(
+        string cacheLogDirectory = Path.Combine(_workDirectory, "MSBuildCache");
+        string localCacheRoot = GetEnvironmentValue(
+            "MSBUILD_CACHE_LOCAL_ROOT",
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                ".cache",
+                "runtime-static-graph",
+                "MSBuildCache"));
+        List<string> cacheArguments = [];
+        if (_msBuildCacheEnabled)
+        {
+            cacheArguments.Add("-reportFileAccesses");
+            cacheArguments.Add($"/p:MSBuildCacheRoot={_msBuildCacheRoot}");
+            cacheArguments.Add($"/p:MSBuildCacheConfiguration={_msBuildCacheConfiguration}");
+            cacheArguments.Add($"/p:MSBuildCacheLogDirectory={cacheLogDirectory}");
+            cacheArguments.Add($"/p:MSBuildCacheLocalCacheRootPath={localCacheRoot}");
+            cacheArguments.Add($"/p:MSBuildCacheCacheUniverse=runtime-static-graph-{_target.Name}");
+            cacheArguments.Add($"/p:MSBuildCacheAllowFileAccessAfterProjectFinishFilePatterns={Path.Combine(Path.GetDirectoryName(_msBuildHost)!, "shared", "Microsoft.NETCore.App", "**", "System.IO.Pipelines.dll")}");
+        }
+
+        RunMsBuildTimed(
             "static graph build",
-            "./dotnet.sh",
-            BuildMsBuildArguments(
-                _target.EntryProject,
-                [
-                    "/graphBuild",
-                    "/isolateProjects",
-                    "/nr:false",
-                    .. _target.StaticGraphParallelism,
-                    $"/bl:{staticBinlog}",
-                    MsBuildLogArgument("static-build"),
-                    .. staticGraphProperties,
-                    .. _commonProperties,
-                ]));
+            _target.EntryProject,
+            [
+                "/graphBuild",
+                "/isolateProjects",
+                "/nr:false",
+                .. _target.StaticGraphParallelism,
+                $"/bl:{staticBinlog}",
+                MsBuildLogArgument("static-build"),
+                .. cacheArguments,
+                .. staticGraphProperties,
+                .. _commonProperties,
+            ]);
 
         ValidateStaticGraphSize();
         CompareGraphs(dynamicBinlog, staticGraphProperties);
@@ -551,32 +643,28 @@ internal sealed partial class ValidationRun : IDisposable
             ThrowIfInterrupted();
             string prerequisiteName = Path.GetFileName(prerequisiteProject);
             Log($"Restoring {prerequisiteProject} for the {phase} build");
-            RunTimed(
+            RunMsBuildTimed(
                 $"restore {phase} prerequisite {prerequisiteName}",
-                "./dotnet.sh",
-                BuildMsBuildArguments(
-                    prerequisiteProject,
-                    [
-                        "/t:Restore",
-                        "/nr:false",
-                        MsBuildLogArgument($"{phase}-{prerequisiteName}-prerequisite-restore"),
-                        $"/p:Configuration={_configuration}",
-                        $"/p:TargetArchitecture={_targetArchitecture}",
-                        $"/p:BuildArchitecture={_buildArchitecture}",
-                    ]));
+                prerequisiteProject,
+                [
+                    "/t:Restore",
+                    "/nr:false",
+                    MsBuildLogArgument($"{phase}-{prerequisiteName}-prerequisite-restore"),
+                    $"/p:Configuration={_configuration}",
+                    $"/p:TargetArchitecture={_targetArchitecture}",
+                    $"/p:BuildArchitecture={_buildArchitecture}",
+                ]);
 
             Log($"Building {prerequisiteProject} for the {phase} build");
-            RunTimed(
+            RunMsBuildTimed(
                 $"build {phase} prerequisite {prerequisiteName}",
-                "./dotnet.sh",
-                BuildMsBuildArguments(
-                    prerequisiteProject,
-                    [
-                        "/nr:false",
-                        .. _target.DynamicBuildParallelism,
-                        MsBuildLogArgument($"{phase}-{prerequisiteName}-prerequisite-build"),
-                        .. _commonProperties,
-                    ]));
+                prerequisiteProject,
+                [
+                    "/nr:false",
+                    .. _target.DynamicBuildParallelism,
+                    MsBuildLogArgument($"{phase}-{prerequisiteName}-prerequisite-build"),
+                    .. _commonProperties,
+                ]);
         }
     }
 
@@ -620,11 +708,73 @@ internal sealed partial class ValidationRun : IDisposable
         return arguments;
     }
 
-    private static List<string> BuildMsBuildArguments(string project, IEnumerable<string> arguments) =>
-        ["msbuild", project, .. arguments];
+    private void RunMsBuildTimed(string label, string project, IReadOnlyList<string> arguments)
+    {
+        RunTimed(
+            label,
+            () => ProcessRunner.Run(
+                _msBuildHost,
+                [
+                    "exec",
+                    "--additional-deps",
+                    _msBuildDepsFile,
+                    "--additionalprobingpath",
+                    _nugetPackageRoot,
+                    _msBuildAssembly,
+                    project,
+                    .. arguments,
+                ],
+                _repoRoot,
+                environment: _msBuildEnvironment));
+    }
 
     private string MsBuildLogArgument(string name) =>
         $"/flp:LogFile={Path.Combine(_workDirectory, $"{name}.log")};Verbosity=normal";
+
+    private void ValidateExternalTools()
+    {
+        ValidateFile(_msBuildHost, "MSBuild bootstrap host");
+        ValidateFile(_msBuildAssembly, "MSBuild assembly");
+        ValidateFile(_msBuildDepsFile, "MSBuild dependency manifest");
+        ValidateDirectory(_runtimeSdkDirectory, "runtime SDK directory");
+        if (!_msBuildCacheEnabled)
+        {
+            return;
+        }
+
+        ValidateFile(
+            Path.Combine(
+                _msBuildCacheRoot,
+                "src",
+                "Local",
+                "bin",
+                "x64",
+                _msBuildCacheConfiguration,
+                "net9.0",
+                "Microsoft.MSBuildCache.Local.dll"),
+            "MSBuild cache plugin assembly");
+        ValidateFile(
+            Path.Combine(
+                _msBuildCacheNativeDirectory,
+                OperatingSystem.IsWindows() ? "rocksdb.dll" : "librocksdb.so"),
+            "MSBuild cache RocksDB native library");
+    }
+
+    private static void ValidateFile(string path, string description)
+    {
+        if (!File.Exists(path))
+        {
+            throw new ValidationException($"{description} does not exist: {path}");
+        }
+    }
+
+    private static void ValidateDirectory(string path, string description)
+    {
+        if (!Directory.Exists(path))
+        {
+            throw new ValidationException($"{description} does not exist: {path}");
+        }
+    }
 
     private void SnapshotPrerequisiteArtifacts()
     {

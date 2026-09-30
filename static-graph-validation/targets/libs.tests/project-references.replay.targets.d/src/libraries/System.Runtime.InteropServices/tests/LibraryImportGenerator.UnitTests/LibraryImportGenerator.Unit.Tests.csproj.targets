@@ -1,8 +1,0 @@
-﻿<Project>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
-    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
-    <ProjectReference Include="$(RepoRoot)src/libraries/System.Runtime.InteropServices/gen/Microsoft.Interop.SourceGeneration/Microsoft.Interop.SourceGeneration.csproj" />
-  </ItemGroup>
-</Project>

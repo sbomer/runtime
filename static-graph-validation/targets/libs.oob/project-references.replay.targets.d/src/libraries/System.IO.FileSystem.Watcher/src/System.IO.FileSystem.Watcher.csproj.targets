@@ -1,5 +1,0 @@
-﻿<Project>
-  <PropertyGroup Condition="'$(TargetFramework)' == ''">
-    <TargetFrameworks>net11.0-linux</TargetFrameworks>
-  </PropertyGroup>
-</Project>

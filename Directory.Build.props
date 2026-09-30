@@ -4,6 +4,8 @@
     <!-- For non-SDK projects that import this file and then import Microsoft.Common.props,
          tell Microsoft.Common.props not to import Directory.Build.props again. -->
     <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+    <MSBuildCacheConfiguration Condition="'$(MSBuildCacheConfiguration)' == ''">Debug</MSBuildCacheConfiguration>
+    <MSBuildCacheAssembly Condition="'$(MSBuildCacheRoot)' != ''">$([MSBuild]::NormalizePath('$(MSBuildCacheRoot)', 'src', 'Local', 'bin', 'x64', '$(MSBuildCacheConfiguration)', 'net9.0', 'Microsoft.MSBuildCache.Local.dll'))</MSBuildCacheAssembly>
     <!-- Used to determine if we should build some packages only once across multiple official build legs.
          For offline builds we still set OfficialBuildId but we need to build all the packages for a single
          leg only, so we also take DotNetBuildSourceOnly into account. -->
@@ -16,6 +18,9 @@
          Explicitly setting it to false ensures projects are built in the corresponding configuration both in VS and on the command line. -->
     <ShouldUnsetParentConfigurationAndPlatform>false</ShouldUnsetParentConfigurationAndPlatform>
   </PropertyGroup>
+
+  <Import Project="$(MSBuildCacheRoot)/src/Common/build/Microsoft.MSBuildCache.Common.props"
+          Condition="'$(MSBuildCacheRoot)' != ''" />
 
   <!-- We don't have RepoRoot or RepositoryEngineeringDir available at this point -->
   <Import Project="$(MSBuildThisFileDirectory)/eng/OSArch.props" />

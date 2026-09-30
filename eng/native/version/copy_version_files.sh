@@ -30,6 +30,6 @@ for path in "${__VersionFolder}/"*{.h,.c}; do
             echo "$version_file_contents" > "$version_file_destination"
         fi
     elif [[ ! -e "$__RepoRoot/artifacts/obj/$(basename "$path")" ]]; then
-        cp "$path" "$__RepoRoot/artifacts/obj/"
+        cp "$path" "$__RepoRoot/artifacts/obj/$(basename "$path")"
     fi
 done

@@ -14,6 +14,9 @@
   <Import Project="$(RepositoryEngineeringDir)captureProjectReferences.targets"
           Condition="'$(CaptureProjectReferences)' == 'true'" />
 
+  <Import Project="$(MSBuildCacheRoot)/src/Common/build/Microsoft.MSBuildCache.Common.targets"
+          Condition="'$(MSBuildCacheRoot)' != ''" />
+
   <Import Project="$(RepositoryEngineeringDir)liveBuilds.targets" />
 
   <PropertyGroup Condition="'$(UseBootstrapLayout)' == 'true'">
