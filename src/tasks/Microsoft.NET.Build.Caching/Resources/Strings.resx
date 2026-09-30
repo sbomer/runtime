@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="CacheDirectoryRequired" xml:space="preserve">
+    <value>A cache directory is required.</value>
+  </data>
+  <data name="CorruptContent" xml:space="preserve">
+    <value>Cached content does not match its SHA-256 digest: '{0}'.</value>
+  </data>
+  <data name="CorruptIndex" xml:space="preserve">
+    <value>The cache index record has an invalid length, key, or checksum: '{0}'.</value>
+  </data>
+  <data name="HashLength" xml:space="preserve">
+    <value>A SHA-256 digest must contain exactly 32 bytes.</value>
+  </data>
+  <data name="LinkedCachePath" xml:space="preserve">
+    <value>Cache paths must not contain symbolic links or reparse points: '{0}'.</value>
+  </data>
+  <data name="MissingWinningEntry" xml:space="preserve">
+    <value>The winning cache index record disappeared during publication: '{0}'.</value>
+  </data>
+  <data name="NonDirectoryCachePath" xml:space="preserve">
+    <value>A cache path ancestor is not a directory: '{0}'.</value>
+  </data>
+  <data name="PublicationFailed" xml:space="preserve">
+    <value>Could not atomically publish cache file '{0}' (native error {1}).</value>
+  </data>
+  <data name="UnreadableSource" xml:space="preserve">
+    <value>The source stream must be readable.</value>
+  </data>
+  <data name="UnsupportedFrameworkPlatform" xml:space="preserve">
+    <value>The .NET Framework cache implementation requires Windows. Use the modern .NET implementation on other platforms.</value>
+  </data>
+</root>
