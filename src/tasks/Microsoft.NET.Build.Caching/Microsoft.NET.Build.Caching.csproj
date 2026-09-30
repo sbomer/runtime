@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>$(NetCoreAppToolCurrent);$(NetFrameworkToolCurrent)</TargetFrameworks>
-    <Description>Experimental disk-backed content and index storage for build tasks.</Description>
+    <Description>Experimental declared-I/O tasks and disk-backed content and index storage.</Description>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
     <IsShipping>false</IsShipping>
@@ -11,5 +11,7 @@
     <Compile Include="../../libraries/Common/src/System/SR.cs" Link="Resources/SR.cs" />
     <EmbeddedResource Update="Resources/Strings.resx" GenerateSource="true" ClassName="System.SR" ManifestResourceName="FxResources.Microsoft.NET.Build.Caching.SR" />
     <InternalsVisibleTo Include="Microsoft.NET.Build.Caching.Tests" />
+    <None Include="buildTransitive/Microsoft.NET.Build.Caching.props" Pack="true" PackagePath="buildTransitive/" />
+    <None Include="buildTransitive/Microsoft.NET.Build.Caching.props" Pack="true" PackagePath="build/" />
   </ItemGroup>
 </Project>

@@ -8,8 +8,12 @@
     <IncludeRemoteExecutor>true</IncludeRemoteExecutor>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(MicrosoftBuildUtilitiesCoreVersion)" />
     <PackageReference Include="Microsoft.DotNet.RemoteExecutor" Version="$(MicrosoftDotNetRemoteExecutorVersion)" />
     <PackageReference Include="Microsoft.DotNet.XUnitExtensions" Version="$(MicrosoftDotNetXUnitExtensionsVersion)" />
     <ProjectReference Include="../Microsoft.NET.Build.Caching/Microsoft.NET.Build.Caching.csproj" />
+    <None Include="../Microsoft.NET.Build.Caching/buildTransitive/Microsoft.NET.Build.Caching.props" Link="Microsoft.NET.Build.Caching.props" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

@@ -14,6 +14,22 @@ internal static partial class DiskCacheFileSystem
     private const int WindowsFileExists = 80;
     private const int WindowsAlreadyExists = 183;
 
+    internal static FileStream CreatePrivateFile(string path, FileAccess access)
+    {
+#if NETFRAMEWORK
+        return new FileStream(path, FileMode.CreateNew, access, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+#else
+        return new FileStream(path, new FileStreamOptions
+        {
+            Mode = FileMode.CreateNew,
+            Access = access,
+            Share = FileShare.None,
+            Options = FileOptions.Asynchronous | FileOptions.SequentialScan,
+            UnixCreateMode = OperatingSystem.IsWindows() ? null : UnixFileMode.UserRead | UnixFileMode.UserWrite
+        });
+#endif
+    }
+
     internal static bool Publish(string temporary, string destination)
     {
         bool windows = Path.DirectorySeparatorChar == '\\';

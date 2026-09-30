@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <_DeclaredIOUserDirectory Condition="'$(DeclaredIOCacheDirectory)' == ''">$([System.Environment]::GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.DoNotVerify))</_DeclaredIOUserDirectory>
+    <DeclaredIOCacheDirectory Condition="'$(DeclaredIOCacheDirectory)' == '' and '$(_DeclaredIOUserDirectory)' != ''">$(_DeclaredIOUserDirectory)/Microsoft/DeclaredIOCache</DeclaredIOCacheDirectory>
+    <_DeclaredIOUserDirectory />
+  </PropertyGroup>
+</Project>

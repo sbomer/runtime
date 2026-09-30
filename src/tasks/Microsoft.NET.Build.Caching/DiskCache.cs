@@ -54,7 +54,7 @@ internal sealed class DiskCache : IContentAddressableStore, ICacheIndex
         try
         {
             ContentHash hash;
-            using (FileStream destination = CreateFile(temporary))
+            using (FileStream destination = DiskCacheFileSystem.CreatePrivateFile(temporary, FileAccess.Write))
             {
                 ownsTemporary = true;
                 hash = await CopyAndHashAsync(source, destination, cancellationToken).ConfigureAwait(false);
@@ -175,7 +175,7 @@ internal sealed class DiskCache : IContentAddressableStore, ICacheIndex
         bool ownsTemporary = false;
         try
         {
-            using (FileStream stream = CreateFile(temporary))
+            using (FileStream stream = DiskCacheFileSystem.CreatePrivateFile(temporary, FileAccess.Write))
             {
                 ownsTemporary = true;
                 await stream.WriteAsync(record, 0, record.Length, cancellationToken).ConfigureAwait(false);
@@ -233,22 +233,6 @@ internal sealed class DiskCache : IContentAddressableStore, ICacheIndex
         }
 #endif
         RejectLinks(path);
-    }
-
-    private static FileStream CreateFile(string path)
-    {
-#if NETFRAMEWORK
-        return new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
-#else
-        return new FileStream(path, new FileStreamOptions
-        {
-            Mode = FileMode.CreateNew,
-            Access = FileAccess.Write,
-            Share = FileShare.None,
-            Options = FileOptions.Asynchronous | FileOptions.SequentialScan,
-            UnixCreateMode = OperatingSystem.IsWindows() ? null : UnixFileMode.UserRead | UnixFileMode.UserWrite
-        });
-#endif
     }
 
     private static FileStream OpenFile(string path) =>

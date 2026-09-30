@@ -4,34 +4,52 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="CacheConflict" xml:space="preserve"><value>The declared operation produced a different result for an existing cache key.</value></data>
   <data name="CacheDirectoryRequired" xml:space="preserve">
     <value>A cache directory is required.</value>
   </data>
+  <data name="CacheDisabled" xml:space="preserve"><value>Declared-I/O caching is disabled.</value></data>
+  <data name="CacheHit" xml:space="preserve"><value>Declared-I/O cache hit.</value></data>
+  <data name="CacheMiss" xml:space="preserve"><value>Declared-I/O cache miss.</value></data>
+  <data name="CacheWarningBypass" xml:space="preserve"><value>Declared-I/O result was not cached because execution logged warnings.</value></data>
+  <data name="ConcurrentExecution" xml:space="preserve"><value>A task instance cannot execute concurrently.</value></data>
   <data name="CorruptContent" xml:space="preserve">
     <value>Cached content does not match its SHA-256 digest: '{0}'.</value>
   </data>
   <data name="CorruptIndex" xml:space="preserve">
     <value>The cache index record has an invalid length, key, or checksum: '{0}'.</value>
   </data>
+  <data name="DeclarationSealed" xml:space="preserve"><value>Task declarations cannot be changed after DescribeOperation returns.</value></data>
+  <data name="DuplicatePaths" xml:space="preserve"><value>A file path cannot be declared more than once.</value></data>
+  <data name="EmptyDeclarationName" xml:space="preserve"><value>A declaration name or file path must not be empty.</value></data>
   <data name="HashLength" xml:space="preserve">
     <value>A SHA-256 digest must contain exactly 32 bytes.</value>
   </data>
+  <data name="InvalidManifest" xml:space="preserve"><value>The cached task result has an invalid or incompatible format.</value></data>
+  <data name="InvalidOutputFile" xml:space="preserve"><value>Declared output '{0}' must be an existing regular file, not a directory or symbolic link.</value></data>
   <data name="LinkedCachePath" xml:space="preserve">
     <value>Cache paths must not contain symbolic links or reparse points: '{0}'.</value>
   </data>
+  <data name="MissingInputFile" xml:space="preserve"><value>Declared input file '{0}' does not exist.</value></data>
   <data name="MissingWinningEntry" xml:space="preserve">
     <value>The winning cache index record disappeared during publication: '{0}'.</value>
   </data>
   <data name="NonDirectoryCachePath" xml:space="preserve">
     <value>A cache path ancestor is not a directory: '{0}'.</value>
   </data>
+  <data name="OutputInsideCache" xml:space="preserve"><value>Declared output '{0}' must be outside the cache directory.</value></data>
+  <data name="OverlappingPaths" xml:space="preserve"><value>A file cannot be declared as both an input and an output.</value></data>
   <data name="PublicationFailed" xml:space="preserve">
     <value>Could not atomically publish cache file '{0}' (native error {1}).</value>
   </data>
+  <data name="TaskCacheDirectoryRequired" xml:space="preserve"><value>CacheDirectory is required, including when caching is disabled.</value></data>
+  <data name="TaskCancelled" xml:space="preserve"><value>Declared-I/O task was cancelled.</value></data>
+  <data name="TaskTypeNameRequired" xml:space="preserve"><value>Task type '{0}' must have a full name to use caching.</value></data>
   <data name="UnreadableSource" xml:space="preserve">
     <value>The source stream must be readable.</value>
   </data>
   <data name="UnsupportedFrameworkPlatform" xml:space="preserve">
     <value>The .NET Framework cache implementation requires Windows. Use the modern .NET implementation on other platforms.</value>
   </data>
+  <data name="UnsupportedValueType" xml:space="preserve"><value>The declared value type '{0}' is not supported.</value></data>
 </root>

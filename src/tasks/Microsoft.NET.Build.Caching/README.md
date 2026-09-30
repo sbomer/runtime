@@ -1,7 +1,88 @@
-# Disk cache prototype
+# Declared-I/O task and disk cache prototype
 
-This non-shipping project implements two internal storage interfaces without
-BuildXL or a cache service. It does not implement task declarations or execution.
+This non-shipping, non-packable prototype provides `DeclaredIOTask` on top of two
+internal storage interfaces, without BuildXL or a cache service. The task API is
+public for experimentation, not an approved shipping API.
+
+## Declaring a task
+
+Derive from `DeclaredIOTask`, describe every dependency in `DescribeOperation`,
+and implement `ExecuteCore(CancellationToken)`. The sealed `Execute()` method
+performs lookup, execution on a miss, and publication.
+
+```csharp
+public sealed class CopyTask : DeclaredIOTask
+{
+    [Required]
+    public string Source { get; set; } = "";
+
+    [Required]
+    public string Destination { get; set; } = "";
+
+    [Output]
+    public long Length { get; set; }
+
+    protected override void DescribeOperation(TaskDeclaration declaration)
+    {
+        declaration.AddInputFile(Source);
+        declaration.AddOutputFile(Destination);
+        declaration.AddOutputValue(nameof(Length), () => Length, value => Length = value);
+    }
+
+    protected override bool ExecuteCore(CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        File.Copy(Source, Destination, overwrite: true);
+        Length = new FileInfo(Destination).Length;
+        return true;
+    }
+}
+```
+
+The example uses `System.IO`, `System.Threading`, `Microsoft.Build.Framework`,
+and `Microsoft.NET.Build.Caching`. Task invocation must supply `CacheDirectory`,
+even when caching is disabled. `CacheEnabled` defaults to false and is captured
+before declaration. Importing `buildTransitive/Microsoft.NET.Build.Caching.props`
+provides an overridable per-user `$(DeclaredIOCacheDirectory)`; pass that property
+explicitly to the task. The props do not enable caching or create directories.
+
+`AddValue<T>` records execution-affecting settings; `AddOutputValue<T>` and
+`AddOutputItem` register output getters and setters. Supported values are strings,
+Boolean, Char, fixed-width integers, Single, Double, Decimal, DateTime, ITaskItem,
+and one-dimensional arrays of those types. Nullable value types, enums, and
+jagged/multidimensional arrays are unsupported. Floating-point bits, decimal
+scale, UTF-16 code units, and task-item escaping/custom metadata are preserved.
+Enabled input values are snapshotted at registration. Disabled caching validates
+names and types without serializing values or calling output getters.
+
+The key includes loaded task/base module MVIDs, task type, normalized input paths
+and content hashes, output paths, values and output schemas, working directory,
+runtime, OS, architecture, cultures, and time zone. There is no reflection-based
+parameter discovery. Task authors must declare helper/tool files and every other
+dependency, keep inputs stable, and exclusively own outputs without filesystem
+aliases. Hidden dependencies and side effects cannot be replayed.
+
+Caching is intended for expensive deterministic operations, not as an optimization
+for the copy example itself. A hit still hashes every input, verifies cached
+content, and copies outputs. For cheap tasks, this can cost much more than running
+the operation with caching disabled.
+
+An index value identifies a manifest in CAS, containing output content hashes,
+file metadata, and serialized output values. Output getters run before any puts;
+warnings, errors, unsuccessful execution, and observed cancellation prevent
+publication. Competing publishers must produce identical manifest hashes.
+Corruption, missing referenced blobs, and conflicting results fail the task,
+never silently fall back to execution. Diagnostics are not cached.
+
+Hits restore bytes, read-only attributes/Unix modes, and fresh timestamps, then
+invoke output setters. Replay unlinks existing outputs and copies into newly
+created files, requesting mode 0600 on Unix before writing; final modes are
+applied after the copy. Ownership and ACLs are not replayed. Produced symbolic
+links and linked output ancestors are rejected. Replay is not transactional:
+failure or cancellation can leave partial outputs, and setters may have side
+effects. As with failed execution, callers must not consume failed task outputs.
+
+## Storage API
 
 `DiskCache(directory)` is a lightweight owner exposing `Cas` and `Index`.
 Construction and index misses do not create storage. Independent objects,
