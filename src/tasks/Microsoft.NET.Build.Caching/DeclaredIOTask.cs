@@ -226,9 +226,19 @@ public abstract class DeclaredIOTask : Microsoft.Build.Utilities.Task, ICancelab
         using var data = new MemoryStream();
         using var writer = new BinaryWriter(data);
         writer.Write(FormatVersion);
-        TaskValueCodec.WriteString(writer, GetType().FullName ?? throw new NotSupportedException(SR.Format(SR.TaskTypeNameRequired, GetType())));
-        writer.Write(GetType().Module.ModuleVersionId.ToByteArray());
-        writer.Write(typeof(DeclaredIOTask).Module.ModuleVersionId.ToByteArray());
+        Type taskType = GetType();
+        TaskValueCodec.WriteString(writer, taskType.FullName ?? throw new NotSupportedException(SR.Format(SR.TaskTypeNameRequired, taskType)));
+        for (Type? type = taskType; type is not null; type = type.BaseType)
+        {
+            writer.Write(type.Module.ModuleVersionId.ToByteArray());
+            bool hasTaskBase = type != typeof(DeclaredIOTask);
+            writer.Write(hasTaskBase);
+            if (!hasTaskBase)
+            {
+                break;
+            }
+        }
+
         TaskValueCodec.WriteString(writer, workingDirectory);
         TaskValueCodec.WriteString(writer, RuntimeInformation.FrameworkDescription);
         TaskValueCodec.WriteString(writer, RuntimeInformation.OSDescription);

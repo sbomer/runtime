@@ -219,6 +219,96 @@ public sealed class DeclaredIOTaskTests : IDisposable
         }
     }
 
+    [ConditionalTheory(typeof(RuntimeFeature), nameof(RuntimeFeature.IsDynamicCodeSupported))]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void LoadedIntermediateModuleIdentityDistinguishesTaskImplementations(bool includeBridge)
+    {
+        DeclaredIOTestTask paths = Create();
+        (byte[] firstImage, Type firstBase) = CreateAssembly("IntermediateTask", typeof(DeclaredIOTestTask), "original", includeBridge: false);
+        (byte[] secondImage, _) = CreateAssembly("IntermediateTask", typeof(DeclaredIOTestTask), "updated", includeBridge: false);
+        (byte[] leafImage, _) = CreateAssembly("LeafTask", firstBase, suffix: null, includeBridge);
+        var firstContext = new IntermediateTaskLoadContext(firstImage);
+        var secondContext = new IntermediateTaskLoadContext(secondImage);
+        try
+        {
+            Type first = LoadTask(firstContext);
+            Type second = LoadTask(secondContext);
+            Assert.Equal(first.FullName, second.FullName);
+            Assert.Equal(first.Assembly.FullName, second.Assembly.FullName);
+            Assert.Equal(first.Module.ModuleVersionId, second.Module.ModuleVersionId);
+            Assert.NotEqual(
+                firstContext.Assemblies.Single(assembly => assembly.GetName().Name == "IntermediateTask").ManifestModule.ModuleVersionId,
+                secondContext.Assemblies.Single(assembly => assembly.GetName().Name == "IntermediateTask").ManifestModule.ModuleVersionId);
+
+            foreach ((Type type, string suffix, int executions) in new[] { (first, "original", 1), (first, "original", 0), (second, "updated", 1), (second, "updated", 0) })
+            {
+                File.Delete(paths.Destination);
+                var engine = new TestEngine();
+                var task = (DeclaredIOTestTask)Activator.CreateInstance(type)!;
+                task.BuildEngine = engine;
+                task.CacheDirectory = paths.CacheDirectory;
+                task.CacheEnabled = true;
+                task.Source = paths.Source;
+                task.Destination = paths.Destination;
+                task.Value = paths.Value;
+                task.Factor = paths.Factor;
+                Assert.True(task.Execute(), string.Join(Environment.NewLine, engine.Errors));
+                Assert.Equal(executions, task.Executions);
+                Assert.Equal("input2.5" + suffix, File.ReadAllText(task.Destination));
+                Assert.Equal(2.5f, task.Result);
+            }
+
+            Assert.Equal(2, Directory.GetFiles(paths.CacheDirectory, "*.entry", SearchOption.AllDirectories).Length);
+        }
+        finally
+        {
+            firstContext.Unload();
+            secondContext.Unload();
+        }
+
+        Type LoadTask(AssemblyLoadContext context)
+        {
+            using var stream = new MemoryStream(leafImage);
+            return context.LoadFromStream(stream).GetType("LeafTask.Task", throwOnError: true)!;
+        }
+
+        static (byte[] Image, Type Type) CreateAssembly(string name, Type baseType, string? suffix, bool includeBridge)
+        {
+            var assembly = new PersistedAssemblyBuilder(new AssemblyName(name), typeof(object).Assembly);
+            ModuleBuilder module = assembly.DefineDynamicModule(name);
+            if (includeBridge)
+            {
+                TypeBuilder bridge = module.DefineType(name + ".Bridge", TypeAttributes.Public, baseType);
+                bridge.DefineDefaultConstructor(MethodAttributes.Public);
+                baseType = bridge.CreateType()!;
+            }
+
+            TypeBuilder type = module.DefineType(name + ".Task", TypeAttributes.Public, baseType);
+            type.DefineDefaultConstructor(MethodAttributes.Public);
+            if (suffix is not null)
+            {
+                MethodBuilder execute = type.DefineMethod("ExecuteCore", MethodAttributes.Family | MethodAttributes.Virtual, typeof(bool), new[] { typeof(CancellationToken) });
+                ILGenerator il = execute.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Call, baseType.GetMethod("ExecuteCore", BindingFlags.Instance | BindingFlags.NonPublic)!);
+                il.Emit(OpCodes.Pop);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Call, baseType.GetProperty(nameof(DeclaredIOTestTask.Destination))!.GetMethod!);
+                il.Emit(OpCodes.Ldstr, suffix);
+                il.Emit(OpCodes.Call, typeof(File).GetMethod(nameof(File.AppendAllText), new[] { typeof(string), typeof(string) })!);
+                il.Emit(OpCodes.Ldc_I4_1);
+                il.Emit(OpCodes.Ret);
+            }
+
+            Type result = type.CreateType()!;
+            using var stream = new MemoryStream();
+            assembly.Save(stream);
+            return (stream.ToArray(), result);
+        }
+    }
+
     [Theory]
     [PlatformSpecific(TestPlatforms.Linux)]
     [InlineData(false)]
@@ -699,6 +789,20 @@ public sealed class DeclaredIOTaskTests : IDisposable
             assemblyName.Name == typeof(DeclaredIOTask).Assembly.GetName().Name ? LoadFromAssemblyPath(basePath) : null;
     }
 
+    private sealed class IntermediateTaskLoadContext(byte[] image) : AssemblyLoadContext(isCollectible: true)
+    {
+        protected override Assembly? Load(AssemblyName assemblyName)
+        {
+            if (assemblyName.Name != "IntermediateTask")
+            {
+                return null;
+            }
+
+            using var stream = new MemoryStream(image);
+            return LoadFromStream(stream);
+        }
+    }
+
     private sealed class TestEngine : IBuildEngine
     {
         internal List<string> Errors { get; } = new();
@@ -746,7 +850,7 @@ public sealed class DeclaredIOTaskTests : IDisposable
     }
 }
 
-public sealed class DeclaredIOTestTask : DeclaredIOTask
+public class DeclaredIOTestTask : DeclaredIOTask
 {
     public string Source { get; set; } = "";
     public string Destination { get; set; } = "";

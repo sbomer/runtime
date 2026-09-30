@@ -55,8 +55,9 @@ scale, UTF-16 code units, and task-item escaping/custom metadata are preserved.
 Enabled input values are snapshotted at registration. Disabled caching validates
 names and types without serializing values or calling output getters.
 
-The key includes loaded task/base module MVIDs, task type, normalized input paths
-and content hashes, output paths, values and output schemas, working directory,
+The key includes loaded module MVIDs throughout the task's inheritance chain
+through `DeclaredIOTask`, task type, normalized input paths and content hashes,
+output paths, values and output schemas, working directory,
 runtime, OS, architecture, cultures, and time zone. There is no reflection-based
 parameter discovery. Task authors must declare helper/tool files and every other
 dependency, keep inputs stable, and exclusively own outputs without filesystem
