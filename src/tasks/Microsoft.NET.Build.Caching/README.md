@@ -145,10 +145,12 @@ An index record contains the key, value, and SHA-256 checksum of those two field
 modification. All records and blobs are written to private temporary files and
 closed before atomic create-if-absent publication. Unix uses `link` followed by
 removal of the temporary name; Windows uses `MoveFileExW` without replacement
-or cross-volume copying. No caller-owned file is hardlinked. `File.Move` is not
-used because its Unix implementation can check for absence and then overwrite
-a concurrent winner with `rename`. Competing publishers read the winner. No
-database, in-memory authoritative index, or directory-owner lock is involved.
+or cross-volume copying. Long Windows publication paths use extended-path prefixes
+rather than relying on host or machine long-path opt-in. No caller-owned file is
+hardlinked. `File.Move` is not used because its Unix implementation can check for
+absence and then overwrite a concurrent winner with `rename`. Competing publishers
+read the winner. No database, in-memory authoritative index, or directory-owner
+lock is involved.
 
 Use a trusted local filesystem supporting atomic, non-overwriting publication
 within the cache root. Network shares and malicious concurrent filesystem

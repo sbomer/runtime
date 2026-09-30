@@ -13,6 +13,7 @@ internal static partial class DiskCacheFileSystem
     private const int UnixFileExists = 17;
     private const int WindowsFileExists = 80;
     private const int WindowsAlreadyExists = 183;
+    private const int WindowsMaxPath = 260;
 
     internal static FileStream CreatePrivateFile(string path, FileAccess access)
     {
@@ -35,7 +36,9 @@ internal static partial class DiskCacheFileSystem
         bool windows = Path.DirectorySeparatorChar == '\\';
         // File.Move can use check-then-rename on Unix and overwrite a competing winner.
         // link publishes our completed private file atomically; the caller removes the temporary name.
-        bool published = windows ? MoveFile(temporary, destination, flags: 0) : Link(temporary, destination) == 0;
+        bool published = windows
+            ? MoveFile(GetWindowsPublicationPath(temporary), GetWindowsPublicationPath(destination), flags: 0)
+            : Link(temporary, destination) == 0;
         if (published)
         {
             return true;
@@ -48,6 +51,20 @@ internal static partial class DiskCacheFileSystem
         }
 
         throw new IOException(SR.Format(SR.PublicationFailed, destination, error), new Win32Exception(error));
+    }
+
+    internal static string GetWindowsPublicationPath(string path)
+    {
+        // DiskCache supplies normalized absolute paths; adding a prefix disables Win32 normalization.
+        if (path.Length < WindowsMaxPath ||
+            path.StartsWith(@"\\?\", StringComparison.Ordinal) ||
+            path.StartsWith(@"\\.\", StringComparison.Ordinal) ||
+            path.StartsWith(@"\??\", StringComparison.Ordinal))
+        {
+            return path;
+        }
+
+        return path.StartsWith(@"\\", StringComparison.Ordinal) ? path.Insert(2, @"?\UNC\") : @"\\?\" + path;
     }
 
 #if NETFRAMEWORK

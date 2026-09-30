@@ -327,12 +327,15 @@ public sealed class DiskCacheTests : IDisposable
         Assert.Empty(Directory.GetFiles(_root, "*.tmp", SearchOption.AllDirectories));
     }
 
-    [Fact]
-    public async Task AtomicPublicationNeverReplacesACompetingWinner()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AtomicPublicationNeverReplacesACompetingWinner(bool longPaths)
     {
-        Directory.CreateDirectory(_root);
-        string destination = Path.Combine(_root, "winner");
-        string[] sources = Enumerable.Range(0, 16).Select(i => Path.Combine(_root, "source-" + i)).ToArray();
+        string directory = longPaths ? Path.Combine(_root, new string('a', 100), new string('b', 100), new string('c', 100)) : _root;
+        Directory.CreateDirectory(directory);
+        string destination = Path.Combine(directory, "winner");
+        string[] sources = Enumerable.Range(0, 16).Select(i => Path.Combine(directory, "source-" + i)).ToArray();
         foreach (string source in sources)
         {
             File.WriteAllText(source, source);
@@ -348,6 +351,58 @@ public sealed class DiskCacheTests : IDisposable
         bool[] results = await Task.WhenAll(publishers).WaitAsync(TimeSpan.FromSeconds(30));
         Assert.Single(results, published => published);
         Assert.Equal(sources[Array.IndexOf(results, true)], File.ReadAllText(destination));
+        for (int i = 0; i < sources.Length; i++)
+        {
+            if (!results[i])
+            {
+                Assert.Equal(sources[i], File.ReadAllText(sources[i]));
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData(@"C:\", @"\\?\C:\", 259)]
+    [InlineData(@"C:\", @"\\?\C:\", 260)]
+    [InlineData(@"C:\", @"\\?\C:\", 300)]
+    [InlineData(@"\\server\share\", @"\\?\UNC\server\share\", 259)]
+    [InlineData(@"\\server\share\", @"\\?\UNC\server\share\", 260)]
+    [InlineData(@"\\server\share\", @"\\?\UNC\server\share\", 300)]
+    [InlineData(@"\\?\C:\", @"\\?\C:\", 300)]
+    [InlineData(@"\\?\UNC\server\share\", @"\\?\UNC\server\share\", 300)]
+    [InlineData(@"\\.\C:\", @"\\.\C:\", 300)]
+    [InlineData(@"\??\C:\", @"\??\C:\", 300)]
+    public void WindowsPublicationPathsPreserveShortAndDevicePaths(string prefix, string extendedPrefix, int length)
+    {
+        string directory = new string('a', 100) + @"\";
+        string suffix = directory + new string('b', length - prefix.Length - directory.Length - ".blob".Length) + ".blob";
+        string path = prefix + suffix;
+        string expected = length < 260 ? path : extendedPrefix + suffix;
+        string actual = DiskCacheFileSystem.GetWindowsPublicationPath(path);
+        Assert.Equal(expected, actual);
+        Assert.Same(actual, DiskCacheFileSystem.GetWindowsPublicationPath(actual));
+        if (expected == path)
+        {
+            Assert.Same(path, actual);
+        }
+    }
+
+    [Fact]
+    public async Task ContentAndIndexSupportLongPaths()
+    {
+        string directory = Path.Combine(_root, new string('a', 100), new string('b', 100), new string('c', 100));
+        var cache = new DiskCache(directory);
+        ContentHash hash = await PutAsync(cache, "content");
+        CacheKey key = Key("key");
+        Assert.Equal(hash, await cache.Index.GetOrAddAsync(key, hash));
+        Assert.Equal(hash, await PutAsync(new DiskCache(directory), "content"));
+        Assert.Equal(hash, await cache.Index.GetOrAddAsync(key, Hash("loser")));
+        Assert.Equal(hash, await new DiskCache(directory).Index.GetAsync(key));
+        using Stream restored = await new DiskCache(directory).Cas.GetAsync(hash);
+        using var reader = new StreamReader(restored);
+        Assert.Equal("content", await reader.ReadToEndAsync());
+        Assert.True(Assert.Single(Directory.GetFiles(directory, "*.blob", SearchOption.AllDirectories)).Length >= 260);
+        Assert.True(Assert.Single(Directory.GetFiles(directory, "*.entry", SearchOption.AllDirectories)).Length >= 260);
+        Assert.Empty(Directory.GetFiles(directory, "*.tmp", SearchOption.AllDirectories));
     }
 
     [Fact]
