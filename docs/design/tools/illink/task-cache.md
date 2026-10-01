@@ -47,7 +47,7 @@ internal sealed class ILLinkCache
 - Under the lock, recheck whether the entry already exists. If absent, populate staging and publish with an atomic, same-filesystem directory rename without overwriting an existing entry.
 - Rely on the documented `Directory.Move` contract that an existing destination causes `IOException`, even if that destination is empty. The writer lock avoids duplicate staging work; it is not a workaround for publication semantics. Do not add platform-specific interop or require non-empty entries to compensate for runtime/filesystem bugs. Atomic visibility does not imply power-loss durability.
 - Create cache directories lazily in `Store`, after acquiring the writer lock and confirming the entry is absent. `TryCreate` only resolves the path; `TryRestore` treats a missing directory as a miss. Directory-creation failures are logged without failing a successful link.
-- Keep published entries immutable and read them without locks.
+- Keep published outputs and manifests immutable and read them without locks. Write a UTC `last-used` timestamp in staging before publication and refresh it after a successful restore. Replace the marker atomically so parallel restores do not leave partial timestamps; usage-update failures are logged without failing linking.
 - Use a named `System.Threading.Mutex` derived from the resolved cache-directory path and input hash. An abandoned mutex grants ownership; recheck the entry and use fresh staging. This coordinates processes on one machine, not writers on different machines sharing a network directory.
 - Support concurrent task invocations with distinct output directories sharing a cache directory. Concurrent linking to the same output directory is unsupported.
 - Treat missing or unreadable cache data as a failed restore, never a successful hit.
@@ -78,7 +78,7 @@ internal sealed class ILLinkCache
 
 - No eviction policy or deletion of published entries; users may manually wipe the cache directory.
 - Do not repair or replace corrupt published entries. Restoration falls back to linking, but storage still skips an existing entry until the user removes it.
-- No `created` or `last-used` bookkeeping markers.
+- No `created` bookkeeping marker. The `last-used` marker records usage for explicit post-build maintenance.
 - Attempt best-effort cleanup of the current attempt's unpublished staging directory. Log cleanup I/O/access failures without failing a successful link; do not scan or delete other attempts' staging directories. Correctness must tolerate leftovers after crashes.
 
 ## Open follow-ups

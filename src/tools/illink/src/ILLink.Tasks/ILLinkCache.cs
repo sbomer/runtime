@@ -126,6 +126,7 @@ internal sealed class ILLinkCache
                 File.SetLastWriteTimeUtc(destination, outputTimestampUtc);
             }
 
+            UpdateLastUsed(entryDirectory);
             _log.LogMessage(MessageImportance.Low, $"ILLink cache hit: {inputHash}");
             return true;
         }
@@ -194,6 +195,7 @@ internal sealed class ILLinkCache
                     }
                 }
 
+                ILLinkCacheEntry.WriteLastUsed(Path.Combine(stagingDirectory, ILLinkCacheEntry.LastUsedFileName));
                 Directory.Move(stagingDirectory, entryDirectory);
                 stagingDirectory = null;
                 _log.LogMessage(MessageImportance.Low, $"ILLink cache stored: {inputHash}");
@@ -224,18 +226,38 @@ internal sealed class ILLinkCache
         }
     }
 
+    private void UpdateLastUsed(string entryDirectory)
+    {
+        string temporaryFile = Path.Combine(entryDirectory, ILLinkCacheEntry.LastUsedFileName + "." + Guid.NewGuid().ToString("N") + ".tmp");
+        try
+        {
+            ILLinkCacheEntry.WriteLastUsed(temporaryFile);
+            // Replace rather than overwrite so parallel restores cannot leave a partially written marker.
+            File.Replace(temporaryFile, Path.Combine(entryDirectory, ILLinkCacheEntry.LastUsedFileName), null);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            _log.LogMessage(MessageImportance.Low, $"ILLink cache last-used update failed for '{entryDirectory}': {ex.Message}");
+        }
+        finally
+        {
+            try
+            {
+                File.Delete(temporaryFile);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                _log.LogMessage(MessageImportance.Low, $"ILLink cache last-used cleanup failed for '{temporaryFile}': {ex.Message}");
+            }
+        }
+    }
+
     private string GetEntryDirectory(string inputHash)
     {
-        if (inputHash.Length != 64)
+        if (!ILLinkCacheEntry.IsEntryName(inputHash))
             throw new ArgumentException("The input hash must be a lowercase SHA-256 hex string.", nameof(inputHash));
 
-        foreach (char c in inputHash)
-        {
-            if (c is not (>= '0' and <= '9') and not (>= 'a' and <= 'f'))
-                throw new ArgumentException("The input hash must be a lowercase SHA-256 hex string.", nameof(inputHash));
-        }
-
-        return Path.Combine(CacheDirectory, "v1", inputHash);
+        return Path.Combine(CacheDirectory, ILLinkCacheEntry.VersionDirectory, inputHash);
     }
 
     private string GetWriterMutexName(string inputHash)

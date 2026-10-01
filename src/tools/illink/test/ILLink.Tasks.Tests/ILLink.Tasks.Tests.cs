@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -1163,6 +1164,45 @@ namespace ILLink.Tasks.Tests
             Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
             Assert.True(Directory.Exists(test.Output));
             Assert.Empty(Directory.GetFileSystemEntries(test.Output));
+        }
+
+        [Fact]
+        public void CacheRecordsLastUsedOnStoreAndHit()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            DateTimeOffset beforeStore = DateTimeOffset.UtcNow;
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            string marker = Path.Combine(test.Entry, ILLinkCacheEntry.LastUsedFileName);
+            Assert.InRange(DateTimeOffset.ParseExact(File.ReadAllText(marker), "O", CultureInfo.InvariantCulture),
+                beforeStore, DateTimeOffset.UtcNow);
+            File.WriteAllText(marker, DateTimeOffset.MinValue.ToString("O", CultureInfo.InvariantCulture));
+
+            DateTimeOffset beforeRestore = DateTimeOffset.UtcNow;
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+
+            Assert.InRange(DateTimeOffset.ParseExact(File.ReadAllText(marker), "O", CultureInfo.InvariantCulture),
+                beforeRestore, DateTimeOffset.UtcNow);
+            Assert.False(File.Exists(Path.Combine(test.Output, ILLinkCacheEntry.LastUsedFileName)));
+            Assert.Empty(Directory.GetFiles(test.Entry, "*.tmp"));
+        }
+
+        [Fact]
+        public void CacheMarkerUpdateFailureDoesNotFailRestore()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            string marker = Path.Combine(test.Entry, ILLinkCacheEntry.LastUsedFileName);
+            File.Delete(marker);
+            Directory.CreateDirectory(marker);
+
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+
+            Assert.Equal("assembly", File.ReadAllText(Path.Combine(test.Output, "app.dll")));
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.Contains("last-used update failed"));
+            Assert.Empty(Directory.GetFiles(test.Entry, "*.tmp"));
+            Assert.Empty(test.BuildEngine.Errors);
         }
 
         [Fact]
