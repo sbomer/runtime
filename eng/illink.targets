@@ -180,8 +180,6 @@
     <PropertyGroup>
       <!-- don't remove attributes after build, our tooling is not ready for that -->
       <ILLinkArgs>$(ILLinkArgs) --ignore-link-attributes true</ILLinkArgs>
-      <!-- ignore unresolved references -->
-      <ILLinkArgs>$(ILLinkArgs) --skip-unresolved true</ILLinkArgs>
     </PropertyGroup>
 
     <!-- When running from Desktop MSBuild, DOTNET_HOST_PATH is not set.

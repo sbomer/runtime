@@ -1467,6 +1467,73 @@ namespace ILLink.Tasks.Tests
             Assert.NotEqual(original, afterChange);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void CacheKeyTracksRuntimeLinkAttributesFiles(int changedFile)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            string[] linkAttributesFiles =
+            {
+                Path.Combine(test.Root, "first link attributes.xml"),
+                Path.Combine(test.Root, "second link attributes.xml")
+            };
+            foreach (string file in linkAttributesFiles)
+                File.WriteAllText(file, "contents");
+
+            test.Task.ExtraArgs = $" --ignore-link-attributes true --link-attributes \"{linkAttributesFiles[0]}\" --link-attributes \"{linkAttributesFiles[1]}\"";
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+
+            File.AppendAllText(linkAttributesFiles[changedFile], "changed");
+            Assert.True(test.Task.TryGetCacheKey(host, out string changed));
+            Assert.NotEqual(original, changed);
+        }
+
+        [Fact]
+        public void CacheKeyAllowsRuntimeIgnoreLinkAttributesArgument()
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            test.Task.ExtraArgs = "--ignore-link-attributes true";
+
+            Assert.True(test.Task.TryGetCacheKey(host, out string key));
+            Assert.Matches("^[0-9a-f]{64}$", key);
+        }
+
+        [Theory]
+        [InlineData("--ignore-link-attributes false")]
+        [InlineData("--link-attributes attributes.xml")]
+        [InlineData("--ignore-link-attributes true --help")]
+        [InlineData("--ignore-link-attributes true --link-attributes")]
+        [InlineData("--ignore-link-attributes true --link-attributes \"\"")]
+        [InlineData("--ignore-link-attributes true --link-attributes \"unterminated")]
+        public void CacheKeyBypassesUnsupportedExtraArgs(string extraArgs)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            test.Task.ExtraArgs = extraArgs;
+
+            Assert.False(test.Task.TryGetCacheKey(host, out string key));
+            Assert.Empty(key);
+            Assert.Contains(test.BuildEngine.Messages, message =>
+                message.Message.StartsWith("ILLink cache bypassed: extra arguments are not supported."));
+        }
+
+        [Fact]
+        public void CacheKeyBypassesMissingRuntimeLinkAttributesFile()
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            string missing = Path.Combine(test.Root, "missing link attributes.xml");
+            test.Task.ExtraArgs = $"--ignore-link-attributes true --link-attributes \"{missing}\"";
+
+            Assert.False(test.Task.TryGetCacheKey(host, out string key));
+            Assert.Empty(key);
+            Assert.Contains(test.BuildEngine.Messages, message =>
+                message.Message.StartsWith("ILLink cache bypassed: input identity could not be computed:"));
+        }
+
         [Fact]
         public void CacheKeyUsesLinkerInformationalVersion()
         {

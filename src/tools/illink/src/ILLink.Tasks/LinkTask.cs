@@ -313,16 +313,22 @@ namespace ILLink.Tasks
         private bool TryComputeCacheKey(string pathToTool, string commandLineCommands, string responseFileCommands, out string inputHash)
         {
             inputHash = string.Empty;
-            if (!string.IsNullOrWhiteSpace(ExtraArgs) || CustomSteps?.Length > 0 || CustomData?.Length > 0 ||
-                DumpDependencies || !string.IsNullOrEmpty(DependenciesFileFormat) || EnvironmentVariables?.Length > 0)
+            if (CustomSteps?.Length > 0 || CustomData?.Length > 0 || DumpDependencies ||
+                !string.IsNullOrEmpty(DependenciesFileFormat) || EnvironmentVariables?.Length > 0)
             {
-                Log.LogMessage(MessageImportance.Low, "ILLink cache bypassed: extra arguments, custom steps/data, dependency dumps, and task environment overrides are not supported.");
+                Log.LogMessage(MessageImportance.Low, "ILLink cache bypassed: custom steps/data, dependency dumps, and task environment overrides are not supported.");
                 return false;
             }
 
             try
             {
                 var files = new SortedSet<string>(StringComparer.Ordinal);
+                if (!TryAddCacheableExtraArgsFiles(files))
+                {
+                    Log.LogMessage(MessageImportance.Low, "ILLink cache bypassed: extra arguments are not supported.");
+                    return false;
+                }
+
                 var assemblies = new HashSet<string>(StringComparer.Ordinal);
                 foreach (ITaskItem assembly in AssemblyPaths)
                     AddAssembly(assembly.ItemSpec);
@@ -441,6 +447,77 @@ namespace ILLink.Tasks
             {
                 Log.LogMessage(MessageImportance.Low, $"ILLink cache bypassed: input identity could not be computed: {ex.Message}");
                 return false;
+            }
+        }
+
+        private bool TryAddCacheableExtraArgsFiles(SortedSet<string> files)
+        {
+            ReadOnlySpan<char> arguments = ExtraArgs.AsSpan().Trim();
+            if (arguments.IsEmpty)
+                return true;
+
+            // The runtime shared-framework build passes this policy through ExtraArgs. Keep the
+            // supported shape narrow so arbitrary linker arguments continue to bypass caching.
+            if (!TryReadArgument(ref arguments, out string option) ||
+                option != "--ignore-link-attributes" ||
+                !TryReadArgument(ref arguments, out string value) ||
+                value != "true")
+            {
+                return false;
+            }
+
+            while (!arguments.TrimStart().IsEmpty)
+            {
+                if (!TryReadArgument(ref arguments, out option) ||
+                    option != "--link-attributes" ||
+                    !TryReadArgument(ref arguments, out string path) ||
+                    string.IsNullOrEmpty(path))
+                {
+                    return false;
+                }
+
+                files.Add(Path.GetFullPath(path));
+            }
+
+            return true;
+
+            static bool TryReadArgument(ref ReadOnlySpan<char> arguments, out string argument)
+            {
+                arguments = arguments.TrimStart();
+                if (arguments.IsEmpty)
+                {
+                    argument = string.Empty;
+                    return false;
+                }
+
+                if (arguments[0] == '"')
+                {
+                    int closingQuote = arguments.Slice(1).IndexOf('"');
+                    if (closingQuote < 0)
+                    {
+                        argument = string.Empty;
+                        return false;
+                    }
+
+                    argument = arguments.Slice(1, closingQuote).ToString();
+                    arguments = arguments.Slice(closingQuote + 2);
+                    return arguments.IsEmpty || char.IsWhiteSpace(arguments[0]);
+                }
+
+                int end = 0;
+                while (end < arguments.Length && !char.IsWhiteSpace(arguments[end]))
+                    end++;
+
+                ReadOnlySpan<char> token = arguments.Slice(0, end);
+                if (token.IndexOf('"') >= 0)
+                {
+                    argument = string.Empty;
+                    return false;
+                }
+
+                argument = token.ToString();
+                arguments = arguments.Slice(end);
+                return true;
             }
         }
 
