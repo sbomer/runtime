@@ -103,6 +103,41 @@ as errors and their entries are retained. The tool reports deleted/kept/error co
 returns nonzero for argument or maintenance failures. Usage-marker update failures in the
 task are logged without failing linking.
 
+### CI purge ordering
+
+For a CI cache snapshot, use the build-start timestamp as the cutoff to retain entries used
+or created by that build:
+
+1. Restore the cache into a job-private directory and set `ILLINK_EXPERIMENTAL_CACHE=true`
+   and `ILLINK_EXPERIMENTAL_CACHE_PATH` to that explicit directory.
+2. Record the UTC timestamp before starting any linking. In a POSIX shell:
+   ```sh
+   export ILLINK_CACHE_BUILD_START="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+   ```
+3. Run the build and wait for all processes using the cache to finish.
+4. Run the tool from the same revision, with maintenance failures reported but nonfatal:
+   ```sh
+   if ! dotnet illink-cache purge \
+       --cache-directory "$ILLINK_EXPERIMENTAL_CACHE_PATH" \
+       --before "$ILLINK_CACHE_BUILD_START"; then
+     echo "Warning: ILLink cache purge failed; see the tool diagnostics above." >&2
+   fi
+   ```
+5. Save/upload the resulting cache directory only after purge finishes. For Azure Pipelines
+   `Cache@2`, the purge step must precede its post-job save.
+
+If the build and purge run in different CI steps, persist `ILLINK_CACHE_BUILD_START` as a
+pipeline variable; a shell export alone does not carry it across steps. This variable is
+only for the CI recipe, not another task configuration setting.
+
+A failed build can still be followed by purge once all linking has stopped, but entries for
+work that was never reached will count as unused. Likewise, incremental builds that skip
+linking do not refresh cache usage. Skip purge if the cache may still be in use, including
+during cancellation. Do not share a live directory with another job while purging.
+
+This is usage guidance, not automatic CI enablement. ILLink cache restore/upload wiring
+is separate from runtime's Roslyn/csc cache maintenance.
+
 ## ILLink Task Properties
 
 ### ExtraArgs

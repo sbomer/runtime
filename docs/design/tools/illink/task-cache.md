@@ -82,6 +82,7 @@ internal sealed class ILLinkCache
 - Purge requires an explicit cache root and UTC cutoff. Only published SHA-256 entry directories in `v1` are considered; delete entries whose marker is strictly older than the cutoff and retain equality. Leave staging directories and other layouts alone. Report per-entry errors and continue, then return nonzero if maintenance failed.
 - Assume old caches are cleared before using markers. Do not infer ages or migrate entries with missing markers; missing, malformed, or unreadable markers are ordinary reported errors.
 - Purge must not run during any build using the cache. Do not add purge locks or change reader locking; coordination with active readers/writers remains a separate follow-up, as does protection against manual deletion.
+- CI may record build start after restoring a job-private cache, run linking, then purge against that timestamp before uploading the next snapshot. Preserve tool diagnostics but do not fail the build for maintenance errors. Only purge once all users have exited; incremental skips and unreached work in failed builds do not refresh usage. See the [CI recipe](../../../tools/illink/illink-tasks.md#ci-purge-ordering). This does not enable an ILLink cache in CI automatically.
 - Attempt best-effort cleanup of the current attempt's unpublished staging directory. Log cleanup I/O/access failures without failing a successful link; do not scan or delete other attempts' staging directories. Correctness must tolerate leftovers after crashes.
 
 ## Open follow-ups

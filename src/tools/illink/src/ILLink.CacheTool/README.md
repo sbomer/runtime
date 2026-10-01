@@ -28,4 +28,5 @@ From the repository root:
 The package is produced under `artifacts/packages/Release/NonShipping`. Install the exact
 locally built version with `dotnet tool install --tool-path <tools-directory>
 --add-source artifacts/packages/Release/NonShipping dotnet-illink-cache --version <version>`,
-or run the built `dotnet-illink-cache.dll` with `dotnet` directly.
+then add `<tools-directory>` to `PATH` or invoke its `dotnet-illink-cache` executable directly.
+Alternatively, run the built `dotnet-illink-cache.dll` with `dotnet` directly.
