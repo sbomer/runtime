@@ -32,6 +32,21 @@ internal sealed class ILLinkCache
         _log = log;
     }
 
+    internal static ILLinkCache? TryCreateFromEnvironment(TaskLoggingHelper log)
+    {
+        string? setting = Environment.GetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE");
+        if (string.IsNullOrEmpty(setting))
+            return null;
+
+        if (!bool.TryParse(setting, out bool enabled))
+        {
+            log.LogMessage(MessageImportance.Low, "ILLink caching is disabled because ILLINK_EXPERIMENTAL_CACHE must be 'true' or 'false'.");
+            return null;
+        }
+
+        return enabled ? TryCreate(Environment.GetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH"), log) : null;
+    }
+
     internal static ILLinkCache? TryCreate(string? cacheDirectory, TaskLoggingHelper log)
     {
         if (string.IsNullOrEmpty(cacheDirectory))

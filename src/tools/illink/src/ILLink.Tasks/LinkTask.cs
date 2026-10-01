@@ -65,16 +65,6 @@ namespace ILLink.Tasks
         public ITaskItem OutputDirectory { get; set; }
 
         /// <summary>
-        /// Gets or sets a value that indicates whether to cache ILLink results.
-        /// </summary>
-        public bool EnableCache { get; set; }
-
-        /// <summary>
-        /// Gets or sets the cache directory, or leaves it unspecified to use the platform default.
-        /// </summary>
-        public string CacheDirectory { get; set; }
-
-        /// <summary>
         /// The subset of warnings that have to be turned off.
         /// Maps to '--nowarn'.
         /// </summary>
@@ -281,7 +271,7 @@ namespace ILLink.Tasks
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
         {
             DateTime outputTimestampUtc = DateTime.UtcNow;
-            ILLinkCache cache = EnableCache ? ILLinkCache.TryCreate(CacheDirectory, Log) : null;
+            ILLinkCache cache = ILLinkCache.TryCreateFromEnvironment(Log);
             string inputHash = null;
             if (cache is not null && !TryComputeCacheKey(pathToTool, commandLineCommands, responseFileCommands, out inputHash))
                 cache = null;

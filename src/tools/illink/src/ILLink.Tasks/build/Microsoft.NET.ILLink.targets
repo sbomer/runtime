@@ -14,7 +14,6 @@ Copyright (c) .NET Foundation. All rights reserved.
   <!-- These properties should be set even if PublishTrimmed != true, to allow SDK components to
        set PublishTrimmed in targets which are imported after these targets. -->
   <PropertyGroup>
-    <EnableILLinkCache Condition="'$(EnableILLinkCache)' == ''">false</EnableILLinkCache>
     <IntermediateLinkDir Condition=" '$(IntermediateLinkDir)' == '' ">$(IntermediateOutputPath)linked\</IntermediateLinkDir>
     <IntermediateLinkDir Condition=" !HasTrailingSlash('$(IntermediateLinkDir)') ">$(IntermediateLinkDir)\</IntermediateLinkDir>
     <!-- Used to enable incremental build for the ILLink target. -->
@@ -187,8 +186,6 @@ Copyright (c) .NET Foundation. All rights reserved.
             CustomSteps="@(_TrimmerCustomSteps)"
             RootDescriptorFiles="@(TrimmerRootDescriptor)"
             OutputDirectory="$(IntermediateLinkDir)"
-            EnableCache="$(EnableILLinkCache)"
-            CacheDirectory="$(ILLinkCacheDirectory)"
             DumpDependencies="$(_TrimmerDumpDependencies)"
             DependenciesFileFormat="$(_TrimmerDependenciesFileFormat)"
             ExtraArgs="$(_ExtraTrimmerArgs)"

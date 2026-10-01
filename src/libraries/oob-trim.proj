@@ -52,8 +52,6 @@
         OutputDirectory="$(OOBAssembliesTrimDir)"
         ExtraArgs="$(OOBILLinkArgs)"
         NoWarn="IL2121"
-        EnableCache="$(EnableILLinkCache)"
-        CacheDirectory="$(ILLinkCacheDirectory)"
         ToolExe="$(_DotNetHostFileName)"
         ToolPath="$(_DotNetHostDirectory)" />
 

@@ -26,15 +26,30 @@ alternatively you can edit your .csproj file to include
 
 The output will include only necessary code to run your application. The framework libraries size will be reduced noticeably.
 
-## ILLink Task Properties
+## Experimental task cache
 
-### EnableCache and CacheDirectory
+> [!WARNING]
+> This feature is experimental. Its configuration and behavior may change or be removed without notice.
+> Neither the configuration nor the on-disk format is a supported compatibility surface.
 
-`EnableILLinkCache` supplies the task's `EnableCache` parameter and defaults to `false`.
-`ILLinkCacheDirectory` supplies its optional `CacheDirectory` parameter. Setting a directory
-does not enable caching. These settings apply only to ILLink, not ILC.
+Set `ILLINK_EXPERIMENTAL_CACHE=true` in the environment before starting MSBuild to enable caching.
+The boolean value is case-insensitive; unset, empty, or `false` disables caching. Invalid boolean
+values disable caching with a diagnostic. Set `ILLINK_EXPERIMENTAL_CACHE_PATH` to override the
+cache directory. Setting a path alone does not enable caching, and path values are never
+interpreted as booleans. These settings apply only to the ILLink task, not the linker CLI or ILC.
 
-The cache helper resolves an unspecified directory to `$XDG_CACHE_HOME/illink` (or
+For example, in a POSIX shell:
+
+```sh
+ILLINK_EXPERIMENTAL_CACHE=true ILLINK_EXPERIMENTAL_CACHE_PATH=/path/to/cache \
+  dotnet publish -r <rid> -c Release -p:PublishTrimmed=true
+```
+
+These are environment variables, not MSBuild properties or task parameters. The task reads
+its process environment on each invocation; do not change it during parallel builds, and ensure
+reused build processes receive the intended environment.
+
+The cache helper resolves an unset or empty directory override to `$XDG_CACHE_HOME/illink` (or
 `$HOME/.cache/illink`) on Linux/other XDG Unix, `$HOME/Library/Caches/illink` on macOS,
 and `LocalApplicationData/illink` on Windows. Relative `XDG_CACHE_HOME` values are ignored;
 explicit relative cache directories are resolved against the working directory.
@@ -61,6 +76,8 @@ when they affect outputs or dependencies beyond the keyed inputs, or require too
 side effects such as startup hooks or profiling. Unreadable inputs or linker metadata also
 fall back to normal linking. See the
 [cache design](../../design/tools/illink/task-cache.md) for identity and eligibility details.
+
+## ILLink Task Properties
 
 ### ExtraArgs
 

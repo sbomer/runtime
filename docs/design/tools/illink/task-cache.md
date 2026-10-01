@@ -2,16 +2,18 @@
 
 These are design decisions. Eligible task invocations compute a content-based key, restore a cached output directory on a hit, or run ILLink and store successful results.
 
+The feature is experimental. Its configuration and behavior may change or be removed without notice; it is not a supported compatibility surface.
+
 ## Scope and configuration
 
 - Cache complete ILLink invocations in the MSBuild task, not in the linker command-line implementation.
 - Keep v1 simple. Reuse results at the same input/output paths; defer cross-worktree reuse and retain absolute paths in cache identity.
-- Add an `EnableCache` task parameter, defaulting to `false`, supplied by `EnableILLinkCache`. Disabled caching performs no cache I/O, even if a cache directory already exists.
-- Add an optional `CacheDirectory` task parameter, supplied by `ILLinkCacheDirectory`. Selecting a directory does not enable caching.
+- Enable caching only through the `ILLINK_EXPERIMENTAL_CACHE` environment variable set to `true` (case-insensitive). Unset, empty, or `false` disables caching; invalid boolean values disable caching with a diagnostic. Disabled caching performs no cache I/O, even if a cache directory already exists.
+- Use the optional `ILLINK_EXPERIMENTAL_CACHE_PATH` environment variable for the directory override. Unset or empty selects the platform default. Selecting a directory does not enable caching, and path values are never interpreted as booleans.
 - Use platform-specific default directories: `$XDG_CACHE_HOME/illink` on Linux/other XDG Unix, falling back to `$HOME/.cache/illink`; `$HOME/Library/Caches/illink` on macOS; `LocalApplicationData/illink` on Windows.
-- Resolve defaults inside `ILLinkCache.TryCreate` through a private helper, not in targets or the task parameter getter. The parameter remains the explicit override; resolve relative overrides against the current working directory.
+- Resolve defaults inside `ILLinkCache.TryCreate` through a private helper, not in targets. Resolve relative overrides against the current working directory.
 - Ignore relative `XDG_CACHE_HOME` values. If no usable user location is available, skip caching with a diagnostic rather than fall back to the working directory or shared temporary storage.
-- Do not add a dedicated ILLink environment-variable configuration mechanism. Use normal MSBuild property configuration and precedence.
+- Read configuration from the task process's environment on each invocation. Set it before starting MSBuild; do not change process-wide environment settings during parallel builds. Reused build processes must receive the intended environment. There are no cache task parameters, MSBuild property wiring, or linker command-line switches.
 - Do not promise stability or migration support for the on-disk format.
 
 ## API shape
@@ -27,13 +29,14 @@ internal sealed class ILLinkCache
 
 - The task owns input identity and execution. Its private `TryComputeCacheKey` combines command-line and response-file arguments with input-content and toolchain identity; inability to compute a key bypasses caching with a diagnostic.
 - `TryCreate` resolves the cache directory and returns null with a diagnostic if initialization cannot proceed.
-- `TryRestore` combines lookup and restoration. True means complete restoration. Missing entries and expected I/O, access, or invalid-cache-data failures return false with appropriate logging and fall back to normal linking. Copies overwrite existing files and are not rolled back if a later copy fails. Unexpected errors and cancellation propagate.
-- `Store` is best-effort. Lock contention and existing entries are normal skips; expected cache I/O failures are logged without failing a successful link. Unexpected errors and cancellation propagate.
+- `TryRestore` combines lookup and restoration. True means complete restoration. Missing entries and expected I/O, access, or invalid-cache-data failures return false with appropriate logging and fall back to normal linking. Copies overwrite existing files and are not rolled back if a later copy fails. Unexpected exceptions propagate.
+- `Store` is best-effort. Lock contention and existing entries are normal skips; expected cache I/O failures are logged without failing a successful link. Unexpected exceptions propagate.
 - Expected restore/store failures are `IOException`, `UnauthorizedAccessException`, `InvalidDataException`, and `FormatException`, not every exception. Invalid helper arguments remain programming errors.
 - After normal task validation, resolve the cache directory before computing the key so an unusable configuration does not trigger input inspection or hashing. If resolution succeeds, compute the key once and attempt restoration. On a hit, skip linking; otherwise link normally and store only with exit code zero and no logged errors. A failed restore never substitutes for a successful fallback link.
 
 ## Execution and publication
 
+- Cache operations do not support cancellation in v1, including key computation, validation, restoration, and storage. Assume they are fast relative to actual linker execution, and keep synchronous filesystem operations without cancellation polling or chunked cancellable I/O. A cancellation request may arrive while these operations finish, and a cache hit may return success without observing it. Normal linker execution retains `ToolTask`'s existing subprocess cancellation behavior.
 - Check the cache before normal tool execution. On a hit, validate the complete entry, then delete/recreate the destination and copy the cached tree. On any miss or restore failure, the normal execution path deletes/recreates the directory before running ILLink; no separate rollback or failure-cleanup path is needed.
 - The task owns its output directory, including when caching is disabled. Normal-execution cleanup failures fail the task. Rely on the supplied `OutputDirectory` parameter without additional task path/input validation; callers must provide a dedicated directory. The command-line linker retains its existing nonempty-directory behavior.
 - ILLink writes to its normal output directory. After successful linking, copy results into the cache; do not redirect linker output to a temporary directory.

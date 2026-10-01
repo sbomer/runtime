@@ -140,8 +140,6 @@
         OutputDirectory="$(SharedFrameworkAssembliesTrimDir)"
         ExtraArgs="$(SharedFrameworkILLinkArgs)"
         RemoveSymbols="false"
-        EnableCache="$(EnableILLinkCache)"
-        CacheDirectory="$(ILLinkCacheDirectory)"
         ToolExe="$(_DotNetHostFileName)"
         ToolPath="$(_DotNetHostDirectory)" />
 

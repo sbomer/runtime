@@ -13,6 +13,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Microsoft.DotNet.RemoteExecutor;
 using Mono.Linker;
 using Xunit;
 
@@ -1000,11 +1001,60 @@ namespace ILLink.Tasks.Tests
         }
 
         [Fact]
-        public void CacheIsDisabledByDefault()
+        public void CacheHasNoTaskParameters()
         {
-            var task = new MockTask();
-            Assert.False(task.EnableCache);
-            Assert.Null(task.CacheDirectory);
+            Assert.DoesNotContain(typeof(ILLink).GetProperties(), property => property.Name.Contains("Cache"));
+        }
+
+        [Theory]
+        [InlineData(null, false, false)]
+        [InlineData("", false, false)]
+        [InlineData("false", false, false)]
+        [InlineData("FALSE", false, false)]
+        [InlineData("true", true, false)]
+        [InlineData("TrUe", true, false)]
+        [InlineData("1", false, true)]
+        [InlineData("invalid", false, true)]
+        public void CacheEnvironmentConfiguration(string setting, bool enabled, bool invalid)
+        {
+            RemoteExecutor.Invoke(static (value, expectedEnabled, expectedInvalid) =>
+            {
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", value == "<unset>" ? null : value);
+                string directory = Path.Combine(Path.GetTempPath(), "illink-cache-" + Guid.NewGuid().ToString("N"));
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH", directory);
+                var buildEngine = new MockBuildEngine();
+                var task = new MockTask { BuildEngine = buildEngine };
+                ILLinkCache cache = ILLinkCache.TryCreateFromEnvironment(task.Log);
+
+                Assert.Equal(bool.Parse(expectedEnabled), cache is not null);
+                if (cache is not null)
+                    Assert.Equal(directory, cache.CacheDirectory);
+                Assert.Equal(bool.Parse(expectedInvalid), buildEngine.Messages.Any(message =>
+                    message.Message.Contains("ILLINK_EXPERIMENTAL_CACHE must be 'true' or 'false'")));
+                Assert.False(Directory.Exists(directory));
+            }, setting ?? "<unset>", enabled.ToString(), invalid.ToString()).Dispose();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("true")]
+        [InlineData("false")]
+        [InlineData("cache directory")]
+        public void CacheEnvironmentDirectory(string directory)
+        {
+            RemoteExecutor.Invoke(static value =>
+            {
+                string path = value == "<unset>" ? null : value;
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", "true");
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH", path);
+                var task = new MockTask { BuildEngine = new MockBuildEngine() };
+
+                ILLinkCache cache = ILLinkCache.TryCreateFromEnvironment(task.Log);
+
+                Assert.NotNull(cache);
+                Assert.Equal(ILLinkCache.TryCreate(path, task.Log).CacheDirectory, cache.CacheDirectory);
+            }, directory ?? "<unset>").Dispose();
         }
 
         [Theory]
@@ -1405,13 +1455,16 @@ namespace ILLink.Tasks.Tests
         [InlineData(true)]
         public void CacheOptionsAreNotLinkerArguments(bool enableCache)
         {
-            var task = new MockTask
+            RemoteExecutor.Invoke(static value =>
             {
-                EnableCache = enableCache,
-                CacheDirectory = "cache directory"
-            };
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", null);
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH", null);
+                string arguments = new MockTask().GetResponseFileCommands();
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", value);
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH", "cache directory");
 
-            Assert.Equal(new MockTask().GetResponseFileCommands(), task.GetResponseFileCommands());
+                Assert.Equal(arguments, new MockTask().GetResponseFileCommands());
+            }, enableCache.ToString()).Dispose();
         }
 
         [Theory]
@@ -1421,24 +1474,28 @@ namespace ILLink.Tasks.Tests
         [InlineData(true, true)]
         public void TaskDoesNotCacheUnsupportedOrFailedInvocations(bool enableCache, bool succeeds)
         {
-            using var test = new OutputDirectoryTest();
-            string cacheDirectory = Path.Combine(Path.GetTempPath(), "illink-cache-" + Guid.NewGuid().ToString("N"));
-            var task = test.Task;
-            task.EnableCache = enableCache;
-            task.CacheDirectory = cacheDirectory;
-            task.ExtraArgs = succeeds ? "--help" : null;
-            Directory.CreateDirectory(test.Output);
-            string stale = Path.Combine(test.Output, "stale.dll");
-            File.WriteAllText(stale, "old output");
+            RemoteExecutor.Invoke(static (enabled, success) =>
+            {
+                bool succeeds = bool.Parse(success);
+                using var test = new OutputDirectoryTest();
+                string cacheDirectory = Path.Combine(test.Root, "cache");
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", enabled);
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH", cacheDirectory);
+                var task = test.Task;
+                task.ExtraArgs = succeeds ? "--help" : null;
+                Directory.CreateDirectory(test.Output);
+                string stale = Path.Combine(test.Output, "stale.dll");
+                File.WriteAllText(stale, "old output");
 
-            Assert.Equal(succeeds, task.Execute());
-            Assert.False(File.Exists(stale));
-            Assert.Equal(succeeds ? 0 : 1, task.ExitCode);
-            Assert.Contains(task.Messages, message =>
-                message.Line.Contains(succeeds ? "illink [options]" : "No input files were specified"));
-            Assert.Equal(enableCache && succeeds, test.BuildEngine.Messages.Any(message =>
-                message.Message.StartsWith("ILLink cache bypassed: extra arguments")));
-            Assert.False(Directory.Exists(cacheDirectory));
+                Assert.Equal(succeeds, task.Execute());
+                Assert.False(File.Exists(stale));
+                Assert.Equal(succeeds ? 0 : 1, task.ExitCode);
+                Assert.Contains(task.Messages, message =>
+                    message.Line.Contains(succeeds ? "illink [options]" : "No input files were specified"));
+                Assert.Equal(bool.Parse(enabled) && succeeds, test.BuildEngine.Messages.Any(message =>
+                    message.Message.StartsWith("ILLink cache bypassed: extra arguments")));
+                Assert.False(Directory.Exists(cacheDirectory));
+            }, enableCache.ToString(), succeeds.ToString()).Dispose();
         }
 
         [Theory]
@@ -1779,53 +1836,48 @@ namespace ILLink.Tasks.Tests
         }
 
         [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        [InlineData(true, true)]
-        public void TaskLinksWithUnusedMetadataLessReference(bool enableCache, bool invalidCacheDirectory)
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TaskLinksWithUnusedMetadataLessReference(bool enableCache)
         {
-            using var test = new OutputDirectoryTest();
-            string input = Path.Combine(test.Root, "Input.dll");
-            string reference = Path.Combine(test.Root, "Native.dll");
-            WriteTestAssembly(input);
-            WriteMetadataLessPE(reference);
-            var task = test.Task;
-            task.AssemblyPaths = new ITaskItem[] { new TaskItem(input, new Dictionary<string, string> { { "TrimMode", "copy" } }) };
-            task.RootAssemblyNames = new ITaskItem[] { new TaskItem("Input") };
-            task.ReferenceAssemblyPaths = new ITaskItem[] { new TaskItem(reference) };
-            task.ExtraArgs = null;
-            task.EnableCache = enableCache;
-            task.CacheDirectory = invalidCacheDirectory ? "\0" : Path.Combine(test.Root, "cache");
+            RemoteExecutor.Invoke(static enabled =>
+            {
+                using var test = new OutputDirectoryTest();
+                string input = Path.Combine(test.Root, "Input.dll");
+                string reference = Path.Combine(test.Root, "Native.dll");
+                WriteTestAssembly(input);
+                WriteMetadataLessPE(reference);
+                var task = test.Task;
+                task.AssemblyPaths = new ITaskItem[] { new TaskItem(input, new Dictionary<string, string> { { "TrimMode", "copy" } }) };
+                task.RootAssemblyNames = new ITaskItem[] { new TaskItem("Input") };
+                task.ReferenceAssemblyPaths = new ITaskItem[] { new TaskItem(reference) };
+                task.ExtraArgs = null;
+                string cacheDirectory = Path.Combine(test.Root, "cache");
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", enabled);
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH", cacheDirectory);
 
-            Directory.CreateDirectory(test.Output);
-            string stale = Path.Combine(test.Output, "stale.txt");
-            File.WriteAllText(stale, "remove before linking");
+                Directory.CreateDirectory(test.Output);
+                string stale = Path.Combine(test.Output, "stale.txt");
+                File.WriteAllText(stale, "remove before linking");
 
-            Assert.True(task.Execute(), string.Join(Environment.NewLine, task.Messages.Select(message => message.Line)));
-            Assert.Empty(test.BuildEngine.Errors);
-            Assert.False(File.Exists(stale));
-            Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
-            Assert.False(Directory.Exists(task.CacheDirectory));
-            if (enableCache && invalidCacheDirectory)
-            {
-                Assert.Contains(test.BuildEngine.Messages, message =>
-                    message.Message.StartsWith("ILLink caching is disabled because the cache directory"));
-                Assert.DoesNotContain(test.BuildEngine.Messages, message =>
-                    message.Message.StartsWith("ILLink cache bypassed:"));
-            }
-            else if (enableCache)
-            {
-                Assert.Contains(test.BuildEngine.Messages, message =>
-                    message.Message.StartsWith("ILLink cache bypassed: input identity could not be computed:") &&
-                    message.Message.Contains("no managed metadata"));
-            }
-            else
-            {
-                Assert.DoesNotContain(test.BuildEngine.Messages, message =>
-                    message.Message.StartsWith("ILLink caching is disabled") ||
-                    message.Message.StartsWith("ILLink cache bypassed:"));
-            }
+                Assert.True(task.Execute(), string.Join(Environment.NewLine, task.Messages.Select(message => message.Line)));
+                Assert.Empty(test.BuildEngine.Errors);
+                Assert.False(File.Exists(stale));
+                Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
+                Assert.False(Directory.Exists(cacheDirectory));
+                if (bool.Parse(enabled))
+                {
+                    Assert.Contains(test.BuildEngine.Messages, message =>
+                        message.Message.StartsWith("ILLink cache bypassed: input identity could not be computed:") &&
+                        message.Message.Contains("no managed metadata"));
+                }
+                else
+                {
+                    Assert.DoesNotContain(test.BuildEngine.Messages, message =>
+                        message.Message.StartsWith("ILLink caching is disabled") ||
+                        message.Message.StartsWith("ILLink cache bypassed:"));
+                }
+            }, enableCache.ToString()).Dispose();
         }
 
         [Theory]
@@ -1833,43 +1885,56 @@ namespace ILLink.Tasks.Tests
         [InlineData(true)]
         public void TaskCachesAndInvalidatesOutputs(bool corruptEntry)
         {
-            using var test = new OutputDirectoryTest();
-            string input = Path.Combine(test.Root, "Input.dll");
-            WriteTestAssembly(input);
-            var task = test.Task;
-            task.AssemblyPaths = new ITaskItem[] { new TaskItem(input, new Dictionary<string, string> { { "TrimMode", "copy" } }) };
-            task.RootAssemblyNames = new ITaskItem[] { new TaskItem("Input") };
-            task.ExtraArgs = null;
-            task.EnableCache = true;
-            task.CacheDirectory = Path.Combine(test.Root, "cache");
+            RemoteExecutor.Invoke(static corrupt =>
+            {
+                bool corruptEntry = bool.Parse(corrupt);
+                using var test = new OutputDirectoryTest();
+                string input = Path.Combine(test.Root, "Input.dll");
+                WriteTestAssembly(input);
+                var task = test.Task;
+                task.AssemblyPaths = new ITaskItem[] { new TaskItem(input, new Dictionary<string, string> { { "TrimMode", "copy" } }) };
+                task.RootAssemblyNames = new ITaskItem[] { new TaskItem("Input") };
+                task.ExtraArgs = null;
+                string cacheDirectory = Path.Combine(test.Root, "cache");
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", "true");
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE_PATH", cacheDirectory);
 
-            Assert.True(task.Execute());
-            Assert.Contains(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache stored:"));
-            string entry = Assert.Single(Directory.GetDirectories(Path.Combine(task.CacheDirectory, "v1")));
-            string stale = Path.Combine(test.Output, "stale.txt");
-            File.WriteAllText(stale, "not part of the cached directory");
-            File.Delete(Path.Combine(test.Output, "Input.dll"));
-            test.BuildEngine.Messages.Clear();
+                Assert.True(task.Execute());
+                Assert.Contains(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache stored:"));
+                string entry = Assert.Single(Directory.GetDirectories(Path.Combine(cacheDirectory, "v1")));
+                string stale = Path.Combine(test.Output, "stale.txt");
+                File.WriteAllText(stale, "not part of the cached directory");
+                File.Delete(Path.Combine(test.Output, "Input.dll"));
+                test.BuildEngine.Messages.Clear();
 
-            Assert.True(task.Execute());
-            Assert.Contains(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache hit:"));
-            Assert.False(File.Exists(stale));
-            Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
+                Assert.True(task.Execute());
+                Assert.Contains(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache hit:"));
+                Assert.False(File.Exists(stale));
+                Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
 
-            if (corruptEntry)
-                File.WriteAllText(Path.Combine(entry, "outputs", "Input.dll"), "corrupt");
-            else
-                File.AppendAllText(input, "changed");
-            File.WriteAllText(stale, "remove before fallback execution");
-            test.BuildEngine.Messages.Clear();
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", "false");
+                test.BuildEngine.Messages.Clear();
+                File.Delete(Path.Combine(test.Output, "Input.dll"));
+                Assert.True(task.Execute());
+                Assert.DoesNotContain(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache"));
+                Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
+                Environment.SetEnvironmentVariable("ILLINK_EXPERIMENTAL_CACHE", "true");
 
-            Assert.True(task.Execute());
-            Assert.DoesNotContain(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache hit:"));
-            Assert.Contains(test.BuildEngine.Messages, message =>
-                message.Message.StartsWith(corruptEntry ? "ILLink cache restore failed" : "ILLink cache miss:"));
-            Assert.False(File.Exists(stale));
-            Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
-            Assert.Equal(corruptEntry ? 1 : 2, Directory.GetDirectories(Path.Combine(task.CacheDirectory, "v1")).Length);
+                if (corruptEntry)
+                    File.WriteAllText(Path.Combine(entry, "outputs", "Input.dll"), "corrupt");
+                else
+                    File.AppendAllText(input, "changed");
+                File.WriteAllText(stale, "remove before fallback execution");
+                test.BuildEngine.Messages.Clear();
+
+                Assert.True(task.Execute());
+                Assert.DoesNotContain(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache hit:"));
+                Assert.Contains(test.BuildEngine.Messages, message =>
+                    message.Message.StartsWith(corruptEntry ? "ILLink cache restore failed" : "ILLink cache miss:"));
+                Assert.False(File.Exists(stale));
+                Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
+                Assert.Equal(corruptEntry ? 1 : 2, Directory.GetDirectories(Path.Combine(cacheDirectory, "v1")).Length);
+            }, corruptEntry.ToString()).Dispose();
         }
 
         private static void WriteTestAssembly(string path, string informationalVersion = null)
