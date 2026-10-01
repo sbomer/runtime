@@ -4,6 +4,8 @@
     <TargetFramework>$(NetCoreAppCurrent)-$(TargetOS)</TargetFramework>
      <!-- Import the illink file which contains some of the logic required to illink the out-of-band assemblies. -->
     <ExplicitlyImportCustomILLinkTargets>true</ExplicitlyImportCustomILLinkTargets>
+    <!-- Unnecessary suppressions - disable for now since we didn't clean the runtime yet -->
+    <OOBILLinkNoWarn Condition="'$(OOBILLinkNoWarn)' == ''">IL2121</OOBILLinkNoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,13 +47,12 @@
     </ItemGroup>
 
     <MakeDir Directories="$(OOBAssembliesTrimDir)" />
-    <!-- Unnecessary suppressions - disable for now since we didn't clean the runtime yet -->
     <ILLink AssemblyPaths="@(OOBAssemblyToTrim)"
         RootAssemblyNames="@(_OOBRootAssemblyName)"
         ReferenceAssemblyPaths="@(OOBAssemblyReference)"
         OutputDirectory="$(OOBAssembliesTrimDir)"
         ExtraArgs="$(OOBILLinkArgs)"
-        NoWarn="IL2121"
+        NoWarn="$(OOBILLinkNoWarn)"
         ToolExe="$(_DotNetHostFileName)"
         ToolPath="$(_DotNetHostDirectory)" />
 
