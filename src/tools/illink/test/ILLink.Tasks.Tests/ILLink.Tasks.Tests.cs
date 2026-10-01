@@ -6,6 +6,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
+using System.Runtime.ExceptionServices;
+using System.Threading;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Mono.Linker;
@@ -992,6 +997,873 @@ namespace ILLink.Tasks.Tests
             Assert.False(File.Exists(stale));
             Assert.Contains(test.Task.Messages, message =>
                 message.Line.Contains("No input files were specified"));
+        }
+
+        [Fact]
+        public void CacheIsDisabledByDefault()
+        {
+            var task = new MockTask();
+            Assert.False(task.EnableCache);
+            Assert.Null(task.CacheDirectory);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void CacheUsesPlatformDefaultDirectory(string cacheDirectory)
+        {
+            var task = new MockTask { BuildEngine = new MockBuildEngine() };
+            string expectedDirectory;
+            if (OperatingSystem.IsWindows())
+            {
+                expectedDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "illink");
+            }
+            else if (OperatingSystem.IsMacOS())
+            {
+                expectedDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Caches", "illink");
+            }
+            else
+            {
+                string cacheHome = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+                expectedDirectory = !string.IsNullOrEmpty(cacheHome) && Path.IsPathRooted(cacheHome)
+                    ? Path.Combine(cacheHome, "illink")
+                    : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".cache", "illink");
+            }
+
+            ILLinkCache cache = ILLinkCache.TryCreate(cacheDirectory, task.Log);
+
+            Assert.NotNull(cache);
+            Assert.Equal(Path.GetFullPath(expectedDirectory), cache.CacheDirectory);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void CacheDirectoryOverrideDoesNotCreateDirectory(bool absolutePath)
+        {
+            string directoryName = "illink-cache-" + Guid.NewGuid().ToString("N");
+            string cacheDirectory = absolutePath ? Path.Combine(Path.GetTempPath(), directoryName) : directoryName;
+            var task = new MockTask { BuildEngine = new MockBuildEngine() };
+
+            ILLinkCache cache = ILLinkCache.TryCreate(cacheDirectory, task.Log);
+
+            Assert.NotNull(cache);
+            Assert.Equal(Path.GetFullPath(cacheDirectory), cache.CacheDirectory);
+            Assert.False(Directory.Exists(cache.CacheDirectory));
+        }
+
+        [Fact]
+        public void InvalidCacheDirectoryBypassesCaching()
+        {
+            var buildEngine = new MockBuildEngine();
+            var task = new MockTask { BuildEngine = buildEngine };
+
+            Assert.Null(ILLinkCache.TryCreate("invalid\0path", task.Log));
+            Assert.Contains(buildEngine.Messages, message =>
+                message.Message.Contains("could not be resolved"));
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void CacheRoundTrip(bool includeSymbols)
+        {
+            using var test = new CacheTestDirectory();
+            var files = new Dictionary<string, string>
+            {
+                ["app.dll"] = "assembly",
+                ["app.dll.config"] = "configuration",
+                [Path.Combine("fr", "app.resources.dll")] = "satellite",
+                ["Link.semaphore"] = "ordinary file"
+            };
+            if (includeSymbols)
+                files.Add("app.pdb", "symbols");
+
+            foreach (var file in files)
+                test.WriteSource(file.Key, file.Value);
+
+            Assert.False(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            Assert.False(Directory.Exists(test.Cache.CacheDirectory));
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+
+            Directory.CreateDirectory(test.Output);
+            File.WriteAllText(Path.Combine(test.Output, "app.dll"), "old assembly");
+            File.WriteAllText(Path.Combine(test.Output, "Link.semaphore"), "existing semaphore");
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+
+            foreach (var file in files)
+            {
+                string path = Path.Combine(test.Output, file.Key);
+                Assert.Equal(file.Value, File.ReadAllText(path));
+                Assert.Equal(CacheTestDirectory.Timestamp, File.GetLastWriteTimeUtc(path));
+            }
+            Assert.Equal("ordinary file", File.ReadAllText(Path.Combine(test.Output, "Link.semaphore")));
+            Assert.Equal(files.Count, Directory.GetFiles(Path.Combine(test.Entry, "outputs"), "*", SearchOption.AllDirectories).Length);
+            Assert.Empty(Directory.GetDirectories(Path.GetDirectoryName(test.Entry), "*.tmp"));
+
+            File.WriteAllText(Path.Combine(test.Output, "app.dll"), "modified restored output");
+            Assert.Equal("assembly", File.ReadAllText(Path.Combine(test.Entry, "outputs", "app.dll")));
+        }
+
+        [Fact]
+        public void CacheSupportsEmptyOutput()
+        {
+            using var test = new CacheTestDirectory();
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            Assert.True(Directory.Exists(test.Output));
+            Assert.Empty(Directory.GetFileSystemEntries(test.Output));
+        }
+
+        [Fact]
+        public void CacheDoesNotReplaceExistingEntry()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "first");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            test.WriteSource("app.dll", "second");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            Assert.Equal("first", File.ReadAllText(Path.Combine(test.Output, "app.dll")));
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.Contains("already exists"));
+            Assert.Empty(Directory.GetDirectories(Path.GetDirectoryName(test.Entry), "*.tmp"));
+        }
+
+        [Theory]
+        [InlineData("missing-manifest")]
+        [InlineData("version")]
+        [InlineData("truncated")]
+        [InlineData("missing-file")]
+        [InlineData("corrupt-file")]
+        [InlineData("escaping-path")]
+        public void CacheRejectsInvalidEntryBeforeCopying(string damage)
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("a.dll", "first");
+            test.WriteSource("b.dll", "second");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            string manifest = Path.Combine(test.Entry, "manifest");
+            string cachedFile = Path.Combine(test.Entry, "outputs", "b.dll");
+            switch (damage)
+            {
+                case "missing-manifest":
+                    File.Delete(manifest);
+                    break;
+                case "version":
+                    using (var writer = new BinaryWriter(File.OpenWrite(manifest)))
+                        writer.Write(-1);
+                    break;
+                case "truncated":
+                    File.WriteAllBytes(manifest, new byte[] { 1 });
+                    break;
+                case "missing-file":
+                    File.Delete(cachedFile);
+                    break;
+                case "corrupt-file":
+                    File.WriteAllText(cachedFile, "broken");
+                    break;
+                case "escaping-path":
+                    using (var writer = new BinaryWriter(File.Create(manifest)))
+                    {
+                        writer.Write(1);
+                        writer.Write(1);
+                        writer.Write("../escaped.dll");
+                    }
+                    break;
+            }
+
+            Directory.CreateDirectory(test.Output);
+            string existingOutput = Path.Combine(test.Output, "a.dll");
+            File.WriteAllText(existingOutput, "unchanged");
+            Assert.False(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            Assert.Equal("unchanged", File.ReadAllText(existingOutput));
+            Assert.False(File.Exists(Path.Combine(test.Output, "b.dll")));
+            Assert.False(File.Exists(Path.Combine(test.Root, "escaped.dll")));
+            Assert.True(Directory.Exists(test.Entry));
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.Contains("restore failed"));
+        }
+
+        [Fact]
+        public void CacheRestoreReplacesExistingDirectory()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("a.dll", "new assembly");
+            test.WriteSource("b.dll", "other assembly");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            Directory.CreateDirectory(Path.Combine(test.Output, "b.dll"));
+            File.WriteAllText(Path.Combine(test.Output, "a.dll"), "old assembly");
+
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            Assert.Equal("new assembly", File.ReadAllText(Path.Combine(test.Output, "a.dll")));
+            Assert.Equal("other assembly", File.ReadAllText(Path.Combine(test.Output, "b.dll")));
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void CacheStoreFailureIsBestEffort(bool failPublication)
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            if (failPublication)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(test.Entry));
+                File.WriteAllText(test.Entry, "blocks publication");
+            }
+            else
+            {
+                File.WriteAllText(test.Cache.CacheDirectory, "blocks cache creation");
+            }
+
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+
+            Assert.Equal("assembly", File.ReadAllText(Path.Combine(test.Source, "app.dll")));
+            Assert.False(Directory.Exists(test.Entry));
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.Contains("store failed"));
+            if (failPublication)
+            {
+                Assert.Equal("blocks publication", File.ReadAllText(test.Entry));
+                Assert.Empty(Directory.GetDirectories(Path.GetDirectoryName(test.Entry), "*.tmp"));
+            }
+        }
+
+        [Fact]
+        public void CacheSkipsContendedEntryButNotOtherKeys()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            using var mutex = new Mutex(false, test.MutexName);
+            Assert.True(mutex.WaitOne(0));
+            try
+            {
+                RunOnOtherThread(() => test.Cache.Store(CacheTestDirectory.Key, test.Source));
+                Assert.False(Directory.Exists(test.Cache.CacheDirectory));
+                Assert.Contains(test.BuildEngine.Messages, message => message.Message.Contains("another writer"));
+
+                string otherKey = new string('b', 64);
+                RunOnOtherThread(() => test.Cache.Store(otherKey, test.Source));
+                Assert.True(test.Cache.TryRestore(otherKey, test.Output, CacheTestDirectory.Timestamp));
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
+
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            Assert.True(Directory.Exists(test.Entry));
+        }
+
+        [Fact]
+        public void CacheReadsPublishedEntryWithoutWriterLock()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            using var mutex = new Mutex(false, test.MutexName);
+            Assert.True(mutex.WaitOne(0));
+            try
+            {
+                RunOnOtherThread(() =>
+                    Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp)));
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
+        }
+
+        [Fact]
+        public void CacheSupportsConcurrentWritersWithDifferentOutputs()
+        {
+            using var test = new CacheTestDirectory();
+            string contents = new string('a', 1024 * 1024);
+            System.Threading.Tasks.Parallel.For(0, 8, index =>
+            {
+                string source = Path.Combine(test.Root, "source-" + index);
+                Directory.CreateDirectory(source);
+                File.WriteAllText(Path.Combine(source, "app.dll"), contents);
+                File.WriteAllText(Path.Combine(source, "app.pdb"), "symbols");
+                var task = new MockTask { BuildEngine = new MockBuildEngine() };
+                ILLinkCache cache = ILLinkCache.TryCreate(test.Cache.CacheDirectory, task.Log);
+
+                cache.Store(CacheTestDirectory.Key, source);
+            });
+
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            Assert.Equal(contents, File.ReadAllText(Path.Combine(test.Output, "app.dll")));
+            Assert.Equal("symbols", File.ReadAllText(Path.Combine(test.Output, "app.pdb")));
+            Assert.Single(Directory.GetDirectories(Path.GetDirectoryName(test.Entry)));
+        }
+
+        [Fact]
+        public void CacheIgnoresOtherWritersStagingDirectories()
+        {
+            using var test = new CacheTestDirectory();
+            string stagingDirectory = test.Entry + ".orphan.tmp";
+            Directory.CreateDirectory(stagingDirectory);
+            string marker = Path.Combine(stagingDirectory, "partial");
+            File.WriteAllText(marker, "other attempt");
+
+            Assert.False(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+
+            Assert.Equal("other attempt", File.ReadAllText(marker));
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void CacheRejectsOverlappingDirectories(bool cacheContainsOutput)
+        {
+            using var test = new CacheTestDirectory();
+            string output = cacheContainsOutput ? Path.Combine(test.Cache.CacheDirectory, "output") : test.Root;
+
+            Assert.Throws<ArgumentException>(() => test.Cache.Store(CacheTestDirectory.Key, output));
+            Assert.Throws<ArgumentException>(() => test.Cache.TryRestore(CacheTestDirectory.Key, output, CacheTestDirectory.Timestamp));
+            Assert.False(Directory.Exists(test.Cache.CacheDirectory));
+        }
+
+        [Fact]
+        public void CacheRecoversAbandonedWriterLock()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            using var mutex = new Mutex(false, test.MutexName);
+            var owner = new Thread(() => mutex.WaitOne());
+            owner.Start();
+            owner.Join();
+
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+
+            Assert.True(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.Contains("abandoned"));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("../entry")]
+        [InlineData("not-a-hash")]
+        public void CacheRejectsInvalidInputHash(string inputHash)
+        {
+            using var test = new CacheTestDirectory();
+            Assert.Throws<ArgumentException>(() => test.Cache.Store(inputHash, test.Source));
+            Assert.Throws<ArgumentException>(() => test.Cache.TryRestore(inputHash, test.Output, CacheTestDirectory.Timestamp));
+            Assert.False(Directory.Exists(test.Cache.CacheDirectory));
+        }
+
+        private static void RunOnOtherThread(Action action)
+        {
+            ExceptionDispatchInfo exception = null;
+            var thread = new Thread(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    exception = ExceptionDispatchInfo.Capture(ex);
+                }
+            });
+            thread.Start();
+            thread.Join();
+            exception?.Throw();
+        }
+
+        private sealed class CacheTestDirectory : IDisposable
+        {
+            internal static readonly string Key = new string('a', 64);
+            internal static readonly DateTime Timestamp = new DateTime(2025, 1, 2, 3, 4, 5, DateTimeKind.Utc);
+            internal string Root { get; } = Path.Combine(Path.GetTempPath(), "illink-cache-tests-" + Guid.NewGuid().ToString("N"));
+            internal string Source => Path.Combine(Root, "source");
+            internal string Output => Path.Combine(Root, "output");
+            internal string Entry => Path.Combine(Cache.CacheDirectory, "v1", Key);
+            internal MockBuildEngine BuildEngine { get; } = new();
+            internal ILLinkCache Cache { get; }
+            internal string MutexName => (string)typeof(ILLinkCache).GetMethod("GetWriterMutexName", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Cache, new object[] { Key });
+
+            internal CacheTestDirectory()
+            {
+                Directory.CreateDirectory(Source);
+                var task = new MockTask { BuildEngine = BuildEngine };
+                Cache = ILLinkCache.TryCreate(Path.Combine(Root, "cache"), task.Log);
+            }
+
+            internal void WriteSource(string relativePath, string contents)
+            {
+                string path = Path.Combine(Source, relativePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.WriteAllText(path, contents);
+            }
+
+            public void Dispose() => Directory.Delete(Root, recursive: true);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void CacheOptionsAreNotLinkerArguments(bool enableCache)
+        {
+            var task = new MockTask
+            {
+                EnableCache = enableCache,
+                CacheDirectory = "cache directory"
+            };
+
+            Assert.Equal(new MockTask().GetResponseFileCommands(), task.GetResponseFileCommands());
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void TaskDoesNotCacheUnsupportedOrFailedInvocations(bool enableCache, bool succeeds)
+        {
+            using var test = new OutputDirectoryTest();
+            string cacheDirectory = Path.Combine(Path.GetTempPath(), "illink-cache-" + Guid.NewGuid().ToString("N"));
+            var task = test.Task;
+            task.EnableCache = enableCache;
+            task.CacheDirectory = cacheDirectory;
+            task.ExtraArgs = succeeds ? "--help" : null;
+            Directory.CreateDirectory(test.Output);
+            string stale = Path.Combine(test.Output, "stale.dll");
+            File.WriteAllText(stale, "old output");
+
+            Assert.Equal(succeeds, task.Execute());
+            Assert.False(File.Exists(stale));
+            Assert.Equal(succeeds ? 0 : 1, task.ExitCode);
+            Assert.Contains(task.Messages, message =>
+                message.Line.Contains(succeeds ? "illink [options]" : "No input files were specified"));
+            Assert.Equal(enableCache && succeeds, test.BuildEngine.Messages.Any(message =>
+                message.Message.StartsWith("ILLink cache bypassed: extra arguments")));
+            Assert.False(Directory.Exists(cacheDirectory));
+        }
+
+        [Theory]
+        [InlineData("inputs/Input.dll")]
+        [InlineData("inputs/Reference.dll")]
+        [InlineData("roots.xml")]
+        [InlineData("host/dotnet")]
+        public void CacheKeyTracksFileContentsNotTimestamps(string relativePath)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+            Assert.Matches("^[0-9a-f]{64}$", original);
+
+            string file = Path.Combine(test.Root, relativePath);
+            DateTime timestamp = File.GetLastWriteTimeUtc(file);
+            File.SetLastWriteTimeUtc(file, timestamp.AddHours(-1));
+            Assert.True(test.Task.TryGetCacheKey(host, out string afterTouch));
+            Assert.Equal(original, afterTouch);
+
+            byte[] contents = File.ReadAllBytes(file);
+            contents[contents.Length - 1] ^= 1;
+            File.WriteAllBytes(file, contents);
+            File.SetLastWriteTimeUtc(file, timestamp);
+            Assert.True(test.Task.TryGetCacheKey(host, out string afterChange));
+            Assert.NotEqual(original, afterChange);
+        }
+
+        [Fact]
+        public void CacheKeyUsesLinkerInformationalVersion()
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+            byte[] originalImage = File.ReadAllBytes(test.Task.ILLinkPath);
+
+            WriteTestAssembly(test.Task.ILLinkPath, "1.0.0+test");
+            Assert.NotEqual(originalImage, File.ReadAllBytes(test.Task.ILLinkPath));
+            Assert.True(test.Task.TryGetCacheKey(host, out string sameVersion));
+            Assert.Equal(original, sameVersion);
+
+            WriteTestAssembly(test.Task.ILLinkPath, "1.0.0+changed");
+            Assert.True(test.Task.TryGetCacheKey(host, out string changedVersion));
+            Assert.NotEqual(original, changedVersion);
+        }
+
+        [Theory]
+        [InlineData("Mono.Cecil.dll")]
+        [InlineData("illink.runtimeconfig.json")]
+        [InlineData("illink.deps.json")]
+        [InlineData("unrelated/generated.xml")]
+        public void CacheKeyIgnoresToolDirectoryFiles(string relativePath)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+
+            string file = Path.Combine(Path.GetDirectoryName(test.Task.ILLinkPath), relativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(file));
+            File.WriteAllText(file, "tool directory contents");
+            Assert.True(test.Task.TryGetCacheKey(host, out string added));
+            Assert.Equal(original, added);
+
+            File.WriteAllText(file, "changed tool directory contents");
+            Assert.True(test.Task.TryGetCacheKey(host, out string changed));
+            Assert.Equal(original, changed);
+
+            File.Delete(file);
+            Assert.True(test.Task.TryGetCacheKey(host, out string removed));
+            Assert.Equal(original, removed);
+        }
+
+        [Theory]
+        [InlineData("inputs/Input.pdb")]
+        [InlineData("inputs/Input.dll.mdb")]
+        [InlineData("inputs/Input.dll.config")]
+        [InlineData("inputs/fr/Input.resources.dll")]
+        [InlineData("inputs/Reference.pdb")]
+        public void CacheKeyTracksOptionalFilePresence(string relativePath)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            test.Task.RemoveSymbols = true;
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+
+            string file = Path.Combine(test.Root, relativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(file));
+            File.WriteAllText(file, "sidecar");
+            Assert.True(test.Task.TryGetCacheKey(host, out string added));
+            Assert.NotEqual(original, added);
+
+            File.WriteAllText(file, "changed");
+            Assert.True(test.Task.TryGetCacheKey(host, out string changed));
+            Assert.NotEqual(added, changed);
+
+            File.Delete(file);
+            Assert.True(test.Task.TryGetCacheKey(host, out string removed));
+            Assert.Equal(original, removed);
+        }
+
+        [Theory]
+        [InlineData("argument")]
+        [InlineData("metadata")]
+        [InlineData("output")]
+        [InlineData("input-path")]
+        public void CacheKeyTracksInvocation(string change)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+            switch (change)
+            {
+                case "argument":
+                    test.Task.NoWarn = "2026";
+                    break;
+                case "metadata":
+                    test.Task.AssemblyPaths[0].SetMetadata("TrimMode", "copy");
+                    break;
+                case "output":
+                    test.Task.OutputDirectory = new TaskItem(test.Output + "-other");
+                    break;
+                case "input-path":
+                    string newPath = Path.Combine(test.Root, "Input.dll");
+                    File.Copy(test.Task.AssemblyPaths[0].ItemSpec, newPath);
+                    test.Task.AssemblyPaths[0] = new TaskItem(newPath);
+                    break;
+            }
+
+            Assert.True(test.Task.TryGetCacheKey(host, out string changed));
+            Assert.NotEqual(original, changed);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void CacheKeyTracksAssemblyFiles(bool containsMetadata)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            string input = test.Task.AssemblyPaths[0].ItemSpec;
+            string externalFile;
+            if (containsMetadata)
+            {
+                externalFile = Path.Combine(Path.GetDirectoryName(input), "secondary.netmodule");
+                using var module = Mono.Cecil.ModuleDefinition.CreateModule("secondary.netmodule", Mono.Cecil.ModuleKind.NetModule);
+                module.Write(externalFile);
+                var metadata = new MetadataBuilder();
+                metadata.AddModule(0, metadata.GetOrAddString("Input.dll"), metadata.GetOrAddGuid(Guid.NewGuid()), default, default);
+                metadata.AddAssembly(metadata.GetOrAddString("Input"), new Version(1, 0), default, default, 0, AssemblyHashAlgorithm.Sha256);
+                metadata.AddAssemblyFile(metadata.GetOrAddString("secondary.netmodule"), default, containsMetadata: true);
+                var pe = new ManagedPEBuilder(PEHeaderBuilder.CreateLibraryHeader(), new MetadataRootBuilder(metadata), new BlobBuilder());
+                var image = new BlobBuilder();
+                pe.Serialize(image);
+                File.WriteAllBytes(input, image.ToArray());
+            }
+            else
+            {
+                externalFile = Path.Combine(Path.GetDirectoryName(input), "linked.resources");
+                File.WriteAllText(externalFile, "resource contents");
+                using var assembly = Mono.Cecil.AssemblyDefinition.CreateAssembly(
+                    new Mono.Cecil.AssemblyNameDefinition("Input", new Version(1, 0)), "Input.dll", Mono.Cecil.ModuleKind.Dll);
+                assembly.MainModule.Resources.Add(new Mono.Cecil.LinkedResource(
+                    "linked", Mono.Cecil.ManifestResourceAttributes.Public, externalFile));
+                assembly.Write(input);
+            }
+
+            Assert.True(File.Exists(externalFile));
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+            File.AppendAllText(externalFile, "changed");
+            Assert.True(test.Task.TryGetCacheKey(host, out string changed));
+            Assert.NotEqual(original, changed);
+        }
+
+        [Theory]
+        [InlineData("host/fxr")]
+        [InlineData("shared")]
+        public void CacheKeyIgnoresHostDirectories(string relativePath)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            Assert.True(test.Task.TryGetCacheKey(host, out string original));
+            string directory = Path.Combine(test.Root, "host", relativePath);
+            Directory.CreateDirectory(Path.Combine(directory, "another-version"));
+            Assert.True(test.Task.TryGetCacheKey(host, out string addedDirectory));
+            Assert.Equal(original, addedDirectory);
+
+            string file = Path.Combine(directory, "another-version", "runtime");
+            File.WriteAllText(file, "runtime contents");
+            Assert.True(test.Task.TryGetCacheKey(host, out string addedFile));
+            Assert.Equal(original, addedFile);
+
+            File.WriteAllText(file, "changed runtime contents");
+            Assert.True(test.Task.TryGetCacheKey(host, out string changedFile));
+            Assert.Equal(original, changedFile);
+
+            Directory.Delete(directory, recursive: true);
+            Assert.True(test.Task.TryGetCacheKey(host, out string removedDirectory));
+            Assert.Equal(original, removedDirectory);
+        }
+
+        [Theory]
+        [InlineData("extra-args")]
+        [InlineData("custom-step")]
+        [InlineData("custom-data")]
+        [InlineData("dump-dependencies")]
+        [InlineData("dependencies-format")]
+        [InlineData("environment")]
+        [InlineData("missing-input")]
+        [InlineData("invalid-assembly")]
+        [InlineData("metadata-less-assembly")]
+        [InlineData("metadata-less-reference")]
+        [InlineData("missing-linker-version")]
+        [InlineData("empty-linker-version")]
+        [InlineData("metadata-less-linker")]
+        public void CacheKeyBypassesUnsupportedInputs(string reason)
+        {
+            using var test = new OutputDirectoryTest();
+            string host = PrepareCacheKeyTest(test);
+            switch (reason)
+            {
+                case "extra-args":
+                    test.Task.ExtraArgs = "--help";
+                    break;
+                case "custom-step":
+                    test.Task.CustomSteps = new ITaskItem[]
+                    {
+                        new TaskItem("step.dll", new Dictionary<string, string> { { "Type", "Step" } })
+                    };
+                    break;
+                case "custom-data":
+                    test.Task.CustomData = new ITaskItem[]
+                    {
+                        new TaskItem("data", new Dictionary<string, string> { { "Value", "input" } })
+                    };
+                    break;
+                case "dump-dependencies":
+                    test.Task.DumpDependencies = true;
+                    break;
+                case "dependencies-format":
+                    test.Task.DependenciesFileFormat = "xml";
+                    break;
+                case "environment":
+                    test.Task.EnvironmentVariables = new[] { "CUSTOM_SETTING=value" };
+                    break;
+                case "missing-input":
+                    File.Delete(test.Task.AssemblyPaths[0].ItemSpec);
+                    break;
+                case "invalid-assembly":
+                    File.WriteAllText(test.Task.AssemblyPaths[0].ItemSpec, "invalid");
+                    break;
+                case "metadata-less-assembly":
+                    WriteMetadataLessPE(test.Task.AssemblyPaths[0].ItemSpec);
+                    break;
+                case "metadata-less-reference":
+                    WriteMetadataLessPE(test.Task.ReferenceAssemblyPaths[0].ItemSpec);
+                    break;
+                case "missing-linker-version":
+                    WriteTestAssembly(test.Task.ILLinkPath);
+                    break;
+                case "empty-linker-version":
+                    WriteTestAssembly(test.Task.ILLinkPath, "");
+                    break;
+                case "metadata-less-linker":
+                    WriteMetadataLessPE(test.Task.ILLinkPath);
+                    break;
+            }
+
+            Assert.False(test.Task.TryGetCacheKey(host, out string key));
+            Assert.Empty(key);
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache bypassed:"));
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void TaskLinksWithUnusedMetadataLessReference(bool enableCache, bool invalidCacheDirectory)
+        {
+            using var test = new OutputDirectoryTest();
+            string input = Path.Combine(test.Root, "Input.dll");
+            string reference = Path.Combine(test.Root, "Native.dll");
+            WriteTestAssembly(input);
+            WriteMetadataLessPE(reference);
+            var task = test.Task;
+            task.AssemblyPaths = new ITaskItem[] { new TaskItem(input, new Dictionary<string, string> { { "TrimMode", "copy" } }) };
+            task.RootAssemblyNames = new ITaskItem[] { new TaskItem("Input") };
+            task.ReferenceAssemblyPaths = new ITaskItem[] { new TaskItem(reference) };
+            task.ExtraArgs = null;
+            task.EnableCache = enableCache;
+            task.CacheDirectory = invalidCacheDirectory ? "\0" : Path.Combine(test.Root, "cache");
+
+            Directory.CreateDirectory(test.Output);
+            string stale = Path.Combine(test.Output, "stale.txt");
+            File.WriteAllText(stale, "remove before linking");
+
+            Assert.True(task.Execute(), string.Join(Environment.NewLine, task.Messages.Select(message => message.Line)));
+            Assert.Empty(test.BuildEngine.Errors);
+            Assert.False(File.Exists(stale));
+            Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
+            Assert.False(Directory.Exists(task.CacheDirectory));
+            if (enableCache && invalidCacheDirectory)
+            {
+                Assert.Contains(test.BuildEngine.Messages, message =>
+                    message.Message.StartsWith("ILLink caching is disabled because the cache directory"));
+                Assert.DoesNotContain(test.BuildEngine.Messages, message =>
+                    message.Message.StartsWith("ILLink cache bypassed:"));
+            }
+            else if (enableCache)
+            {
+                Assert.Contains(test.BuildEngine.Messages, message =>
+                    message.Message.StartsWith("ILLink cache bypassed: input identity could not be computed:") &&
+                    message.Message.Contains("no managed metadata"));
+            }
+            else
+            {
+                Assert.DoesNotContain(test.BuildEngine.Messages, message =>
+                    message.Message.StartsWith("ILLink caching is disabled") ||
+                    message.Message.StartsWith("ILLink cache bypassed:"));
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TaskCachesAndInvalidatesOutputs(bool corruptEntry)
+        {
+            using var test = new OutputDirectoryTest();
+            string input = Path.Combine(test.Root, "Input.dll");
+            WriteTestAssembly(input);
+            var task = test.Task;
+            task.AssemblyPaths = new ITaskItem[] { new TaskItem(input, new Dictionary<string, string> { { "TrimMode", "copy" } }) };
+            task.RootAssemblyNames = new ITaskItem[] { new TaskItem("Input") };
+            task.ExtraArgs = null;
+            task.EnableCache = true;
+            task.CacheDirectory = Path.Combine(test.Root, "cache");
+
+            Assert.True(task.Execute());
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache stored:"));
+            string entry = Assert.Single(Directory.GetDirectories(Path.Combine(task.CacheDirectory, "v1")));
+            string stale = Path.Combine(test.Output, "stale.txt");
+            File.WriteAllText(stale, "not part of the cached directory");
+            File.Delete(Path.Combine(test.Output, "Input.dll"));
+            test.BuildEngine.Messages.Clear();
+
+            Assert.True(task.Execute());
+            Assert.Contains(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache hit:"));
+            Assert.False(File.Exists(stale));
+            Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
+
+            if (corruptEntry)
+                File.WriteAllText(Path.Combine(entry, "outputs", "Input.dll"), "corrupt");
+            else
+                File.AppendAllText(input, "changed");
+            File.WriteAllText(stale, "remove before fallback execution");
+            test.BuildEngine.Messages.Clear();
+
+            Assert.True(task.Execute());
+            Assert.DoesNotContain(test.BuildEngine.Messages, message => message.Message.StartsWith("ILLink cache hit:"));
+            Assert.Contains(test.BuildEngine.Messages, message =>
+                message.Message.StartsWith(corruptEntry ? "ILLink cache restore failed" : "ILLink cache miss:"));
+            Assert.False(File.Exists(stale));
+            Assert.Equal(File.ReadAllBytes(input), File.ReadAllBytes(Path.Combine(test.Output, "Input.dll")));
+            Assert.Equal(corruptEntry ? 1 : 2, Directory.GetDirectories(Path.Combine(task.CacheDirectory, "v1")).Length);
+        }
+
+        private static void WriteTestAssembly(string path, string informationalVersion = null)
+        {
+            using var assembly = Mono.Cecil.AssemblyDefinition.CreateAssembly(
+                new Mono.Cecil.AssemblyNameDefinition(Path.GetFileNameWithoutExtension(path), new Version(1, 0)),
+                Path.GetFileName(path), Mono.Cecil.ModuleKind.Dll);
+            if (informationalVersion is not null)
+            {
+                var constructor = typeof(AssemblyInformationalVersionAttribute).GetConstructor(new[] { typeof(string) });
+                var attribute = new Mono.Cecil.CustomAttribute(assembly.MainModule.ImportReference(constructor));
+                attribute.ConstructorArguments.Add(new Mono.Cecil.CustomAttributeArgument(assembly.MainModule.TypeSystem.String, informationalVersion));
+                assembly.CustomAttributes.Add(attribute);
+            }
+            assembly.Write(path);
+        }
+
+        private static void WriteMetadataLessPE(string path)
+        {
+            WriteTestAssembly(path);
+            byte[] image = File.ReadAllBytes(path);
+            using (var pe = new PEReader(new MemoryStream(image)))
+            {
+                // The CLI header directory precedes the final reserved directory in the PE optional header.
+                const int DirectoryEntrySize = 2 * sizeof(int);
+                int cliHeaderDirectoryOffset = pe.PEHeaders.PEHeaderStartOffset +
+                    pe.PEHeaders.CoffHeader.SizeOfOptionalHeader - 2 * DirectoryEntrySize;
+                Array.Clear(image, cliHeaderDirectoryOffset, DirectoryEntrySize);
+            }
+            File.WriteAllBytes(path, image);
+            using var reader = new PEReader(File.OpenRead(path));
+            Assert.False(reader.HasMetadata);
+        }
+
+        private static string PrepareCacheKeyTest(OutputDirectoryTest test)
+        {
+            string inputs = Path.Combine(test.Root, "inputs");
+            Directory.CreateDirectory(inputs);
+            string input = Path.Combine(inputs, "Input.dll");
+            string reference = Path.Combine(inputs, "Reference.dll");
+            WriteTestAssembly(input);
+            WriteTestAssembly(reference);
+            foreach (string path in new[]
+            {
+                "roots.xml", "tools/Mono.Cecil.dll", "tools/Mono.Cecil.Mdb.dll",
+                "tools/Mono.Cecil.Pdb.dll", "tools/Mono.Cecil.Rocks.dll", "tools/illink.runtimeconfig.json",
+                "host/dotnet", "host/host/fxr/version/hostfxr", "host/shared/Microsoft.NETCore.App/version/runtime"
+            })
+            {
+                string file = Path.Combine(test.Root, path);
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+                File.WriteAllText(file, "contents");
+            }
+
+            test.Task.AssemblyPaths = new ITaskItem[] { new TaskItem(input) };
+            test.Task.ReferenceAssemblyPaths = new ITaskItem[] { new TaskItem(reference) };
+            test.Task.RootDescriptorFiles = new ITaskItem[] { new TaskItem(Path.Combine(test.Root, "roots.xml")) };
+            test.Task.ILLinkPath = Path.Combine(test.Root, "tools", "illink.dll");
+            WriteTestAssembly(test.Task.ILLinkPath, "1.0.0+test");
+            test.Task.ExtraArgs = null;
+            return Path.Combine(test.Root, "host", "dotnet");
         }
 
         private sealed class OutputDirectoryTest : IDisposable

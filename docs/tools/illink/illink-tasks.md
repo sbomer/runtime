@@ -28,6 +28,38 @@ The output will include only necessary code to run your application. The framewo
 
 ## ILLink Task Properties
 
+### EnableCache and CacheDirectory
+
+`EnableILLinkCache` supplies the task's `EnableCache` parameter and defaults to `false`.
+`ILLinkCacheDirectory` supplies its optional `CacheDirectory` parameter. Setting a directory
+does not enable caching. These settings apply only to ILLink, not ILC.
+
+The cache helper resolves an unspecified directory to `$XDG_CACHE_HOME/illink` (or
+`$HOME/.cache/illink`) on Linux/other XDG Unix, `$HOME/Library/Caches/illink` on macOS,
+and `LocalApplicationData/illink` on Windows. Relative `XDG_CACHE_HOME` values are ignored;
+explicit relative cache directories are resolved against the working directory.
+
+Eligible invocations use a key covering arguments, input-file and sidecar contents, the task
+assembly, the selected dotnet host executable, and ILLink's `AssemblyInformationalVersion`.
+The informational version identifies the whole linker distribution, including bundled
+dependencies and configuration; its directory is not fingerprinted. Local toolchain changes
+must change ILLink's informational version, use a cleared/isolated cache, or disable caching.
+A missing, empty, or unreadable linker version bypasses caching with a diagnostic.
+
+The key does not cover the host's installed runtime directories or the version of the runtime
+executing ILLink. Runtime installation changes alone are not guaranteed to invalidate entries;
+clear or isolate the cache when that distinction is required.
+Cache hits replace the output directory without running ILLink.
+Directories are created in the cache only when storing a successful result. Hits do not replay warnings or other linker diagnostics.
+
+Caching is bypassed with a diagnostic for `ExtraArgs`, custom steps/data, dependency-dump
+options, and explicit task environment overrides. This includes SDK options supplied
+through `ExtraArgs`. Inherited environment variables are not tracked; disable caching
+when they affect outputs or dependencies beyond the keyed inputs, or require tool-execution
+side effects such as startup hooks or profiling. Unreadable inputs or linker metadata also
+fall back to normal linking. See the
+[cache design](../../design/tools/illink/task-cache.md) for identity and eligibility details.
+
 ### ExtraArgs
 
 Additional [options](illink-options.md) passed to ILLink.

@@ -18,6 +18,16 @@ namespace ILLink.Tasks.Tests
 
         public List<(MessageImportance Importance, string Line)> Messages { get; } = new List<(MessageImportance Importance, string Line)>();
 
+        public string GetResponseFileCommands() => GenerateResponseFileCommands();
+
+        public bool TryGetCacheKey(string pathToTool, out string key)
+        {
+            object[] arguments = { pathToTool, GenerateCommandLineCommands(), GenerateResponseFileCommands(), null };
+            bool result = (bool)typeof(ILLink).GetMethod("TryComputeCacheKey", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(this, arguments);
+            key = (string)arguments[3];
+            return result;
+        }
+
         public MockTask()
         {
             // Ensure that [Required] members are non-null
@@ -53,6 +63,7 @@ namespace ILLink.Tasks.Tests
 
         static readonly string[] nonOptimizationBooleanProperties = new string[] {
             "DumpDependencies",
+            nameof(EnableCache),
             "RemoveSymbols",
             "PreserveSymbolPaths",
             "TreatWarningsAsErrors",
@@ -77,9 +88,11 @@ namespace ILLink.Tasks.Tests
     public class MockBuildEngine : IBuildEngine
     {
         public List<BuildErrorEventArgs> Errors { get; } = new List<BuildErrorEventArgs>();
+        public List<BuildMessageEventArgs> Messages { get; } = new();
+
         public void LogErrorEvent(BuildErrorEventArgs e) => Errors.Add(e);
         public void LogWarningEvent(BuildWarningEventArgs e) { }
-        public void LogMessageEvent(BuildMessageEventArgs e) { }
+        public void LogMessageEvent(BuildMessageEventArgs e) => Messages.Add(e);
         public void LogCustomEvent(CustomBuildEventArgs e) { }
         public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs) => false;
         public bool ContinueOnError => false;
