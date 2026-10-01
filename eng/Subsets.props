@@ -575,6 +575,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(_subset.Contains('+tools.illinktests+'))">
+    <ProjectToBuild Include="$(ToolsProjectRoot)illink\test\ILLink.CacheTool.Tests\ILLink.CacheTool.Tests.csproj"
+      Test="true" Category="tools"/>
     <ProjectToBuild Include="$(ToolsProjectRoot)illink\test\Mono.Linker.Tests\Mono.Linker.Tests.csproj"
       Test="true" Category="tools"/>
     <ProjectToBuild Include="$(ToolsProjectRoot)illink\test\Mono.Linker.Tests.Cases\Mono.Linker.Tests.Cases.csproj"

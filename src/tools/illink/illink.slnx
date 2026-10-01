@@ -13,6 +13,7 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="../../coreclr/tools/ILVerification/ILVerification.csproj" />
+    <Project Path="test/ILLink.CacheTool.Tests/ILLink.CacheTool.Tests.csproj" />
     <Project Path="test/ILLink.RoslynAnalyzer.Tests.Generator/ILLink.RoslynAnalyzer.Tests.Generator.csproj" />
     <Project Path="test/ILLink.RoslynAnalyzer.Tests/ILLink.RoslynAnalyzer.Tests.csproj" />
     <Project Path="test/ILLink.Tasks.Tests/ILLink.Tasks.Tests.csproj" />

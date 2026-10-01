@@ -1206,6 +1206,56 @@ namespace ILLink.Tasks.Tests
         }
 
         [Fact]
+        public void FailedRestoreDoesNotRefreshUsage()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            string marker = Path.Combine(test.Entry, ILLinkCacheEntry.LastUsedFileName);
+            string oldTimestamp = DateTimeOffset.MinValue.ToString("O", CultureInfo.InvariantCulture);
+            File.WriteAllText(marker, oldTimestamp);
+            File.WriteAllText(Path.Combine(test.Entry, "outputs", "app.dll"), "corrupt");
+
+            Assert.False(test.Cache.TryRestore(CacheTestDirectory.Key, test.Output, CacheTestDirectory.Timestamp));
+
+            Assert.Equal(oldTimestamp, File.ReadAllText(marker));
+        }
+
+        [Fact]
+        public void ParallelProcessesRefreshUsageWithoutCorruptingMarker()
+        {
+            using var test = new CacheTestDirectory();
+            test.WriteSource("app.dll", "assembly");
+            test.Cache.Store(CacheTestDirectory.Key, test.Source);
+            DateTimeOffset beforeRestore = DateTimeOffset.UtcNow;
+            using (StartReader(test, 0))
+            using (StartReader(test, 1))
+            {
+                Assert.True(SpinWait.SpinUntil(() => Directory.GetFiles(test.Root, "*.ready").Length == 2, TimeSpan.FromSeconds(30)));
+                File.WriteAllText(Path.Combine(test.Root, "start"), "");
+            }
+
+            string marker = Path.Combine(test.Entry, ILLinkCacheEntry.LastUsedFileName);
+            Assert.InRange(DateTimeOffset.ParseExact(File.ReadAllText(marker), "O", CultureInfo.InvariantCulture),
+                beforeRestore, DateTimeOffset.UtcNow);
+            Assert.Empty(Directory.GetFiles(test.Entry, "*.tmp"));
+
+            static RemoteInvokeHandle StartReader(CacheTestDirectory test, int index) =>
+                RemoteExecutor.Invoke(static (cacheDirectory, output, start) =>
+                {
+                    var engine = new MockBuildEngine();
+                    var task = new MockTask { BuildEngine = engine };
+                    ILLinkCache cache = ILLinkCache.TryCreate(cacheDirectory, task.Log);
+                    File.WriteAllText(output + ".ready", "");
+                    Assert.True(SpinWait.SpinUntil(() => File.Exists(start), TimeSpan.FromSeconds(30)));
+                    for (int attempt = 0; attempt < 20; attempt++)
+                        Assert.True(cache.TryRestore(CacheTestDirectory.Key, output, CacheTestDirectory.Timestamp));
+                    Assert.Empty(engine.Errors);
+                    Assert.DoesNotContain(engine.Messages, message => message.Message.Contains("last-used update failed"));
+                }, test.Cache.CacheDirectory, Path.Combine(test.Root, "reader-" + index), Path.Combine(test.Root, "start"));
+        }
+
+        [Fact]
         public void CacheDoesNotReplaceExistingEntry()
         {
             using var test = new CacheTestDirectory();

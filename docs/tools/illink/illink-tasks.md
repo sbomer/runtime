@@ -78,6 +78,31 @@ side effects such as startup hooks or profiling. Unreadable inputs or linker met
 fall back to normal linking. See the
 [cache design](../../design/tools/illink/task-cache.md) for identity and eligibility details.
 
+### Cache maintenance
+
+The experimental `dotnet-illink-cache` .NET tool can purge entries that were not used recently:
+
+```sh
+dotnet illink-cache purge --cache-directory /path/to/cache --before 2026-10-01T12:00:00Z
+```
+
+The directory and UTC cutoff are required; maintenance does not use the task's opt-in or
+directory environment variables. Use the tool built from the same revision as the task.
+See the [tool README](../../../src/tools/illink/src/ILLink.CacheTool/README.md) for local
+packaging and installation.
+
+Each entry has a `last-used` timestamp, initialized during publication and refreshed after
+a successful cache hit. Only entries strictly older than the cutoff are deleted. Staging
+directories, unrelated directories, and other layout versions are not purged. There is no
+size limit or automatic eviction during linking.
+
+**Run purge only when no build is using that cache.** Purge and manual deletion are not
+coordinated with readers or writers. Clear old caches before adopting usage markers; no
+migration or fallback age is provided. Missing, malformed, or unreadable markers are reported
+as errors and their entries are retained. The tool reports deleted/kept/error counts and
+returns nonzero for argument or maintenance failures. Usage-marker update failures in the
+task are logged without failing linking.
+
 ## ILLink Task Properties
 
 ### ExtraArgs

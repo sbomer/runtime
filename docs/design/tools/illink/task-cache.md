@@ -67,7 +67,7 @@ internal sealed class ILLinkCache
 
 ## Entry layout
 
-- Store entries under `<cache>/v1/<input-hash>/`, with a binary `manifest` and an `outputs/` tree.
+- Store entries under `<cache>/v1/<input-hash>/`, with a binary `manifest`, an `outputs/` tree, and a `last-used` UTC timestamp in invariant round-trip (`O`) text format.
 - The manifest records the format version, output paths, lengths, and SHA-256 content hashes. Validate it and every listed file before starting restoration.
 - Copy the complete output tree without special-casing filenames. The MSBuild target owns `<output-directory>.semaphore` (normally `linked.semaphore`) and invalidates it before the incremental skip decision when that directory is missing. There is no special migration or exclusion for old in-directory `Link.semaphore` files; ordinary whole-directory cleanup and caching apply to them. Empty directories are not recorded.
 - The restore helper replaces the destination tree after entry validation. Copy failures can leave partial results, which the task's normal execution cleanup removes before fallback linking. Publication is atomic; restoration is not.
@@ -76,15 +76,18 @@ internal sealed class ILLinkCache
 
 ## Cache lifetime
 
-- No eviction policy or deletion of published entries; users may manually wipe the cache directory.
+- No automatic eviction or size policy during linking. Users may manually wipe the cache directory or explicitly run the experimental `dotnet-illink-cache purge` tool.
 - Do not repair or replace corrupt published entries. Restoration falls back to linking, but storage still skips an existing entry until the user removes it.
 - No `created` bookkeeping marker. The `last-used` marker records usage for explicit post-build maintenance.
+- Purge requires an explicit cache root and UTC cutoff. Only published SHA-256 entry directories in `v1` are considered; delete entries whose marker is strictly older than the cutoff and retain equality. Leave staging directories and other layouts alone. Report per-entry errors and continue, then return nonzero if maintenance failed.
+- Assume old caches are cleared before using markers. Do not infer ages or migrate entries with missing markers; missing, malformed, or unreadable markers are ordinary reported errors.
+- Purge must not run during any build using the cache. Do not add purge locks or change reader locking; coordination with active readers/writers remains a separate follow-up, as does protection against manual deletion.
 - Attempt best-effort cleanup of the current attempt's unpublished staging directory. Log cleanup I/O/access failures without failing a successful link; do not scan or delete other attempts' staging directories. Correctness must tolerate leftovers after crashes.
 
 ## Open follow-ups
 
 - Revisit identifying the resolved runtime/CoreLib that executes ILLink without adding substantial cache-lookup overhead.
 - Revisit symbolic-link handling when generalizing beyond ILLink outputs.
-- Consider explicit/manual or CI purging; the no-entry-deletion scope remains unchanged until decided otherwise.
+- Revisit cross-process shared-reader/exclusive-purge coordination if concurrent maintenance becomes necessary.
 - Reconsider diagnostic replay, including missing console/binlog warnings and effects on external warning-as-error policies.
 - Examine manual wiping racing reads, including safe fallback after partially restoring output files.
