@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>dotnet-illink-cache</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <UseAppHost>false</UseAppHost>
+    <RollForward>Major</RollForward>
+    <IsPackable>true</IsPackable>
+    <IsShipping>false</IsShipping>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>dotnet-illink-cache</PackageId>
+    <ToolCommandName>dotnet-illink-cache</ToolCommandName>
+    <Description>Experimental ILLink task cache maintenance tool.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="$(SystemCommandLineVersion)" />
+  </ItemGroup>
+</Project>

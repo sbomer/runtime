@@ -20,6 +20,7 @@
     <Project Path="test/Mono.Linker.Tests.Cases/Mono.Linker.Tests.Cases.csproj" />
     <Project Path="test/Mono.Linker.Tests/Mono.Linker.Tests.csproj" />
   </Folder>
+  <Project Path="src/ILLink.CacheTool/ILLink.CacheTool.csproj" />
   <Project Path="src/ILLink.Shared/ILLink.Shared.shproj" />
   <Project Path="src/ILLink.Tasks/ILLink.Tasks.csproj" />
   <Project Path="src/linker/Mono.Linker.csproj" />
