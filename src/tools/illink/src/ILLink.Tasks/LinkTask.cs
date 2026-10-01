@@ -313,7 +313,8 @@ namespace ILLink.Tasks
             try
             {
                 var files = new SortedSet<string>(StringComparer.Ordinal);
-                if (!TryAddCacheableExtraArgsFiles(files))
+                var directories = new SortedSet<string>(StringComparer.Ordinal);
+                if (!TryAddCacheableExtraArgsInputs(files, directories))
                 {
                     Log.LogMessage(MessageImportance.Low, "ILLink cache bypassed: extra arguments are not supported.");
                     return false;
@@ -326,6 +327,22 @@ namespace ILLink.Tasks
                     AddAssembly(assembly.ItemSpec);
                 foreach (ITaskItem descriptor in RootDescriptorFiles ?? Array.Empty<ITaskItem>())
                     AddFile(descriptor.ItemSpec);
+
+                // Preserve AssemblyResolver's search behavior instead of replacing -d with
+                // explicit references. Include every candidate so additions and shadowing invalidate.
+                foreach (string directory in directories)
+                {
+                    foreach (string file in Directory.EnumerateFiles(directory))
+                    {
+                        string extension = Path.GetExtension(file);
+                        if (extension.Equals(".dll", StringComparison.OrdinalIgnoreCase) ||
+                            extension.Equals(".exe", StringComparison.OrdinalIgnoreCase) ||
+                            extension.Equals(".winmd", StringComparison.OrdinalIgnoreCase))
+                        {
+                            AddAssembly(file);
+                        }
+                    }
+                }
 
 #pragma warning disable IL3000 // MSBuild tasks are loaded from assemblies on disk.
                 AddFile(typeof(ILLink).Assembly.Location);
@@ -440,13 +457,13 @@ namespace ILLink.Tasks
             }
         }
 
-        private bool TryAddCacheableExtraArgsFiles(SortedSet<string> files)
+        private bool TryAddCacheableExtraArgsInputs(SortedSet<string> files, SortedSet<string> directories)
         {
             ReadOnlySpan<char> arguments = ExtraArgs.AsSpan().Trim();
             if (arguments.IsEmpty)
                 return true;
 
-            // The runtime shared-framework build passes this policy through ExtraArgs. Keep the
+            // The runtime library builds pass this policy through ExtraArgs. Keep the
             // supported shape narrow so arbitrary linker arguments continue to bypass caching.
             if (!TryReadArgument(ref arguments, out string option) ||
                 option != "--ignore-link-attributes" ||
@@ -459,14 +476,17 @@ namespace ILLink.Tasks
             while (!arguments.TrimStart().IsEmpty)
             {
                 if (!TryReadArgument(ref arguments, out option) ||
-                    option != "--link-attributes" ||
+                    option is not ("--link-attributes" or "--substitutions" or "-d") ||
                     !TryReadArgument(ref arguments, out string path) ||
                     string.IsNullOrEmpty(path))
                 {
                     return false;
                 }
 
-                files.Add(Path.GetFullPath(path));
+                if (option == "-d")
+                    directories.Add(Path.GetFullPath(path));
+                else
+                    files.Add(Path.GetFullPath(path));
             }
 
             return true;
