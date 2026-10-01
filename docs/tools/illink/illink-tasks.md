@@ -54,8 +54,8 @@ Directories are created in the cache only when storing a successful result. Hits
 
 Caching is bypassed with a diagnostic for arbitrary `ExtraArgs`, custom steps/data,
 dependency-dump options, and explicit task environment overrides. The runtime
-shared-framework build's link-attribute arguments are supported and their referenced files
-are content-hashed; other SDK options supplied through `ExtraArgs` remain unsupported.
+shared-framework and out-of-band builds' link-attribute arguments are supported and their
+referenced files are content-hashed; other SDK options supplied through `ExtraArgs` remain unsupported.
 Inherited environment variables are not tracked; disable caching
 when they affect outputs or dependencies beyond the keyed inputs, or require tool-execution
 side effects such as startup hooks or profiling. Unreadable inputs or linker metadata also

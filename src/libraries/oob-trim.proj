@@ -37,8 +37,6 @@
 
     <PropertyGroup>
       <OOBILLinkArgs>$(ILLinkArgs)</OOBILLinkArgs>
-      <!-- Unnecessary suppressions - disable for now since we didn't clean the runtime yet -->
-      <OOBILLinkArgs>$(ILLinkArgs) --nowarn IL2121</OOBILLinkArgs>
       <OOBILLinkArgs Condition="'@(OOBLibrarySuppressionsXml)' != ''" >$(OOBILLinkArgs) --link-attributes "@(OOBLibrarySuppressionsXml->'%(FullPath)', '" --link-attributes "')"</OOBILLinkArgs>
     </PropertyGroup>
 
@@ -47,11 +45,15 @@
     </ItemGroup>
 
     <MakeDir Directories="$(OOBAssembliesTrimDir)" />
+    <!-- Unnecessary suppressions - disable for now since we didn't clean the runtime yet -->
     <ILLink AssemblyPaths="@(OOBAssemblyToTrim)"
         RootAssemblyNames="@(_OOBRootAssemblyName)"
         ReferenceAssemblyPaths="@(OOBAssemblyReference)"
         OutputDirectory="$(OOBAssembliesTrimDir)"
         ExtraArgs="$(OOBILLinkArgs)"
+        NoWarn="IL2121"
+        EnableCache="$(EnableILLinkCache)"
+        CacheDirectory="$(ILLinkCacheDirectory)"
         ToolExe="$(_DotNetHostFileName)"
         ToolPath="$(_DotNetHostDirectory)" />
 
